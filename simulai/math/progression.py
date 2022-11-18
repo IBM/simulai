@@ -11,3 +11,12 @@
 #     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
+
+# Geometrical progression
+def gp(init, factor, n) -> list:
+    if n == 1:
+        return [init]
+    elif n > 1:
+        return gp(init, factor, n - 1) + [factor * gp(init, factor, n - 1)[-1]]
+    else:
+        raise Exception("n must be higher than 0")

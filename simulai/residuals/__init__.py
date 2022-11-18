@@ -11,3 +11,12 @@
 #     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
+
+from simulai import engine
+
+assert engine is not None, "The variable engine was not defined."
+
+if engine == "pytorch":
+    from ._pytorch_residuals import SymbolicOperator
+else:
+    print(f"The engine {engine} does not support symbolic operations.")

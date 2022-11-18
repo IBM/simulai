@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>simulai.math.differentiation &mdash; simulai 1.3 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> simulai
+          </a>
+              <div class="version">
+                1.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">SimulAI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">simulai</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">simulai</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>simulai.math.differentiation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for simulai.math.differentiation</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright IBM Corp. 2019, 2020, 2021, 2022.</span>
+
+<span class="c1">#    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1">#    you may not use this file except in compliance with the License.</span>
+<span class="c1">#    You may obtain a copy of the License at</span>
+
+<span class="c1">#           http://www.apache.org/licenses/LICENSE-2.0</span>
+
+<span class="c1">#     Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1">#     distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1">#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1">#     See the License for the specific language governing permissions and</span>
+<span class="c1">#     limitations under the License.</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">InterpolatedUnivariateSpline</span> <span class="k">as</span> <span class="n">ius</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">lil_matrix</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="kn">import</span> <span class="n">spsolve</span>
+
+<span class="sd">&quot;&quot;&quot;differentiation.py</span>
+
+<span class="sd">    This module contains derivative approximation algorithms</span>
+<span class="sd">    commonly used in numerical analysis</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># This is like an identifier</span>
+<div class="viewcode-block" id="Derivative"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.differentiation.Derivative">[docs]</a><span class="k">class</span> <span class="nc">Derivative</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parent class for the derivative operations</span>
+<span class="sd">       It is used for identification purposes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<span class="c1"># This is like an identifier</span>
+<div class="viewcode-block" id="TimeDerivative"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.differentiation.TimeDerivative">[docs]</a><span class="k">class</span> <span class="nc">TimeDerivative</span><span class="p">(</span><span class="n">Derivative</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Numerical time derivative based on centered differences.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">delta</span><span class="p">)</span></div>
+
+<span class="c1"># This is like an identifier</span>
+<div class="viewcode-block" id="SpaceDerivative"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.differentiation.SpaceDerivative">[docs]</a><span class="k">class</span> <span class="nc">SpaceDerivative</span><span class="p">(</span><span class="n">Derivative</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="LeleDerivative"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.differentiation.LeleDerivative">[docs]</a><span class="k">class</span> <span class="nc">LeleDerivative</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="sd">&quot;&quot;&quot;10th-order derivative algorithm purposed by Lele.</span>
+
+<span class="sd">        :param N: number of mesh nodes</span>
+<span class="sd">        :type param: int</span>
+<span class="sd">        :param h: mesh size</span>
+<span class="sd">        :type h: float</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RightVector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+
+        <span class="c1"># Constructing the left operator</span>
+        <span class="n">LeftMatrix</span> <span class="o">=</span> <span class="n">lil_matrix</span><span class="p">((</span><span class="n">N</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">4</span><span class="p">))</span>
+        <span class="n">RightMatrix</span> <span class="o">=</span> <span class="n">lil_matrix</span><span class="p">((</span><span class="n">N</span> <span class="o">+</span> <span class="mi">6</span><span class="p">,</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">6</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">2</span><span class="p">):</span>
+
+            <span class="n">i</span> <span class="o">=</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">2</span>
+            <span class="n">delta_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_1</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+            <span class="n">delta_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_2</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+
+            <span class="n">LeftMatrix</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_1</span>
+            <span class="n">LeftMatrix</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_1</span>
+
+            <span class="n">LeftMatrix</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_2</span>
+            <span class="n">LeftMatrix</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_2</span>
+
+            <span class="n">LeftMatrix</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">LeftMatrix</span> <span class="o">=</span> <span class="n">LeftMatrix</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">3</span><span class="p">):</span>
+
+            <span class="n">i</span> <span class="o">=</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">3</span>
+            <span class="n">delta_3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_3</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+            <span class="n">delta_4</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_4</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+            <span class="n">delta_5</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_5</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+            <span class="n">delta_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_0</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+
+            <span class="n">RightMatrix</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">delta_5</span>
+            <span class="n">RightMatrix</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_5</span>
+
+            <span class="n">RightMatrix</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">delta_4</span>
+            <span class="n">RightMatrix</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_4</span>
+
+            <span class="n">RightMatrix</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">delta_3</span>
+            <span class="n">RightMatrix</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_3</span>
+
+            <span class="n">RightMatrix</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">RightMatrix</span> <span class="o">=</span> <span class="n">RightMatrix</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+
+<div class="viewcode-block" id="LeleDerivative.solve"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.differentiation.LeleDerivative.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
+        <span class="sd">&quot;&quot;&quot;Performing Lele differentiation</span>
+
+<span class="sd">        :param f: variable values to be differentiated</span>
+<span class="sd">        :type f: np.ndarray</span>
+<span class="sd">        :return: the derivatives of f</span>
+<span class="sd">        :rtype: np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RightMatrix</span> <span class="o">@</span> <span class="n">f</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Performing Lele Derivation.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">spsolve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LeftMatrix</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LeleDerivative.delta_1"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.differentiation.LeleDerivative.delta_1">[docs]</a>    <span class="k">def</span> <span class="nf">delta_1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+
+        <span class="sd">&quot;&quot;&quot;term delta_1 from the Lele&#39;s expression</span>
+
+<span class="sd">        :param j: node index</span>
+<span class="sd">        :type j: int</span>
+<span class="sd">        :param N: total number of nodes</span>
+<span class="sd">        :type N: int</span>
+<span class="sd">        :return: the evaluation of delta_1</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">2</span>
+        <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">1.</span> <span class="o">/</span> <span class="mi">4</span>
+        <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">4.7435</span> <span class="o">/</span> <span class="mf">10.67175</span>
+        <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">4.63271875</span> <span class="o">/</span> <span class="mf">9.38146875</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">1.</span> <span class="o">/</span> <span class="mi">2</span></div>
+
+<div class="viewcode-block" id="LeleDerivative.delta_2"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.differentiation.LeleDerivative.delta_2">[docs]</a>    <span class="k">def</span> <span class="nf">delta_2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+
+        <span class="sd">&quot;&quot;&quot;term delta_2 from the Lele&#39;s expression</span>
+
+<span class="sd">        :param j: node index</span>
+<span class="sd">        :type j: int</span>
+<span class="sd">        :param N: total number of nodes</span>
+<span class="sd">        :type N: int</span>
+<span class="sd">        :return: the evaluation of delta_2</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.2964375</span> <span class="o">/</span> <span class="mf">10.67175</span>
+        <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.451390625</span> <span class="o">/</span> <span class="mf">9.38146875</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">1.</span> <span class="o">/</span> <span class="mi">20</span></div>
+
+<div class="viewcode-block" id="LeleDerivative.delta_3"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.differentiation.LeleDerivative.delta_3">[docs]</a>    <span class="k">def</span> <span class="nf">delta_3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span><span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+
+        <span class="sd">&quot;&quot;&quot;term delta_3 from the Lele&#39;s expression</span>
+
+<span class="sd">        :param j: node index</span>
+<span class="sd">        :type j: int</span>
+<span class="sd">        :param N: total number of nodes</span>
+<span class="sd">        :type N: int</span>
+<span class="sd">        :param h: mesh discretization size</span>
+<span class="sd">        :type h: float</span>
+<span class="sd">        :return: the evaluation of delta_3</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">6</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.015</span> <span class="o">/</span> <span class="mf">9.38146875</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">6</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">1.</span> <span class="o">/</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">6</span> <span class="o">*</span> <span class="n">h</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="LeleDerivative.delta_4"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.differentiation.LeleDerivative.delta_4">[docs]</a>    <span class="k">def</span> <span class="nf">delta_4</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span><span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+
+        <span class="sd">&quot;&quot;&quot;term delta_4 from the Lele&#39;s expression</span>
+
+<span class="sd">        :param j: node index</span>
+<span class="sd">        :type j: int</span>
+<span class="sd">        :param N: total number of nodes</span>
+<span class="sd">        :type N: int</span>
+<span class="sd">        :param h: mesh discretization size</span>
+<span class="sd">        :type h: float</span>
+<span class="sd">        :return: the evaluation of delta_4</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">4</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.23515625</span> <span class="o">/</span> <span class="mf">10.67175</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">4</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.53</span> <span class="o">/</span> <span class="mf">9.38146875</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mf">101.</span> <span class="o">/</span> <span class="mi">105</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">h</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="LeleDerivative.delta_5"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.differentiation.LeleDerivative.delta_5">[docs]</a>    <span class="k">def</span> <span class="nf">delta_5</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span><span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+
+        <span class="sd">&quot;&quot;&quot;term delta_5 from the Lele&#39;s expression</span>
+
+<span class="sd">        :param j: node index</span>
+<span class="sd">        :type j: int</span>
+<span class="sd">        :param N: total number of nodes</span>
+<span class="sd">        :type N: int</span>
+<span class="sd">        :param h: mesh discretization size</span>
+<span class="sd">        :type h: float</span>
+<span class="sd">        :return: the evaluation of delta_5</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">2.</span> <span class="o">/</span> <span class="n">h</span>
+        <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mf">2.</span> <span class="o">/</span> <span class="n">h</span>
+        <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">3.</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">h</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">7.905</span> <span class="o">/</span> <span class="mf">10.67175</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">6.66984375</span> <span class="o">/</span> <span class="mf">9.38146875</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">17.</span> <span class="o">/</span> <span class="mi">12</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">h</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="LeleDerivative.delta_0"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.differentiation.LeleDerivative.delta_0">[docs]</a>    <span class="k">def</span> <span class="nf">delta_0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span><span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+
+        <span class="sd">&quot;&quot;&quot;term delta_0 from the Lele&#39;s expression</span>
+
+<span class="sd">        :param j: node index</span>
+<span class="sd">        :type j: int</span>
+<span class="sd">        :param N: total number of nodes</span>
+<span class="sd">        :type N: int</span>
+<span class="sd">        :param h: mesh discretization size</span>
+<span class="sd">        :type h: float</span>
+<span class="sd">        :return: the evaluation of delta_0</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">5</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">5</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span></div></div>
+
+<div class="viewcode-block" id="CenteredDerivative"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.differentiation.CenteredDerivative">[docs]</a><span class="k">class</span> <span class="nc">CenteredDerivative</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span><span class="nb">dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="sd">&quot;&quot;&quot;Performing second-order centered differentiation</span>
+
+<span class="sd">        :param config: Configuration dictionary</span>
+<span class="sd">        :type config: dict</span>
+<span class="sd">        :return: nothing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span>
+
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="s2">&quot;A value for the differentiation step must be provided.&quot;</span>
+
+<div class="viewcode-block" id="CenteredDerivative.solve"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.differentiation.CenteredDerivative.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
+        <span class="sd">&quot;&quot;&quot;It solves the centered derivative</span>
+
+<span class="sd">        :param data: the values to be differentiated</span>
+<span class="sd">        :type data: np.ndarray</span>
+<span class="sd">        :param axis: axis to perform the differentiation</span>
+<span class="sd">        :type axis: int</span>
+<span class="sd">        :return: the derivatives of data</span>
+<span class="sd">        :rtype: np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Performing Second-Order Centered Derivation.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
+        <span class="sd">&quot;&quot;&quot;__call__ wrapper for executing self.solve</span>
+
+<span class="sd">        :param data: the values to be differentiated</span>
+<span class="sd">        :type data: np.ndarray</span>
+<span class="sd">        :return: the derivatives of data</span>
+<span class="sd">        :rtype: np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span></div>
+
+<span class="c1"># It interpolates the derivatives using splines and derive it</span>
+<div class="viewcode-block" id="CollocationDerivative"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.differentiation.CollocationDerivative">[docs]</a><span class="k">class</span> <span class="nc">CollocationDerivative</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span><span class="nb">dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="sd">&quot;&quot;&quot;Derivative using splines to interpolate the function to be differentiated</span>
+
+<span class="sd">        :param config: a dictionary containing some parameters to be passed to ScipY engine</span>
+<span class="sd">        :type config: dict</span>
+<span class="sd">        :return: nothing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="s1">&#39;step&#39;</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_shape</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+    <span class="k">def</span> <span class="nf">_guaratee_correct_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
+        <span class="sd">&quot;&quot;&quot;This method ensures the input as one-dimensional arrays</span>
+<span class="sd">           since the scipy.interpolate.InterpolatedUnivariateSpline class</span>
+<span class="sd">           requires it.</span>
+
+<span class="sd">        :param data: The input dataset to be differentiated</span>
+<span class="sd">        :type data: np.ndarray</span>
+<span class="sd">        :return: the input data properly reshaped (if necessary)</span>
+<span class="sd">        :rtype: np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">original_shape</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+            <span class="n">immutable_dim</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">collapsible_dims</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">collapsed_shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">collapsible_dims</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">immutable_dim</span><span class="p">,</span> <span class="n">collapsed_shape</span><span class="p">))</span>
+
+<div class="viewcode-block" id="CollocationDerivative.solve"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.differentiation.CollocationDerivative.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
+        <span class="sd">&quot;&quot;&quot;Performing collocation differentiation</span>
+
+<span class="sd">        :param data: values to be differentiated</span>
+<span class="sd">        :type data: np.ndarray</span>
+<span class="sd">        :param x: the axis to be used for executing the differentiation (Optional)</span>
+<span class="sd">        :return: the derivatives of the input data along the chosen axis</span>
+<span class="sd">        :rtype: np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Performing Collocation Derivation.&quot;</span><span class="p">)</span>
+
+        <span class="n">intp_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">*</span> <span class="n">ti</span> <span class="k">for</span> <span class="n">ti</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+        <span class="k">elif</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;There is no way for evaluating derivatives.&quot;</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_guaratee_correct_shape</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+
+            <span class="n">intp</span> <span class="o">=</span> <span class="n">ius</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span>
+            <span class="n">dintp</span> <span class="o">=</span> <span class="n">intp</span><span class="o">.</span><span class="n">derivative</span><span class="p">()</span>
+            <span class="n">intp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dintp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">])</span>
+
+        <span class="n">intp_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">intp_list</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">intp_array</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_shape</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CollocationDerivative.interpolate_and_solve"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.differentiation.CollocationDerivative.interpolate_and_solve">[docs]</a>    <span class="k">def</span> <span class="nf">interpolate_and_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                    <span class="n">x_grid</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Performing collocation differentiation</span>
+
+<span class="sd">        :param data: values to be differentiated</span>
+<span class="sd">        :type data: np.ndarray</span>
+<span class="sd">        :param x_grid: the grid in which the input is defined</span>
+<span class="sd">        :type x_grid: np.ndarray</span>
+<span class="sd">        :param x: the grid in which to interpolate the input</span>
+<span class="sd">        :return: a pair (interpolated, derivated)</span>
+<span class="sd">        :rtype: (np.ndarray, np.ndarray)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;In order to perform interpolation, it is necessary dim(x) &gt; dim(data).&quot;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Performing Interpolation and Collocation Derivation.&quot;</span><span class="p">)</span>
+
+        <span class="n">intp_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">diff_intp_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">x_grid</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_guaratee_correct_shape</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+
+            <span class="n">intp</span> <span class="o">=</span> <span class="n">ius</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span>
+            <span class="n">dintp</span> <span class="o">=</span> <span class="n">intp</span><span class="o">.</span><span class="n">derivative</span><span class="p">()</span>
+
+            <span class="n">intp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">intp</span><span class="p">(</span><span class="n">x</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">])</span>
+            <span class="n">diff_intp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dintp</span><span class="p">(</span><span class="n">x</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">])</span>
+
+        <span class="n">intp_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">intp_list</span><span class="p">)</span>
+        <span class="n">diff_intp_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">diff_intp_list</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">intp_array</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]),</span> \
+                   <span class="n">diff_intp_array</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,)</span> <span class="o">+</span>  <span class="bp">self</span><span class="o">.</span><span class="n">original_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">intp_array</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_shape</span><span class="p">),</span> <span class="n">diff_intp_array</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_shape</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
+        <span class="sd">&quot;&quot;&quot;__call__ wrapper for executing self.solve</span>
+
+<span class="sd">        :param data: the values to be differentiated</span>
+<span class="sd">        :type data: np.ndarray</span>
+<span class="sd">        :return: the derivatives of data</span>
+<span class="sd">        :rtype: np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">derivative_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">derivative_data</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Leonardo Pondian Tizzei.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

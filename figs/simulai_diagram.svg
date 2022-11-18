@@ -1,0 +1,722 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="18in"
+   height="8in"
+   viewBox="0 0 457.2 203.2"
+   version="1.1"
+   id="svg97"
+   sodipodi:docname="simulai_diagram.svg"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview99"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     units="in"
+     inkscape:zoom="0.54488785"
+     inkscape:cx="1199.3294"
+     inkscape:cy="372.55373"
+     inkscape:window-width="1366"
+     inkscape:window-height="699"
+     inkscape:window-x="0"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     width="18in"
+     height="8in"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1" />
+  <defs
+     id="defs94">
+    <rect
+       x="1090.7292"
+       y="798.63733"
+       width="180.35847"
+       height="80.921387"
+       id="rect203289" />
+    <rect
+       x="1583.4178"
+       y="507.63321"
+       width="164.27315"
+       height="63.66972"
+       id="rect102131" />
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lstart"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lstart"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(0.8,0,0,0.8,10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path306065" />
+    </marker>
+    <rect
+       x="837.55054"
+       y="667.74152"
+       width="144.22922"
+       height="148.01791"
+       id="rect518833" />
+    <rect
+       x="1155.0255"
+       y="673.39868"
+       width="120.42519"
+       height="101.09771"
+       id="rect380401" />
+    <rect
+       x="1046.7197"
+       y="573.80902"
+       width="97.918625"
+       height="40.399307"
+       id="rect347116" />
+    <rect
+       x="411.95132"
+       y="350.15231"
+       width="367.28558"
+       height="106.20733"
+       id="rect312547" />
+    <marker
+       style="overflow:visible"
+       id="EmptyDiamondL"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="EmptyDiamondL"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.8)"
+         style="fill:context-fill;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,-7.0710768 -7.0710894,0 0,7.0710589 7.0710462,0 Z"
+         id="path306171" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path306068" />
+    </marker>
+    <rect
+       x="430.26547"
+       y="634.38806"
+       width="202.86134"
+       height="205.24818"
+       id="rect129132" />
+    <rect
+       x="476.37997"
+       y="503.71106"
+       width="196.36676"
+       height="72.450645"
+       id="rect67693" />
+    <rect
+       x="129.97064"
+       y="443.16714"
+       width="216.57568"
+       height="186.82074"
+       id="rect57803" />
+    <rect
+       x="193.53935"
+       y="504.73788"
+       width="128.84546"
+       height="62.657581"
+       id="rect6053" />
+    <rect
+       x="476.37997"
+       y="503.71106"
+       width="219.36137"
+       height="68.780167"
+       id="rect67693-7" />
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend-9"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path306068-7" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker306402"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path306400" />
+    </marker>
+  </defs>
+  <g
+     inkscape:label="Camada 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#f3eb50;fill-opacity:0.735911;stroke:#000000;stroke-width:0.360085;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect201643"
+       width="288.55478"
+       height="162.3524"
+       x="97.996552"
+       y="23.143908"
+       ry="11.133108"
+       rx="10.834618" />
+    <rect
+       style="fill:#f34950;fill-opacity:0.735911;stroke:#000000;stroke-width:0.222192;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect30031-7-6-2"
+       width="68.168816"
+       height="25.103596"
+       x="305.72397"
+       y="30.192158" />
+    <rect
+       style="fill:#f34950;fill-opacity:0.735911;stroke:#000000;stroke-width:0.222192;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect30031-7-6-6"
+       width="42.082943"
+       height="32.168823"
+       x="264.95468"
+       y="135.16821" />
+    <rect
+       style="fill:#f34950;fill-opacity:0.735911;stroke:#000000;stroke-width:0.222192;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect30031-7-6"
+       width="63.522999"
+       height="32.562019"
+       x="313.3898"
+       y="108.50076" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.365;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:3.6;stroke-dasharray:none;stroke-opacity:1;marker-mid:url(#Arrow1Lend-9);marker-end:url(#Arrow1Lend-9)"
+       d="m 49.59776,85.104998 55.9436,0.255903"
+       id="path305248-7"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#rect595"
+       inkscape:connection-end="#rect595-5" />
+    <rect
+       style="fill:#f34950;fill-opacity:0.735911;stroke:#000000;stroke-width:0.198667;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect30031-7-7"
+       width="68.318985"
+       height="53.102997"
+       x="190.29527"
+       y="108.94531" />
+    <text
+       xml:space="preserve"
+       style="font-size:4.58611px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;stroke-width:0.264583"
+       x="255.72939"
+       y="120.78868"
+       id="text129930-5"><tspan
+         sodipodi:role="line"
+         id="tspan129928-9"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58611px;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:end;text-anchor:end;stroke-width:0.264583"
+         x="255.72939"
+         y="120.78868">Dense Networks</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58611px;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:end;text-anchor:end;stroke-width:0.264583"
+         x="255.72939"
+         y="126.52132"
+         id="tspan172196-4" /><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58611px;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:end;text-anchor:end;stroke-width:0.264583"
+         x="255.72939"
+         y="132.25395"
+         id="tspan129932-9">Convolutional Networks</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58611px;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:end;text-anchor:end;stroke-width:0.264583"
+         x="255.72939"
+         y="137.98659"
+         id="tspan129936-0">Echo-State Networks</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58611px;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:end;text-anchor:end;stroke-width:0.264583"
+         x="255.72939"
+         y="143.71922"
+         id="tspan148632">DeepONets</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58611px;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:end;text-anchor:end;stroke-width:0.264583"
+         x="255.72939"
+         y="149.45186"
+         id="tspan166938-9">Operator Inference</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58611px;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:end;text-anchor:end;stroke-width:0.264583"
+         x="255.72939"
+         y="155.18449"
+         id="tspan530267">...</tspan></text>
+    <rect
+       style="fill:#f34950;fill-opacity:0.735911;stroke:#000000;stroke-width:0.188431;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect30031-7"
+       width="59.715591"
+       height="47.761097"
+       x="105.62135"
+       y="108.94019" />
+    <rect
+       style="fill:#00eb50;fill-opacity:0.735911;stroke:#000000;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect595-5-1"
+       width="58.466412"
+       height="29.375683"
+       x="311.01205"
+       y="70.317162"
+       ry="14.687841"
+       rx="14.68784" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.27488652,0,0,0.26458333,184.38452,-51.890798)"
+       id="text67691-2"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.2378px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect67693-7);stroke-width:0.98108"><tspan
+         x="476.38086"
+         y="523.83615"
+         id="tspan406"><tspan
+           style="font-size:20.9297px"
+           id="tspan402">P</tspan><tspan
+           style="font-size:20.9297px"
+           id="tspan404">ost-processing</tspan></tspan></text>
+    <rect
+       style="fill:#00eb50;fill-opacity:0.735911;stroke:#000000;stroke-width:0.201947;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect595-5-3"
+       width="68.1884"
+       height="29.639271"
+       x="185.5117"
+       y="70.055649"
+       ry="14.819635"
+       rx="14.842042" />
+    <rect
+       style="fill:#00eb50;fill-opacity:0.735911;stroke:#000000;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect595"
+       width="43.721001"
+       height="29.375683"
+       x="5.8770895"
+       y="70.317162"
+       ry="14.687841"
+       rx="14.687841" />
+    <rect
+       style="fill:#00eb50;fill-opacity:0.735911;stroke:#000000;stroke-width:0.205341;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect595-5"
+       width="56.701698"
+       height="29.370342"
+       x="105.54077"
+       y="70.805412"
+       ry="14.685171"
+       rx="15.485617" />
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text6051"
+       style="font-size:24px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;white-space:pre;shape-inside:url(#rect6053)" />
+    <text
+       xml:space="preserve"
+       style="font-size:6.35px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;stroke-width:0.264583"
+       x="27.248095"
+       y="82.965523"
+       id="text7731"><tspan
+         sodipodi:role="line"
+         id="tspan7729"
+         style="text-align:center;text-anchor:middle;stroke-width:0.264583"
+         x="27.248095"
+         y="85.156273">Simulation</tspan><tspan
+         sodipodi:role="line"
+         style="text-align:center;text-anchor:middle;stroke-width:0.264583"
+         x="27.248095"
+         y="93.093773"
+         id="tspan13663">Data</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text57801"
+       style="font-size:24px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;white-space:pre;shape-inside:url(#rect57803)" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.27488652,0,0,0.26458333,-22.591737,-51.623639)"
+       id="text67691"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.2378px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect67693);stroke-width:0.98108"><tspan
+         x="476.38086"
+         y="523.83615"
+         id="tspan412"><tspan
+           style="font-size:20.9297px"
+           id="tspan408">Pre-processin</tspan><tspan
+           style="font-size:20.9297px"
+           id="tspan410">g</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:5.64444px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;stroke-width:0.264583"
+       x="220.40256"
+       y="83.243332"
+       id="text103721"><tspan
+         sodipodi:role="line"
+         id="tspan103719"
+         style="font-size:5.64444px;text-align:center;text-anchor:middle;stroke-width:0.264583"
+         x="220.40256"
+         y="83.243332">Machine Learning </tspan><tspan
+         sodipodi:role="line"
+         style="font-size:5.64444px;text-align:center;text-anchor:middle;stroke-width:0.264583"
+         x="220.40256"
+         y="90.298889"
+         id="tspan103723">Model</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text129130"
+       style="font-size:24px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;white-space:pre;shape-inside:url(#rect129132)" />
+    <text
+       xml:space="preserve"
+       style="font-size:4.93889px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;stroke-width:0.264583"
+       x="157.57082"
+       y="122.70126"
+       id="text129930"><tspan
+         sodipodi:role="line"
+         id="tspan129928"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:end;text-anchor:end;stroke-width:0.264583"
+         x="157.57082"
+         y="122.70126">Reshaping</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:end;text-anchor:end;stroke-width:0.264583"
+         x="157.57082"
+         y="128.87488"
+         id="tspan172196" /><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:end;text-anchor:end;stroke-width:0.264583"
+         x="157.57082"
+         y="135.04849"
+         id="tspan129932">Sparse Mapping</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:end;text-anchor:end;stroke-width:0.264583"
+         x="157.57082"
+         y="141.22211"
+         id="tspan129936">PCA</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:end;text-anchor:end;stroke-width:0.264583"
+         x="157.57082"
+         y="147.39571"
+         id="tspan166938">Incremental PCA</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:end;text-anchor:end;stroke-width:0.264583"
+         x="157.57082"
+         y="153.56932"
+         id="tspan546641">...</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.365;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:3.6;stroke-dasharray:none;stroke-opacity:1;marker-mid:url(#Arrow1Lend);marker-end:url(#Arrow1Lend)"
+       d="m 49.59776,85.104998 55.9436,0.255903"
+       id="path305248"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#rect595"
+       inkscape:connection-end="#rect595-5" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.365;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-mid:url(#Arrow1Lend);marker-end:url(#Arrow1Lend)"
+       d="m 162.24103,85.287077 23.27264,-0.167062"
+       id="path306453"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#rect595-5"
+       inkscape:connection-end="#rect595-5-3" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.365;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m 253.70006,84.911944 57.31203,0.06163"
+       id="path306455"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#rect595-5-3"
+       inkscape:connection-end="#rect595-5-1" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#EmptyDiamondL);marker-mid:url(#EmptyDiamondL);marker-end:url(#EmptyDiamondL)"
+       d="m 134.38418,100.17575 0.29398,8.76444"
+       id="path306846"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#rect595-5"
+       inkscape:connection-end="#rect30031-7" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#EmptyDiamondL);marker-end:url(#EmptyDiamondL)"
+       d="m 221.02543,99.69492 0.88606,9.25039"
+       id="path306848"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#rect595-5-3"
+       inkscape:connection-end="#rect30031-7-7" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,-3.083893,-65.181565)"
+       id="text312545"
+       style="font-size:42.6667px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;white-space:pre;shape-inside:url(#rect312547)"><tspan
+         x="411.95117"
+         y="388.76571"
+         id="tspan414">SimulAI</tspan></text>
+    <ellipse
+       style="fill:#00f1f5;fill-opacity:1;stroke:#020000;stroke-width:0.199999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow1Lend);marker-mid:url(#Arrow1Lend);marker-end:url(#Arrow1Lend)"
+       id="path341386"
+       cx="285.41025"
+       cy="84.967354"
+       rx="17.080999"
+       ry="14.65386" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,-4.7802613,-70.223626)"
+       id="text347114"
+       style="font-size:20px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;white-space:pre;shape-inside:url(#rect347116)"><tspan
+         x="1046.7188"
+         y="591.90859"
+         id="tspan416">Training</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text380399"
+       style="font-size:24px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;white-space:pre;shape-inside:url(#rect380401)" />
+    <text
+       xml:space="preserve"
+       style="font-size:4.58611px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;stroke-width:0.264583"
+       x="316.30466"
+       y="118.01472"
+       id="text382145"><tspan
+         id="tspan382143"
+         style="font-size:4.58611px;stroke-width:0.264583"
+         x="316.30466"
+         y="118.01472"
+         sodipodi:role="line">Gradient Descent</tspan><tspan
+         style="font-size:4.58611px;stroke-width:0.264583"
+         x="316.30466"
+         y="123.74735"
+         id="tspan472637"
+         sodipodi:role="line">Linear System Solvers</tspan><tspan
+         style="font-size:4.58611px;stroke-width:0.264583"
+         x="316.30466"
+         y="129.48"
+         id="tspan486177"
+         sodipodi:role="line">...</tspan><tspan
+         style="font-size:4.58611px;stroke-width:0.264583"
+         x="316.30466"
+         y="135.21263"
+         id="tspan425091"
+         sodipodi:role="line" /></text>
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text518831"
+       style="font-size:24px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;white-space:pre;shape-inside:url(#rect518833)" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#EmptyDiamondL);marker-mid:url(#EmptyDiamondL);marker-end:url(#EmptyDiamondL)"
+       d="m 298.89918,93.957053 21.82266,14.543707"
+       id="path560633"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#path341386"
+       inkscape:connection-end="#rect30031-7-6" />
+    <rect
+       style="fill:#23f2ce;fill-opacity:0.735911;stroke:#000000;stroke-width:0.175193;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect262695"
+       width="34.102764"
+       height="28.088751"
+       x="49.349792"
+       y="46.739574"
+       rx="11.139124"
+       ry="0.19498031" />
+    <text
+       xml:space="preserve"
+       style="font-size:4.23333px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;stroke-width:0.264583"
+       x="66.629776"
+       y="53.925957"
+       id="text31411"><tspan
+         sodipodi:role="line"
+         id="tspan31409"
+         style="font-size:4.23333px;text-align:center;text-anchor:middle;stroke-width:0.264583"
+         x="66.629776"
+         y="53.925957">Convert,</tspan><tspan
+         sodipodi:role="line"
+         style="font-size:4.23333px;text-align:center;text-anchor:middle;stroke-width:0.264583"
+         x="66.629776"
+         y="59.217617"
+         id="tspan33853">if necessary,</tspan><tspan
+         sodipodi:role="line"
+         style="font-size:4.23333px;text-align:center;text-anchor:middle;stroke-width:0.264583"
+         x="66.629776"
+         y="64.509277"
+         id="tspan73345">to HDF5</tspan><tspan
+         sodipodi:role="line"
+         style="font-size:4.23333px;text-align:center;text-anchor:middle;stroke-width:0.264583"
+         x="66.629776"
+         y="69.800941"
+         id="tspan54597"> or NumPy</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#EmptyDiamondL);marker-mid:url(#EmptyDiamondL);marker-end:url(#EmptyDiamondL)"
+       d="m 66.72689,74.828325 0.244554,10.544784"
+       id="path97427"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#rect262695" />
+    <rect
+       style="fill:#00ebf2;fill-opacity:0.735911;stroke:#000000;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect595-5-1-3"
+       width="44.90472"
+       height="26.229996"
+       x="405.50607"
+       y="73.462852"
+       ry="14.687842"
+       rx="14.68784" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,-10.895761,-51.154698)"
+       id="text102129"
+       style="font-size:21.3333px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;white-space:pre;shape-inside:url(#rect102131)"><tspan
+         x="1583.418"
+         y="526.93945"
+         id="tspan418">AI Surrogate</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:6.35px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;stroke-width:0.264583"
+       x="243.53084"
+       y="185.05417"
+       id="text140950"><tspan
+         sodipodi:role="line"
+         id="tspan140948"
+         style="stroke-width:0.264583"
+         x="243.53084"
+         y="185.05417" /></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.406737;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-mid:url(#Arrow1Lend);marker-end:url(#Arrow1Lend)"
+       d="m 375.13355,85.567806 30.30543,0.592553"
+       id="path155571"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text203287"
+       style="font-size:24px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;white-space:pre;shape-inside:url(#rect203289)" />
+    <text
+       xml:space="preserve"
+       style="font-size:4.93889px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;stroke-width:0.264583"
+       x="283.30551"
+       y="141.41068"
+       id="text204747"><tspan
+         sodipodi:role="line"
+         id="tspan204745"
+         style="font-size:4.93889px;stroke-width:0.264583"
+         x="283.30551"
+         y="141.41068">MSE</tspan><tspan
+         sodipodi:role="line"
+         style="font-size:4.93889px;stroke-width:0.264583"
+         x="283.30551"
+         y="147.58429"
+         id="tspan246147">WMSE</tspan><tspan
+         sodipodi:role="line"
+         style="font-size:4.93889px;stroke-width:0.264583"
+         x="283.30551"
+         y="153.7579"
+         id="tspan204751" /></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.93889px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;stroke-width:0.264583"
+       x="274.36612"
+       y="157.90109"
+       id="text247791"><tspan
+         sodipodi:role="line"
+         id="tspan247789"
+         style="font-size:4.93889px;stroke-width:0.264583"
+         x="274.36612"
+         y="157.90109">Customized</tspan><tspan
+         sodipodi:role="line"
+         style="font-size:4.93889px;stroke-width:0.264583"
+         x="274.36612"
+         y="164.07471"
+         id="tspan247793">...</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:4.93889px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;stroke-width:0.264583"
+       x="270.93289"
+       y="174.90445"
+       id="text267394"><tspan
+         sodipodi:role="line"
+         id="tspan267392"
+         style="font-size:4.93889px;stroke-width:0.264583"
+         x="270.93289"
+         y="174.90445"><tspan
+           style="font-size:5.64444px"
+           id="tspan351450">Loss Functions</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:5.64444px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;stroke-width:0.264583"
+       x="316.57019"
+       y="150.53253"
+       id="text273500"><tspan
+         sodipodi:role="line"
+         id="tspan273498"
+         style="font-size:5.64444px;stroke-width:0.264583"
+         x="316.57019"
+         y="150.53253">Optimization</tspan><tspan
+         sodipodi:role="line"
+         style="font-size:5.64444px;stroke-width:0.264583"
+         x="316.57019"
+         y="157.58809"
+         id="tspan484"> Algorithms</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.289152px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#EmptyDiamondL);marker-end:url(#EmptyDiamondL)"
+       d="m 274.1009,134.98467 8.92727,-35.179431"
+       id="path282594"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-size:4.58611px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;stroke-width:0.264583"
+       x="307.40131"
+       y="36.397694"
+       id="text288327"><tspan
+         sodipodi:role="line"
+         id="tspan288325"
+         style="font-size:4.58611px;stroke-width:0.264583"
+         x="307.40131"
+         y="37.9799">Time-integrators</tspan><tspan
+         sodipodi:role="line"
+         style="font-size:4.58611px;stroke-width:0.264583"
+         x="307.40131"
+         y="43.71254"
+         id="tspan298871">Batchwise Extrapolation</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:5.64444px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono, Normal';font-variant-ligatures:none;stroke-width:0.264583"
+       x="309.01172"
+       y="48.953796"
+       id="text332973"><tspan
+         sodipodi:role="line"
+         id="tspan332971"
+         style="stroke-width:0.264583"
+         x="309.01172"
+         y="48.953796">...</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#EmptyDiamondL);marker-mid:url(#EmptyDiamondL);marker-end:url(#EmptyDiamondL)"
+       d="m 339.93813,55.295753 0.15529,15.021409"
+       id="path340851"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#rect30031-7-6-2"
+       inkscape:connection-end="#rect595-5-1" />
+    <rect
+       style="fill:#000000;fill-opacity:0;stroke:#000000;stroke-width:0.508485;stroke-miterlimit:4;stroke-dasharray:0.508485, 1.01697;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect984"
+       width="268.14084"
+       height="42.201115"
+       x="105.6088"
+       y="60.797699" />
+  </g>
+</svg>

@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>simulai.math.kansas &mdash; simulai latest documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> simulai
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">simulai</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">simulai</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>simulai.math.kansas</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for simulai.math.kansas</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright IBM Corp. 2019, 2020, 2021, 2022.</span>
+
+<span class="c1">#    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1">#    you may not use this file except in compliance with the License.</span>
+<span class="c1">#    You may obtain a copy of the License at</span>
+
+<span class="c1">#           http://www.apache.org/licenses/LICENSE-2.0</span>
+
+<span class="c1">#     Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1">#     distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1">#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1">#     See the License for the specific language governing permissions and</span>
+<span class="c1">#     limitations under the License.</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="kn">import</span> <span class="nn">scipy.spatial</span> <span class="k">as</span> <span class="nn">spatial</span>
+<span class="kn">import</span> <span class="nn">sympy</span> <span class="k">as</span> <span class="nn">sy</span>
+<span class="kn">import</span> <span class="nn">numexpr</span> <span class="k">as</span> <span class="nn">ne</span>
+
+<div class="viewcode-block" id="Kansas"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.kansas.Kansas">[docs]</a><span class="k">class</span> <span class="nc">Kansas</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">points</span><span class="p">,</span><span class="n">centers</span><span class="p">,</span> <span class="n">sigma2</span> <span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span><span class="n">Kernel</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Nk</span> <span class="o">=</span> <span class="n">centers</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># number of centers of kernels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Kernel</span><span class="o">=</span> <span class="n">Kernel</span> <span class="c1">#kernel function or string specifiying the type of kernel function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="n">eps</span> <span class="c1">#tolerance to take off interpolation matrices elements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="c1"># interpolation points</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">centers</span><span class="p">)</span> <span class="c1"># kernel centers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="o">=</span> <span class="n">centers</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># dimension of points</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;mismatch dimension of kernel centers and points&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">f1_was_gen</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1">#Calculate the radial function for the combination of centers and interpolation points</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">spatial</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">points</span><span class="p">,</span><span class="n">centers</span><span class="p">,</span> <span class="s1">&#39;sqeuclidean&#39;</span><span class="p">))</span>
+
+        <span class="c1">#calculate sigma based on the mean maximal distance beteewn 2 kernels or use the informed sigma</span>
+        <span class="k">if</span> <span class="n">sigma2</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+
+            <span class="n">d2</span> <span class="o">=</span> <span class="n">spatial</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">centers</span><span class="p">,</span> <span class="s1">&#39;sqeuclidean&#39;</span><span class="p">)</span>
+
+            <span class="n">d2Max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">d2</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">sigma2</span> <span class="o">=</span> <span class="n">d2Max</span> <span class="o">/</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Nk</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sigma2</span> <span class="o">=</span> <span class="n">sigma2</span>
+
+
+
+        <span class="c1">#initialize interpolation matrices lists</span>
+
+        <span class="c1">#self.Dx = [None] * self.ndim</span>
+        <span class="c1">#self.Dxx = [None] * self.ndim</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_optimized</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernel_list</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="s2">&quot;MQ&quot;</span> <span class="p">,</span><span class="s2">&quot;IMQ&quot;</span> <span class="p">]</span> <span class="c1">#declare optimized implemented kernels</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Kernel</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernel_list</span> <span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">use_optimized</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">sy</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+            <span class="n">sigma2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">expr</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Kernel</span><span class="p">)</span>
+
+
+        <span class="k">return</span>
+
+<div class="viewcode-block" id="Kansas.get_interpolation_matrix"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.kansas.Kansas.get_interpolation_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">get_interpolation_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_optimized</span> <span class="p">:</span>
+            <span class="n">G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_interpolation_matrix_optimized</span><span class="p">(</span> <span class="p">)</span>
+        <span class="k">else</span> <span class="p">:</span>
+
+            <span class="n">g</span> <span class="o">=</span> <span class="n">sy</span><span class="o">.</span><span class="n">lambdify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expr</span><span class="p">,</span> <span class="s2">&quot;numpy&quot;</span><span class="p">)</span> <span class="c1">#create element to element function for evalueate kernel at every point on the radial function</span>
+
+            <span class="n">G</span> <span class="o">=</span> <span class="n">g</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r2</span><span class="p">)</span> <span class="c1">#evaluate radial function on the kernel</span>
+
+        <span class="n">G</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">G</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="c1"># take off elements to an specified tolerance</span>
+
+
+        <span class="n">G</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">(</span><span class="n">G</span><span class="p">)</span> <span class="c1">#transform in csc matrix</span>
+
+
+        <span class="k">return</span> <span class="n">G</span></div>
+
+<div class="viewcode-block" id="Kansas.get_interpolation_matrix_optimized"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.kansas.Kansas.get_interpolation_matrix_optimized">[docs]</a>    <span class="k">def</span> <span class="nf">get_interpolation_matrix_optimized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Kernel</span><span class="p">)</span> <span class="c1">#use optimized method to obtain interpolation matrix</span>
+
+        <span class="k">return</span> <span class="n">G</span></div>
+
+<div class="viewcode-block" id="Kansas.get_first_derivative_matrix"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.kansas.Kansas.get_first_derivative_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">get_first_derivative_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">var_index</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">var_index</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;index of variable are higher than &quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_optimized</span> <span class="p">:</span>
+            <span class="n">Dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_first_derivative_matrix_optimized</span><span class="p">(</span><span class="n">var_index</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">Dx</span> <span class="p">,</span> <span class="n">_</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_first_derivative_matrix_aux</span><span class="p">(</span><span class="n">var_index</span><span class="p">)</span>
+
+
+        <span class="k">return</span> <span class="n">Dx</span></div>
+
+<div class="viewcode-block" id="Kansas.get_first_derivative_matrix_optimized"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.kansas.Kansas.get_first_derivative_matrix_optimized">[docs]</a>    <span class="k">def</span> <span class="nf">get_first_derivative_matrix_optimized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_index</span><span class="p">):</span>
+
+        <span class="c1">#rx = sp.spatial.distance.cdist(self.points[:, [var_index]], self.centers[:, [var_index]], lambda u, v: (u - v))</span>
+
+        <span class="n">rx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="p">[</span><span class="n">var_index</span><span class="p">]]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">centers</span><span class="p">[:,</span> <span class="n">var_index</span><span class="p">]</span>
+
+
+        <span class="n">Dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernel_Dx</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r2</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Kernel</span><span class="p">)</span>
+
+        <span class="n">Dx</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Dx</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="n">Dx</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">(</span><span class="n">Dx</span><span class="p">)</span>
+
+
+        <span class="k">return</span> <span class="n">Dx</span></div>
+
+<div class="viewcode-block" id="Kansas.get_first_derivative_matrix_aux"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.kansas.Kansas.get_first_derivative_matrix_aux">[docs]</a>    <span class="k">def</span> <span class="nf">get_first_derivative_matrix_aux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">var_index</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">gen_f1</span><span class="p">()</span>
+
+        <span class="c1">#dr2dx = sp.spatial.distance.cdist(self.points[:, [var_index]], self.centers[:, [var_index]], lambda u, v: 2*(u - v))</span>
+
+        <span class="n">dr2dx</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="p">[</span><span class="n">var_index</span><span class="p">]]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">centers</span><span class="p">[:,</span> <span class="n">var_index</span><span class="p">])</span>
+
+        <span class="c1">#if self.Dx[var_index] == None:</span>
+
+        <span class="n">Dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f1</span><span class="o">*</span><span class="n">dr2dx</span>
+
+        <span class="n">Dx</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Dx</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+
+        <span class="n">Dx</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">(</span><span class="n">Dx</span><span class="p">)</span>
+
+            <span class="c1">#self.Dx[var_index] = Dx</span>
+
+
+        <span class="k">return</span> <span class="n">Dx</span><span class="p">,</span> <span class="n">dr2dx</span></div>
+
+<div class="viewcode-block" id="Kansas.get_cross_derivative_matrix"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.kansas.Kansas.get_cross_derivative_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">get_cross_derivative_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">var_index1</span><span class="p">,</span><span class="n">var_index2</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">var_index1</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="ow">or</span> <span class="n">var_index2</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;index of variable are higher than dimension&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_optimized</span><span class="p">:</span>
+
+            <span class="n">Dxy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cross_derivative_matrix_optimized</span><span class="p">(</span><span class="n">var_index1</span><span class="p">,</span><span class="n">var_index2</span><span class="p">)</span>
+
+        <span class="k">else</span> <span class="p">:</span>
+
+
+            <span class="n">d2expr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expr</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+
+
+            <span class="n">d2g</span> <span class="o">=</span> <span class="n">sy</span><span class="o">.</span><span class="n">lambdify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">d2expr</span><span class="p">,</span> <span class="s2">&quot;numpy&quot;</span><span class="p">)</span>
+
+            <span class="c1">#if self.Dx[var_index]== None :</span>
+            <span class="n">_</span> <span class="p">,</span> <span class="n">dr2dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_first_derivative_matrix_aux</span><span class="p">(</span><span class="n">var_index1</span><span class="p">)</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">dr2dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_first_derivative_matrix_aux</span><span class="p">(</span><span class="n">var_index2</span><span class="p">)</span>
+
+
+            <span class="n">Dxy</span> <span class="o">=</span> <span class="n">d2g</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">dr2dx</span><span class="o">*</span><span class="n">dr2dy</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">f1</span>
+
+        <span class="n">Dxy</span><span class="p">[</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Dxy</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+
+        <span class="n">Dxy</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">(</span><span class="n">Dxy</span><span class="p">)</span>
+
+        <span class="c1">#self.Dxx[var_index] = Dxx</span>
+
+
+        <span class="k">return</span> <span class="n">Dxy</span></div>
+
+<div class="viewcode-block" id="Kansas.get_cross_derivative_matrix_optimized"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.kansas.Kansas.get_cross_derivative_matrix_optimized">[docs]</a>    <span class="k">def</span> <span class="nf">get_cross_derivative_matrix_optimized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_index1</span><span class="p">,</span><span class="n">var_index2</span><span class="p">):</span>
+
+        <span class="n">rx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="p">[</span><span class="n">var_index1</span><span class="p">]]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">centers</span><span class="p">[:,</span> <span class="n">var_index1</span><span class="p">]</span>
+
+        <span class="n">ry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="p">[</span><span class="n">var_index2</span><span class="p">]]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">centers</span><span class="p">[:,</span> <span class="n">var_index2</span><span class="p">]</span>
+
+        <span class="n">Dxy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernel_Dxy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r2</span><span class="p">,</span><span class="n">rx</span><span class="p">,</span><span class="n">ry</span> <span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Kernel</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Dxy</span></div>
+
+<div class="viewcode-block" id="Kansas.get_second_derivative_matrix"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.kansas.Kansas.get_second_derivative_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">get_second_derivative_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">var_index</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">var_index</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;index of variable are higher than dimension&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_optimized</span><span class="p">:</span>
+
+            <span class="n">Dxx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_second_derivative_matrix_optimized</span><span class="p">(</span><span class="n">var_index</span><span class="p">)</span>
+
+        <span class="k">else</span> <span class="p">:</span>
+
+
+            <span class="n">d2expr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expr</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+
+
+            <span class="n">d2g</span> <span class="o">=</span> <span class="n">sy</span><span class="o">.</span><span class="n">lambdify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">d2expr</span><span class="p">,</span> <span class="s2">&quot;numpy&quot;</span><span class="p">)</span>
+
+            <span class="c1">#if self.Dx[var_index]== None :</span>
+            <span class="n">_</span> <span class="p">,</span> <span class="n">dr2dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_first_derivative_matrix_aux</span><span class="p">(</span><span class="n">var_index</span><span class="p">)</span>
+
+
+            <span class="n">Dxx</span> <span class="o">=</span> <span class="n">d2g</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">dr2dx</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">f1</span>
+
+        <span class="n">Dxx</span><span class="p">[</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Dxx</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+
+        <span class="n">Dxx</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">(</span><span class="n">Dxx</span><span class="p">)</span>
+
+        <span class="c1">#self.Dxx[var_index] = Dxx</span>
+
+
+        <span class="k">return</span> <span class="n">Dxx</span></div>
+
+
+
+<div class="viewcode-block" id="Kansas.get_second_derivative_matrix_optimized"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.kansas.Kansas.get_second_derivative_matrix_optimized">[docs]</a>    <span class="k">def</span> <span class="nf">get_second_derivative_matrix_optimized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_index</span><span class="p">):</span>
+
+        <span class="c1">#rx2 = sp.spatial.distance.cdist(self.points[:, [var_index]], self.centers[:, [var_index]], lambda u, v: (u - v)**2)</span>
+
+        <span class="n">rx2</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="p">[</span><span class="n">var_index</span><span class="p">]]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">centers</span><span class="p">[:,</span> <span class="n">var_index</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+
+        <span class="n">Dxx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernel_Dxx</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r2</span><span class="p">,</span><span class="n">rx2</span> <span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Kernel</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Dxx</span></div>
+
+<div class="viewcode-block" id="Kansas.get_laplacian_matrix"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.kansas.Kansas.get_laplacian_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">get_laplacian_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_optimized</span><span class="p">:</span>
+            <span class="n">L</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernel_Laplacian</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Kernel</span><span class="p">)</span>
+        <span class="k">else</span> <span class="p">:</span>
+
+            <span class="n">d2expr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expr</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+
+
+            <span class="n">d2g</span> <span class="o">=</span> <span class="n">sy</span><span class="o">.</span><span class="n">lambdify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">d2expr</span><span class="p">,</span> <span class="s2">&quot;numpy&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">gen_f1</span><span class="p">()</span>
+
+            <span class="n">L</span> <span class="o">=</span> <span class="n">d2g</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">r2</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">f1</span>
+
+
+        <span class="n">L</span><span class="p">[</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">L</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+
+        <span class="n">L</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+
+
+
+        <span class="k">return</span> <span class="n">L</span></div>
+
+
+
+<div class="viewcode-block" id="Kansas.gen_f1"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.kansas.Kansas.gen_f1">[docs]</a>    <span class="k">def</span> <span class="nf">gen_f1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">f1_was_gen</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">d1expr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expr</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+
+            <span class="n">dg</span> <span class="o">=</span> <span class="n">sy</span><span class="o">.</span><span class="n">lambdify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">d1expr</span><span class="p">,</span> <span class="s2">&quot;numpy&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">f1</span> <span class="o">=</span> <span class="n">dg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r2</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">f1_was_gen</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Kansas.kernel"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.kansas.Kansas.kernel">[docs]</a>    <span class="k">def</span> <span class="nf">kernel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">r2</span><span class="p">,</span><span class="n">sigma2</span><span class="p">,</span><span class="n">Kernel_type</span><span class="p">):</span>
+
+
+        <span class="k">if</span> <span class="n">Kernel_type</span> <span class="o">==</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">:</span>
+            <span class="n">G</span> <span class="o">=</span> <span class="n">ne</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s1">&#39;exp(-r2/(2.0*sigma2))&#39;</span> <span class="p">)</span>
+
+            <span class="c1">#G = np.exp(-r2/(2.0*sigma2))</span>
+
+        <span class="k">elif</span> <span class="n">Kernel_type</span> <span class="o">==</span> <span class="s2">&quot;MQ&quot;</span> <span class="p">:</span>
+
+            <span class="n">G</span> <span class="o">=</span> <span class="n">ne</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s2">&quot;sqrt(r2 + sigma2)&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">Kernel_type</span> <span class="o">==</span> <span class="s2">&quot;IMQ&quot;</span><span class="p">:</span>
+            <span class="n">G</span> <span class="o">=</span> <span class="n">ne</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s2">&quot;1.0/sqrt(r2 + sigma2)&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span> <span class="p">:</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; this kernel does not exist: &quot;</span><span class="p">,</span> <span class="n">Kernel_type</span><span class="p">)</span>
+
+        <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">G</span></div>
+
+<div class="viewcode-block" id="Kansas.kernel_Dx"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.kansas.Kansas.kernel_Dx">[docs]</a>    <span class="k">def</span> <span class="nf">kernel_Dx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">r2</span><span class="p">,</span><span class="n">rx</span><span class="p">,</span><span class="n">sigma2</span><span class="p">,</span><span class="n">Kernel_type</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">Kernel_type</span> <span class="o">==</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">:</span>
+            <span class="n">Dx</span> <span class="o">=</span> <span class="n">ne</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s1">&#39;-(rx/sigma2)*exp(-r2/(2.0*sigma2))&#39;</span><span class="p">)</span>
+
+            <span class="c1">#Dx = -(rx/sigma2)*np.exp(-r2/(2.0*sigma2))</span>
+
+        <span class="k">elif</span> <span class="n">Kernel_type</span> <span class="o">==</span> <span class="s2">&quot;MQ&quot;</span> <span class="p">:</span>
+
+            <span class="n">Dx</span> <span class="o">=</span> <span class="n">ne</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s1">&#39;rx/sqrt(r2 + sigma2)&#39;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">Kernel_type</span> <span class="o">==</span> <span class="s2">&quot;IMQ&quot;</span><span class="p">:</span>
+
+            <span class="n">Dx</span> <span class="o">=</span> <span class="n">ne</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s1">&#39;-rx*((r2 + sigma2)**(-1.5))&#39;</span><span class="p">)</span>
+
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; this kernel does not exist: &quot;</span><span class="p">,</span><span class="n">Kernel_type</span><span class="p">)</span>
+
+        <span class="n">Dx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">Dx</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Dx</span></div>
+
+
+<div class="viewcode-block" id="Kansas.kernel_Dxy"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.kansas.Kansas.kernel_Dxy">[docs]</a>    <span class="k">def</span> <span class="nf">kernel_Dxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">r2</span><span class="p">,</span><span class="n">rx</span><span class="p">,</span><span class="n">ry</span><span class="p">,</span><span class="n">sigma2</span><span class="p">,</span><span class="n">Kernel_type</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">Kernel_type</span> <span class="o">==</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">:</span>
+            <span class="n">Dxy</span> <span class="o">=</span> <span class="n">ne</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s1">&#39;((rx*ry)/(sigma2**2))*exp(-r2/(2*sigma2))&#39;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">Kernel_type</span> <span class="o">==</span> <span class="s2">&quot;MQ&quot;</span> <span class="p">:</span>
+
+            <span class="n">Dxy</span> <span class="o">=</span> <span class="n">ne</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s1">&#39;3.0*rx*ry*((r2 + sigma2)**(-2.5))&#39;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">Kernel_type</span> <span class="o">==</span> <span class="s2">&quot;IMQ&quot;</span><span class="p">:</span>
+
+            <span class="n">Dxy</span> <span class="o">=</span> <span class="n">ne</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s1">&#39;5.0*rx*ry*((r2 + sigma2)**(-3.5))&#39;</span><span class="p">)</span>
+
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; this kernel does not exist: &quot;</span><span class="p">,</span><span class="n">Kernel_type</span><span class="p">)</span>
+
+        <span class="n">Dxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">Dxy</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Dxy</span></div>
+
+<div class="viewcode-block" id="Kansas.kernel_Dxx"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.kansas.Kansas.kernel_Dxx">[docs]</a>    <span class="k">def</span> <span class="nf">kernel_Dxx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">r2</span><span class="p">,</span><span class="n">rx2</span><span class="p">,</span><span class="n">sigma2</span><span class="p">,</span><span class="n">Kernel_type</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">Kernel_type</span> <span class="o">==</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">:</span>
+
+            <span class="n">Dxx</span> <span class="o">=</span> <span class="n">ne</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s1">&#39;((rx2/(sigma2**2)) - (1.0/sigma2) )*exp(-r2/(2.0*sigma2))&#39;</span> <span class="p">)</span>
+
+
+        <span class="k">elif</span> <span class="n">Kernel_type</span> <span class="o">==</span> <span class="s2">&quot;MQ&quot;</span> <span class="p">:</span>
+
+            <span class="n">Dxx</span> <span class="o">=</span> <span class="n">ne</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s1">&#39;(1.0/sqrt(r2 + sigma2))-rx2*((r2 + sigma2)**(-1.5))&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">Kernel_type</span> <span class="o">==</span> <span class="s2">&quot;IMQ&quot;</span><span class="p">:</span>
+
+            <span class="n">Dxx</span> <span class="o">=</span> <span class="n">ne</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s1">&#39;-((r2 + sigma2)**(-1.5))+3.0*rx2*((r2 + sigma2)**(-2.5))&#39;</span><span class="p">)</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; thins kernel does not exist: &quot;</span><span class="p">,</span><span class="n">Kernel_type</span><span class="p">)</span>
+
+        <span class="n">Dxx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">Dxx</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Dxx</span></div>
+
+<div class="viewcode-block" id="Kansas.kernel_Laplacian"><a class="viewcode-back" href="../../../simulai.math.html#simulai.math.kansas.Kansas.kernel_Laplacian">[docs]</a>    <span class="k">def</span> <span class="nf">kernel_Laplacian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">r2</span><span class="p">,</span><span class="n">sigma2</span><span class="p">,</span><span class="n">Kernel_type</span><span class="p">):</span>
+        <span class="n">ndim</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
+
+
+        <span class="k">if</span> <span class="n">Kernel_type</span> <span class="o">==</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">:</span>
+
+
+
+            <span class="n">L</span> <span class="o">=</span> <span class="n">ne</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s1">&#39;((r2/(sigma2**2.0)) - (ndim/sigma2) )*exp(-r2/(2.0*sigma2))&#39;</span> <span class="p">)</span>
+            <span class="c1">#L =((r2 / (sigma2 ** 2.0)) - (ndim / sigma2)) * np.exp(-r2 / (2.0 * sigma2))</span>
+
+        <span class="k">elif</span> <span class="n">Kernel_type</span> <span class="o">==</span> <span class="s2">&quot;MQ&quot;</span> <span class="p">:</span>
+
+            <span class="n">L</span> <span class="o">=</span> <span class="n">ne</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s1">&#39;(ndim/sqrt(r2 + sigma2))-r2*((r2 + sigma2)**(-1.5))&#39;</span><span class="p">)</span>
+
+            <span class="c1">#L = 2/np.sqrt(r2 + (2 * sigma2)) - r2*np.power(r2 + (2 * sigma2),1.5)</span>
+
+        <span class="k">elif</span> <span class="n">Kernel_type</span> <span class="o">==</span> <span class="s2">&quot;IMQ&quot;</span><span class="p">:</span>
+            <span class="n">L</span> <span class="o">=</span> <span class="n">ne</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s1">&#39;-ndim*((r2 + sigma2)**(-1.5))+3.0*r2*((r2 + sigma2)**(-2.5))&#39;</span><span class="p">)</span>
+            <span class="c1">#L = -2*np.power(r2 + (2 * sigma2),-1.5)+3*r2*np.power(r2 + (2 * sigma2),-2.5)</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; thins kernel does not exist: &quot;</span><span class="p">,</span><span class="n">Kernel_type</span><span class="p">)</span>
+
+        <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">L</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Joao Lucas de Sousa Almeida, Leonardo Pondian Tizzei.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

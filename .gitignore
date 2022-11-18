@@ -1,0 +1,82 @@
+*.py[cod]
+*.npy
+*.nav
+*.aux
+*.toc
+*.log
+*.dvi
+*.snm
+*.synctex.gz
+*.odp
+*.odt
+*.out
+*.mp4
+*.nc
+*.png
+*.h5
+*.pth
+validation_tests/Dense/*.pth
+.travis.yml
+# C extensions
+*.so
+
+# Packages
+*.egg
+*.egg-info
+dist
+eggs
+.eggs/*
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+__pycache__
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+#htmlcov/*.*
+
+# Translations
+*.mo
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+.idea
+
+# pyenv
+.python-version
+
+#venv
+venv
+
+#data
+*.npz
+
+#other
+*.run
+notebooks/.ipynb_checkpoints/*
+Output/*
+
+src/*
+unit_tests/data/*
+simulai/backup/Network/data
+examples/Autoencoder/notebooks/autoencoder_rb_variational/*
+**/.ipynb_checkpoints/*
+
+#specific
+datalog.txt
+run_examples.txt
+
+#mac
+.DS_Store

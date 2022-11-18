@@ -11,3 +11,9 @@
 #     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
+
+import os
+
+
+def makedirs_to_file(filepath: str =None, exist_ok: bool = True):
+    os.makedirs(os.path.abspath(os.path.join(filepath, os.pardir)), exist_ok=exist_ok)

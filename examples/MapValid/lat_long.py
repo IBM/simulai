@@ -11,3 +11,27 @@
 #     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
+
+import os
+from argparse import ArgumentParser
+import numpy as np
+import matplotlib.pyplot as plt
+from netCDF4 import Dataset
+
+parser = ArgumentParser(description="Reading input arguments")
+parser.add_argument('--data_path', type=str, help="The path tot the datasets.")
+
+#  Reading input arguments
+args = parser.parse_args()
+
+data_path = args.data_path
+
+root = Dataset(data_path, 'r')
+
+lat = root['lat'][:]
+long = root['lon'][:]
+
+Lat, Long = np.meshgrid(lat, long, indexing='ij')
+
+grid_filename = os.path.join(os.path.dirname(data_path), "nldas_grid.npz")
+np.savez(grid_filename, Lat=Lat, Long=Long)

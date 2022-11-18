@@ -11,3 +11,16 @@
 #     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
+
+from simulai import engine
+
+assert engine is not None, "The variable engine was not defined."
+
+from ._rom import ROM, ByPassROM, IByPass, POD, IPOD, DMD, GPOD, QQM, HOSVD
+
+if engine == "pytorch":
+    pass
+elif engine == "numpy":
+    pass
+else:
+    raise Exception(f"Engine {engine} is not available.")

@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>simulai.math package &mdash; simulai 1.3 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="simulai.models package" href="simulai.models.html" />
+    <link rel="prev" title="simulai.backup.Pipeline package" href="simulai.backup.Pipeline.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> simulai
+          </a>
+              <div class="version">
+                1.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">SimulAI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">simulai</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="simulai.html">simulai package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="simulai.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="simulai.backup.html">simulai.backup package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">simulai.math package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulai.models.html">simulai.models package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulai.optimization.html">simulai.optimization package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulai.regression.html">simulai.regression package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulai.residuals.html">simulai.residuals package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulai.rom.html">simulai.rom package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulai.templates.html">simulai.templates package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulai.utilities.html">simulai.utilities package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulai.workflows.html">simulai.workflows package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="simulai.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulai.html#module-simulai.abstract">simulai.abstract module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulai.html#module-simulai.activations">simulai.activations module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulai.html#module-simulai.batching">simulai.batching module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulai.html#module-simulai.file">simulai.file module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulai.html#simulai-initialization-module">simulai.initialization module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulai.html#module-simulai.io">simulai.io module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulai.html#module-simulai.mesh">simulai.mesh module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulai.html#module-simulai.metrics">simulai.metrics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulai.html#module-simulai.normalization">simulai.normalization module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulai.html#module-simulai.output">simulai.output module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulai.html#module-simulai.parallel">simulai.parallel module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulai.html#module-simulai.simulation">simulai.simulation module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulai.html#module-simulai.special">simulai.special module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulai.html#module-simulai.tokens">simulai.tokens module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulai.html#module-simulai">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">simulai</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">simulai</a> &raquo;</li>
+          <li><a href="simulai.html">simulai package</a> &raquo;</li>
+      <li>simulai.math package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/simulai.math.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="simulai-math-package">
+<h1>simulai.math package<a class="headerlink" href="#simulai-math-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-simulai.math.differentiation">
+<span id="simulai-math-differentiation-module"></span><h2>simulai.math.differentiation module<a class="headerlink" href="#module-simulai.math.differentiation" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="simulai.math.differentiation.CenteredDerivative">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulai.math.differentiation.</span></span><span class="sig-name descname"><span class="pre">CenteredDerivative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/differentiation.html#CenteredDerivative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.differentiation.CenteredDerivative" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.differentiation.CenteredDerivative.solve">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/simulai/math/differentiation.html#CenteredDerivative.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.differentiation.CenteredDerivative.solve" title="Permalink to this definition"></a></dt>
+<dd><p>It solves the centered derivative</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>np.ndarray</em>) – the values to be differentiated</p></li>
+<li><p><strong>axis</strong> (<em>int</em>) – axis to perform the differentiation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the derivatives of data</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="simulai.math.differentiation.CollocationDerivative">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulai.math.differentiation.</span></span><span class="sig-name descname"><span class="pre">CollocationDerivative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/differentiation.html#CollocationDerivative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.differentiation.CollocationDerivative" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.differentiation.CollocationDerivative.interpolate_and_solve">
+<span class="sig-name descname"><span class="pre">interpolate_and_solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data:</span> <span class="pre">~typing.Optional[~numpy.ndarray]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_grid:</span> <span class="pre">~typing.Optional[~numpy.ndarray]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x:</span> <span class="pre">~typing.Optional[~numpy.ndarray]</span> <span class="pre">=</span> <span class="pre">None)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'numpy.ndarray'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'numpy.ndarray'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/differentiation.html#CollocationDerivative.interpolate_and_solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.differentiation.CollocationDerivative.interpolate_and_solve" title="Permalink to this definition"></a></dt>
+<dd><p>Performing collocation differentiation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>np.ndarray</em>) – values to be differentiated</p></li>
+<li><p><strong>x_grid</strong> (<em>np.ndarray</em>) – the grid in which the input is defined</p></li>
+<li><p><strong>x</strong> – the grid in which to interpolate the input</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a pair (interpolated, derivated)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(np.ndarray, np.ndarray)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.differentiation.CollocationDerivative.solve">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/simulai/math/differentiation.html#CollocationDerivative.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.differentiation.CollocationDerivative.solve" title="Permalink to this definition"></a></dt>
+<dd><p>Performing collocation differentiation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>np.ndarray</em>) – values to be differentiated</p></li>
+<li><p><strong>x</strong> – the axis to be used for executing the differentiation (Optional)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the derivatives of the input data along the chosen axis</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="simulai.math.differentiation.Derivative">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulai.math.differentiation.</span></span><span class="sig-name descname"><span class="pre">Derivative</span></span><a class="reference internal" href="_modules/simulai/math/differentiation.html#Derivative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.differentiation.Derivative" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Parent class for the derivative operations
+It is used for identification purposes</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="simulai.math.differentiation.LeleDerivative">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulai.math.differentiation.</span></span><span class="sig-name descname"><span class="pre">LeleDerivative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/differentiation.html#LeleDerivative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.differentiation.LeleDerivative" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.differentiation.LeleDerivative.delta_0">
+<span class="sig-name descname"><span class="pre">delta_0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">j</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/simulai/math/differentiation.html#LeleDerivative.delta_0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.differentiation.LeleDerivative.delta_0" title="Permalink to this definition"></a></dt>
+<dd><p>term delta_0 from the Lele’s expression</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>j</strong> (<em>int</em>) – node index</p></li>
+<li><p><strong>N</strong> (<em>int</em>) – total number of nodes</p></li>
+<li><p><strong>h</strong> (<em>float</em>) – mesh discretization size</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the evaluation of delta_0</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.differentiation.LeleDerivative.delta_1">
+<span class="sig-name descname"><span class="pre">delta_1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">j</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/simulai/math/differentiation.html#LeleDerivative.delta_1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.differentiation.LeleDerivative.delta_1" title="Permalink to this definition"></a></dt>
+<dd><p>term delta_1 from the Lele’s expression</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>j</strong> (<em>int</em>) – node index</p></li>
+<li><p><strong>N</strong> (<em>int</em>) – total number of nodes</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the evaluation of delta_1</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.differentiation.LeleDerivative.delta_2">
+<span class="sig-name descname"><span class="pre">delta_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">j</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/simulai/math/differentiation.html#LeleDerivative.delta_2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.differentiation.LeleDerivative.delta_2" title="Permalink to this definition"></a></dt>
+<dd><p>term delta_2 from the Lele’s expression</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>j</strong> (<em>int</em>) – node index</p></li>
+<li><p><strong>N</strong> (<em>int</em>) – total number of nodes</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the evaluation of delta_2</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.differentiation.LeleDerivative.delta_3">
+<span class="sig-name descname"><span class="pre">delta_3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">j</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/simulai/math/differentiation.html#LeleDerivative.delta_3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.differentiation.LeleDerivative.delta_3" title="Permalink to this definition"></a></dt>
+<dd><p>term delta_3 from the Lele’s expression</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>j</strong> (<em>int</em>) – node index</p></li>
+<li><p><strong>N</strong> (<em>int</em>) – total number of nodes</p></li>
+<li><p><strong>h</strong> (<em>float</em>) – mesh discretization size</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the evaluation of delta_3</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.differentiation.LeleDerivative.delta_4">
+<span class="sig-name descname"><span class="pre">delta_4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">j</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/simulai/math/differentiation.html#LeleDerivative.delta_4"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.differentiation.LeleDerivative.delta_4" title="Permalink to this definition"></a></dt>
+<dd><p>term delta_4 from the Lele’s expression</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>j</strong> (<em>int</em>) – node index</p></li>
+<li><p><strong>N</strong> (<em>int</em>) – total number of nodes</p></li>
+<li><p><strong>h</strong> (<em>float</em>) – mesh discretization size</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the evaluation of delta_4</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.differentiation.LeleDerivative.delta_5">
+<span class="sig-name descname"><span class="pre">delta_5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">j</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/simulai/math/differentiation.html#LeleDerivative.delta_5"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.differentiation.LeleDerivative.delta_5" title="Permalink to this definition"></a></dt>
+<dd><p>term delta_5 from the Lele’s expression</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>j</strong> (<em>int</em>) – node index</p></li>
+<li><p><strong>N</strong> (<em>int</em>) – total number of nodes</p></li>
+<li><p><strong>h</strong> (<em>float</em>) – mesh discretization size</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the evaluation of delta_5</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.differentiation.LeleDerivative.solve">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/simulai/math/differentiation.html#LeleDerivative.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.differentiation.LeleDerivative.solve" title="Permalink to this definition"></a></dt>
+<dd><p>Performing Lele differentiation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>f</strong> (<em>np.ndarray</em>) – variable values to be differentiated</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the derivatives of f</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="simulai.math.differentiation.SpaceDerivative">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulai.math.differentiation.</span></span><span class="sig-name descname"><span class="pre">SpaceDerivative</span></span><a class="reference internal" href="_modules/simulai/math/differentiation.html#SpaceDerivative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.differentiation.SpaceDerivative" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#simulai.math.differentiation.Derivative" title="simulai.math.differentiation.Derivative"><code class="xref py py-class docutils literal notranslate"><span class="pre">Derivative</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="simulai.math.differentiation.TimeDerivative">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulai.math.differentiation.</span></span><span class="sig-name descname"><span class="pre">TimeDerivative</span></span><a class="reference internal" href="_modules/simulai/math/differentiation.html#TimeDerivative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.differentiation.TimeDerivative" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#simulai.math.differentiation.Derivative" title="simulai.math.differentiation.Derivative"><code class="xref py py-class docutils literal notranslate"><span class="pre">Derivative</span></code></a></p>
+<p>Numerical time derivative based on centered differences.</p>
+</dd></dl>
+
+</section>
+<section id="module-simulai.math.expressions">
+<span id="simulai-math-expressions-module"></span><h2>simulai.math.expressions module<a class="headerlink" href="#module-simulai.math.expressions" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="simulai.math.expressions.FromSymbol2FLambda">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulai.math.expressions.</span></span><span class="sig-name descname"><span class="pre">FromSymbol2FLambda</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'numpy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/expressions.html#FromSymbol2FLambda"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.expressions.FromSymbol2FLambda" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.expressions.FromSymbol2FLambda.clean_engines">
+<span class="sig-name descname"><span class="pre">clean_engines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/simulai/math/expressions.html#FromSymbol2FLambda.clean_engines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.expressions.FromSymbol2FLambda.clean_engines" title="Permalink to this definition"></a></dt>
+<dd><p>Clean all the pre-defined engines</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.expressions.FromSymbol2FLambda.convert">
+<span class="sig-name descname"><span class="pre">convert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">callable</span></span></span><a class="reference internal" href="_modules/simulai/math/expressions.html#FromSymbol2FLambda.convert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.expressions.FromSymbol2FLambda.convert" title="Permalink to this definition"></a></dt>
+<dd><p>It receives a string mathematical expression and converts it into a callable function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>expression</strong> (<em>str</em>) – a string containing the mathematical expression definition</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a callable function equivalent to the string expression</p>
+</dd>
+</dl>
+<p>:rtype function</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-simulai.math.filtering">
+<span id="simulai-math-filtering-module"></span><h2>simulai.math.filtering module<a class="headerlink" href="#module-simulai.math.filtering" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="simulai.math.filtering.HardPositivityLimiting">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulai.math.filtering.</span></span><span class="sig-name descname"><span class="pre">HardPositivityLimiting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/filtering.html#HardPositivityLimiting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.filtering.HardPositivityLimiting" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="simulai.math.filtering.SVDThreshold">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulai.math.filtering.</span></span><span class="sig-name descname"><span class="pre">SVDThreshold</span></span><a class="reference internal" href="_modules/simulai/math/filtering.html#SVDThreshold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.filtering.SVDThreshold" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.filtering.SVDThreshold.Marcenko_Pastur_integral">
+<span class="sig-name descname"><span class="pre">Marcenko_Pastur_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/simulai/math/filtering.html#SVDThreshold.Marcenko_Pastur_integral"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.filtering.SVDThreshold.Marcenko_Pastur_integral" title="Permalink to this definition"></a></dt>
+<dd><p>Marcenko-Pastur Integral</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>float</em>) – integration variable</p></li>
+<li><p><strong>beta</strong> (<em>float</em>) – parameter beta</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>evaluation of the Marcenko-Pastur integral</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.filtering.SVDThreshold.MedianMarcenkoPastur">
+<span class="sig-name descname"><span class="pre">MedianMarcenkoPastur</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/simulai/math/filtering.html#SVDThreshold.MedianMarcenkoPastur"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.filtering.SVDThreshold.MedianMarcenkoPastur" title="Permalink to this definition"></a></dt>
+<dd><p>Marcenko-Pastur Median</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>beta</strong> (<em>float</em>) – parameter beta</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>evaluation of the Marcenko-Pastur median</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.filtering.SVDThreshold.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pca</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="simulai.html#simulai.abstract.ROM" title="simulai.abstract.ROM"><span class="pre">ROM</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="simulai.html#simulai.abstract.ROM" title="simulai.abstract.ROM"><span class="pre">ROM</span></a></span></span><a class="reference internal" href="_modules/simulai/math/filtering.html#SVDThreshold.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.filtering.SVDThreshold.apply" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.filtering.SVDThreshold.beta_parameter">
+<span class="sig-name descname"><span class="pre">beta_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/simulai/math/filtering.html#SVDThreshold.beta_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.filtering.SVDThreshold.beta_parameter" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.filtering.SVDThreshold.exec">
+<span class="sig-name descname"><span class="pre">exec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">singular_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/simulai/math/filtering.html#SVDThreshold.exec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.filtering.SVDThreshold.exec" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.filtering.SVDThreshold.integrand">
+<span class="sig-name descname"><span class="pre">integrand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/simulai/math/filtering.html#SVDThreshold.integrand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.filtering.SVDThreshold.integrand" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.filtering.SVDThreshold.lambda_function">
+<span class="sig-name descname"><span class="pre">lambda_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/simulai/math/filtering.html#SVDThreshold.lambda_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.filtering.SVDThreshold.lambda_function" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.filtering.SVDThreshold.lambda_special">
+<span class="sig-name descname"><span class="pre">lambda_special</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/simulai/math/filtering.html#SVDThreshold.lambda_special"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.filtering.SVDThreshold.lambda_special" title="Permalink to this definition"></a></dt>
+<dd><p>Evaluating special lambda parameter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>beta</strong> (<em>float</em>) – parameter beta</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>special lambda</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="simulai.math.filtering.TimeAveraging">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulai.math.filtering.</span></span><span class="sig-name descname"><span class="pre">TimeAveraging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/filtering.html#TimeAveraging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.filtering.TimeAveraging" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.filtering.TimeAveraging.exec">
+<span class="sig-name descname"><span class="pre">exec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dataset</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dataset</span></span></span><a class="reference internal" href="_modules/simulai/math/filtering.html#TimeAveraging.exec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.filtering.TimeAveraging.exec" title="Permalink to this definition"></a></dt>
+<dd><p>Executing time-averaging</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<em>Union</em><em>[</em><em>np.ndarray</em><em>, </em><em>h5py.Dataset</em><em>]</em>) – The dataset to be time-averaged</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – path to save the output into a HDF5 file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>HDF5 dataset with the time-averaged original data</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>h5py.Dataset</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="simulai.math.filtering.TimeSeriesExtremes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulai.math.filtering.</span></span><span class="sig-name descname"><span class="pre">TimeSeriesExtremes</span></span><a class="reference internal" href="_modules/simulai/math/filtering.html#TimeSeriesExtremes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.filtering.TimeSeriesExtremes" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Getting up the indices corresponding to the extremes of time-series</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.filtering.TimeSeriesExtremes.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gradient_input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/filtering.html#TimeSeriesExtremes.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.filtering.TimeSeriesExtremes.apply" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-simulai.math.integration">
+<span id="simulai-math-integration-module"></span><h2>simulai.math.integration module<a class="headerlink" href="#module-simulai.math.integration" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="simulai.math.integration.ClassWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulai.math.integration.</span></span><span class="sig-name descname"><span class="pre">ClassWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">callable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/integration.html#ClassWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.integration.ClassWrapper" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.integration.ClassWrapper.eval">
+<span class="sig-name descname"><span class="pre">eval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/simulai/math/integration.html#ClassWrapper.eval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.integration.ClassWrapper.eval" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="simulai.math.integration.ExplicitIntegrator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulai.math.integration.</span></span><span class="sig-name descname"><span class="pre">ExplicitIntegrator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coeffs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_operator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">callable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/integration.html#ExplicitIntegrator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.integration.ExplicitIntegrator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="simulai.html#simulai.abstract.Integral" title="simulai.abstract.Integral"><code class="xref py py-class docutils literal notranslate"><span class="pre">Integral</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simulai.math.integration.ExplicitIntegrator.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'int'</span></em><a class="headerlink" href="#simulai.math.integration.ExplicitIntegrator.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.integration.ExplicitIntegrator.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables_state_initial:</span> <span class="pre">~numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt:</span> <span class="pre">float)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'numpy.ndarray'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'numpy.ndarray'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/integration.html#ExplicitIntegrator.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.integration.ExplicitIntegrator.step" title="Permalink to this definition"></a></dt>
+<dd><p>It marches a step in the time-integration
+:param variables_state_initial: initial state
+:type variables_state_initial: np.ndarray
+:param dt: timestep size
+:type dt: float
+:returns: the integrated state and its time-derivative
+:rtype: (np.ndarray, np.ndarray)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.integration.ExplicitIntegrator.step_with_forcings">
+<span class="sig-name descname"><span class="pre">step_with_forcings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables_state_initial:</span> <span class="pre">~numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forcing_state:</span> <span class="pre">~numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt:</span> <span class="pre">float)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'numpy.ndarray'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'numpy.ndarray'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/integration.html#ExplicitIntegrator.step_with_forcings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.integration.ExplicitIntegrator.step_with_forcings" title="Permalink to this definition"></a></dt>
+<dd><p>It marches a step in the time-integration using a concatenated [variables, forcings] state
+:param variables_state_initial: initial state
+:type variables_state_initial: np.ndarray
+:param forcing_state: the state of the forcing terms
+:type forcing_state: np.ndarray
+:param dt: timestep size
+:type dt: float
+:returns: the integrated state and its time-derivative
+:rtype: (np.ndarray, np.ndarray)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.integration.ExplicitIntegrator.step_with_forcings_separated">
+<span class="sig-name descname"><span class="pre">step_with_forcings_separated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables_state_initial:</span> <span class="pre">~numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forcing_state:</span> <span class="pre">~numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt:</span> <span class="pre">float)</span> <span class="pre">-&gt;</span> <span class="pre">(&lt;class</span> <span class="pre">'numpy.ndarray'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'numpy.ndarray'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/integration.html#ExplicitIntegrator.step_with_forcings_separated"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.integration.ExplicitIntegrator.step_with_forcings_separated" title="Permalink to this definition"></a></dt>
+<dd><p>It marches a step in the time-integration for variables and forcings being operated separately
+:param variables_state_initial: initial state
+:type variables_state_initial: np.ndarray
+:param forcing_state: the state of the forcing terms
+:type forcing_state: np.ndarray
+:param dt: timestep size
+:type dt: float
+:returns: the integrated state and its time-derivative
+:rtype: (np.ndarray, np.ndarray)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="simulai.math.integration.FunctionWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulai.math.integration.</span></span><span class="sig-name descname"><span class="pre">FunctionWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/integration.html#FunctionWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.integration.FunctionWrapper" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="simulai.math.integration.LSODA">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulai.math.integration.</span></span><span class="sig-name descname"><span class="pre">LSODA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right_operator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">callable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/integration.html#LSODA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.integration.LSODA" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.integration.LSODA.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/simulai/math/integration.html#LSODA.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.integration.LSODA.run" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="simulai.math.integration.RK4">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulai.math.integration.</span></span><span class="sig-name descname"><span class="pre">RK4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right_operator</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/integration.html#RK4"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.integration.RK4" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#simulai.math.integration.ExplicitIntegrator" title="simulai.math.integration.ExplicitIntegrator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExplicitIntegrator</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simulai.math.integration.RK4.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'rk4_int'</span></em><a class="headerlink" href="#simulai.math.integration.RK4.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-simulai.math.kansas">
+<span id="simulai-math-kansas-module"></span><h2>simulai.math.kansas module<a class="headerlink" href="#module-simulai.math.kansas" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="simulai.math.kansas.Kansas">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulai.math.kansas.</span></span><span class="sig-name descname"><span class="pre">Kansas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Kernel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gaussian'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/kansas.html#Kansas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.kansas.Kansas" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.kansas.Kansas.gen_f1">
+<span class="sig-name descname"><span class="pre">gen_f1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/kansas.html#Kansas.gen_f1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.kansas.Kansas.gen_f1" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.kansas.Kansas.get_cross_derivative_matrix">
+<span class="sig-name descname"><span class="pre">get_cross_derivative_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_index1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_index2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/kansas.html#Kansas.get_cross_derivative_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.kansas.Kansas.get_cross_derivative_matrix" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.kansas.Kansas.get_cross_derivative_matrix_optimized">
+<span class="sig-name descname"><span class="pre">get_cross_derivative_matrix_optimized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_index1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_index2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/kansas.html#Kansas.get_cross_derivative_matrix_optimized"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.kansas.Kansas.get_cross_derivative_matrix_optimized" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.kansas.Kansas.get_first_derivative_matrix">
+<span class="sig-name descname"><span class="pre">get_first_derivative_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/kansas.html#Kansas.get_first_derivative_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.kansas.Kansas.get_first_derivative_matrix" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.kansas.Kansas.get_first_derivative_matrix_aux">
+<span class="sig-name descname"><span class="pre">get_first_derivative_matrix_aux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/kansas.html#Kansas.get_first_derivative_matrix_aux"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.kansas.Kansas.get_first_derivative_matrix_aux" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.kansas.Kansas.get_first_derivative_matrix_optimized">
+<span class="sig-name descname"><span class="pre">get_first_derivative_matrix_optimized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/kansas.html#Kansas.get_first_derivative_matrix_optimized"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.kansas.Kansas.get_first_derivative_matrix_optimized" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.kansas.Kansas.get_interpolation_matrix">
+<span class="sig-name descname"><span class="pre">get_interpolation_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/kansas.html#Kansas.get_interpolation_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.kansas.Kansas.get_interpolation_matrix" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.kansas.Kansas.get_interpolation_matrix_optimized">
+<span class="sig-name descname"><span class="pre">get_interpolation_matrix_optimized</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/kansas.html#Kansas.get_interpolation_matrix_optimized"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.kansas.Kansas.get_interpolation_matrix_optimized" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.kansas.Kansas.get_laplacian_matrix">
+<span class="sig-name descname"><span class="pre">get_laplacian_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/kansas.html#Kansas.get_laplacian_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.kansas.Kansas.get_laplacian_matrix" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.kansas.Kansas.get_second_derivative_matrix">
+<span class="sig-name descname"><span class="pre">get_second_derivative_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/kansas.html#Kansas.get_second_derivative_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.kansas.Kansas.get_second_derivative_matrix" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.kansas.Kansas.get_second_derivative_matrix_optimized">
+<span class="sig-name descname"><span class="pre">get_second_derivative_matrix_optimized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/kansas.html#Kansas.get_second_derivative_matrix_optimized"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.kansas.Kansas.get_second_derivative_matrix_optimized" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.kansas.Kansas.kernel">
+<span class="sig-name descname"><span class="pre">kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Kernel_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/kansas.html#Kansas.kernel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.kansas.Kansas.kernel" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.kansas.Kansas.kernel_Dx">
+<span class="sig-name descname"><span class="pre">kernel_Dx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Kernel_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/kansas.html#Kansas.kernel_Dx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.kansas.Kansas.kernel_Dx" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.kansas.Kansas.kernel_Dxx">
+<span class="sig-name descname"><span class="pre">kernel_Dxx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rx2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Kernel_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/kansas.html#Kansas.kernel_Dxx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.kansas.Kansas.kernel_Dxx" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.kansas.Kansas.kernel_Dxy">
+<span class="sig-name descname"><span class="pre">kernel_Dxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Kernel_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/kansas.html#Kansas.kernel_Dxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.kansas.Kansas.kernel_Dxy" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.kansas.Kansas.kernel_Laplacian">
+<span class="sig-name descname"><span class="pre">kernel_Laplacian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Kernel_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/kansas.html#Kansas.kernel_Laplacian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.kansas.Kansas.kernel_Laplacian" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-simulai.math.products">
+<span id="simulai-math-products-module"></span><h2>simulai.math.products module<a class="headerlink" href="#module-simulai.math.products" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="simulai.math.products.kronecker">
+<span class="sig-prename descclassname"><span class="pre">simulai.math.products.</span></span><span class="sig-name descname"><span class="pre">kronecker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/simulai/math/products.html#kronecker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.products.kronecker" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-simulai.math.progression">
+<span id="simulai-math-progression-module"></span><h2>simulai.math.progression module<a class="headerlink" href="#module-simulai.math.progression" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="simulai.math.progression.gp">
+<span class="sig-prename descclassname"><span class="pre">simulai.math.progression.</span></span><span class="sig-name descname"><span class="pre">gp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/simulai/math/progression.html#gp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.progression.gp" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-simulai.math.quadratures">
+<span id="simulai-math-quadratures-module"></span><h2>simulai.math.quadratures module<a class="headerlink" href="#module-simulai.math.quadratures" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="simulai.math.quadratures.GaussLegendre">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulai.math.quadratures.</span></span><span class="sig-name descname"><span class="pre">GaussLegendre</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/quadratures.html#GaussLegendre"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.quadratures.GaussLegendre" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.quadratures.GaussLegendre.generate_boundaries">
+<span class="sig-name descname"><span class="pre">generate_boundaries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/quadratures.html#GaussLegendre.generate_boundaries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.quadratures.GaussLegendre.generate_boundaries" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.quadratures.GaussLegendre.generate_domain">
+<span class="sig-name descname"><span class="pre">generate_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/quadratures.html#GaussLegendre.generate_domain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.quadratures.GaussLegendre.generate_domain" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-simulai.math.spaces">
+<span id="simulai-math-spaces-module"></span><h2>simulai.math.spaces module<a class="headerlink" href="#module-simulai.math.spaces" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="simulai.math.spaces.GaussianRandomFields">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulai.math.spaces.</span></span><span class="sig-name descname"><span class="pre">GaussianRandomFields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RBF'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cubic'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/spaces.html#GaussianRandomFields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.spaces.GaussianRandomFields" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.spaces.GaussianRandomFields.generate_u">
+<span class="sig-name descname"><span class="pre">generate_u</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/spaces.html#GaussianRandomFields.generate_u"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.spaces.GaussianRandomFields.generate_u" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulai.math.spaces.GaussianRandomFields.random_u">
+<span class="sig-name descname"><span class="pre">random_u</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulai/math/spaces.html#GaussianRandomFields.random_u"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulai.math.spaces.GaussianRandomFields.random_u" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-simulai.math">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-simulai.math" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="simulai.backup.Pipeline.html" class="btn btn-neutral float-left" title="simulai.backup.Pipeline package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="simulai.models.html" class="btn btn-neutral float-right" title="simulai.models package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Leonardo Pondian Tizzei.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

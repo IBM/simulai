@@ -11,3 +11,23 @@
 #     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
+
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+errors = np.load('errors.npy')
+derrors = np.load('derrors.npy')[:,0,:]
+eigs = np.load('eigs.npy')
+
+plt.plot(eigs)
+plt.show()
+
+de = errors*derrors
+
+t = np.arange(0, errors.shape[0])*0.01*1.68*10
+
+plt.plot(t, errors)
+plt.show()
+plt.plot(t, de)
+plt.show()

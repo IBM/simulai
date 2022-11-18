@@ -11,3 +11,16 @@
 #     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
+
+import tempfile
+import contextlib
+import shutil
+
+
+@contextlib.contextmanager
+def make_temp_directory():
+    temp_dir = tempfile.mkdtemp(dir=tempfile.gettempdir())
+    try:
+        yield temp_dir
+    finally:
+        shutil.rmtree(temp_dir)

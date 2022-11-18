@@ -11,3 +11,18 @@
 #     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
+
+from simulai import engine
+
+assert engine is not None, "The variable engine was not defined."
+
+from ._builtin import SpaRSA
+
+if engine == "pytorch":
+    from ._optimization import Optimizer, ScipyInterface
+    from ._builtin_pytorch import BBI
+    from ._losses import *
+elif engine == "numpy":
+    pass
+else:
+    raise Exception(f"Engine {engine} is not available.")

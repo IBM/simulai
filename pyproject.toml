@@ -1,0 +1,92 @@
+[build-system]
+requires = [
+    "setuptools >= 48",
+    "setuptools_scm[toml] >= 4, <6",
+    "setuptools_scm_git_archive",
+    "wheel >= 0.29.0",
+]
+build-backend = 'setuptools.build_meta'
+
+[tool.setuptools]
+packages = [ "simulai" ]
+
+[project]
+name = "simulai"
+version = "1.0.0"
+description = "A Python package with data-driven pipelines for dynamical systems machine learning"
+readme = "README.rst"
+authors = [{ name = "Joao Lucas de Sousa Almeida", email = "joao.lucas.sousa.almeida@ibm.com" }, { name = "Leonardo Silveira de Albuquerque Martins", email = "leonardo.martins@br.ibm.com" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+keywords = [
+    "machine learning", 
+    "simulation",
+    "dynamical systems",
+    "neural networks",
+    "physics"
+]
+dependencies = [
+    "imageio>=2.9.0",
+    "imageio-ffmpeg>=0.4.2",
+    "numpy>=1.22",
+    "numba>=0.53",
+    "pyDOE>=0.3.8",
+    "scipy<1.9.0",
+    "sympy>=1.7.1",
+    "torch<1.13.0",
+    "xarray>=0.16.0",
+    "scikit-learn",
+    "matplotlib>=3.0.3",
+    "psutil>=5.8.0",
+    "h5py>=3.4.0",
+    "dask>=2022.2.1",
+    "netCDF4>=1.5.3",
+    "six",
+    "numexpr>=2.8.3",
+    "minio",
+    "optuna",
+    "urllib3<1.27"
+]
+requires-python = ">=3.6"
+
+[project.optional-dependencies]
+dev = ["bumpver", "pytest", "flake8", "coverage"]
+mpi = ["mpi4py"]
+
+[project.urls]
+Homepage = "https://github.com/IBM/simulai"
+
+[tool.bumpver]
+current_version = "1.0.0"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message = "Bump version {old_version} -> {new_version}"
+commit = true
+tag = true
+push = false
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    'current_version = "{version}"',
+    'version = "{version}"'
+]
+"setup.py" = [
+    "{version}",
+    "{pep440_version}",
+]
+

@@ -11,3 +11,16 @@
 #     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
+
+from simulai import engine
+
+from ._templates import ReservoirComputing
+
+if engine == "pytorch":
+    from ._pytorch_network import (NetworkTemplate, ConvNetworkTemplate, HyperTrainTemplate,
+                                   as_tensor, as_array, guarantee_device, channels_dim)
+elif engine == "numpy":
+    pass
+else:
+    pass
+

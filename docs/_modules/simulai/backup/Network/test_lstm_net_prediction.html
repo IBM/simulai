@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>simulai.backup.Network.test_lstm_net_prediction &mdash; simulai 1.3 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> simulai
+          </a>
+              <div class="version">
+                1.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../readme.html">SimulAI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">simulai</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../history.html">History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">simulai</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>simulai.backup.Network.test_lstm_net_prediction</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for simulai.backup.Network.test_lstm_net_prediction</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright IBM Corp. 2019, 2020, 2021, 2022.</span>
+
+<span class="c1">#    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1">#    you may not use this file except in compliance with the License.</span>
+<span class="c1">#    You may obtain a copy of the License at</span>
+
+<span class="c1">#           http://www.apache.org/licenses/LICENSE-2.0</span>
+
+<span class="c1">#     Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1">#     distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1">#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1">#     See the License for the specific language governing permissions and</span>
+<span class="c1">#     limitations under the License.</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="kn">from</span> <span class="nn">simulai.utilities.lorenz_solver</span> <span class="kn">import</span> <span class="n">lorenz_solver</span>
+<span class="kn">from</span> <span class="nn">simulai.utilities.oscillator_solver</span> <span class="kn">import</span> <span class="n">oscillator_solver</span>
+<span class="kn">from</span> <span class="nn">simulai.io</span> <span class="kn">import</span> <span class="n">MovingWindow</span>
+
+<div class="viewcode-block" id="TestDenseNetTFPrediction"><a class="viewcode-back" href="../../../../simulai.backup.Network.html#simulai.backup.Network.test_lstm_net_prediction.TestDenseNetTFPrediction">[docs]</a><span class="k">class</span> <span class="nc">TestDenseNetTFPrediction</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TestDenseNetTFPrediction.setUp"><a class="viewcode-back" href="../../../../simulai.backup.Network.html#simulai.backup.Network.test_lstm_net_prediction.TestDenseNetTFPrediction.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="TestDenseNetTFPrediction.test_dense_net_tf_predictions_lorenz"><a class="viewcode-back" href="../../../../simulai.backup.Network.html#simulai.backup.Network.test_lstm_net_prediction.TestDenseNetTFPrediction.test_dense_net_tf_predictions_lorenz">[docs]</a>    <span class="k">def</span> <span class="nf">test_dense_net_tf_predictions_lorenz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+        <span class="n">save_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+        <span class="n">case</span> <span class="o">=</span> <span class="s1">&#39;Lorenz&#39;</span>
+
+        <span class="n">dt</span> <span class="o">=</span> <span class="mf">0.025</span>
+        <span class="n">T_max</span> <span class="o">=</span> <span class="mi">25</span>
+        <span class="n">rho</span> <span class="o">=</span> <span class="mi">28</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="mi">8</span><span class="o">/</span><span class="mi">3</span>
+        <span class="n">beta_str</span> <span class="o">=</span> <span class="s1">&#39;8/3&#39;</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="mi">10</span>
+
+        <span class="n">history_size</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">horizon_size</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">skip_size</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">architecture</span> <span class="o">=</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">]</span>
+
+        <span class="n">initial_state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">variables_matrix</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">lorenz_solver</span><span class="p">(</span><span class="n">rho</span><span class="o">=</span><span class="n">rho</span><span class="p">,</span> <span class="n">data_path</span><span class="o">=</span><span class="n">data_path</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="n">T_max</span><span class="p">,</span>
+                                            <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span> <span class="n">initial_state</span><span class="o">=</span><span class="n">initial_state</span><span class="p">,</span>
+                                            <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span> <span class="n">beta_str</span><span class="o">=</span><span class="n">beta_str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIsInstance</span><span class="p">(</span><span class="n">variables_matrix</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+
+        <span class="n">moving_window</span> <span class="o">=</span> <span class="n">MovingWindow</span><span class="p">(</span><span class="n">history_size</span><span class="o">=</span><span class="n">history_size</span><span class="p">,</span>
+                                     <span class="n">horizon_size</span><span class="o">=</span><span class="n">horizon_size</span><span class="p">,</span>
+                                     <span class="n">skip_size</span><span class="o">=</span><span class="n">skip_size</span><span class="p">)</span>
+
+        <span class="n">input_data</span><span class="p">,</span> <span class="n">target_data</span> <span class="o">=</span> <span class="n">moving_window</span><span class="p">(</span><span class="n">input_data</span><span class="o">=</span><span class="n">variables_matrix</span><span class="p">,</span>
+                                                <span class="n">output_data</span><span class="o">=</span><span class="n">variables_matrix</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIsInstance</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIsInstance</span><span class="p">(</span><span class="n">target_data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+
+        <span class="n">model_name</span> <span class="o">=</span> <span class="n">case</span> <span class="o">+</span> <span class="s2">&quot;_tf_surrogate&quot;</span></div>
+
+
+<div class="viewcode-block" id="TestDenseNetTFPrediction.test_dense_net_tf_predictions_oscillator"><a class="viewcode-back" href="../../../../simulai.backup.Network.html#simulai.backup.Network.test_lstm_net_prediction.TestDenseNetTFPrediction.test_dense_net_tf_predictions_oscillator">[docs]</a>    <span class="k">def</span> <span class="nf">test_dense_net_tf_predictions_oscillator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+        <span class="n">save_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+        <span class="n">case</span> <span class="o">=</span> <span class="s1">&#39;oscillator&#39;</span>
+
+        <span class="n">dt</span> <span class="o">=</span> <span class="mf">0.025</span>
+        <span class="n">T_max</span> <span class="o">=</span> <span class="mi">25</span>
+
+        <span class="n">history_size</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">horizon_size</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">skip_size</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># initial_state = np.array([2, 0])</span>
+        <span class="n">initial_state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">])[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">variables_matrix</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">oscillator_solver</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="n">T_max</span><span class="p">,</span>
+                                                                <span class="n">initial_state</span><span class="o">=</span><span class="n">initial_state</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIsInstance</span><span class="p">(</span><span class="n">variables_matrix</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+
+        <span class="n">moving_window</span> <span class="o">=</span> <span class="n">MovingWindow</span><span class="p">(</span><span class="n">history_size</span><span class="o">=</span><span class="n">history_size</span><span class="p">,</span>
+                                     <span class="n">horizon_size</span><span class="o">=</span><span class="n">horizon_size</span><span class="p">,</span>
+                                     <span class="n">skip_size</span><span class="o">=</span><span class="n">skip_size</span><span class="p">)</span>
+
+        <span class="n">input_data</span><span class="p">,</span> <span class="n">target_data</span> <span class="o">=</span> <span class="n">moving_window</span><span class="p">(</span><span class="n">input_data</span><span class="o">=</span><span class="n">variables_matrix</span><span class="p">,</span>
+                                                <span class="n">output_data</span><span class="o">=</span><span class="n">variables_matrix</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIsInstance</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIsInstance</span><span class="p">(</span><span class="n">target_data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+
+        <span class="n">model_name</span> <span class="o">=</span> <span class="n">case</span> <span class="o">+</span> <span class="s2">&quot;_tf_surrogate&quot;</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Leonardo Pondian Tizzei.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

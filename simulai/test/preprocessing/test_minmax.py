@@ -11,3 +11,23 @@
 #     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
+
+from unittest import TestCase
+import numpy as np
+
+from simulai.metrics import MinMaxEvaluation
+
+class TestMinMax(TestCase):
+
+    def setUp(self) -> None:
+
+        pass
+
+    def test_minmax(self):
+
+        arr = np.random.rand(1_000, 10, 10, 3)
+
+        minmax = MinMaxEvaluation()
+
+        minmax(dataset=arr, data_interval=[0, arr.shape[0]], batch_size=1_000, axis=3)
+

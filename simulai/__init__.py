@@ -11,3 +11,21 @@
 #     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
+
+# (C) Copyright IBM Corporation 2017, 2018, 2019
+# U.S. Government Users Restricted Rights:  Use, duplication or disclosure restricted
+# by GSA ADP Schedule Contract with IBM Corp.
+#
+# Author: Joao Lucas S. Almeida <joao.lucas.sousa.almeida@ibm.com>
+
+import os
+
+engine_var = os.environ.get('engine')
+
+if engine_var is not None:
+    engine = engine_var
+else:
+    engine = 'pytorch'
+
+__version__ = '1.3'
+

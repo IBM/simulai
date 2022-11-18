@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>simulai.backup.Network.test_densenetwork &mdash; simulai latest documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> simulai
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">simulai</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">simulai</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>simulai.backup.Network.test_densenetwork</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for simulai.backup.Network.test_densenetwork</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright IBM Corp. 2019, 2020, 2021, 2022.</span>
+
+<span class="c1">#    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1">#    you may not use this file except in compliance with the License.</span>
+<span class="c1">#    You may obtain a copy of the License at</span>
+
+<span class="c1">#           http://www.apache.org/licenses/LICENSE-2.0</span>
+
+<span class="c1">#     Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1">#     distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1">#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1">#     See the License for the specific language governing permissions and</span>
+<span class="c1">#     limitations under the License.</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="kn">from</span> <span class="nn">simulai.regression</span> <span class="kn">import</span> <span class="n">DenseNetwork</span>
+<span class="kn">from</span> <span class="nn">simulai.models</span> <span class="kn">import</span> <span class="n">ModelMaker</span>
+<span class="kn">from</span> <span class="nn">simulai.metrics</span> <span class="kn">import</span> <span class="n">L2Norm</span>
+
+<div class="viewcode-block" id="TestDenseNetwork"><a class="viewcode-back" href="../../../../simulai.backup.Network.html#simulai.backup.Network.test_densenetwork.TestDenseNetwork">[docs]</a><span class="k">class</span> <span class="nc">TestDenseNetwork</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TestDenseNetwork.setUp"><a class="viewcode-back" href="../../../../simulai.backup.Network.html#simulai.backup.Network.test_densenetwork.TestDenseNetwork.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TestDenseNetwork.test_identity_dense_network_default_named_outputs"><a class="viewcode-back" href="../../../../simulai.backup.Network.html#simulai.backup.Network.test_densenetwork.TestDenseNetwork.test_identity_dense_network_default_named_outputs">[docs]</a>    <span class="k">def</span> <span class="nf">test_identity_dense_network_default_named_outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1"># One-dimensional case</span>
+        <span class="c1"># Constructing dataset</span>
+        <span class="n">train_factor</span> <span class="o">=</span> <span class="mf">0.50</span>
+
+        <span class="n">N</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">Nt</span> <span class="o">=</span> <span class="mi">2000</span>
+
+        <span class="n">N_train</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">train_factor</span><span class="o">*</span><span class="n">Nt</span><span class="p">)</span>
+
+        <span class="c1"># Constructing dataset</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Nt</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">Nt</span><span class="p">)</span>
+
+        <span class="n">T</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
+        <span class="n">J</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
+
+        <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">J</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">T</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">I</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="n">train_data</span> <span class="o">=</span> <span class="n">Z</span><span class="p">[:</span><span class="n">N_train</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">test_data</span> <span class="o">=</span> <span class="n">Z</span><span class="p">[</span><span class="n">N_train</span><span class="p">:,</span> <span class="p">:]</span>
+
+        <span class="n">architecture</span> <span class="o">=</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">]</span>
+
+        <span class="n">test_setup</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;architecture&#39;</span><span class="p">:</span> <span class="n">architecture</span><span class="p">,</span>
+            <span class="s1">&#39;dropouts_rates_list&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s1">&#39;learning_rate&#39;</span><span class="p">:</span> <span class="mf">1e-05</span><span class="p">,</span>
+            <span class="s1">&#39;l2_reg&#39;</span><span class="p">:</span> <span class="mf">1e-05</span><span class="p">,</span>
+            <span class="s1">&#39;activation_function&#39;</span><span class="p">:</span> <span class="s1">&#39;elu&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;loss_function&#39;</span><span class="p">:</span> <span class="s1">&#39;mse&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;optimizer&#39;</span><span class="p">:</span> <span class="s1">&#39;adam&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;input_dim&#39;</span><span class="p">:</span> <span class="n">N</span><span class="p">,</span>
+            <span class="s1">&#39;output_dim&#39;</span><span class="p">:</span> <span class="n">N</span>
+        <span class="p">}</span>
+
+        <span class="n">neural_net</span> <span class="o">=</span> <span class="n">DenseNetwork</span><span class="p">(</span><span class="n">architecture</span><span class="o">=</span><span class="n">architecture</span><span class="p">,</span>
+                                  <span class="n">config</span><span class="o">=</span><span class="n">test_setup</span><span class="p">)</span>
+
+        <span class="n">optimizers_list</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Adam&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;maxiter&quot;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">}}</span>
+        <span class="n">residuals_type</span> <span class="o">=</span> <span class="n">neural_net</span><span class="o">.</span><span class="n">output_dim</span><span class="o">*</span><span class="p">[</span><span class="s1">&#39;surrogate&#39;</span><span class="p">]</span>
+        <span class="n">losses</span> <span class="o">=</span> <span class="n">neural_net</span><span class="o">.</span><span class="n">output_dim</span><span class="o">*</span><span class="p">[</span><span class="s1">&#39;square-mean&#39;</span><span class="p">]</span>
+
+        <span class="c1"># In order to fit a regression object, it is necessary to invoke a wrapper</span>
+        <span class="c1"># named ModelMaker</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">ModelMaker</span><span class="p">(</span><span class="n">regressions</span><span class="o">=</span><span class="p">[</span><span class="n">neural_net</span><span class="p">],</span> <span class="c1">#  The list of regressions objects to be used.</span>
+                           <span class="n">optimizers_list</span><span class="o">=</span><span class="n">optimizers_list</span><span class="p">,</span> <span class="c1">#  The list of optimizers to be used.</span>
+                           <span class="n">residuals_type</span><span class="o">=</span><span class="n">residuals_type</span><span class="p">,</span> <span class="c1"># The function of each term in loss function</span>
+                           <span class="n">losses</span><span class="o">=</span><span class="n">losses</span><span class="p">,</span>                 <span class="c1"># The type of loss function for each term</span>
+                           <span class="n">data_residuals</span><span class="o">=</span><span class="n">neural_net</span><span class="o">.</span><span class="n">outputs_names</span><span class="p">,</span> <span class="c1"># The residuals names</span>
+                           <span class="n">regularizations</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;l2_reg&#39;</span><span class="p">:</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="s1">&#39;l1_reg&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}]</span> <span class="c1"># The regularizations penalties (optional)</span>
+                           <span class="p">)</span>
+
+        <span class="c1"># The model receives lists of input and output arrays, subsequently divided among the</span>
+        <span class="c1"># input and output variables of the regressions objects existent in the common environment</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">input_data_list</span><span class="o">=</span><span class="p">[</span><span class="n">train_data</span><span class="p">],</span>
+                  <span class="n">target_data_list</span><span class="o">=</span><span class="p">[</span><span class="n">train_data</span><span class="p">],</span>
+                  <span class="n">normalize_all</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                  <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">approximated_test_data</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">input_cube</span><span class="o">=</span><span class="n">test_data</span><span class="p">)</span>
+
+        <span class="n">l2_norm</span> <span class="o">=</span> <span class="n">L2Norm</span><span class="p">()</span>
+
+        <span class="n">error</span> <span class="o">=</span> <span class="n">l2_norm</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">approximated_test_data</span><span class="p">,</span>
+                        <span class="n">reference_data</span><span class="o">=</span><span class="n">test_data</span><span class="p">,</span>
+                        <span class="n">relative_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The approximation error was </span><span class="si">{</span><span class="mi">100</span><span class="o">*</span><span class="n">error</span><span class="si">}</span><span class="s1"> %&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestDenseNetwork.test_identity_dense_network_without_names"><a class="viewcode-back" href="../../../../simulai.backup.Network.html#simulai.backup.Network.test_densenetwork.TestDenseNetwork.test_identity_dense_network_without_names">[docs]</a>    <span class="k">def</span> <span class="nf">test_identity_dense_network_without_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1"># One-dimensional case</span>
+        <span class="c1"># Constructing dataset</span>
+        <span class="n">train_factor</span> <span class="o">=</span> <span class="mf">0.50</span>
+
+        <span class="n">N</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">Nt</span> <span class="o">=</span> <span class="mi">2000</span>
+
+        <span class="n">N_train</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">train_factor</span><span class="o">*</span><span class="n">Nt</span><span class="p">)</span>
+
+        <span class="c1"># Constructing dataset</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Nt</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">Nt</span><span class="p">)</span>
+
+        <span class="n">T</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
+        <span class="n">J</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
+
+        <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">J</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">T</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">I</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="n">train_data</span> <span class="o">=</span> <span class="n">Z</span><span class="p">[:</span><span class="n">N_train</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">test_data</span> <span class="o">=</span> <span class="n">Z</span><span class="p">[</span><span class="n">N_train</span><span class="p">:,</span> <span class="p">:]</span>
+
+        <span class="n">architecture</span> <span class="o">=</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">]</span>
+
+        <span class="n">test_setup</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;architecture&#39;</span><span class="p">:</span> <span class="n">architecture</span><span class="p">,</span>
+            <span class="s1">&#39;dropouts_rates_list&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s1">&#39;learning_rate&#39;</span><span class="p">:</span> <span class="mf">1e-05</span><span class="p">,</span>
+            <span class="s1">&#39;l2_reg&#39;</span><span class="p">:</span> <span class="mf">1e-05</span><span class="p">,</span>
+            <span class="s1">&#39;activation_function&#39;</span><span class="p">:</span> <span class="s1">&#39;elu&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;loss_function&#39;</span><span class="p">:</span> <span class="s1">&#39;mse&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;optimizer&#39;</span><span class="p">:</span> <span class="s1">&#39;adam&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;input_dim&#39;</span><span class="p">:</span> <span class="n">N</span><span class="p">,</span>
+            <span class="s1">&#39;output_dim&#39;</span><span class="p">:</span> <span class="n">N</span>
+        <span class="p">}</span>
+
+        <span class="n">neural_net</span> <span class="o">=</span> <span class="n">DenseNetwork</span><span class="p">(</span><span class="n">architecture</span><span class="o">=</span><span class="n">architecture</span><span class="p">,</span>
+                                  <span class="n">config</span><span class="o">=</span><span class="n">test_setup</span><span class="p">,</span>
+                                  <span class="n">concat_input_tensor</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                  <span class="n">concat_output_tensor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">optimizers_list</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Adam&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;maxiter&quot;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">}}</span>
+        <span class="n">residuals_type</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;surrogate&#39;</span><span class="p">]</span>
+        <span class="n">losses</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;square-mean&#39;</span><span class="p">]</span>
+
+        <span class="c1"># In order to fit a regression object, it is necessary to invoke a wrapper</span>
+        <span class="c1"># named ModelMaker</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">ModelMaker</span><span class="p">(</span><span class="n">regressions</span><span class="o">=</span><span class="p">[</span><span class="n">neural_net</span><span class="p">],</span> <span class="c1">#  The list of regressions objects to be used.</span>
+                           <span class="n">optimizers_list</span><span class="o">=</span><span class="n">optimizers_list</span><span class="p">,</span> <span class="c1">#  The list of optimizers to be used.</span>
+                           <span class="n">residuals_type</span><span class="o">=</span><span class="n">residuals_type</span><span class="p">,</span> <span class="c1"># The function of each term in loss function</span>
+                           <span class="n">losses</span><span class="o">=</span><span class="n">losses</span><span class="p">,</span>                 <span class="c1"># The type of loss function for each term</span>
+                           <span class="n">data_residuals</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">],</span> <span class="c1"># The residuals names</span>
+                           <span class="n">regularizations</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;l2_reg&#39;</span><span class="p">:</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="s1">&#39;l1_reg&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}]</span> <span class="c1"># The regularizations penalties (optional)</span>
+                           <span class="p">)</span>
+
+        <span class="c1"># The model receives lists of input and output arrays, subsequently divided among the</span>
+        <span class="c1"># input and output variables of the regressions objects existent in the common environment</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">input_data_list</span><span class="o">=</span><span class="p">[</span><span class="n">train_data</span><span class="p">],</span>
+                  <span class="n">target_data_list</span><span class="o">=</span><span class="p">[</span><span class="n">train_data</span><span class="p">],</span>
+                  <span class="n">normalize_all</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                  <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">approximated_test_data</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">input_cube</span><span class="o">=</span><span class="n">test_data</span><span class="p">)</span>
+
+        <span class="n">l2_norm</span> <span class="o">=</span> <span class="n">L2Norm</span><span class="p">()</span>
+
+        <span class="n">error</span> <span class="o">=</span> <span class="n">l2_norm</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">approximated_test_data</span><span class="p">,</span>
+                        <span class="n">reference_data</span><span class="o">=</span><span class="n">test_data</span><span class="p">,</span>
+                        <span class="n">relative_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The approximation error was </span><span class="si">{</span><span class="mi">100</span><span class="o">*</span><span class="n">error</span><span class="si">}</span><span class="s1"> %&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Joao Lucas de Sousa Almeida, Leonardo Pondian Tizzei.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
