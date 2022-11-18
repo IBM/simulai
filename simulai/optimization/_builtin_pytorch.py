@@ -15,7 +15,6 @@
 ### Written by Imran Nasim adapted from https://github.com/gbdl/BBI
 
 from torch.optim.optimizer import Optimizer #, required
-import numpy as np
 import torch
 
 class BBI(Optimizer):

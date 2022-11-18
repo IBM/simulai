@@ -19,7 +19,6 @@ import importlib
 import copy
 from typing import List, Tuple, Union
 
-import sklearn.decomposition
 from sklearn.decomposition import PCA, IncrementalPCA, TruncatedSVD
 import dask.array as da
 

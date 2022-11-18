@@ -14,7 +14,6 @@
 
 import numpy as np
 from scipy.special import jacobi
-from itertools import product
 import sys
 
 class GaussLegendre:
