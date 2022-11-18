@@ -105,7 +105,7 @@ If you find SimulAI to be useful, please consider citing it in your published wo
     @software{simulai,
       author = {IBM},
       title = {SimulAI},
-      url = {https://github.ibm.com/simulai/simulai},
+      url = {https://github.com/IBM/simulai},
       version = {},
       date = {},
     }
