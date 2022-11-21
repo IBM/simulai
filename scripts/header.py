@@ -18,7 +18,7 @@ HEADER = """# (C) Copyright IBM Corp. 2019, 2020, 2021, 2022.
 
 HEADER_ = [item + '\n' for item in HEADER.split('\n')]
 
-modules_names = ['validation_tests', 'simulai', 'unit_tests']
+modules_names = ['simulai', 'examples']
 
 for module_name in modules_names:
 
