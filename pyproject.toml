@@ -11,7 +11,7 @@ build-backend = 'setuptools.build_meta'
 packages = [ "simulai" ]
 
 [project]
-name = "simulai"
+name = "simulai-toolkit"
 version = "1.0.0"
 description = "A Python package with data-driven pipelines for dynamical systems machine learning"
 readme = "README.rst"
