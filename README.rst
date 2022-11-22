@@ -40,17 +40,7 @@ Using conda
 Contributing code to SimulAI
 ============================
 
-It is strongly recommended that you have a Miniconda distribution installed. You can contribute code to SimulAI by following the steps below:
-
-1. Fork this repository
-2. Git clone the forked repository
-3. Create a conda environment
-
-``conda create -n simulai -f environment.yml``
-
-4. Activate the newly created environment
-
-``conda activate simulai``
+See `CONTRIBUTING.rst <CONTRIBUTING.rst>`_.
 
 Unit-testing
 ------------
