@@ -68,7 +68,7 @@ Ready to contribute? Here's how to set up `simulai` for local development.
 
     $ mkvirtualenv simulai
     $ cd simulai/
-    $ python -m pip -e install
+    $ python -m pip install -e .
 
 4. Create a branch for local development::
 
