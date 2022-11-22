@@ -26,7 +26,7 @@ In addition to the methods above, many more techniques for model reduction and r
 Installing
 ==========
 
-Python version requirements: [3.6, 3.10)
+Python version requirements: 3.8 or 3.9
 
 Using pip
 ---------
