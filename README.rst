@@ -31,7 +31,7 @@ Python version requirements: [3.6, 3.10)
 Using pip
 ---------
 
-	$ pip install simulai-toolkit
+    $ pip install simulai-toolkit
 
 Contributing code to SimulAI
 ============================
@@ -45,7 +45,7 @@ Some methods implemented on SimulAI support multiprocessing with MPI.
 
 In order to use it, you will need a valid MPI distribution, e.g. MPICH, OpenMPI. As an example, you can use ``conda`` to install MPICH as follows: 
 
-	$ conda install -c conda-forge mpich gcc
+    $ conda install -c conda-forge mpich gcc
 
 Issues with macOS
 -----------------

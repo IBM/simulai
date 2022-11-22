@@ -56,3 +56,7 @@ push = false
     'version = "{version}"'
 ]
 
+[tool.setuptools]
+package-dir = { "" = "simulai" }
+    
+    
