@@ -8,7 +8,7 @@ SimulAI
     
 .. image:: figs/logo_2.svg
 
-A Python package with data-driven pipelines for dynamical systems machine learning.
+A Python package with data-driven pipelines for physics-informed machine learning.
 
 .. image:: figs/simulai_diagram.svg
 
