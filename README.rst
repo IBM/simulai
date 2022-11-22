@@ -17,8 +17,9 @@ The SimulAI toolkit provides easy access to state-of-the-art models and algorith
 - Physics-Informed Neural Networks (PINNs)
 - Deep Operator Networks (DeepONets)
 - Variational Encoder-Decoders (VED)
-- Koopman AutoEncoders (experimental)
 - Operator Inference (OpInf)
+- Koopman AutoEncoders (experimental)
+- Echo State Networks (experimental GPU support)
 
 In addition to the methods above, many more techniques for model reduction and regularization are included in SimulAI. See `documentation <https://simulai-toolkit.readthedocs.io/>`_.
 
