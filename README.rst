@@ -20,7 +20,7 @@ The SimulAI toolkit provides easy access to state-of-the-art models and algorith
 - Koopman AutoEncoders (experimental)
 - Operator Inference (OpInf)
 
-In addition to the methods above, many more techniques for model reduction and regularization are included in SimulAI. See `documentation <https://simulai.readthedocs.io/>`_.
+In addition to the methods above, many more techniques for model reduction and regularization are included in SimulAI. See `documentation <https://simulai-toolkit.readthedocs.io/>`_.
 
 Installing
 ==========
@@ -81,7 +81,7 @@ If you have problems installing ``gcc`` using the command above, we recommend yo
 Documentation
 =============
 
-Please, refer to the SimulAI API `documentation <https://simulai.readthedocs.io>`_ before using the toolkit.
+Please, refer to the SimulAI API `documentation <https://simulai-toolkit.readthedocs.io>`_ before using the toolkit.
 
 Examples
 ========
