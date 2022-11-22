@@ -48,16 +48,16 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .pytest_cache
 
 lint: ## check style with flake8
-	flake8 simulai
+	flake8 src/simulai
 
 test: ## run tests quickly with the default Python
-	pytest simulai/test
+	pytest tests
 
 test-all: ## run tests on every Python version with tox
 	tox
 
 coverage: ## check code coverage quickly with the default Python
-	coverage run --source simulai -m nose simulai/test # pytest
+	coverage run --source src/simulai -m nose tests # pytest
 	coverage report -m
 	coverage html
 	$(BROWSER) htmlcov/index.html
