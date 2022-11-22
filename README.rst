@@ -1,8 +1,7 @@
 =======
 SimulAI
 =======
-.. image:: figs/coverage.svg
-.. image:: https://readthedocs.org/projects/simulai-toolkit/badge/?version=latest
+.. image:: figs/coverage.svg .. image:: https://readthedocs.org/projects/simulai-toolkit/badge/?version=latest
     :target: https://simulai-toolkit.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
     
@@ -60,7 +59,7 @@ Please, refer to the SimulAI API `documentation <https://simulai-toolkit.readthe
 Examples
 ========
 
-Additionally, you can refer to examples in the ``examples`` folder.
+Additionally, you can refer to examples in the `respective folder <examples/>`_.
 
 License
 =======
