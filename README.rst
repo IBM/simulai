@@ -2,7 +2,9 @@
 SimulAI
 =======
 .. image:: figs/coverage.svg 
-.. image:: https://readthedocs.org/projects/simulai-toolkit/badge/?version=latest :target: https://simulai-toolkit.readthedocs.io/en/latest/?badge=latest :alt: Documentation Status
+.. image:: https://readthedocs.org/projects/simulai-toolkit/badge/?version=latest
+	:target: https://simulai-toolkit.readthedocs.io/en/latest/?badge=latest
+	:alt: Documentation Status
     
 .. image:: figs/logo_2.svg
 
