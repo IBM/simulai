@@ -7,7 +7,6 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   simulai.backup
    simulai.math
    simulai.models
    simulai.optimization
