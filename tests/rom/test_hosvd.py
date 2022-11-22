@@ -28,9 +28,9 @@ class TestHOSVDDecomposition(TestCase):
     def test_hosvd_numpy(self):
 
         # Constructing dataset
-        N_x = 128
-        N_y = 128
-        N_t = 500
+        N_x = 32
+        N_y = 32
+        N_t = 125
         N_v = 3
 
         center_x = 0.5
