@@ -1,8 +1,6 @@
 [build-system]
 requires = [
-    "setuptools >= 48",
-    "setuptools_scm[toml] >= 4, <6",
-    "setuptools_scm_git_archive",
+    "setuptools >= 61",
     "wheel >= 0.29.0",
 ]
 build-backend = 'setuptools.build_meta'
@@ -14,33 +12,8 @@ packages = [ "simulai" ]
 name = "simulai-toolkit"
 version = "1.0.0"
 description = "A Python package with data-driven pipelines for dynamical systems machine learning"
-readme = "README.rst"
-authors = [{ name = "Joao Lucas de Sousa Almeida", email = "joao.lucas.sousa.almeida@ibm.com" }, { name = "Leonardo Silveira de Albuquerque Martins", email = "leonardo.martins@br.ibm.com" }]
-license = { file = "LICENSE" }
-classifiers = [
-    "Development Status :: 5 - Production/Stable",
-    "Environment :: Console",
-    "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: Apache Software License",
-    "Natural Language :: English",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: Implementation :: CPython",
-    "Topic :: Scientific/Engineering :: Physics",
-    "Topic :: Scientific/Engineering :: Mathematics",
-    "Topic :: Scientific/Engineering :: Artificial Intelligence",
-    "Topic :: Software Development :: Libraries :: Python Modules"
-]
-keywords = [
-    "machine learning", 
-    "simulation",
-    "dynamical systems",
-    "neural networks",
-    "physics"
-]
+readme = "DESCRIPTION.rst"
+license = {text = "Apache Software License"}
 dependencies = [
     "imageio>=2.9.0",
     "imageio-ffmpeg>=0.4.2",
@@ -64,7 +37,7 @@ dependencies = [
     "optuna",
     "urllib3<1.27"
 ]
-requires-python = ">=3.6"
+requires-python = ">=3.8"
 
 [project.optional-dependencies]
 dev = ["bumpver", "flake8", "coverage"]
@@ -85,9 +58,5 @@ push = false
 "pyproject.toml" = [
     'current_version = "{version}"',
     'version = "{version}"'
-]
-"setup.py" = [
-    "{version}",
-    "{pep440_version}",
 ]
 
