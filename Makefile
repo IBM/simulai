@@ -48,16 +48,16 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .pytest_cache
 
 lint: ## check style with flake8
-	flake8 simulai tests
+	flake8 src
 
 test: ## run tests quickly with the default Python
-	pytest tests/
+	pytest src/test
 
 test-all: ## run tests on every Python version with tox
 	tox
 
 coverage: ## check code coverage quickly with the default Python
-	coverage run --source simulai -m nose tests/ #pytest
+	coverage run --source src -m nose src/test #pytest
 	coverage report -m
 	coverage html
 	$(BROWSER) htmlcov/index.html
@@ -67,7 +67,7 @@ coverage: ## check code coverage quickly with the default Python
 docs: ## generate Sphinx HTML documentation, including API docs
 	rm -f docs/simulai.rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ simulai
+	sphinx-apidoc -o docs/ src
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	$(BROWSER) docs/_build/html/index.html
