@@ -33,32 +33,15 @@ Using pip
 
 ``pip install simulai-toolkit``
 
-Using conda
------------
-
-``conda install -c conda-forge simulai-toolkit``
-
 Contributing code to SimulAI
 ============================
 
 See `CONTRIBUTING.rst <CONTRIBUTING.rst>`_.
 
-Unit-testing
-------------
-
-1. ``cd`` to the root directory
-2. Set PYTHONPATH environment variable
-
-``export PYTHONPATH=.``
-
-3. Run `pytest`
-
-``pytest tests/``
-
 Using MPI
 =========
 
-SimulAI supports multiprocessing with MPI.
+Some methods implemented on SimulAI support multiprocessing with MPI.
 
 In order to use it, you will need a valid MPI distribution, e.g. MPICH, OpenMPI.
 
@@ -83,11 +66,6 @@ License
 =======
 
 This software is licensed under Apache 2.0.
-
-References
-==========
-
-The following references in the literature.
 
 Citing SimulAI
 ==============
