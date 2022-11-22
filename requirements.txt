@@ -1,4 +1,3 @@
-setuptools<60,
 imageio==2.9.0,
 imageio-ffmpeg==0.4.2,
 numpy>=1.22,
