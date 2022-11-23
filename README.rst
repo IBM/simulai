@@ -16,12 +16,12 @@ A Python package with data-driven pipelines for physics-informed machine learnin
 
 The SimulAI toolkit provides easy access to state-of-the-art models and algorithms for physics-informed machine learning. Currently, it includes the following methods described in the literature:
 
-- Physics-Informed Neural Networks (PINNs)
-- Deep Operator Networks (DeepONets)
+- `Physics-Informed Neural Networks <#references>`_ (PINNs)
+- `Deep Operator Networks <#references>`_ (DeepONets)
 - Variational Encoder-Decoders (VED)
-- Operator Inference (OpInf)
-- Koopman AutoEncoders (experimental)
-- Echo State Networks (experimental GPU support)
+- `Operator Inference <#references>`_ (OpInf)
+- `Koopman Autoencoders <#references>`_ (experimental)
+- `Echo State Networks <#references>`_ (experimental GPU support)
 
 In addition to the methods above, many more techniques for model reduction and regularization are included in SimulAI. See `documentation <https://simulai-toolkit.readthedocs.io/>`_.
 
