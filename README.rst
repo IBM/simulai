@@ -1,10 +1,13 @@
 =======
 SimulAI
 =======
-.. image:: figs/coverage.svg 
+.. image:: https://zenodo.org/badge/561364034.svg
+   :target: https://zenodo.org/badge/latestdoi/561364034
 .. image:: https://readthedocs.org/projects/simulai-toolkit/badge/?version=latest
-	:target: https://simulai-toolkit.readthedocs.io/en/latest/?badge=latest
-	:alt: Documentation Status
+   :target: https://simulai-toolkit.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+.. image:: figs/coverage.svg
+   :target: tests/ 
     
 .. image:: figs/logo_2.svg
 
@@ -67,8 +70,8 @@ License
 
 This software is licensed under Apache 2.0. See `LICENSE <LICENSE>`_.
 
-Citing SimulAI
-==============
+How to cite SimulAI in your publications
+========================================
 
 If you find SimulAI to be useful, please consider citing it in your published work:
 
@@ -76,8 +79,16 @@ If you find SimulAI to be useful, please consider citing it in your published wo
 
     @software{simulai,
       author = {IBM},
-      title = {SimulAI},
+      title = {SimulAI Toolkit},
+      subtitle = {A Python package with data-driven pipelines for physics-informed machine learning},
       url = {https://github.com/IBM/simulai},
-      version = {},
-      date = {},
+      doi = {10.5281/zenodo.7351516},
+      year = {2022},
     }
+
+References
+==========
+
+Raissi, M., Perdikaris, P., Karniadakis, G.E. (2019) "Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations,"
+_Journal of Computational Physics_, 378(1), pp. 686-707.
+ISSN: 0021-9991. DOI: `10.1016/j.jcp.2018.10.045 <https://doi.org/10.1016/j.jcp.2018.10.045>`_.
