@@ -3,6 +3,8 @@ SimulAI
 =======
 .. image:: https://zenodo.org/badge/561364034.svg
    :target: https://zenodo.org/badge/latestdoi/561364034
+.. image:: https://badge.fury.io/py/simulai-toolkit.svg
+   :target: https://badge.fury.io/py/simulai-toolkit
 .. image:: https://readthedocs.org/projects/simulai-toolkit/badge/?version=latest
    :target: https://simulai-toolkit.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
