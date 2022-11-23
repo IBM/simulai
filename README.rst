@@ -1,6 +1,3 @@
-=======
-SimulAI
-=======
 .. image:: https://zenodo.org/badge/561364034.svg
    :target: https://zenodo.org/badge/latestdoi/561364034
 .. image:: https://badge.fury.io/py/simulai-toolkit.svg
