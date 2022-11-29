@@ -1,16 +1,27 @@
 [build-system]
-requires = [
-    "setuptools >= 48",
-    "wheel >= 0.29.0"
-]
+requires = [ "setuptools" ]
 build-backend = 'setuptools.build_meta'
 
 [project]
 name = "simulai-toolkit"
-version = "1.0.0"
+version = "0.99.5"
 description = "A Python package with data-driven pipelines for physics-informed machine learning"
-readme = "README.rst"
-license = {text = "Apache Software License"}
+license = { "text" = "Apache License, Version 2.0" }
+readme = { "file" = "DESCRIPTION.md", "content-type" = "text/markdown" }
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
 dependencies = [
     "imageio",
     "imageio-ffmpeg",
@@ -40,10 +51,12 @@ dev = ["bumpver", "flake8", "coverage", "pytest"]
 mpi = ["mpi4py"]
 
 [project.urls]
-Homepage = "https://github.com/IBM/simulai"
+Source = "https://github.com/IBM/simulai"
+Tracker = "https://github.com/IBM/simulai/issues"
+Documentation = "https://simulai-toolkit.readthedocs.io"
 
 [tool.bumpver]
-current_version = "1.0.0"
+current_version = "0.99.5"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message = "Bump version {old_version} -> {new_version}"
 commit = true
