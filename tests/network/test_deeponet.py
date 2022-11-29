@@ -63,13 +63,21 @@ def model():
 
     return net
 
-class TestDenseNetwork(TestCase):
+class TestDeeponet(TestCase):
 
     def setUp(self) -> None:
         self.errors = list()
 
-    def test_deeponet(self):
+    def test_deeponet_forward(self):
 
         net = model()
+
+        data_trunk = torch.rand(1_000, 1)
+        data_branch = torch.rand(1_000, 2)
+
+        output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
+
+        assert output.shape[1] == 2, "The network output is not like expected."
+
 
 
