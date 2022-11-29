@@ -14,6 +14,7 @@
 
 import numpy as np
 from unittest import TestCase
+import torch
 
 from simulai.file import SPFile
 from simulai.metrics import L2Norm
@@ -73,7 +74,7 @@ class TestDeeponet(TestCase):
         net = model()
 
         data_trunk = torch.rand(1_000, 1)
-        data_branch = torch.rand(1_000, 2)
+        data_branch = torch.rand(1_000, 4)
 
         output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
 
