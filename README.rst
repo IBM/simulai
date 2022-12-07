@@ -99,6 +99,13 @@ Lu, L., Jin, P., Pang, G., Zhang, Z., Karniadakis, G. E. (2021).
 ISSN: 2522-5839.
 DOI:`10.1038/s42256-021-00302-5 <https://doi.org/10.1038/s42256-021-00302-5>`_.
 
+Eivazi, H., Le Clainche, S., Hoyas, S., Vinuesa, R. (2022)
+"Towards extraction of orthogonal and parsimonious non-linear modes from
+turbulent flows"
+*Expert Systems with Applications*, **202**.
+ISSN: 0957-4174.
+DOI:`10.1016/j.eswa.2022.117038 <https://doi.org/10.1016/j.eswa.2022.117038>`_.
+
 Raissi, M., Perdikaris, P., Karniadakis, G. E. (2019).
 "Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations,"
 *Journal of Computational Physics*, **378** (1): 686-707.
@@ -117,9 +124,4 @@ McQuarrie, S., Huang, C. and Willcox, K. (2021).
 ISSN: 0303-6758.
 DOI:`10.1080/03036758.2020.1863237 <https://doi.org/10.1080/03036758.2020.1863237>`_.
 
-Eivazi, H., Le Clainche, S., Hoyas, S., Vinuesa, R. (2022)
-"Towards extraction of orthogonal and parsimonious non-linear modes from
-turbulent flows"
-*Expert Systems with Applications*, **202**.
-ISSN: 0957-4174.
-DOI:`10.1016/j.eswa.2022.117038 <https://doi.org/10.1016/j.eswa.2022.117038>`_.
+
