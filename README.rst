@@ -120,5 +120,6 @@ DOI:`10.1016/j.jcp.2018.10.045 <https://doi.org/10.1016/j.jcp.2018.10.045>`_.
 Eivazi, H., Le Clainche, S., Hoyas, S., Vinuesa, R. (2022)
 "Towards extraction of orthogonal and parsimonious non-linear modes from
 turbulent flows"
+*Expert Systems with Applications*, **202**.
 ISSN: 0957-4174.
 DOI:`10.1016/j.eswa.2022.117038 <https://doi.org/10.1016/j.eswa.2022.117038>`_.
