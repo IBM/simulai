@@ -18,7 +18,7 @@ The SimulAI toolkit provides easy access to state-of-the-art models and algorith
 
 - `Physics-Informed Neural Networks <#references>`_ (PINNs)
 - `Deep Operator Networks <#references>`_ (DeepONets)
-- Variational Encoder-Decoders (VED)
+- `Variational Encoder-Decoders <#reference>`_ (VED)
 - `Operator Inference <#references>`_ (OpInf)
 - `Koopman Autoencoders <#references>`_ (experimental)
 - `Echo State Networks <#references>`_ (experimental GPU support)
@@ -76,11 +76,11 @@ If you find SimulAI to be useful, please consider citing it in your published wo
 
 .. code-block:: python
 
-    @software{simulai,
+    @misc{simulai,
       author = {IBM},
       title = {SimulAI Toolkit},
       subtitle = {A Python package with data-driven pipelines for physics-informed machine learning},
-      url = {https://github.com/IBM/simulai},
+      note = "https://github.com/IBM/simulai",
       doi = {10.5281/zenodo.7351516},
       year = {2022},
     }
@@ -116,3 +116,9 @@ Raissi, M., Perdikaris, P., Karniadakis, G. E. (2019).
 *Journal of Computational Physics*, **378** (1): 686-707.
 ISSN: 0021-9991.
 DOI:`10.1016/j.jcp.2018.10.045 <https://doi.org/10.1016/j.jcp.2018.10.045>`_.
+
+Eivazi, H., Le Clainche, S., Hoyas, S., Vinuesa, R. (2022)
+"Towards extraction of orthogonal and parsimonious non-linear modes from
+turbulent flows"
+ISSN: 0957-4174.
+DOI:`10.1016/j.eswa.2022.117038 <https://doi.org/10.1016/j.eswa.2022.117038>`_.
