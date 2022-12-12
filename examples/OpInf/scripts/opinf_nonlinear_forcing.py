@@ -166,9 +166,9 @@ class TestModelPoolESN:
         lorenz_op.fit(input_data=train_field, target_data=train_field_derivative,
                       batch_size=1000, force_lazy_access=True, k_svd=9)
 
-        logging.info(f"A_hat: {np.array_str(lorenz_op.A_hat, precision=3, suppress_small=True)}")
-        logging.info(f"H_hat: {np.array_str(lorenz_op.H_hat, precision=3, suppress_small=True)}")
-        logging.info(f"c_hat: {np.array_str(lorenz_op.c_hat, precision=3, suppress_small=True)}")
+        logger.info(f"A_hat: {np.array_str(lorenz_op.A_hat, precision=3, suppress_small=True)}")
+        logger.info(f"H_hat: {np.array_str(lorenz_op.H_hat, precision=3, suppress_small=True)}")
+        logger.info(f"c_hat: {np.array_str(lorenz_op.c_hat, precision=3, suppress_small=True)}")
 
         init_state = train_field[-1:]
 
