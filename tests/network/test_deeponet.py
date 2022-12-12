@@ -80,5 +80,28 @@ class TestDeeponet(TestCase):
 
         assert output.shape[1] == 2, "The network output is not like expected."
 
+    def test_deeponet_train(self):
 
+        from simulai.optimization import Optimizer
 
+        optimizer_config = {'lr': 1e-3}
+
+        data_trunk = torch.rand(1_000, 1)
+        data_branch = torch.rand(1_000, 4)
+        output_target = torch.rand(1_000, 2)
+
+        n_epochs = 1_000
+        maximum_values = (1 / np.linalg.norm(output_target, 2, axis=0)).tolist()
+        params = {'lambda_1': 0.0, 'lambda_2': 1e-10, 'weights': maximum_values}
+
+        input_data = {'input_branch': data_branch, 'input_trunk': data_trunk}
+
+        optimizer = Optimizer('adam', params=optimizer_config)
+        net = model()
+
+        optimizer.fit(op=net, input_data=input_data, target_data=output_target,
+                      n_epochs=n_epochs, loss="wrmse", params=params, device='gpu')
+
+        output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
+
+        assert output.shape[1] == 2, "The network output is not like expected."
