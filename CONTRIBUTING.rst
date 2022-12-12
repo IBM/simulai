@@ -113,6 +113,11 @@ To run a subset of tests, e.g.::
 
 $ pytest simulai/test/math
 
+Or::
+
+$ pytest --durations=0 simulai/test/math 
+
+For estimating execution times.
 
 Deploying
 ---------
