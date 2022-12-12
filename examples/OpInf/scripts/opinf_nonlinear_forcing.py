@@ -25,6 +25,11 @@ from simulai.regression import OpInf, KoopmanOperator
 from simulai.math.integration import RK4, LSODA, FunctionWrapper, ClassWrapper
 from simulai.metrics import LyapunovUnits, L2Norm
 
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 class TestModelPoolESN:
 
     def __init__(self):
@@ -63,9 +68,9 @@ class TestModelPoolESN:
         lorenz_op.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
         lorenz_op.fit(input_data=train_field, target_data=train_field_derivative)
 
-        print(f"A_hat: {np.array_str(lorenz_op.A_hat, precision=2, suppress_small=True)}")
-        print(f"H_hat: {np.array_str(lorenz_op.H_hat, precision=2, suppress_small=True)}")
-        print(f"c_hat: {np.array_str(lorenz_op.c_hat, precision=2, suppress_small=True)}")
+        logging.info(f"A_hat: {np.array_str(lorenz_op.A_hat, precision=2, suppress_small=True)}")
+        logging.info(f"H_hat: {np.array_str(lorenz_op.H_hat, precision=2, suppress_small=True)}")
+        logging.info(f"c_hat: {np.array_str(lorenz_op.c_hat, precision=2, suppress_small=True)}")
 
         init_state = train_field[-1:]
 
@@ -161,9 +166,9 @@ class TestModelPoolESN:
         lorenz_op.fit(input_data=train_field, target_data=train_field_derivative,
                       batch_size=1000, force_lazy_access=True, k_svd=9)
 
-        print(f"A_hat: {np.array_str(lorenz_op.A_hat, precision=3, suppress_small=True)}")
-        print(f"H_hat: {np.array_str(lorenz_op.H_hat, precision=3, suppress_small=True)}")
-        print(f"c_hat: {np.array_str(lorenz_op.c_hat, precision=3, suppress_small=True)}")
+        logging.info(f"A_hat: {np.array_str(lorenz_op.A_hat, precision=3, suppress_small=True)}")
+        logging.info(f"H_hat: {np.array_str(lorenz_op.H_hat, precision=3, suppress_small=True)}")
+        logging.info(f"c_hat: {np.array_str(lorenz_op.c_hat, precision=3, suppress_small=True)}")
 
         init_state = train_field[-1:]
 
@@ -513,10 +518,10 @@ class TestModelPoolESN:
 
         lorenz_op.fit(input_data=train_field, target_data=train_field_derivative, forcing_data=train_forcings)
 
-        print(f"A_hat: {np.array_str(lorenz_op.A_hat, precision=2, suppress_small=True)}")
-        print(f"H_hat: {np.array_str(lorenz_op.H_hat, precision=2, suppress_small=True)}")
-        print(f"B_hat: {np.array_str(lorenz_op.B_hat, precision=2, suppress_small=True)}")
-        print(f"c_hat: {np.array_str(lorenz_op.c_hat, precision=2, suppress_small=True)}")
+        logger.info(f"A_hat: {np.array_str(lorenz_op.A_hat, precision=2, suppress_small=True)}")
+        logger.info(f"H_hat: {np.array_str(lorenz_op.H_hat, precision=2, suppress_small=True)}")
+        logger.info(f"B_hat: {np.array_str(lorenz_op.B_hat, precision=2, suppress_small=True)}")
+        logger.info(f"c_hat: {np.array_str(lorenz_op.c_hat, precision=2, suppress_small=True)}")
 
         init_state = train_field[-1:]
 
