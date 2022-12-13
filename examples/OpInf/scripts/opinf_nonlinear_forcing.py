@@ -539,38 +539,114 @@ class TestModelPoolESN:
             plt.savefig(f"derivatives_var_{var}.png")
             plt.show()
 
-            # Using the derivatives surrogate for time-integrating
-            solver = RK4(lorenz_op.eval)
+        # Using the derivatives surrogate for time-integrating
+        solver = RK4(lorenz_op.eval)
 
-            time = 0.90 * T_max
-            estimated_variables = list()
-            initial_state = init_state
-            N_steps = int(T_max / dt)
-            n_steps = test_field.shape[0]
+        time = 0.90 * T_max
+        estimated_variables = list()
+        initial_state = init_state
+        N_steps = int(T_max / dt)
+        n_steps = test_field.shape[0]
 
-            ii = 0
+        ii = 0
 
-            while time < T_max - dt:
+        while time < T_max - dt:
 
-                state, derivative_state = solver.step_with_forcings_separated(initial_state, test_forcings[ii:ii+1], dt)
-                estimated_variables.append(state)
-                initial_state = state
-                sys.stdout.write("\rIteration {}".format(ii))
-                sys.stdout.flush()
-                time += dt
-                ii += 1
+            state, derivative_state = solver.step_with_forcings_separated(initial_state, test_forcings[ii:ii+1], dt)
+            estimated_variables.append(state)
+            initial_state = state
+            sys.stdout.write("\rIteration {}".format(ii))
+            sys.stdout.flush()
+            time += dt
+            ii += 1
 
-            estimated_field = np.vstack(estimated_variables)
+        estimated_field = np.vstack(estimated_variables)
 
-            for var in range(n_field):
-                plt.title(f"Variable {tags[var]}")
-                plt.plot(t, test_field[:, var], label="Exact")
-                plt.plot(t, estimated_field[:, var], label="Approximated")
-                plt.xlabel("time (s)")
-                plt.grid(True)
-                plt.legend()
-                plt.savefig(f"integrated_var_{var}.png")
-                plt.show()
+        for var in range(n_field):
+            plt.title(f"Variable {tags[var]}")
+            plt.plot(t, test_field[:, var], label="Exact")
+            plt.plot(t, estimated_field[:, var], label="Approximated")
+            plt.xlabel("time (s)")
+            plt.grid(True)
+            plt.legend()
+            plt.savefig(f"integrated_var_{var}.png")
+            plt.show()
+
+    def test_opinf_nonlinear_with_linear_forcing_lsoda(self):
+
+        dt = 0.0025
+        T_max = 50
+        rho = 28
+        beta = 8 / 3
+        beta_str = '8/3'
+        sigma = 10
+        A = 0.1
+        t = np.arange(0.9 * T_max, T_max, dt)
+
+        n_steps = int(T_max / dt)
+        nt = int(0.9 * n_steps)
+        nt_test = n_steps - nt
+
+        forcings = A * np.random.rand(n_steps, 3)
+        initial_state = np.array([1, 2, 3])[None, :]
+
+        n_field = 3  # number of field values to predict
+        lambda_linear = 10
+        lambda_quadratic = 100
+
+        lorenz_data, derivative_lorenz_data = lorenz_solver_forcing(rho=rho, dt=dt, T=T_max, sigma=sigma,
+                                                                    initial_state=initial_state, forcing=forcings,
+                                                                    beta=beta, beta_str=beta_str,
+                                                                    data_path='on_memory')
+
+        train_field = lorenz_data[:nt]  # manufactured nonlinear oscillator data
+        train_field_derivative = derivative_lorenz_data[:nt]
+        train_forcings = forcings[:nt]
+
+        test_field = lorenz_data[nt:]  # manufactured nonlinear oscillator data
+        test_field_derivatives = derivative_lorenz_data[nt:]
+        test_forcings = forcings[nt:]
+
+        lorenz_op = OpInf(forcing='linear', bias_rescale=1e-15)
+        lorenz_op.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
+
+        lorenz_op.fit(input_data=train_field, target_data=train_field_derivative, forcing_data=train_forcings)
+
+        logger.info(f"A_hat: {np.array_str(lorenz_op.A_hat, precision=2, suppress_small=True)}")
+        logger.info(f"H_hat: {np.array_str(lorenz_op.H_hat, precision=2, suppress_small=True)}")
+        logger.info(f"B_hat: {np.array_str(lorenz_op.B_hat, precision=2, suppress_small=True)}")
+        logger.info(f"c_hat: {np.array_str(lorenz_op.c_hat, precision=2, suppress_small=True)}")
+
+        init_state = train_field[-1:]
+
+        tags = ['x', 'y', 'z']
+
+        # Using the derivatives surrogate for time-integrating
+        time = 0.90 * T_max
+        estimated_variables = list()
+        initial_state = init_state
+        N_steps = int(T_max / dt)
+        n_steps = test_field.shape[0]
+        t_test = np.linspace(time, T_max, n_steps)
+
+        # Using the derivatives surrogate for time-integrating
+        right_operator = ClassWrapper(lorenz_op)
+
+        solver = LSODA(right_operator)
+
+        initial_state = init_state[0]
+
+        estimated_field = solver.run_forcing(initial_state, t_test, forcing=test_forcings)
+
+        for var in range(n_field):
+            plt.title(f"Variable {tags[var]}")
+            plt.plot(t_test, test_field[:, var], label="Exact")
+            plt.plot(t_test, estimated_field[:, var], label="Approximated")
+            plt.xlabel("time (s)")
+            plt.grid(True)
+            plt.legend()
+            plt.savefig(f"integrated_var_{var}.png")
+            plt.show()
 
 
     def test_basic_opinf_nonlinear_with_linear_forcing(self):

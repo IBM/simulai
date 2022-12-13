@@ -247,6 +247,8 @@ class LSODA:
 
         self.right_operator = right_operator
 
+        self.log_phrase = "LSODA with forcing."
+
     def run(self, current_state:np.ndarray=None, t:np.ndarray=None) -> np.ndarray:
 
         if hasattr(self.right_operator, "jacobian"):
@@ -257,6 +259,31 @@ class LSODA:
         solution = odeint(self.right_operator.eval, current_state, t,
                           Dfun=Jacobian)
         return solution
+
+    def run_forcing(self, current_state: np.ndarray = None, t: np.ndarray = None,
+                          forcing:np.ndarray=None) -> np.ndarray:
+
+        if hasattr(self.right_operator, "jacobian"):
+            Jacobian = self.right_operator.jacobian
+        else:
+            Jacobian = None
+
+        epochs = forcing.shape[0]
+        self.right_operator.set(forcing=forcing)
+
+        solutions = [current_state]
+
+        for step in range(epochs):
+            solution = odeint(self.right_operator.eval_forcing, current_state, t[step:step+2], args=(step,),
+                              Dfun=Jacobian)
+
+            solutions.append(solution[1:])
+            current_state = solution[-1]
+
+            sys.stdout.write("\r {}, iteration: {}/{}".format(self.log_phrase, step + 1, epochs))
+            sys.stdout.flush()
+
+        return np.vstack(solutions)
 
 # Wrapper for handling function objects in time-integrators
 class FunctionWrapper:
@@ -311,6 +338,13 @@ class ClassWrapper:
         else:
             pass
 
+        self.forcing = None
+
+    def set(self, **kwargs):
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
     def __call__(self, input_data:np.ndarray) -> np.ndarray:
 
         return self.class_instance(input_data)[0, :]
@@ -320,6 +354,10 @@ class ClassWrapper:
         input_data = input_data
 
         return self.class_instance.eval(input_data[None, :])[0, :]
+
+    def eval_forcing(self, input_data: np.ndarray, t: float, i:int) -> np.ndarray:
+
+        return self.class_instance.eval(input_data[None, :], forcing_data=self.forcing[i:i+1,:])[0, :]
 
     def _jacobian(self, input_data:np.ndarray, t:float) -> np.ndarray:
 
