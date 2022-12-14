@@ -247,7 +247,7 @@ class LSODA:
 
         self.right_operator = right_operator
 
-        self.log_phrase = "LSODA with forcing."
+        self.log_phrase = "LSODA with forcing"
 
     def run(self, current_state:np.ndarray=None, t:np.ndarray=None) -> np.ndarray:
 
@@ -340,6 +340,15 @@ class ClassWrapper:
 
         self.forcing = None
 
+    def _squeezable(self, input:np.ndarray) -> np.ndarray:
+
+        try:
+            output = np.squeeze(input, axis=0)
+        except:
+            output = input
+
+        return output
+
     def set(self, **kwargs):
 
         for key, value in kwargs.items():
@@ -352,12 +361,15 @@ class ClassWrapper:
     def eval(self, input_data:np.ndarray, t:float) -> np.ndarray:
 
         input_data = input_data
+        evaluation = self.class_instance.eval(input_data[None, :])
 
-        return np.squeeze(self.class_instance.eval(input_data[None, :]))
+        return self._squeezable(evaluation)
 
     def eval_forcing(self, input_data: np.ndarray, t: float, i:int) -> np.ndarray:
 
-        return np.squeeze(self.class_instance.eval(input_data[None, :], forcing_data=self.forcing[i:i+1,:]))
+        evaluation = self.class_instance.eval(input_data[None, :], forcing_data=self.forcing[i:i+1,:])
+
+        return self._squeezable(evaluation)
 
     def _jacobian(self, input_data:np.ndarray, t:float) -> np.ndarray:
 
