@@ -353,11 +353,11 @@ class ClassWrapper:
 
         input_data = input_data
 
-        return self.class_instance.eval(input_data[None, :])[0, :]
+        return np.squeeze(self.class_instance.eval(input_data[None, :]))
 
     def eval_forcing(self, input_data: np.ndarray, t: float, i:int) -> np.ndarray:
 
-        return self.class_instance.eval(input_data[None, :], forcing_data=self.forcing[i:i+1,:])[0, :]
+        return np.squeeze(self.class_instance.eval(input_data[None, :], forcing_data=self.forcing[i:i+1,:]))
 
     def _jacobian(self, input_data:np.ndarray, t:float) -> np.ndarray:
 
