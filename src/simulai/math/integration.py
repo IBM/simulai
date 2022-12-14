@@ -263,6 +263,8 @@ class LSODA:
     def run_forcing(self, current_state: np.ndarray = None, t: np.ndarray = None,
                           forcing:np.ndarray=None) -> np.ndarray:
 
+        assert isinstance(forcing, np.ndarray), "When running with forcing, a forcing array must be provided."
+        
         if hasattr(self.right_operator, "jacobian"):
             Jacobian = self.right_operator.jacobian
         else:
