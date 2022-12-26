@@ -68,7 +68,7 @@ venv
 notebooks/.ipynb_checkpoints/*
 Output/*
 
-src/*
+#src/*
 unit_tests/data/*
 simulai/backup/Network/data
 examples/Autoencoder/notebooks/autoencoder_rb_variational/*
