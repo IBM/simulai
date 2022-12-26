@@ -174,6 +174,8 @@ class OpInf:
         :return: nothing
         """
 
+        self.n_inputs = self.n_outputs = global_matrix.shape[1]
+
         if self.raw_model == True:
             self.construct()
 

@@ -147,8 +147,7 @@ class TestOperatorsConstruction(TestCase):
     def test_operators_setting(self):
 
         opinf = OpInf()
-        n_inputs = 3
-        n_outputs = 3
+
         coefficients = np.array([[-2.08042604e-16,  4.87816759e-16, -3.07462226e-16],
                                  [-1.00000011e+01,  2.79999981e+01, -9.10594479e-07],
                                  [ 1.00000008e+01, -9.99999365e-01,  6.26876120e-07],
@@ -160,8 +159,9 @@ class TestOperatorsConstruction(TestCase):
                                  [-2.71926419e-08, -9.17973564e-09, -1.94086956e-08],
                                  [-1.16400933e-09,  1.83556992e-09, -2.64827246e-08]])
 
-        opinf.set(n_inputs=n_inputs, n_outputs=n_outputs)
         opinf.set_operators(global_matrix=coefficients)
+
+        n_inputs = coefficients.shape[1]
 
         input_data = np.random.rand(1_000, n_inputs)
 
