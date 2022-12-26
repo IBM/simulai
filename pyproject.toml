@@ -4,7 +4,7 @@ build-backend = 'setuptools.build_meta'
 
 [project]
 name = "simulai-toolkit"
-version = "0.99.5"
+version = "0.99.6"
 description = "A Python package with data-driven pipelines for physics-informed machine learning"
 license = { "text" = "Apache License, Version 2.0" }
 readme = { "file" = "DESCRIPTION.md", "content-type" = "text/markdown" }
@@ -56,7 +56,7 @@ Tracker = "https://github.com/IBM/simulai/issues"
 Documentation = "https://simulai-toolkit.readthedocs.io"
 
 [tool.bumpver]
-current_version = "0.99.5"
+current_version = "0.99.6"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message = "Bump version {old_version} -> {new_version}"
 commit = true
