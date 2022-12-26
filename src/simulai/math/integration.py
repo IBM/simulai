@@ -331,7 +331,7 @@ class ClassWrapper:
 
     def __init__(self, class_instance:callable) -> None:
 
-        assert hasattr(class_instance, 'eval'), f"The objet class_instance={class_instance} has no attribute eval."
+        assert hasattr(class_instance, 'eval'), f"The object class_instance={class_instance} has no attribute eval."
 
         self.class_instance = class_instance
 
