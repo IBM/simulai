@@ -755,7 +755,7 @@ class DeepEchoStateNetwork:
         self.number_of_inputs = number_of_inputs
         self.all_for_input = all_for_input
 
-        # Some variables must be converted in lists with lenght self.n_layers
+        # Some variables must be converted in lists with length self.n_layers
         self.reservoir_dim = self._make_list(reservoir_dim)
         self.sparsity_level = self._make_list(sparsity_level)
         self.radius = self._make_list(radius)
@@ -1178,7 +1178,7 @@ class DeepEchoStateNetwork:
 
         available_memory = self.memory_percent*psutil.virtual_memory().available
 
-        # Evaluating the maximum number of partial U matrices to be alocated
+        # Evaluating the maximum number of partial U matrices to be allocated
         max_n_workers = int(available_memory/single_matrix_size)
 
         if max_n_workers >= self.n_workers:
@@ -1870,7 +1870,7 @@ class WideEchoStateNetwork:
 
         available_memory = self.memory_percent*psutil.virtual_memory().available
 
-        # Evaluating the maximum number of partial U matrices to be alocated
+        # Evaluating the maximum number of partial U matrices to be allocated
         max_n_workers = int(available_memory/single_matrix_size)
 
         if max_n_workers >= self.n_workers:

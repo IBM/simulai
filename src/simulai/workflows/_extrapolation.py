@@ -32,7 +32,7 @@ class StepwiseExtrapolation:
         self.model_isnt_callable = "In case of model be a list all their elements must be callable."
         self.model_hasnt_step    = "The instance model must have the method step."
         self.keys_arent_necessary = "It the input is a dictionary, it is not nessesary to provide keys."
-        self.lengths_must_be_equal = "The lenghts must be equal for keys and models."
+        self.lengths_must_be_equal = "The lengths must be equal for keys and models."
         self.array_must_be_two_dim = "The array must have two dimensions but received {}"
         self.keys = keys
 

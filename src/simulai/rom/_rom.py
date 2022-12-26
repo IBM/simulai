@@ -888,7 +888,7 @@ class QQM:
 
     def _kronecker_product(self, a:np.ndarray=None, b:np.ndarray=None) -> np.ndarray:
 
-        """It executes a Kronecker dot betwen two arrays
+        """It executes a Kronecker dot between two arrays
         :param a: left array
         :type a: np.ndarray
         :param b: right (transposed) array
