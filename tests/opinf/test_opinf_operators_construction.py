@@ -143,3 +143,29 @@ class TestOperatorsConstruction(TestCase):
 
             print(f"Maximum D_o deviation: {maximum_deviation_d_o}.")
             print(f"Maximum R_matrix deviation: {maximum_deviation_r_matrix}.")
+
+    def test_operators_setting(self):
+
+        opinf = OpInf()
+
+        coefficients = np.array([[-2.08042604e-16,  4.87816759e-16, -3.07462226e-16],
+                                 [-1.00000011e+01,  2.79999981e+01, -9.10594479e-07],
+                                 [ 1.00000008e+01, -9.99999365e-01,  6.26876120e-07],
+                                 [ 1.20917885e-08, -5.26344927e-08, -2.66666616e+00],
+                                 [ 1.19725785e-08, -1.89298728e-08,  2.63093188e-07],
+                                 [-1.08876107e-08,  4.25828284e-08,  9.99999718e-01],
+                                 [ 3.49844320e-08, -9.99999948e-01,  2.50026946e-08],
+                                 [ 1.72896719e-09, -2.20334382e-08,  7.11072626e-08],
+                                 [-2.71926419e-08, -9.17973564e-09, -1.94086956e-08],
+                                 [-1.16400933e-09,  1.83556992e-09, -2.64827246e-08]])
+
+        opinf.set_operators(global_matrix=coefficients)
+
+        n_inputs = coefficients.shape[1]
+
+        input_data = np.random.rand(1_000, n_inputs)
+
+        output_data = opinf.eval(input_data=input_data)
+
+        assert isinstance(output_data, np.ndarray), f"The output of opinf.eval must be a numpy.ndarray," \
+                                                    f" but got {type(output_data)}"

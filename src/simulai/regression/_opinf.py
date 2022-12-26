@@ -109,6 +109,7 @@ class OpInf:
         self.success = None
         self.continuing = 1
 
+        self.raw_model = True
         self.tmp_data_path = '/tmp'
 
     # Matrix containing all the model parameters
@@ -172,6 +173,11 @@ class OpInf:
         :type global_matrix: np.ndarray
         :return: nothing
         """
+
+        self.n_inputs = self.n_outputs = global_matrix.shape[1]
+
+        if self.raw_model == True:
+            self.construct()
 
         if self.forcing is not None:
             self.c_hat = global_matrix[:1].T
@@ -605,33 +611,46 @@ class OpInf:
     def construct(self, input_data:np.ndarray=None, target_data:np.ndarray=None,
                         forcing_data:np.ndarray=None) -> None:
 
-        assert len(input_data.shape) == len(target_data.shape) == 2, "The input and target data, " \
-                                                                     "must be two-dimensional but received shapes" \
-                                                                     f" {input_data.shape} and {target_data.shape}"
-        self.n_samples = input_data.shape[0]
+        # Collecting information dimensional information from the datasets
+        if isinstance(input_data, np.ndarray) == isinstance(target_data, np.ndarray) == True:
 
-        # When there are forcing variables there are extra operators in the model
-        if self.forcing is not None:
-            assert forcing_data is not None, "If the forcing terms are used, forcing data must be provided."
+            assert len(input_data.shape) == len(target_data.shape) == 2, "The input and target data, " \
+                                                                         "must be two-dimensional but received shapes" \
+                                                                         f" {input_data.shape} and {target_data.shape}"
+            self.n_samples = input_data.shape[0]
 
-            assert len(forcing_data.shape) == 2, "The forcing data must be two-dimensional," \
-                                                 f" but received shape {forcing_data.shape}"
+            # When there are forcing variables there are extra operators in the model
+            if self.forcing is not None:
+                assert forcing_data is not None, "If the forcing terms are used, forcing data must be provided."
 
-            assert input_data.shape[0] == target_data.shape[0] == forcing_data.shape[0], \
-                "The number of samples is not the same for all the sets with" \
-                f"{input_data.shape[0]}, {target_data.shape[0]} and {forcing_data.shape[0]}."
+                assert len(forcing_data.shape) == 2, "The forcing data must be two-dimensional," \
+                                                     f" but received shape {forcing_data.shape}"
 
-            self.n_forcing_inputs = forcing_data.shape[1]
-        # For no forcing cases, the classical form is adopted
+                assert input_data.shape[0] == target_data.shape[0] == forcing_data.shape[0], \
+                    "The number of samples is not the same for all the sets with" \
+                    f"{input_data.shape[0]}, {target_data.shape[0]} and {forcing_data.shape[0]}."
+
+                self.n_forcing_inputs = forcing_data.shape[1]
+            # For no forcing cases, the classical form is adopted
+            else:
+                print("Forcing terms are not being used.")
+                assert input_data.shape[0] == target_data.shape[0], \
+                    "The number of samples is not the same for all the sets with" \
+                    f"{input_data.shape[0]} and {target_data.shape[0]}"
+
+            # Number of inputs or degrees of freedom
+            self.n_inputs = input_data.shape[1]
+            self.n_outputs = target_data.shape[1]
+
+        # When no dataset is provided to fit, it is necessary directly setting up the dimension values
+        elif isinstance(input_data, np.ndarray) == isinstance(target_data, np.ndarray) == False:
+
+            assert (self.n_inputs != None and self.n_outputs !=None), "It is necessary to provide some" \
+                                                                      " value to n_inputs and n_outputs"
+
         else:
-            print("Forcing terms are not being used.")
-            assert input_data.shape[0] == target_data.shape[0], \
-                "The number of samples is not the same for all the sets with" \
-                f"{input_data.shape[0]} and {target_data.shape[0]}"
-
-        # Number of inputs or degrees of freedom
-        self.n_inputs = input_data.shape[1]
-        self.n_outputs = target_data.shape[1]
+            raise Exception("There is no way for executing the system construction"
+                            " if no dataset or dimension is provided.")
 
         # Defining parameters for the Kronecker product
         if (self.forcing is None) or (self.forcing == 'linear'):
@@ -655,6 +674,8 @@ class OpInf:
             self.n_linear_terms = 1 + self.n_inputs + self.n_forcing_inputs
         else:
             self.n_linear_terms = 1 + self.n_inputs
+
+        self.raw_model = False
 
     # Evaluating the model operators
     def fit(self, input_data:np.ndarray=None, target_data:np.ndarray=None,
