@@ -80,3 +80,6 @@ run_examples.txt
 
 #mac
 .DS_Store
+
+#spyder
+.spyproject/*
