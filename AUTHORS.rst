@@ -11,5 +11,4 @@ Development Team
 
 Contributors
 ------------
-
-None yet. Why not be the first?
+* John Bampton <jbampton@gmail.com>
