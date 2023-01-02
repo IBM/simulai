@@ -39,7 +39,7 @@ def _convert_tensor_format(method):
 
            input_data_ = input_data
 
-        if callable(input_data):
+        elif callable(input_data):
 
            input_data_ = input_data
 
