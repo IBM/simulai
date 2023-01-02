@@ -382,11 +382,16 @@ def channels_dim(method):
 
 class ConvNetworkTemplate(NetworkTemplate):
 
-    def __init__(self, name:str=None) -> None:
+    def __init__(self, name:str=None, flatten:bool=None) -> None:
 
         super(ConvNetworkTemplate, self).__init__()
 
         self.name = name
+
+        if flatten == True:
+            self.flattener = self._flatten
+        else:
+            self.flattener = self._no_flatten
 
         # When no name is provided, it will employ a random number
         # as model name
@@ -406,6 +411,17 @@ class ConvNetworkTemplate(NetworkTemplate):
         self.case = None
 
         self.interpolation_prefix = {'1d':'', '2d': 'bi', '3d': 'tri'}
+
+    def _no_flatten(self, input_data:torch.Tensor=None) -> torch.Tensor:
+
+        return input_data
+
+    def _flatten(self, input_data:torch.Tensor=None) -> torch.Tensor:
+
+        n_samples, n_channels = input_data.shape[:2]
+        collapsible_dimensions = np.prod(input_data.shape[2:])
+
+        return torch.reshape(input_data, (n_samples, n_channels*collapsible_dimensions))
 
     def _setup_layers(self, layers_config:dict=None) -> (list, list, list):
 
