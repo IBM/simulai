@@ -50,7 +50,7 @@ class NetworkTemplate(torch.nn.Module):
     @property
     def n_parameters(self):
         if hasattr(self, 'weights'):
-            return sum([np.product(i.shape) for i in self.weights])
+            return int(sum([np.product(i.shape) for i in self.weights]))
         else:
             raise Exception(f"Class {self} has no attribute self.weights.")
             
