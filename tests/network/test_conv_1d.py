@@ -30,7 +30,7 @@ def generate_data(n_samples:int=None, vector_size:int=None,
     return torch.from_numpy(input_data.astype(np.float32)), torch.from_numpy(output_data.astype(np.float32))
 
 # Model template
-def model():
+def model_1d():
 
     from simulai.regression import ConvolutionalNetwork
 
@@ -64,7 +64,7 @@ class TestConvNet1D(TestCase):
 
         def test_convnet_1d_n_parameters(self):
 
-            convnet = model()
+            convnet = model_1d()
 
             assert type(convnet.n_parameters) == int
 
@@ -72,7 +72,7 @@ class TestConvNet1D(TestCase):
 
             input_data, output_data = generate_data(n_samples=100, vector_size=16, n_inputs=1, n_outputs=16)
 
-            convnet = model()
+            convnet = model_1d()
 
             estimated_output_data = convnet.eval(input_data=input_data)
 
@@ -82,7 +82,7 @@ class TestConvNet1D(TestCase):
 
         def test_convnet_1d_save_restore(self):
 
-            convnet = model()
+            convnet = model_1d()
 
             input_data, output_data = generate_data(n_samples=100, vector_size=16, n_inputs=1, n_outputs=16)
 
@@ -92,7 +92,7 @@ class TestConvNet1D(TestCase):
             print("Saving model.")
 
             saver = SPFile(compact=False)
-            saver.write(save_dir="/tmp", name=model_name, model=convnet, template=model)
+            saver.write(save_dir="/tmp", name=model_name, model=convnet, template=model_1d)
 
             print("Restoring model.")
 
@@ -113,7 +113,7 @@ class TestConvNet1D(TestCase):
 
             input_data, output_data = generate_data(n_samples=100, vector_size=16, n_inputs=1, n_outputs=16)
 
-            convnet = model()
+            convnet = model_1d()
 
             # Instnatiating optimizer
             params = {'lambda_1': 0., 'lambda_2': 0.}
