@@ -77,7 +77,7 @@ layers = [{'in_channels': n_inputs, 'out_channels': 4, 'kernel_size': (3, 3), 's
 # Instantiating network
 convnet = ConvolutionalNetwork(layers=layers, activations='sigmoid')
 
-# Instnatiating optimizer
+# Instantiating optimizer
 params = {'lambda_1': 0., 'lambda_2': 0.}
 optimizer = Optimizer('adam', params=optimizer_config)
 
