@@ -47,6 +47,13 @@ class NetworkTemplate(torch.nn.Module):
     def weights_l1(self) -> torch.Tensor:
         return sum([torch.norm(weight, p=1) for weight in self.weights])
 
+    @property
+    def n_parameters(self):
+        if hasattr(self, 'weights'):
+            return sum([np.product(i.shape) for i in self.weights])
+        else:
+            raise Exception(f"Class {self} has no attribute self.weights.")
+            
     def _set_device(self, devices:Union[str, list]='cpu') -> str:
 
         device = None

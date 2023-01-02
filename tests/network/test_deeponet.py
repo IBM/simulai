@@ -70,16 +70,18 @@ class TestDeeponet(TestCase):
         pass
 
     def test_deeponet_forward(self):
-
+        
         net = model()
 
         data_trunk = torch.rand(1_000, 1)
         data_branch = torch.rand(1_000, 4)
 
         output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
-
+        
+        print("Network has {net.n_parameters} parameters.")
+        
         assert output.shape[1] == 2, "The network output is not like expected."
-
+        
     def test_deeponet_train(self):
 
         from simulai.optimization import Optimizer
