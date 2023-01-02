@@ -21,10 +21,10 @@ from simulai.file import SPFile
 from simulai.optimization import Optimizer
 
 
-def generate_data(n_samples:int=None, image_size:tuple=None,
+def generate_data(n_samples:int=None, vector_size:int=None,
                   n_inputs:int=None, n_outputs:int=None) -> (torch.Tensor, torch.Tensor):
 
-    input_data = np.random.rand(n_samples, n_inputs, *image_size)
+    input_data = np.random.rand(n_samples, n_inputs, vector_size)
     output_data = np.random.rand(n_samples, n_outputs)
 
     return torch.from_numpy(input_data.astype(np.float32)), torch.from_numpy(output_data.astype(np.float32))
@@ -40,31 +40,31 @@ def model():
     layers = [
 
         {'in_channels': n_inputs, 'out_channels': 2, 'kernel_size': 3, 'stride': 1, 'padding': 1,
-         'after_conv': {'type': 'maxpool2d', 'kernel_size': 2, 'stride': 2}},
+         'after_conv': {'type': 'maxpool1d', 'kernel_size': 2, 'stride': 2}},
 
         {'in_channels': 2, 'out_channels': 4, 'kernel_size': 3, 'stride': 1, 'padding': 1,
-         'after_conv': {'type': 'maxpool2d', 'kernel_size': 2, 'stride': 2}},
+         'after_conv': {'type': 'maxpool1d', 'kernel_size': 2, 'stride': 2}},
 
         {'in_channels': 4, 'out_channels': 8, 'kernel_size': 3, 'stride': 1, 'padding': 1,
-         'after_conv': {'type': 'maxpool2d', 'kernel_size': 2, 'stride': 2}},
+         'after_conv': {'type': 'maxpool1d', 'kernel_size': 2, 'stride': 2}},
 
         {'in_channels': 8, 'out_channels': 16, 'kernel_size': 3, 'stride': 1, 'padding': 1,
-         'after_conv': {'type': 'maxpool2d', 'kernel_size': 2, 'stride': 2}}
+         'after_conv': {'type': 'maxpool1d', 'kernel_size': 2, 'stride': 2}}
     ]
 
     # Instantiating network
-    convnet = ConvolutionalNetwork(layers=layers, activations='sigmoid', case='2d', name='net', flatten=True)
+    convnet = ConvolutionalNetwork(layers=layers, activations='sigmoid', case='1d', name='net', flatten=True)
 
     return convnet
 
-class TestConvNet2D(TestCase):
+class TestConvNet1D(TestCase):
 
         def setUp(self) -> None:
             pass
 
-        def test_convnet_2d_eval(self):
+        def test_convnet_1d_eval(self):
 
-            input_data, output_data = generate_data(n_samples=100, image_size=(16,16), n_inputs=1, n_outputs=16)
+            input_data, output_data = generate_data(n_samples=100, vector_size=16, n_inputs=1, n_outputs=16)
 
             convnet = model()
 
@@ -74,11 +74,11 @@ class TestConvNet2D(TestCase):
                                                                      f" Expected {output_data.shape}," \
                                                                      f" but received {estimated_output_data.shape}."
 
-        def test_convnet_2d_save_restore(self):
+        def test_convnet_1d_save_restore(self):
 
             convnet = model()
 
-            input_data, output_data = generate_data(n_samples=100, image_size=(16, 16), n_inputs=1, n_outputs=16)
+            input_data, output_data = generate_data(n_samples=100, vector_size=16, n_inputs=1, n_outputs=16)
 
             model_name = f'convnet_{str(id(convnet))}'
             
@@ -98,14 +98,14 @@ class TestConvNet2D(TestCase):
                                                                      f" Expected {output_data.shape}," \
                                                                      f" but received {estimated_output_data.shape}."
 
-        def test_convnet_2d_forward(self):
+        def test_convnet_1d_forward(self):
 
             n_epochs = 100
 
             lr = 1e-3  # Initial learning rate for the ADAM algorithm
             optimizer_config = {'lr': lr}
 
-            input_data, output_data = generate_data(n_samples=100, image_size=(16, 16), n_inputs=1, n_outputs=16)
+            input_data, output_data = generate_data(n_samples=100, vector_size=16, n_inputs=1, n_outputs=16)
 
             convnet = model()
 
