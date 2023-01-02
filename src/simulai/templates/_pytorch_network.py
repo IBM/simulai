@@ -394,6 +394,7 @@ class ConvNetworkTemplate(NetworkTemplate):
         super(ConvNetworkTemplate, self).__init__()
 
         self.name = name
+        self.flatten = flatten
 
         if flatten == True:
             self.flattener = self._flatten
@@ -588,8 +589,14 @@ class ConvNetworkTemplate(NetworkTemplate):
 
         pprint.pprint(shapes_dict, indent=2)
 
-        self.output_size = list(shapes_dict.values())[-1]['Output shape']
+        output_size = list(shapes_dict.values())[-1]['Output shape']
         self.input_size = list(shapes_dict.values())[0]['Input shape']
+
+        # When the network output is reshaped, it is necessary to correct the value of self.output_size
+        if self.flatten == True:
+            self.output_size = int(np.prod(output_size[1:]))
+        else:
+            self.output_size = output_size
 
 # Template used for defining a hyperparameter training.
 class HyperTrainTemplate:
