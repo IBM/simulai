@@ -67,7 +67,7 @@ def model():
 class TestDeeponet(TestCase):
 
     def setUp(self) -> None:
-        self.errors = list()
+        pass
 
     def test_deeponet_forward(self):
 
