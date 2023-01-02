@@ -62,6 +62,12 @@ class TestConvNet1D(TestCase):
         def setUp(self) -> None:
             pass
 
+        def test_convnet_1d_n_parameters(self):
+
+            convnet = model()
+
+            assert type(convnet.n_parameters) == int
+
         def test_convnet_1d_eval(self):
 
             input_data, output_data = generate_data(n_samples=100, vector_size=16, n_inputs=1, n_outputs=16)
