@@ -388,6 +388,12 @@ class ConvNetworkTemplate(NetworkTemplate):
 
         self.name = name
 
+        # When no name is provided, it will employ a random number
+        # as model name
+        if self.name == None:
+
+            self.name = id(self)
+
         self.args = []
 
         # The operation coming before or in the sequence of each convolution layer can be
