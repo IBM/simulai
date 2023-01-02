@@ -36,9 +36,9 @@ class ConvolutionalNetwork(ConvNetworkTemplate):
     engine = 'torch'
 
     def __init__(self, layers:list=None, activations:list=None, case:str='2d', last_activation:str='identity',
-                       transpose:bool=False, name:str=None) -> None:
+                       transpose:bool=False, flatten:bool=False, name:str=None) -> None:
 
-        super(ConvolutionalNetwork, self).__init__(name=name)
+        super(ConvolutionalNetwork, self).__init__(name=name, flatten=flatten)
 
         self.args = ['in_channels', 'out_channels', 'kernel_size']
 
@@ -78,7 +78,7 @@ class ConvolutionalNetwork(ConvNetworkTemplate):
     @channels_dim
     def forward(self, input_data: Union[torch.Tensor, np.ndarray] = None) -> torch.Tensor:
 
-        return self.pipeline(input_data)
+        return self.flattener(input_data=self.pipeline(input_data))
 
 # Residual Version of the Convolution Networks considering constant dimensions
 class ResConvolutionalNetwork(ConvNetworkTemplate):
@@ -147,4 +147,4 @@ class ResConvolutionalNetwork(ConvNetworkTemplate):
 
             input_tensor_ = output_tensor
 
-        return input_tensor_
+        return self.flattener(input_data=input_tensor_)
