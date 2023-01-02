@@ -137,9 +137,12 @@ class SPFile:
                 raise Exception(f"There are {len(callables)} models in the module, please provide a value for name.")
             else:
                 Model = callables[name]()
-        else:
-
+                
+        elif len(callables) == 1:
             Model = list(callables.values())[0]()
+
+        else:
+            raise Exception("There is no model template in the module.")
 
         Model.load(save_dir=save_dir, name=name, device=device)
 
