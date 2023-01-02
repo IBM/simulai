@@ -114,7 +114,7 @@ class SPFile:
         # Saving the model coefficients
         model.save(save_dir=model_dir, name=name, device=device)
 
-    def read(self, model_path:str=None, device:str=None, name:str=None) -> NetworkTemplate:
+    def read(self, model_path:str=None, device:str=None, template_name:str=None) -> NetworkTemplate:
 
         """
         :param model_path: the complete path to the model
@@ -133,11 +133,11 @@ class SPFile:
         callables = {attr:getattr(module, attr) for attr in dir(module) if callable(getattr(module, attr))}
 
         if len(callables) > 1:
-            if  name == None:
+            if  template_name == None:
                 raise Exception(f"There are {len(callables)} models in the module, please provide a value for name.")
             else:
-                Model = callables[name]()
-                
+                Model = callables[template_name]()
+
         elif len(callables) == 1:
             Model = list(callables.values())[0]()
 
