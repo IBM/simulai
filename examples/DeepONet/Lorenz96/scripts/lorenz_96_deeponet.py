@@ -12,15 +12,10 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import warnings
-import os
 
 from scipy.integrate import odeint
-import matplotlib.pyplot as plt
-from matplotlib.colors import Normalize
 import numpy as np
 
-from simulai.models import DeepONet
 from simulai.io import IntersectingBatches
 from simulai.metrics import LyapunovUnits
 from simulai.optimization import Optimizer
@@ -60,7 +55,7 @@ discard = 1000
 T_max = 2000
 skip_size = 1
 Q = 100
-delta_t = 1 #Q*dt
+delta_t = 1
 n_epochs = 10_000
 lr = 1e-3
 save_dir = '/tmp'
@@ -157,13 +152,13 @@ def model():
     encoder_branch = SLFNN(input_size=n_inputs_b, output_size=100, activation=activation_eb)
 
     l96_net = DeepONet(trunk_network=trunk_net,
-                      branch_network=branch_net,
-                      encoder_trunk=encoder_trunk,
-                      encoder_branch=encoder_branch,
-                      var_dim=n_outputs,
-                      multiply_by_trunk=False,
-                      devices='gpu',
-                      model_id='l96_net')
+                       branch_network=branch_net,
+                       encoder_trunk=encoder_trunk,
+                       encoder_branch=encoder_branch,
+                       var_dim=n_outputs,
+                       multiply_by_trunk=False,
+                       devices='gpu',
+                       model_id='l96_net')
 
     # It prints a summary of the network features
     l96_net.summary()

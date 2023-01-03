@@ -106,7 +106,7 @@ parser.add_argument('--case', type=str)
 args = parser.parse_args()
 
 # The file format is not important
-# at this moment. Let us to use simple Numpy files
+# at this moment. Let us using simple Numpy files
 data_path = args.data_path
 save_path = args.save_path
 model_name = args.model_name

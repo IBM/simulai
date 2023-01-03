@@ -78,6 +78,8 @@ def model():
 
     autoencoder.summary(input_shape=[None, 3, 16, 16])
 
+    print(f"Network has {autoencoder.n_parameters} parameters.")
+
     return autoencoder
 
 class TestAutoencoder(TestCase):
@@ -127,7 +129,7 @@ class TestAutoencoder(TestCase):
         optimizer = Optimizer('adam', params=optimizer_config)
 
         optimizer.fit(op=autoencoder, input_data=data, target_data=data,
-                  n_epochs=n_epochs, loss="vaermse", params=params)
+                      n_epochs=n_epochs, loss="vaermse", params=params)
 
         saver = SPFile(compact=False)
         saver.write(save_dir="/tmp", name='autoencoder_rb_just_test', model=autoencoder, template=model)
