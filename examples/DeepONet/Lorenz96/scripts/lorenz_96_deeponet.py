@@ -25,6 +25,7 @@ from simulai.io import IntersectingBatches
 from simulai.metrics import LyapunovUnits
 from simulai.optimization import Optimizer
 from simulai.file import SPFile
+from simulai.metrics import L2Norm
 
 save_path = '/tmp'
 tol = 0.5
@@ -53,21 +54,23 @@ def Lorenz96(x, t):
 x0 = F * np.ones(N)  # Initial state (equilibrium)
 x0 += 0.01*np.random.rand(N)  # Add small perturbation to the first variable
 
+# Global parameters
 dt = 0.5
 discard = 1000
 T_max = 2000
 skip_size = 1
 Q = 100
-delta_t = Q*dt
-n_epochs = 1_000
+delta_t = 1 #Q*dt
+n_epochs = 10_000
 lr = 1e-3
-
 save_dir = '/tmp'
 model_name = 'L96'
 
+# Generating data
 t = np.arange(0.0, T_max, dt)
 lorenz_data = odeint(Lorenz96, x0, t)
 
+# Separating train and test datasets
 n_steps = t[t>=discard].shape[0]
 nt = int(0.5 * n_steps)
 nt_test = n_steps - nt
@@ -77,8 +80,14 @@ t_test = t[t>=discard][nt:]
 
 n_field = N
 
-train_field = lorenz_data[t>=discard][:nt]
-test_field = lorenz_data[t>=discard][nt:]
+train_field_ = lorenz_data[t>=discard][:nt]
+test_field_ = lorenz_data[t>=discard][nt:]
+
+max_value = train_field_.max(0)
+min_value = train_field_.min(0)
+
+train_field = 2*(train_field_ - min_value)/(max_value - min_value) - 1
+test_field = 2*(test_field_ - min_value)/(max_value - min_value) - 1
 
 time = np.linspace(0, delta_t, Q)
 
@@ -114,10 +123,10 @@ def model():
     n_inputs_b = 40
     n_outputs = 40
 
-    activation_t = 'sin'
-    activation_b = 'sin'
-    activation_et = 'sin'
-    activation_eb = 'sin'
+    activation_t = 'tanh'
+    activation_b = 'tanh'
+    activation_et = 'tanh'
+    activation_eb = 'tanh'
 
     # Configuration for the fully-connected trunk network
     trunk_config = {
@@ -159,12 +168,16 @@ def model():
     # It prints a summary of the network features
     l96_net.summary()
 
+    print(f"This network has: {l96_net.n_parameters} parameters.")
+
     return l96_net
 
+# Instantiating model
 l96_net = model()
 
+# Executing optimization
 batch_size = 1_000
-weights_ = (np.ones(train_output.shape[-1])).tolist() #np.max(np.abs(train_output), axis=0).tolist()
+weights_ = (np.ones(train_output.shape[-1])/40).tolist() #np.max(np.abs(train_output), axis=0).tolist()
 optimizer_config = {'lr': lr}
 params = {'lambda_1': 0., 'lambda_2': 1e-10, 'weights': weights_,
           'use_mean': True, 'relative': True}
@@ -177,5 +190,26 @@ optimizer = Optimizer('adam', params=optimizer_config,
 optimizer.fit(op=l96_net, input_data=input_data, target_data=train_output,
               n_epochs=n_epochs, loss="wrmse", params=params, device='gpu', batch_size=batch_size)
 
+# Saving model to disk
 saver = SPFile(compact=False)
 saver.write(save_dir=save_dir, name=model_name, model=l96_net, template=model)
+
+state = test_initial_states[0]
+
+# Composed time-extrapolation
+
+evaluations = list()
+
+for j in range(n_chunks_test):
+
+    evaluation = l96_net.eval(trunk_data=time[:, None], branch_data=np.tile(state, (Q, 1)))
+    state = evaluation[-1]
+    evaluations.append(evaluation)
+
+approximated = np.vstack(evaluations)
+
+l2_norm = L2Norm()
+
+error = 100*l2_norm(data=approximated, reference_data=test_field, relative_norm=True)
+
+print(f"Approximation error: {error} %")
