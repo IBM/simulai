@@ -123,10 +123,10 @@ def model():
     n_inputs_b = 40
     n_outputs = 40
 
-    activation_t = 'tanh'
-    activation_b = 'tanh'
-    activation_et = 'tanh'
-    activation_eb = 'tanh'
+    activation_t = 'sin'
+    activation_b = 'sin'
+    activation_et = 'sin'
+    activation_eb = 'sin'
 
     # Configuration for the fully-connected trunk network
     trunk_config = {
@@ -163,7 +163,7 @@ def model():
                       var_dim=n_outputs,
                       multiply_by_trunk=False,
                       devices='gpu',
-                      model_id='rb_net')
+                      model_id='l96_net')
 
     # It prints a summary of the network features
     l96_net.summary()
