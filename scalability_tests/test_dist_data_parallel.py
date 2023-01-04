@@ -66,4 +66,3 @@ for n in n_ranks_list:
 
     torch.distributed.init_process_group(backend='nccl', world_size=n)
 
-    

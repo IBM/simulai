@@ -16,12 +16,11 @@ import importlib
 from typing import Union, List, Tuple
 import numpy as np
 import torch
+from torch.distributed.optim import DistributedOptimizer
 from functools import reduce
-import warnings
 
 from simulai.abstract import Regression
 from simulai.abstract import Dataset
-from simulai.batching import BatchwiseSampler
 
 # Basic built-in optimization toolkit for SimulAI
 
@@ -375,7 +374,7 @@ class Optimizer:
                   target_data:Union[torch.Tensor, np.ndarray, callable]=None,
                   validation_data:Tuple[Union[torch.Tensor, np.ndarray, callable]]=None,
                   n_epochs:int=None, loss:str="rmse", params:dict=None, batch_size:int=None, device:str='cpu',
-                  device_ids:List[Union[str, int]]=None) -> None:
+                  distributed:bool=False) -> None:
 
         # When using inputs with the format h5py.Dataset
         if callable(input_data) and callable(target_data):
@@ -429,7 +428,11 @@ class Optimizer:
         # Guaranteeing the correct operator placement
         op = op.to(device)
 
-        self.optimizer_instance = self.optim_class(op.parameters(), **self.params)
+        # In a multi-device execution, the optimizer must be properly instantiated to execute distributed tasks.
+        if distributed == True:
+            self.optimizer_instance = DistributedOptimizer(self.optim_class, op.parameters(), **self.params)
+        else:
+            self.optimizer_instance = self.optim_class(op.parameters(), **self.params)
 
         # Configuring LR decay, when necessary
         lr_scheduler_class = self._get_lr_decay()
@@ -437,13 +440,6 @@ class Optimizer:
         if lr_scheduler_class is not None:
             print(f"Using LR decay {lr_scheduler_class}.")
             self.lr_decay_scheduler = lr_scheduler_class(self.optimizer_instance, **self.lr_decay_scheduler_params)
-        else:
-            pass
-
-        # Configuring the multi-device execution, when necessary
-        if device_ids is not None:
-            warnings.WarningMessage('The usage of multiple devices is still experimental.')
-            op = torch.nn.parallel.DistributedDataParallel(op, device_ids=device_ids, output_device=device)
         else:
             pass
 
