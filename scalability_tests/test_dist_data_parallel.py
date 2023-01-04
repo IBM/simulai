@@ -73,14 +73,14 @@ def model():
 
 backend = 'nccl'
 
-def execute_demo(n):
+def execute_demo(rank, world_size):
 
     os.environ['MASTER_ADDR'] = 'localhost'
     os.environ['MASTER_PORT'] = '12355'
 
-    dist = torch.distributed.init_process_group(backend=backend, rank=0, world_size=n)
+    dist = torch.distributed.init_process_group(backend=backend, rank=rank, world_size=world_size)
 
-    rank = torch.distributed.get_rank()
+    #rank = torch.distributed.get_rank()
     print(f"Executing DDP job in {rank}.")
 
     device_id = rank % torch.cuda.device_count()
@@ -114,7 +114,7 @@ def execute_demo(n):
 if __name__ == "__main__":
 
     n_ranks_list = [2, 4, 8]
-    
+
     for n in n_ranks_list:
 
         mp.spawn(execute_demo, args=(n,), nprocs=n, join=True)
