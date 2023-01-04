@@ -67,6 +67,9 @@ def execute_demo():
         dist = torch.distributed.init_process_group(backend=backend, world_size=n)
 
         rank = dist.get_rank()
+        print(f"Executing DDP job in {rank}.")
+
+        rank = dist.get_rank()
 
         device_id = rank % torch.cuda.device_count()
 
@@ -92,7 +95,7 @@ def execute_demo():
         ### Training
         current_time = time.time()
         optimizer.fit(op=ddp_net, input_data=input_data, target_data=output_data,
-                      n_epochs=n_epochs, loss="rmse", params=params, batch_size=batch_siz\e)
+                      n_epochs=n_epochs, loss="rmse", params=params, batch_size=batch_size)
         elapsed_time = time.time() - elapsed_time
 
         print(f"Elapsed time for {n} ranks: {elapsed_time} s.")
