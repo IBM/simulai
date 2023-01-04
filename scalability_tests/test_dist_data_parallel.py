@@ -86,7 +86,7 @@ def execute_demo():
         optimizer_config = {'lr': lr}
 
         # Generating datasets
-        input_data, output_data = generate_data(n_samples=n_samples image_size=(16, 16), n_inputs=1, n_outputs=16)
+        input_data, output_data = generate_data(n_samples=n_samples, image_size=(16, 16), n_inputs=1, n_outputs=16)
 
 
         ### Training
@@ -96,7 +96,7 @@ def execute_demo():
         elapsed_time = time.time() - elapsed_time
 
         print(f"Elapsed time for {n} ranks: {elapsed_time} s.")
-        
+
 if __name__ = "__main__":
 
     execute_demo()
