@@ -436,7 +436,7 @@ class Optimizer:
             self.optimizer_instance = DistributedOptimizer(self.optim_class, optimizer_params, **self.params)
 
         else:
-            # Guaranteeing the correct operator placement
+            # Guaranteeing the correct operator placement when using a single device
             op = op.to(device)
 
             self.optimizer_instance = self.optim_class(op.parameters(), **self.params)

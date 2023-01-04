@@ -1,4 +1,5 @@
 import torch
+from torch.nn.parallel import DistributedDataParallel as DDP
 
 if not torch.cuda.is_available():
     raise Exception("There is no gpu available to execute the tests.")
