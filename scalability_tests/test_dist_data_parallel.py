@@ -64,12 +64,11 @@ backend = 'nccl'
 def execute_demo():
     for n in n_ranks_list:
 
-        dist = torch.distributed.init_process_group(backend=backend, world_size=n)
-
         rank = dist.get_rank()
         print(f"Executing DDP job in {rank}.")
 
-        rank = dist.get_rank()
+        dist = torch.distributed.init_process_group(backend=backend, rank=rank, world_size=n)
+
 
         device_id = rank % torch.cuda.device_count()
 
@@ -100,6 +99,6 @@ def execute_demo():
 
         print(f"Elapsed time for {n} ranks: {elapsed_time} s.")
 
-if __name__ = "__main__":
+if __name__ == "__main__":
 
     execute_demo()
