@@ -1,10 +1,21 @@
 import os
 import time
+import numpy as np
 import torch
 from torch.nn.parallel import DistributedDataParallel as DDP
 
+from simulai.optimization import Optimizer
+
 if not torch.cuda.is_available():
     raise Exception("There is no gpu available to execute the tests.")
+
+def generate_data(n_samples:int=None, vector_size:int=None,
+                  n_inputs:int=None, n_outputs:int=None) -> (torch.Tensor, torch.Tensor):
+
+    input_data = np.random.rand(n_samples, n_inputs, vector_size)
+    output_data = np.random.rand(n_samples, n_outputs)
+
+    return torch.from_numpy(input_data.astype(np.float32)), torch.from_numpy(output_data.astype(np.float32))
 
 # DeepONet with a FNN as trunk and a CNN as branch
 def model():
@@ -79,16 +90,17 @@ def execute_demo():
 
         ddp_net = DDP(net, device_ids=[device_id])
 
-        # Instantiating optimizer
-        params = {'lambda_1': 0., 'lambda_2': 0.}
-        optimizer = Optimizer('adam', params=optimizer_config)
-
         n_epochs = 100
 
         n_samples = 100_000
         batch_size=1_000
         lr = 1e-3  # Initial learning rate for the ADAM algorithm
         optimizer_config = {'lr': lr}
+
+        # Instantiating optimizer
+        params = {'lambda_1': 0., 'lambda_2': 0.}
+        optimizer_config = {'lr': lr}
+        optimizer = Optimizer('adam', params=optimizer_config)
 
         # Generating datasets
         input_data, output_data = generate_data(n_samples=n_samples, image_size=(16, 16), n_inputs=1, n_outputs=16)
@@ -98,7 +110,7 @@ def execute_demo():
         current_time = time.time()
         optimizer.fit(op=ddp_net, input_data=input_data, target_data=output_data,
                       n_epochs=n_epochs, loss="rmse", params=params, batch_size=batch_size)
-        elapsed_time = time.time() - elapsed_time
+        elapsed_time = time.time() - current_time
 
         print(f"Elapsed time for {n} ranks: {elapsed_time} s.")
 
