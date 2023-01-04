@@ -19,6 +19,10 @@ from simulai.file import SPFile
 from simulai.metrics import L2Norm
 from simulai.optimization import Optimizer
 
+from utils import configure_device
+
+DEVICE = configure_device()
+
 # Model template
 def model():
     from simulai.regression import ResDenseNetwork as DenseNetwork
@@ -167,7 +171,7 @@ class TestDenseNetwork(TestCase):
         optimizer = Optimizer('adam', params=optimizer_config)
 
         optimizer.fit(op=net, input_data=input_train, target_data=output_train,
-                      n_epochs=n_epochs, loss="rmse", params=params, batch_size=1_000)
+                      n_epochs=n_epochs, loss="rmse", params=params, batch_size=1_000, device=DEVICE)
 
         # First evaluation
         approximated_data = net.eval(input_data=positions)

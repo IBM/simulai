@@ -20,6 +20,9 @@ import torch
 from simulai.file import SPFile
 from simulai.optimization import Optimizer
 
+from utils import configure_device
+
+DEVICE = configure_device()
 
 def generate_data(n_samples:int=None, image_size:tuple=None,
                   n_inputs:int=None, n_outputs:int=None) -> (torch.Tensor, torch.Tensor):
@@ -121,7 +124,7 @@ class TestConvNet2D(TestCase):
 
             ### Training
             optimizer.fit(op=convnet, input_data=input_data, target_data=output_data,
-                          n_epochs=n_epochs, loss="rmse", params=params, batch_size=10, device='gpu')
+                          n_epochs=n_epochs, loss="rmse", params=params, batch_size=10, device=DEVICE)
 
             ### Evaluating
             estimated_output_data = convnet.eval(input_data=input_data)

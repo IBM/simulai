@@ -16,9 +16,9 @@ import numpy as np
 from unittest import TestCase
 import torch
 
-from simulai.file import SPFile
-from simulai.metrics import L2Norm
-from simulai.optimization import Optimizer
+from utils import configure_device
+
+DEVICE = configure_device()
 
 # Model template
 def model():
@@ -151,7 +151,7 @@ class TestDeeponet(TestCase):
         net = model()
 
         optimizer.fit(op=net, input_data=input_data, target_data=output_target,
-                      n_epochs=n_epochs, loss="wrmse", params=params, device='gpu')
+                      n_epochs=n_epochs, loss="wrmse", params=params, device=DEVICE)
 
         output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
 
@@ -196,7 +196,7 @@ class TestDeeponet_with_Conv(TestCase):
         net = model_conv()
 
         optimizer.fit(op=net, input_data=input_data, target_data=output_target,
-                      n_epochs=n_epochs, loss="wrmse", params=params, device='gpu')
+                      n_epochs=n_epochs, loss="wrmse", params=params, device=DEVICE)
 
         output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
 
