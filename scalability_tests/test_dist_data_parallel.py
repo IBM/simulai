@@ -1,4 +1,5 @@
 import torch
+from torch.nn.parallel import DistributedDataParallel as DDP
 
 if not torch.cuda.is_available():
     raise Exception("There is no gpu available to execute the tests.")
@@ -66,4 +67,3 @@ for n in n_ranks_list:
 
     torch.distributed.init_process_group(backend='nccl', world_size=n)
 
-    

@@ -16,12 +16,12 @@ import importlib
 from typing import Union, List, Tuple
 import numpy as np
 import torch
+from torch.distributed.optim import DistributedOptimizer
+from torch.distributed.rpc import RRef
 from functools import reduce
-import warnings
 
 from simulai.abstract import Regression
 from simulai.abstract import Dataset
-from simulai.batching import BatchwiseSampler
 
 # Basic built-in optimization toolkit for SimulAI
 
@@ -281,7 +281,7 @@ class Optimizer:
     def _optimization_loop(self, n_epochs:int=None, loss_function=None, validation_loss_function=None) -> None:
 
         for epoch in range(n_epochs):
-            self.optimizer_instance.zero_grad()
+            #self.optimizer_instance.zero_grad()
             self.optimizer_instance.step(loss_function)
 
     # Basic version of the mini-batch optimization loop
@@ -336,7 +336,7 @@ class Optimizer:
 
             for ibatch in batches:
 
-                self.optimizer_instance.zero_grad()
+                #self.optimizer_instance.zero_grad()
 
                 indices = samples_permutation[ibatch]
                 input_batch = self._batchwise_make_input_data(input_data, device=device, batch_indices=indices)
@@ -375,7 +375,7 @@ class Optimizer:
                   target_data:Union[torch.Tensor, np.ndarray, callable]=None,
                   validation_data:Tuple[Union[torch.Tensor, np.ndarray, callable]]=None,
                   n_epochs:int=None, loss:str="rmse", params:dict=None, batch_size:int=None, device:str='cpu',
-                  device_ids:List[Union[str, int]]=None) -> None:
+                  distributed:bool=False) -> None:
 
         # When using inputs with the format h5py.Dataset
         if callable(input_data) and callable(target_data):
@@ -426,10 +426,20 @@ class Optimizer:
         if not 'device' in params:
             params['device'] = device
 
-        # Guaranteeing the correct operator placement
-        op = op.to(device)
+        # In a multi-device execution, the optimizer must be properly instantiated to execute distributed tasks.
+        if distributed == True:
 
-        self.optimizer_instance = self.optim_class(op.parameters(), **self.params)
+            optimizer_params = list()
+            for param in op.parameters():
+                optimizer_params.append(RRef(param))
+
+            self.optimizer_instance = DistributedOptimizer(self.optim_class, optimizer_params, **self.params)
+
+        else:
+            # Guaranteeing the correct operator placement when using a single device
+            op = op.to(device)
+
+            self.optimizer_instance = self.optim_class(op.parameters(), **self.params)
 
         # Configuring LR decay, when necessary
         lr_scheduler_class = self._get_lr_decay()
@@ -437,13 +447,6 @@ class Optimizer:
         if lr_scheduler_class is not None:
             print(f"Using LR decay {lr_scheduler_class}.")
             self.lr_decay_scheduler = lr_scheduler_class(self.optimizer_instance, **self.lr_decay_scheduler_params)
-        else:
-            pass
-
-        # Configuring the multi-device execution, when necessary
-        if device_ids is not None:
-            warnings.WarningMessage('The usage of multiple devices is still experimental.')
-            op = torch.nn.parallel.DistributedDataParallel(op, device_ids=device_ids, output_device=device)
         else:
             pass
 
