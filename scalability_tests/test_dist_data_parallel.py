@@ -1,3 +1,4 @@
+import os
 import time
 import torch
 from torch.nn.parallel import DistributedDataParallel as DDP
@@ -64,11 +65,13 @@ backend = 'nccl'
 def execute_demo():
     for n in n_ranks_list:
 
-        rank = dist.get_rank()
+        os.environ['MASTER_ADDR'] = 'localhost'
+        os.environ['MASTER_PORT'] = '12355'
+
+        dist = torch.distributed.init_process_group(backend=backend, rank=0, world_size=n)
+        
+        rank = torch.distributed.get_rank()
         print(f"Executing DDP job in {rank}.")
-
-        dist = torch.distributed.init_process_group(backend=backend, rank=rank, world_size=n)
-
 
         device_id = rank % torch.cuda.device_count()
 
