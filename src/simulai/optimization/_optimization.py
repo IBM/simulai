@@ -17,6 +17,7 @@ from typing import Union, List, Tuple
 import numpy as np
 import torch
 from torch.distributed.optim import DistributedOptimizer
+from torch.distributed.rpc import RRef
 from functools import reduce
 
 from simulai.abstract import Regression
@@ -280,7 +281,7 @@ class Optimizer:
     def _optimization_loop(self, n_epochs:int=None, loss_function=None, validation_loss_function=None) -> None:
 
         for epoch in range(n_epochs):
-            self.optimizer_instance.zero_grad()
+            #self.optimizer_instance.zero_grad()
             self.optimizer_instance.step(loss_function)
 
     # Basic version of the mini-batch optimization loop
@@ -335,7 +336,7 @@ class Optimizer:
 
             for ibatch in batches:
 
-                self.optimizer_instance.zero_grad()
+                #self.optimizer_instance.zero_grad()
 
                 indices = samples_permutation[ibatch]
                 input_batch = self._batchwise_make_input_data(input_data, device=device, batch_indices=indices)
@@ -425,13 +426,19 @@ class Optimizer:
         if not 'device' in params:
             params['device'] = device
 
-        # Guaranteeing the correct operator placement
-        op = op.to(device)
-
         # In a multi-device execution, the optimizer must be properly instantiated to execute distributed tasks.
         if distributed == True:
-            self.optimizer_instance = DistributedOptimizer(self.optim_class, op.parameters(), **self.params)
+
+            optimizer_params = list()
+            for param in op.parameters():
+                optimizer_params.append(RRef(param))
+
+            self.optimizer_instance = DistributedOptimizer(self.optim_class, optimizer_params, **self.params)
+
         else:
+            # Guaranteeing the correct operator placement
+            op = op.to(device)
+
             self.optimizer_instance = self.optim_class(op.parameters(), **self.params)
 
         # Configuring LR decay, when necessary
