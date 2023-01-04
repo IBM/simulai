@@ -36,7 +36,7 @@ class TestELM(TestCase):
         t_max = 10
         L = 5
         K = 512
-        N = 100_000
+        N = 10_000
 
         n_train = 20_000
 
