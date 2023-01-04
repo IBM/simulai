@@ -1,3 +1,4 @@
+import time
 import torch
 from torch.nn.parallel import DistributedDataParallel as DDP
 
@@ -58,12 +59,44 @@ def model():
     return net
 
 n_ranks_list = [2, 4, 8]
+backend = 'nccl'
 
-for n in n_ranks_list:
+def execute_demo():
+    for n in n_ranks_list:
 
-    net = model()
+        dist = torch.distributed.init_process_group(backend=backend, world_size=n)
 
-    torch.cuda.set_device(1)
+        rank = dist.get_rank()
 
-    torch.distributed.init_process_group(backend='nccl', world_size=n)
+        device_id = rank % torch.cuda.device_count()
 
+        net = model().to(device_id)
+
+        ddp_net = DDP(net, device_ids=[device_id])
+
+        # Instantiating optimizer
+        params = {'lambda_1': 0., 'lambda_2': 0.}
+        optimizer = Optimizer('adam', params=optimizer_config)
+
+        n_epochs = 100
+
+        n_samples = 100_000
+        batch_size=1_000
+        lr = 1e-3  # Initial learning rate for the ADAM algorithm
+        optimizer_config = {'lr': lr}
+
+        # Generating datasets
+        input_data, output_data = generate_data(n_samples=n_samples image_size=(16, 16), n_inputs=1, n_outputs=16)
+
+
+        ### Training
+        current_time = time.time()
+        optimizer.fit(op=ddp_net, input_data=input_data, target_data=output_data,
+                      n_epochs=n_epochs, loss="rmse", params=params, batch_size=batch_siz\e)
+        elapsed_time = time.time() - elapsed_time
+
+        print(f"Elapsed time for {n} ranks: {elapsed_time} s.")
+        
+if __name__ = "__main__":
+
+    execute_demo()

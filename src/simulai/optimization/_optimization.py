@@ -281,7 +281,7 @@ class Optimizer:
     def _optimization_loop(self, n_epochs:int=None, loss_function=None, validation_loss_function=None) -> None:
 
         for epoch in range(n_epochs):
-            #self.optimizer_instance.zero_grad()
+            self.optimizer_instance.zero_grad()
             self.optimizer_instance.step(loss_function)
 
     # Basic version of the mini-batch optimization loop
@@ -336,7 +336,7 @@ class Optimizer:
 
             for ibatch in batches:
 
-                #self.optimizer_instance.zero_grad()
+                self.optimizer_instance.zero_grad()
 
                 indices = samples_permutation[ibatch]
                 input_batch = self._batchwise_make_input_data(input_data, device=device, batch_indices=indices)
