@@ -67,6 +67,7 @@ venv
 *.run
 notebooks/.ipynb_checkpoints/*
 Output/*
+ignore_tests/*
 
 #src/*
 unit_tests/data/*
