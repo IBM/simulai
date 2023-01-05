@@ -108,12 +108,25 @@ def execute_demo(rank, world_size):
                   n_epochs=n_epochs, loss="rmse", params=params, batch_size=batch_size)
     elapsed_time = time.time() - current_time
 
-    print(f"Elapsed time for {n} ranks: {elapsed_time} s.")
+    print(f"Elapsed time for {rank} ranks: {elapsed_time} s.")
+
+def exec(kind, n_ranks_list):
+
+    if kind == 'multiprocess':
+        n_ranks = 1
+
+        for n in n_ranks_list:
+            mp.spawn(execute_demo, args=(n_ranks,), nprocs=n, join=True)
+
+    elif kind == 'distributed':
+
+        for n in n_ranks_list:
+            mp.spawn(execute_demo, args=(n,), nprocs=n, join=True)
 
 if __name__ == "__main__":
 
     n_ranks_list = [2, 4, 8]
 
-    for n in n_ranks_list:
+    exec('multiprocess', n_ranks_list)
 
-        mp.spawn(execute_demo, args=(1,), nprocs=n, join=True)
+    exec('distributed', n_ranks_list)
