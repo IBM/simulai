@@ -309,7 +309,7 @@ class CenteredDerivative:
 # It interpolates the derivatives using splines and derive it
 class CollocationDerivative:
 
-    def __init__(self, config:dict=None) -> None:
+    def __init__(self, config:dict=None, k:int=3) -> None:
 
         """Derivative using splines to interpolate the function to be differentiated
 
@@ -320,6 +320,7 @@ class CollocationDerivative:
 
         self.step = None
         self.t = None
+        self.k = k
 
         if 'step' in config.keys():
             self.step = config['step']
@@ -375,7 +376,7 @@ class CollocationDerivative:
 
         for i in range(data.shape[1]):
 
-            intp = ius(self.t, data[:, i])
+            intp = ius(self.t, data[:, i], k=self.k)
             dintp = intp.derivative()
             intp_list.append(dintp(self.t)[:, None])
 
@@ -410,7 +411,7 @@ class CollocationDerivative:
 
         for i in range(data.shape[1]):
 
-            intp = ius(self.t, data[:, i])
+            intp = ius(self.t, data[:, i], k=self.k)
             dintp = intp.derivative()
 
             intp_list.append(intp(x)[:, None])

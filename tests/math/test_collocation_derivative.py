@@ -114,15 +114,21 @@ class TestCollocationDerivative(TestCase):
             U, U_t = self.generate_field(x, y, t, omega_t)
             U_, U_t_ = self.generate_field(x, y, t_, omega_t)
 
-            diff_op = CollocationDerivative(config={})
+            kk = [1,2,3]
 
-            _, U_t_est = diff_op.interpolate_and_solve(data=U, x_grid=t, x=t_)
+            for k in kk:
 
-            print("Derivatives evaluated.")
+                print(f"Using splines of degree k={k}")
+                
+                diff_op = CollocationDerivative(config={}, k=k)
 
-            l2_norm = L2Norm()
+                _, U_t_est = diff_op.interpolate_and_solve(data=U, x_grid=t, x=t_)
 
-            error = l2_norm(data=U_t_est, reference_data=U_t_, relative_norm=True)
+                print("Derivatives evaluated.")
 
-            print(f"Evaluation relative error for N={N} and N_t={Nt}: {100*error} %")
+                l2_norm = L2Norm()
+
+                error = l2_norm(data=U_t_est, reference_data=U_t_, relative_norm=True)
+
+                print(f"Evaluation relative error for N={N} and N_t={Nt}: {100*error} %")
 
