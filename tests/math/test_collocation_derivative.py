@@ -114,12 +114,12 @@ class TestCollocationDerivative(TestCase):
             U, U_t = self.generate_field(x, y, t, omega_t)
             U_, U_t_ = self.generate_field(x, y, t_, omega_t)
 
-            kk = [1,2,3]
+            kk = [1, 2, 3, 4, 5]
 
             for k in kk:
 
                 print(f"Using splines of degree k={k}")
-                
+
                 diff_op = CollocationDerivative(config={}, k=k)
 
                 _, U_t_est = diff_op.interpolate_and_solve(data=U, x_grid=t, x=t_)
