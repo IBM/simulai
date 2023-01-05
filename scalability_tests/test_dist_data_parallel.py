@@ -88,10 +88,10 @@ def execute_demo(rank, world_size):
 
     ddp_net = DDP(net, device_ids=[device_id])
 
-    n_epochs = 100
+    n_epochs = 50_000
 
     n_samples = 100_000
-    batch_size=1_000
+    batch_size = 1_000
     lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
     # Instantiating optimizer
@@ -116,4 +116,4 @@ if __name__ == "__main__":
 
     for n in n_ranks_list:
 
-        mp.spawn(execute_demo, args=(n,), nprocs=n, join=True)
+        mp.spawn(execute_demo, args=(1,), nprocs=n, join=True)
