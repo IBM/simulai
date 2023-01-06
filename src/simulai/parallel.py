@@ -63,32 +63,23 @@ class PipelineMPI:
     # The workload can be executed serially in each worker node
     def _split_kwargs(self, kwargs:dict, rank:int, size:int, total_size:int) -> (dict, int):
 
+        # Decrement rank and size by 1, because they are usually 0-indexed in Python
         size -= 1
         rank -= 1
 
-        batch_size_float = total_size/size
-        # If the number of instances cannot be equally distributed between
-        # the ranks, redistribute the residual
-        if batch_size_float % size != 0:
+        # Calculate batch size and remainder using divmod() function
+        batch_size, remainder = divmod(total_size, size)
 
-            res = total_size % size
-            batch_size = int((total_size - res)/size)
-
-            if (total_size - res) == (rank+1)*batch_size:
-                 append = res
-            else:
-                 append = 0
-
-            kwargs_batch = {key: value[rank*batch_size:(rank+1)*batch_size + append]
-                                 for key, value in kwargs.items()}
-            batch_size += append
+        # If rank is less than remainder, calculate kwargs_batch using batch size + 1
+        if rank < remainder:
+            kwargs_batch = {key: value[rank*(batch_size+1):(rank+1)*(batch_size+1)] for key, value in kwargs.items()}
+            return kwargs_batch, batch_size+1
+        # If rank is not less than remainder, calculate kwargs_batch using batch size
         else:
-            batch_size = int(batch_size_float)
-
-            kwargs_batch = {key: value[rank * batch_size:(rank + 1) * batch_size]
-                            for key, value in kwargs.items()}
+         kwargs_batch = {key: value[remainder*(batch_size+1) + (rank-remainder)*batch_size:(rank-remainder+1)*batch_size] for key, value in kwargs.items()}
 
         return kwargs_batch, batch_size
+
 
     def _attribute_dict_output(self, dicts:list=None) -> None:
 
