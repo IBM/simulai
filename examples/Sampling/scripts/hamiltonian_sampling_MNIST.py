@@ -1,5 +1,6 @@
 import os
 import numpy as np
+from argparse import ArgumentParser
 
 from simulai.optimization import Optimizer
 from simulai.metrics import L2Norm
@@ -133,13 +134,20 @@ def eval_autoencoder(model_name:str=None, test_data:np.ndarray=None):
     
 if __name__ == "__main__":
 
-    data = np.load('/tmp/mnist.npz')
+    # Reading command line arguments.
+    parser = ArgumentParser(description="Reading input parameters")
+
+    parser.add_argument('--data_path', type=str, help="Path to the dataset", default='/tmp/mnist.npz')
+    args = parser.parse_args()
+    data_path = args.data_path
+
+    data = np.load(data_path)
     model_name = 'autoencoder_mnist'
     train_data = data['x_train'][:, None, ...]
     test_data = data['x_test'][:, None, ...]
 
-    n_epochs = 10
-    batch_size = 10
+    n_epochs = 10_000
+    batch_size = 1_000
 
     train_autoencoder_mnist(train_data=train_data, test_data=test_data, model_name=model_name,
                             n_epochs=n_epochs, batch_size=batch_size)
