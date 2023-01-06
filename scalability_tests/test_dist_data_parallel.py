@@ -8,7 +8,7 @@ import torch.multiprocessing as mp
 from simulai.optimization import Optimizer
 
 if not torch.cuda.is_available():
-    raise Exception("There is no gpu available to execute the tests.")
+    raise Exception("There is no GPU available to execute the tests.")
 
 def generate_data(n_samples:int=None, image_size:tuple=None,
                   n_inputs:int=None, n_outputs:int=None) -> (torch.Tensor, torch.Tensor):
@@ -17,6 +17,7 @@ def generate_data(n_samples:int=None, image_size:tuple=None,
     output_data = np.random.rand(n_samples, n_outputs)
 
     return torch.from_numpy(input_data.astype(np.float32)), torch.from_numpy(output_data.astype(np.float32))
+
 # DeepONet with a FNN as trunk and a CNN as branch
 def model():
 
