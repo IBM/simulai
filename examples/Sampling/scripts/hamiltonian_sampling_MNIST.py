@@ -77,7 +77,7 @@ def model():
 
     return autoencoder
 
-def train_autoencoder_mnist(train_data:np.ndarray=None, test_data:np.ndarray=None,
+def train_autoencoder_mnist(train_data:np.ndarray=None, test_data:np.ndarray=None, path:str=None,
                             model_name:str=None, n_epochs:int=None, batch_size:int=None):
 
     lr = 1e-3
@@ -95,7 +95,7 @@ def train_autoencoder_mnist(train_data:np.ndarray=None, test_data:np.ndarray=Non
                   n_epochs=n_epochs, loss="vaermse", params=params, batch_size=batch_size, device='gpu')
 
     saver = SPFile(compact=False)
-    saver.write(save_dir="/tmp", name=model_name, model=autoencoder, template=model)
+    saver.write(save_dir=path, name=model_name, model=autoencoder, template=model)
 
     estimated_test_data = autoencoder.eval(input_data=test_data)
 
@@ -105,10 +105,10 @@ def train_autoencoder_mnist(train_data:np.ndarray=None, test_data:np.ndarray=Non
 
     print(f'Projection error: {error} %')
 
-def eval_autoencoder(model_name:str=None, test_data:np.ndarray=None):
+def eval_autoencoder(model_name:str=None, test_data:np.ndarray=None, path:str=None):
 
     saver = SPFile(compact=False)
-    autoencoder = saver.read(model_path=os.path.join('/tmp', model_name))
+    autoencoder = saver.read(model_path=os.path.join(path, model_name))
     autoencoder.summary(input_shape=list(test_data.shape))
 
     Mu = autoencoder.Mu(input_data=test_data)
@@ -141,6 +141,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     data_path = args.data_path
 
+    path = os.path.basename(data_path)
+
     data = np.load(data_path)
     model_name = 'autoencoder_mnist'
     train_data = data['x_train'][:, None, ...]
@@ -149,7 +151,7 @@ if __name__ == "__main__":
     n_epochs = 10_000
     batch_size = 1_000
 
-    train_autoencoder_mnist(train_data=train_data, test_data=test_data, model_name=model_name,
+    train_autoencoder_mnist(train_data=train_data, test_data=test_data, model_name=model_name, path=path,
                             n_epochs=n_epochs, batch_size=batch_size)
 
-    eval_autoencoder(model_name=model_name, test_data=test_data)
+    #eval_autoencoder(model_name=model_name, test_data=test_data)
