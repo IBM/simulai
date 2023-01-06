@@ -77,11 +77,9 @@ def model():
     return autoencoder
 
 def train_autoencoder_mnist(train_data:np.ndarray=None, test_data:np.ndarray=None,
-                            model_name:str=None):
+                            model_name:str=None, n_epochs:int=None, batch_size:int=None):
 
     lr = 1e-3
-    n_epochs = 10
-    batch_size = 1_0
 
     autoencoder = model()
 
@@ -112,7 +110,7 @@ def eval_autoencoder(model_name:str=None, test_data:np.ndarray=None):
     autoencoder = saver.read(model_path=os.path.join('/tmp', model_name))
     autoencoder.summary(input_shape=list(test_data.shape))
 
-    Mu = autoencoder_reload.Mu(input_data=data)
+    Mu = autoencoder.Mu(input_data=test_data)
 
     # Evaluating latent variables
     G_z = G_metric(k=50, tau=0.001, lambd=1, model=autoencoder, input_data=test_data)
@@ -120,19 +118,19 @@ def eval_autoencoder(model_name:str=None, test_data:np.ndarray=None):
     hamiltonian = HamiltonianEquations(metric=G_z)
 
     n_steps = 10
-    N = 100
+    N = 10
     e_lf = 0.01
 
     integrator = LeapFrogIntegrator(system=hamiltonian, n_steps=n_steps, e_lf=e_lf)
     sampler = HMC(integrator=integrator, N=N)
-    Mu = autoencoder_reload.Mu(input_data=data)
 
     z_sampled = sampler.solve(z_0=Mu[100])
 
     reconstructed = autoencoder.reconstruct(input_data=z_sampled)
     reconstructed_ = autoencoder.reconstruct(input_data=Mu[100])
 
-
+    assert reconstructed_ - reconstructed
+    
 if __name__ == "__main__":
 
     data = np.load('/tmp/mnist.npz')
@@ -140,5 +138,10 @@ if __name__ == "__main__":
     train_data = data['x_train'][:, None, ...]
     test_data = data['x_test'][:, None, ...]
 
-    train_autoencoder_mnist(train_data=train_data, test_data=test_data, model_name=model_name)
+    n_epochs = 10
+    batch_size = 10
+
+    train_autoencoder_mnist(train_data=train_data, test_data=test_data, model_name=model_name,
+                            n_epochs=n_epochs, batch_size=batch_size)
+
     eval_autoencoder(model_name=model_name, test_data=test_data)
