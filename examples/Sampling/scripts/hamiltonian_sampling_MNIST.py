@@ -4,6 +4,7 @@ import numpy as np
 from simulai.optimization import Optimizer
 from simulai.metrics import L2Norm
 from simulai.file import SPFile
+from simulai.sampling import HMC, G_metric, LeapFrogIntegrator, HamiltonianEquations
 
 def model():
 
@@ -79,8 +80,8 @@ def train_autoencoder_mnist(train_data:np.ndarray=None, test_data:np.ndarray=Non
                             model_name:str=None):
 
     lr = 1e-3
-    n_epochs = 10_00
-    batch_size = 1_000
+    n_epochs = 10
+    batch_size = 1_0
 
     autoencoder = model()
 
@@ -109,8 +110,28 @@ def eval_autoencoder(model_name:str=None, test_data:np.ndarray=None):
 
     saver = SPFile(compact=False)
     autoencoder = saver.read(model_path=os.path.join('/tmp', model_name))
+    autoencoder.summary(input_shape=list(test_data.shape))
 
-    print('')
+    Mu = autoencoder_reload.Mu(input_data=data)
+
+    # Evaluating latent variables
+    G_z = G_metric(k=50, tau=0.001, lambd=1, model=autoencoder, input_data=test_data)
+
+    hamiltonian = HamiltonianEquations(metric=G_z)
+
+    n_steps = 10
+    N = 100
+    e_lf = 0.01
+
+    integrator = LeapFrogIntegrator(system=hamiltonian, n_steps=n_steps, e_lf=e_lf)
+    sampler = HMC(integrator=integrator, N=N)
+    Mu = autoencoder_reload.Mu(input_data=data)
+
+    z_sampled = sampler.solve(z_0=Mu[100])
+
+    reconstructed = autoencoder.reconstruct(input_data=z_sampled)
+    reconstructed_ = autoencoder.reconstruct(input_data=Mu[100])
+
 
 if __name__ == "__main__":
 
@@ -119,5 +140,5 @@ if __name__ == "__main__":
     train_data = data['x_train'][:, None, ...]
     test_data = data['x_test'][:, None, ...]
 
-    train_autoencoder_mnist(train_data=train_data, test_data=test_data)
+    train_autoencoder_mnist(train_data=train_data, test_data=test_data, model_name=model_name)
     eval_autoencoder(model_name=model_name, test_data=test_data)

@@ -1,1 +1,1 @@
-from _hamiltonian_sampling import *
+from ._hamiltonian_sampling import *
