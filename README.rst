@@ -8,7 +8,7 @@
 .. image:: figs/coverage.svg
    :target: tests/ 
     
-.. image:: figs/logo_2.svg
+.. image:: figs/logo.svg
 
 A Python package with data-driven pipelines for physics-informed machine learning.
 
