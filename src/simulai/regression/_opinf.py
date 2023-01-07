@@ -12,7 +12,7 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-from typing import Optional
+from typing import Optional, Union
 import os
 import pickle
 import psutil
@@ -39,7 +39,7 @@ from simulai.parallel import PipelineMPI
 class OpInf:
 
     def __init__(self, forcing:str=None, bias_rescale:float=1,
-                       solver:str=None, parallel: Union[str, None]=None,
+                       solver:Union[str, callable]=None, parallel: Union[str, None]=None,
                        show_log:bool=False, engine:str='numpy') -> None:
 
         """Operator Inference (OpInf)
@@ -48,8 +48,8 @@ class OpInf:
         :type forcing: str
         :param bias_rescale: factor for rescaling the linear coefficients (c_hat)
         :type bias_rescale: float
-        :param solver: solver to be used for solving the global system, e. g. 'lstsq'
-        :type solver: str
+        :param solver: solver to be used for solving the global system, e. g. 'lstsq'.
+        :type solver: Union[str, callable]
         :param parallel: the kind of parallelism to be used (currently, 'mpi' or None)
         :type parallel: str
         :param engine: the engine to be used for constructing the global system (currently just 'numpy')
@@ -698,103 +698,114 @@ class OpInf:
         :type Lambda: np.ndarray
         """
 
-        self.construct(input_data=input_data, target_data=target_data, forcing_data=forcing_data)
-
-
-        # Constructing the system operators
-        if self.solver_nature == 'memory':
-
-            # This operation can require a large memory footprint, so it also can be executed
-            # in chunks and, eventually, in parallel.
-
-            if isinstance(batch_size, int):
-                construct_operators = self._incremental_construct_operators
-            else:
-                construct_operators = self._construct_operators
-
-            if self.D_o is None and self.R_matrix is None:
-                D_o, R_matrix = construct_operators(input_data=input_data, target_data=target_data,
-                                                    forcing_data=forcing_data, batch_size=batch_size)
-                self.D_o = D_o
-                self.R_matrix = R_matrix
-
-            if type(self.D_o) == np.ndarray and type(self.R_matrix) == np.ndarray and fit_partial is True:
-                D_o, R_matrix = construct_operators(input_data=input_data, target_data=target_data,
-                                                    forcing_data=forcing_data, batch_size=batch_size)
-                self.D_o += D_o
-                self.R_matrix += R_matrix
-            else:
-                D_o = self.D_o
-                R_matrix = self.R_matrix
-                self.continuing = 1
-
-            # If just system matrices, D_o and R_matrix are desired, the execution can be interrupted
-            # here.
-            if self.continuing and continuing is not False:
-
-                # Regularization operator
-                if Lambda is None:
-                    Lambda = np.ones(self.n_linear_terms + self.n_quadratic_inputs)
-                    Lambda[:self.n_linear_terms] = self.lambda_linear
-                    Lambda[self.n_linear_terms:] = self.lambda_quadratic
+        if type(self.solver) == str:
+            
+            self.construct(input_data=input_data, target_data=target_data, forcing_data=forcing_data)
+    
+    
+            # Constructing the system operators
+            if self.solver_nature == 'memory':
+    
+                # This operation can require a large memory footprint, so it also can be executed
+                # in chunks and, eventually, in parallel.
+    
+                if isinstance(batch_size, int):
+                    construct_operators = self._incremental_construct_operators
                 else:
-                    print("Using an externally defined Lambda vector.")
-
-                Gamma = Lambda * np.eye(self.n_linear_terms + self.n_quadratic_inputs)
-
-                # Left operator
-                L_operator  = D_o + Gamma.T @ Gamma
-
-                # Solving the linear system via least squares
-                print("Solving linear system ...")
-
-                if self._is_symmetric(L_operator) and self.solver is None:
-                    print("L_operator is symmetric.")
-                    solution = solve(L_operator, R_matrix, assume_a="sym")
-                elif self.solver == 'pinv_close':
-                    D_o_pinv = np.linalg.pinv(D_o)
-                    solution = D_o_pinv @ R_matrix
+                    construct_operators = self._construct_operators
+    
+                if self.D_o is None and self.R_matrix is None:
+                    D_o, R_matrix = construct_operators(input_data=input_data, target_data=target_data,
+                                                        forcing_data=forcing_data, batch_size=batch_size)
+                    self.D_o = D_o
+                    self.R_matrix = R_matrix
+    
+                if type(self.D_o) == np.ndarray and type(self.R_matrix) == np.ndarray and fit_partial is True:
+                    D_o, R_matrix = construct_operators(input_data=input_data, target_data=target_data,
+                                                        forcing_data=forcing_data, batch_size=batch_size)
+                    self.D_o += D_o
+                    self.R_matrix += R_matrix
                 else:
-                    solution = np.linalg.lstsq(L_operator, R_matrix, rcond=None)[0]
+                    D_o = self.D_o
+                    R_matrix = self.R_matrix
+                    self.continuing = 1
+    
+                # If just system matrices, D_o and R_matrix are desired, the execution can be interrupted
+                # here.
+                if self.continuing and continuing is not False:
+    
+                    # Regularization operator
+                    if Lambda is None:
+                        Lambda = np.ones(self.n_linear_terms + self.n_quadratic_inputs)
+                        Lambda[:self.n_linear_terms] = self.lambda_linear
+                        Lambda[self.n_linear_terms:] = self.lambda_quadratic
+                    else:
+                        print("Using an externally defined Lambda vector.")
+    
+                    Gamma = Lambda * np.eye(self.n_linear_terms + self.n_quadratic_inputs)
+    
+                    # Left operator
+                    L_operator  = D_o + Gamma.T @ Gamma
+    
+                    # Solving the linear system via least squares
+                    print("Solving linear system ...")
+    
+                    if self._is_symmetric(L_operator) and self.solver is None:
+                        print("L_operator is symmetric.")
+                        solution = solve(L_operator, R_matrix, assume_a="sym")
+                    elif self.solver == 'pinv_close':
+                        D_o_pinv = np.linalg.pinv(D_o)
+                        solution = D_o_pinv @ R_matrix
+                    else:
+                        solution = np.linalg.lstsq(L_operator, R_matrix, rcond=None)[0]
+    
+                    # Setting up the employed matrix operators
+                    self.set_operators(global_matrix=solution)
+    
+            # It corresponds to the case 'lazy' in which data is temporally stored on disk.
+            # In case of using the Moore-Penrose pseudo-inverse it is necessary
+            # to store the entire data matrices in order to solve the undetermined system
+            else:
+    
+                    if self.check_fits_in_memory == 'global' and force_lazy_access is False:
+                        D, Res_matrix = self._generate_data_matrices(input_data=input_data,
+                                                                     target_data=target_data,
+                                                                     forcing_data=forcing_data)
+    
+                        D_pinv = np.linalg.pinv(D)
+                        solution = D_pinv @ Res_matrix.T
+    
+                    else:
+    
+                        if force_lazy_access is True:
+                            print("The batchwise execution is being forced.")
+    
+                        assert batch_size is not None, f"It is necessary to define batch_size but received {batch_size}."
+                        D, Res_matrix, batches, filename = self._lazy_generate_data_matrices(input_data=input_data,
+                                                                                             target_data=target_data,
+                                                                                             forcing_data=forcing_data,
+                                                                                             save_path=save_path,
+                                                                                             batch_size=batch_size)
+                        if k_svd is None: k_svd = self.n_inputs
+    
+                        pinv = CompressedPinv(D=D, chunks=(batch_size, self.n_inputs), k=k_svd)
+                        solution = pinv(Y=Res_matrix, batches=batches)
+    
+                        # Removing the file stored in disk
+                        os.remove(filename)
+    
+                    # Setting up the employed matrix operators
+                    self.set_operators(global_matrix=solution)
 
-                # Setting up the employed matrix operators
-                self.set_operators(global_matrix=solution)
-
-        # It corresponds to the case 'lazy' in which data is temporally stored on disk.
-        # In case of using the Moore-Penrose pseudo-inverse it is necessary
-        # to store the entire data matrices in order to solve the undetermined system
+        elif callable(self.solver):
+            
+            warnings.warn("Iterative solvers are not currently supported.")
+            warnings.warn("Finishing fitting process without modifications.")
+            
         else:
-
-                if self.check_fits_in_memory == 'global' and force_lazy_access is False:
-                    D, Res_matrix = self._generate_data_matrices(input_data=input_data,
-                                                                 target_data=target_data,
-                                                                 forcing_data=forcing_data)
-
-                    D_pinv = np.linalg.pinv(D)
-                    solution = D_pinv @ Res_matrix.T
-
-                else:
-
-                    if force_lazy_access is True:
-                        print("The batchwise execution is being forced.")
-
-                    assert batch_size is not None, f"It is necessary to define batch_size but received {batch_size}."
-                    D, Res_matrix, batches, filename = self._lazy_generate_data_matrices(input_data=input_data,
-                                                                                         target_data=target_data,
-                                                                                         forcing_data=forcing_data,
-                                                                                         save_path=save_path,
-                                                                                         batch_size=batch_size)
-                    if k_svd is None: k_svd = self.n_inputs
-
-                    pinv = CompressedPinv(D=D, chunks=(batch_size, self.n_inputs), k=k_svd)
-                    solution = pinv(Y=Res_matrix, batches=batches)
-
-                    # Removing the file stored in disk
-                    os.remove(filename)
-
-                # Setting up the employed matrix operators
-                self.set_operators(global_matrix=solution)
-
+            raise Exception(f"The option type(self.solver) is not suported.\
+                            it must be callble or str.")
+                            
         print("Fitting process concluded.")
 
     # Making residual evaluations using the trained operator without forcing terms
