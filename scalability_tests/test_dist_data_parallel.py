@@ -13,6 +13,7 @@ def generate_data(n_samples: int = None, image_size: Tuple[int, int] = None,
                   n_inputs: int = None, n_outputs: int = None) -> Tuple[torch.Tensor, torch.Tensor]:
     """
     Generate random input and output data.
+
     Parameters
     ----------
     n_samples : int, optional
@@ -23,12 +24,14 @@ def generate_data(n_samples: int = None, image_size: Tuple[int, int] = None,
         The number of input channels.
     n_outputs : int, optional
         The number of output channels.
+
     Returns
     -------
     input_data : torch.Tensor
         The generated input data.
     output_data : torch.Tensor
         The generated output data.
+
     Examples
     --------
     >>> input_data, output_data = generate_data(n_samples=10, image_size=(3, 32, 32),
@@ -44,6 +47,7 @@ def generate_data(n_samples: int = None, image_size: Tuple[int, int] = None,
 def model():
     """
     Create and return a DeepONet network.
+
     Returns
     -------
     net : torch.nn.Module
@@ -105,16 +109,19 @@ def model():
 def evaluate_model(model: torch.nn.Module, test_data: Tuple[torch.Tensor, torch.Tensor]) -> float:
     """
     Evaluate the given model on the given test data and return the mean squared error.
+
     Parameters
     ----------
     model : torch.nn.Module
         The model to evaluate.
     test_data : tuple of torch.Tensor
         The test data, as a tuple of input and output tensors.
+
     Returns
     -------
     mse : float
         The mean squared error of the model on the test data.
+
     Examples
     --------
     >>> model = model()
@@ -131,12 +138,14 @@ def evaluate_model(model: torch.nn.Module, test_data: Tuple[torch.Tensor, torch.
 
 def execute_demo(rank, world_size):
     """Execute a distributed training demo with Data Parallelism.
+
     Parameters
     ----------
     rank : int
         The rank of the current process.
     world_size : int
         The number of processes participating in the distributed training.
+
     Returns
     -------
     elapsed_time : float
@@ -190,12 +199,14 @@ def execute_demo(rank, world_size):
 def exec(kind, n_ranks_list):
     """
     Execute the demo with the given kind of execution and a list of number of ranks.
+
     Parameters
     ----------
     kind : str
         The kind of execution. Can be either 'multiprocess' or 'distributed'.
     n_ranks_list : list of ints
         A list of number of ranks to use.
+
     Returns
     -------
     None
