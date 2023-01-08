@@ -2,6 +2,7 @@ import os
 import time
 import numpy as np
 import torch
+from typing import Tuple
 from torch.nn.parallel import DistributedDataParallel as DDP
 import torch.multiprocessing as mp
 
@@ -11,7 +12,7 @@ if not torch.cuda.is_available():
     raise Exception("There is no GPU available to execute the tests.")
 
 def generate_data(n_samples:int=None, image_size:tuple=None,
-                  n_inputs:int=None, n_outputs:int=None) -> (torch.Tensor, torch.Tensor):
+                  n_inputs:int=None, n_outputs:int=None) -> Tuple[torch.Tensor, torch.Tensor]:
 
     input_data = np.random.rand(n_samples, n_inputs, *image_size)
     output_data = np.random.rand(n_samples, n_outputs)
