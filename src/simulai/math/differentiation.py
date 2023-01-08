@@ -19,6 +19,7 @@ from scipy.interpolate import InterpolatedUnivariateSpline as ius
 from scipy.sparse import lil_matrix
 from scipy.sparse.linalg import spsolve
 
+
 """differentiation.py
 
     This module contains derivative approximation algorithms

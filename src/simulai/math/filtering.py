@@ -469,4 +469,5 @@ class TimeSeriesExtremes:
                 indices = self._get_indices_for_extremes(data=gradient_input_data, index=cln)
                 indices_list.append(indices)
 
+
             return tuple(indices_list)
