@@ -15,7 +15,7 @@
 import numpy as np
 import sys
 from scipy.integrate import odeint
-
+from typing import Tuple
 from simulai.abstract import Integral
 
 # Parent class for explicit time-integrators
@@ -42,7 +42,7 @@ class ExplicitIntegrator(Integral):
         self.n_stages = len(self.coeffs)
         self.log_phrase = "Executing integrator "
 
-    def step(self, variables_state_initial:np.ndarray, dt:float) -> (np.ndarray, np.ndarray):
+    def step(self, variables_state_initial:np.ndarray, dt:float) -> Tuple[np.ndarray, np.ndarray]:
 
         """It marches a step in the time-integration
         :param variables_state_initial: initial state
@@ -67,7 +67,7 @@ class ExplicitIntegrator(Integral):
         return variables_state, k_weighted
 
     def step_with_forcings(self, variables_state_initial:np.ndarray,
-                                 forcing_state:np.ndarray, dt:float) -> (np.ndarray, np.ndarray):
+                                 forcing_state:np.ndarray, dt:float) -> Tuple[np.ndarray, np.ndarray]:
 
         """It marches a step in the time-integration using a concatenated [variables, forcings] state
         :param variables_state_initial: initial state
@@ -98,7 +98,7 @@ class ExplicitIntegrator(Integral):
         return variables_state_, k_weighted
 
     def step_with_forcings_separated(self, variables_state_initial:np.ndarray,
-                                           forcing_state:np.ndarray, dt:float) -> (np.ndarray, np.ndarray):
+                                           forcing_state:np.ndarray, dt:float) ->  Tuple[np.ndarray, np.ndarray]:
 
         """It marches a step in the time-integration for variables and forcings being operated separately
         :param variables_state_initial: initial state
