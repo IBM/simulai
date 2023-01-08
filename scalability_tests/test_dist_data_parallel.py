@@ -1,7 +1,6 @@
 import os
 import time
 import torch
-from typing import Tuple
 from torch.nn.parallel import DistributedDataParallel as DDP
 import torch.multiprocessing as mp
 from typing import Tuple
@@ -9,6 +8,40 @@ from simulai.optimization import Optimizer
 
 if not torch.cuda.is_available():
     raise Exception("There is no GPU available to execute the tests.")
+
+def generate_data(n_samples: int = None, image_size: Tuple[int, int] = None,
+                  n_inputs: int = None, n_outputs: int = None) -> Tuple[torch.Tensor, torch.Tensor]:
+    """
+    Generate random input and output data.
+
+    Parameters
+    ----------
+    n_samples : int, optional
+        The number of samples to generate.
+    image_size : tuple of ints, optional
+        The size of the images.
+    n_inputs : int, optional
+        The number of input channels.
+    n_outputs : int, optional
+        The number of output channels.
+
+    Returns
+    -------
+    input_data : torch.Tensor
+        The generated input data.
+    output_data : torch.Tensor
+        The generated output data.
+
+    Examples
+    --------
+    >>> input_data, output_data = generate_data(n_samples=10, image_size=(3, 32, 32),
+    ...                                        n_inputs=3, n_outputs=10)
+    """
+    input_data = torch.rand(n_samples, n_inputs, *image_size)
+    output_data = torch.rand(n_samples, n_outputs)
+
+    return input_data, output_data
+
 
 # DeepONet with a FNN as trunk and a CNN as branch
 def model():
