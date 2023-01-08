@@ -12,3 +12,5 @@ Development Team
 Contributors
 ------------
 * John Bampton <jbampton@gmail.com>
+
+(Include your name here if your are actively contributing to the project in anyway)

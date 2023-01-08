@@ -1495,7 +1495,7 @@ class AutoencoderVariational(NetworkTemplate):
 
         projected_data_latent = self.Mu(input_data=input_data)
 
-        return projected_data_latent
+        return projected_data_latent.cpu().detach().numpy()
 
     def reconstruct(self, input_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
 
