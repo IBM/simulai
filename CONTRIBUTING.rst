@@ -100,16 +100,21 @@ Before you submit a pull request, check that it meets these guidelines:
 
 1. The pull request should include tests. In this way, test locally before submiting a pull request
    using **pytest**, as
+   
    ```sh
     pytest --durations=0 tests/
     ```
+    
     which will execute all the unit/sanity checks. As not all the tests are really necessary for
     a given modification in the source code, we recommend the usage of the pytest plugin 
     **testmon** (https://github.com/tarpas/pytest-testmon), which will select the correct tests to be
     executed at each commit/pull request:
+    
     ```sh
+    
     pytest --durations=0 --testmon tests/
-    ``
+    ```
+    
 2. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
