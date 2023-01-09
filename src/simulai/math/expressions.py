@@ -12,8 +12,10 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
+
 from typing import List
 import sympy
+from typing import List, Callable
 from sympy.parsing.sympy_parser import parse_expr
 import importlib
 
@@ -21,13 +23,19 @@ class FromSymbol2FLambda:
 
     def __init__(self, engine:str='numpy', variables:List[str]=None) -> None:
 
-        """It creates a lambda function from a string
-
-        :param engine: the low level engine used, e. g. numpy, torch ...
-        :type engine str
-        :param variables: list of definition variables
-        :type variables: List[str]
-        :returns: Nothing
+        """
+        Initialize a lambda function from a string.
+        
+        Parameters
+        ----------
+        engine : str, optional
+            The low level engine used, e. g. numpy, torch ... The default value is 'numpy'.
+        variables : list of str, optional
+            The list of definition variables. The default value is None.
+            
+        Returns
+        -------
+        None
         """
 
         self.engine = engine
@@ -41,14 +49,23 @@ class FromSymbol2FLambda:
 
         self.func_sep = '('
 
-    def _handle_composite_function(self, func_expr:str=None) -> (List[str], bool):
 
-        """It handles composite functions such as g(x) = f_1 o f_2 o ... o f_n(x) = f_1(f_2( ... f_n(x) ... ))
+    def _handle_composite_function(self, func_expr:str=None) -> Tuple[List[str], bool]:
+        """
+        Handle composite functions such as g(x) = f_1 o f_2 o ... o f_n(x) = f_1(f_2( ... f_n(x) ... )).
 
-        :param func_expr: string containing the definition expression of a function
-        :type func_expr: str
-        :returns: A list of functions names and a boolean indicating success
-        :rtype: List[str], bool
+        Parameters
+        ----------
+        func_expr : str, optional
+            String containing the definition expression of a function.
+
+        Returns
+        -------
+        functions : list of str
+            List of functions names.
+        success : bool
+            Boolean indicating success.
+
         """
 
         splits = func_expr.split(self.func_sep)
@@ -56,14 +73,29 @@ class FromSymbol2FLambda:
 
         return functions, True
 
-    def _get_function_name(self, func_expr:str=None) -> (str, bool):
 
-        """It gets the input name of a function and returns its corresponded standard name
+    from typing import Tuple
 
-        :param func_expr: function name provided as input
-        :type func_expr: str
-        :returns: A list of corresponded function names and a boolean indicating success
-        :rtype: List[str], bool
+    def _get_function_name(self, func_expr:str=None) -> Tuple[str, bool]:
+        """
+        Get the input name of a function and return its corresponding standard name.
+
+        Parameters
+        ----------
+        func_expr : str, optional
+            Function name provided as input.
+
+        Returns
+        -------
+        function_name : str
+            Corresponding function name.
+        is_composite : bool
+            Boolean indicating whether the function is composite or not.
+
+        Raises
+        ------
+        Exception
+            If the expression is not valid.
         """
         splits = func_expr.split(self.func_sep)
 
@@ -76,24 +108,35 @@ class FromSymbol2FLambda:
         else:
             raise Exception(f"The expression {func_expr} is not valid.")
 
+
+
     def clean_engines(self) -> None:
+        """
+        Clean all the pre-defined engines.
 
-        """Clean all the pre-defined engines
-
-        :returns: Nothing
+        Returns
+        -------
+        None
+            This function does not return anything.
         """
         self.engine_module = None
         self.aux_engine_module = None
         self.tokens_module = None
 
-    def convert(self, expression:str=None) -> callable:
 
-        """It receives a string mathematical expression and converts it into a callable function
+    def convert(self, expression:str=None) -> Callable:
+        """
+        Receive a string mathematical expression and convert it into a callable function.
 
-        :param expression: a string containing the mathematical expression definition
-        :type expression: str
-        :returns: a callable function equivalent to the string expression
-        :rtype function
+        Parameters
+        ----------
+        expression : str, optional
+            String containing the mathematical expression definition.
+
+        Returns
+        -------
+        callable
+            Callable function equivalent to the string expression.
 
         """
         expression_names, is_function = self._get_function_name(func_expr=expression)
@@ -104,7 +147,7 @@ class FromSymbol2FLambda:
                                 for expression_name in expression_names]
 
             assert all([ss != None for ss in symbol_functions]), f"The list of functions {expression_names}" \
-                                                                 f" does not exist in {self.tokens_module} completely."
+                                                                f" does not exist in {self.tokens_module} completely."
 
             op_map = dict()
             for expression_name in expression_names:
@@ -124,4 +167,3 @@ class FromSymbol2FLambda:
             compiled_expr = sympy.lambdify(self.variables, symbol_expression)
 
         return  compiled_expr
-
