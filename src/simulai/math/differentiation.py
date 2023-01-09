@@ -393,8 +393,8 @@ class CollocationDerivative:
 
         self.original_shape = None
 
-
-    def guarantee_correct_shape(data: np.ndarray) -> np.ndarray:
+    @staticmethod
+    def _guarantee_correct_shape(data: np.ndarray) -> np.ndarray:
         """Ensure that the input data is a one-dimensional array.
 
         This method ensures that the input data is a one-dimensional array, since the scipy.interpolate.InterpolatedUnivariateSpline class requires it. If the input data is already one-dimensional, it is returned as is. If the input data has more than one dimension, it is reshaped into a one-dimensional array by collapsing all dimensions except the first one.
@@ -444,7 +444,7 @@ class CollocationDerivative:
         else:
             raise Exception("There is no way for evaluating derivatives.")
 
-        data = self._guaratee_correct_shape(data)
+        data = self._guarantee_correct_shape(data)
 
         for i in range(data.shape[1]):
             # Interpolate data using a non-linear method
@@ -482,7 +482,7 @@ class CollocationDerivative:
         print("Performing Interpolation and Collocation Derivation.")
 
         self.t = x_grid
-        data = self._guaratee_correct_shape(data)
+        data = self._guarantee_correct_shape(data)
         interpolated_data_list = []
         differentiated_data_list = []
 
