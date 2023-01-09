@@ -99,14 +99,14 @@ Pull Request Guidelines
 Before you submit a pull request, check that it meets these guidelines:
 
 1. The pull request should include tests. In this way, test locally before submiting a pull request
-   using **pytest**, as
+   using **pytest**, as::
    
     $ pytest --durations=0 tests/
     
   which will execute all the unit/sanity checks. As not all the tests are really necessary for
   a given modification in the source code, we recommend the usage of the pytest plugin 
   **testmon** (https://github.com/tarpas/pytest-testmon), which will select the correct tests to be
-  executed at each commit/pull request:
+  executed at each commit/pull request::
     
     $ pytest --durations=0 --testmon tests/
    
