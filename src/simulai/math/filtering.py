@@ -278,14 +278,19 @@ class SVDThreshold:
 
     def Marcenko_Pastur_integral(self, t: float, beta: float = None) -> float:
 
-        """ Marcenko-Pastur Integral
+        """Calculate the Marcenko-Pastur integral
 
-        :param t: integration variable
-        :type t: float
-        :param beta: parameter beta
-        :type beta: float
-        :return: evaluation of the Marcenko-Pastur integral
-        :rtype: float
+        Parameters
+        ----------
+        t: float
+            integration variable
+        beta : float
+            The parameter beta.
+
+        Returns
+        -------
+        float
+            The evaluation of the Marcenko-Pastur integral.
         """
 
         upper_lim = (1 + np.sqrt(beta)) ** 2
@@ -293,7 +298,7 @@ class SVDThreshold:
         print(f"Quadrature error: {err}")
 
         return val
-    
+
     def MedianMarcenkoPastur(self, beta:float) -> float:
         """Calculate the Marcenko-Pastur median.
 
