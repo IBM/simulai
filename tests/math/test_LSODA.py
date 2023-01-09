@@ -44,6 +44,11 @@ class Pendulum:
 
         return np.array([s2, -self.k * np.sin(s1) + u])
 
+    def jacobian(self, x):
+
+        return np.array([[0, 1],
+                         [self.k*np.cos(x[0]), 0]])
+
     def __call__(self, data):
 
         return self.eval(data)
@@ -83,6 +88,25 @@ class TestLSODAIntegrator(TestCase):
 
         initial_state = np.array([0, 1])
         forcings = self.forcing(t)[:, None]
+
+        pendulum = Pendulum(k=1, u=forcings)
+        right_operator = ClassWrapper(pendulum)
+
+        solver = LSODA(right_operator)
+
+        estimated_field = solver.run_forcing(initial_state, t, forcings)
+
+        print("Extrapolation concluded.")
+
+        assert isinstance(estimated_field, np.ndarray), "The output of the integration must be a np.ndarray."
+
+    def test_integration_with_forcings_stiffness(self):
+
+        N = 1000
+        t = np.linspace(0, 10*np.pi, N)
+
+        initial_state = np.array([0, 1])
+        forcings = 1e7*self.forcing(t)[:, None]
 
         pendulum = Pendulum(k=1, u=forcings)
         right_operator = ClassWrapper(pendulum)

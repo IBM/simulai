@@ -375,7 +375,7 @@ class ClassWrapper:
 
         return self._squeezable(evaluation)
 
-    def _jacobian(self, input_data:np.ndarray, t:float) -> np.ndarray:
+    def _jacobian(self, input_data:np.ndarray, *args, **kwargs) -> np.ndarray:
 
         print("Using jacobian: stiffness alert.")
 
