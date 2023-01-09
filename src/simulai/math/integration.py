@@ -266,8 +266,10 @@ class LSODA:
         assert isinstance(forcing, np.ndarray), "When running with forcing, a forcing array must be provided."
         
         if hasattr(self.right_operator, "jacobian"):
+            print("Integrating using external Jacobian function")
             Jacobian = self.right_operator.jacobian
         else:
+            print("Numerical Jacobian")
             Jacobian = None
 
         epochs = forcing.shape[0]
