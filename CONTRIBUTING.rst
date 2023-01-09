@@ -103,10 +103,10 @@ Before you submit a pull request, check that it meets these guidelines:
    
     $ pytest --durations=0 tests/
     
-    which will execute all the unit/sanity checks. As not all the tests are really necessary for
-    a given modification in the source code, we recommend the usage of the pytest plugin 
-    **testmon** (https://github.com/tarpas/pytest-testmon), which will select the correct tests to be
-    executed at each commit/pull request:
+  which will execute all the unit/sanity checks. As not all the tests are really necessary for
+  a given modification in the source code, we recommend the usage of the pytest plugin 
+  **testmon** (https://github.com/tarpas/pytest-testmon), which will select the correct tests to be
+  executed at each commit/pull request:
     
     $ pytest --durations=0 --testmon tests/
    
