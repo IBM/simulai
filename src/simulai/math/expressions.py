@@ -13,9 +13,8 @@
 #     limitations under the License.
 
 
-from typing import List
 import sympy
-from typing import List, Callable
+from typing import List, Callable, Tuple
 from sympy.parsing.sympy_parser import parse_expr
 import importlib
 
