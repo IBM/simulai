@@ -19,6 +19,15 @@ import sys
 class GaussLegendre:
 
     def __init__(self, p_order=None):
+        """
+        Initializes the Quadrature class.
+
+        Parameters
+        ----------
+        p_order : int or tuple, optional
+            Order of the polynomial. If a tuple is given, the quadrature is assumed to be adaptative.
+
+        """
 
         self.p_order = p_order
         self.alpha = 0
@@ -68,6 +77,20 @@ class GaussLegendre:
         pass
 
     def generate_domain(self, mesh=None):
+        """
+        Generates domain for the given mesh.
+
+        Parameters
+        ----------
+        mesh : object
+            Mesh object.
+
+        Returns
+        -------
+        tuple
+            Tuple containing arrays for each dimension of the domain and weights.
+
+        """
 
         nodes = mesh.internal_product(self.poly_roots)
         n_dim = mesh.n_dim
@@ -96,6 +119,19 @@ class GaussLegendre:
         return tuple(dim_arrays)
 
     def generate_boundaries(self, mesh=None):
+        """Generate boundary nodes and weights using the provided mesh.
+
+        Parameters
+        ----------
+        mesh : object
+            Mesh object containing boundary information.
+
+        Returns
+        -------
+        boundaries_list : dict
+            Dictionary of boundary nodes and weights, where the keys are the boundary tags and the values are tuples of
+            (nodes, weights) arrays.
+        """
 
         boundaries_list = dict()
 
@@ -130,4 +166,3 @@ class GaussLegendre:
             boundaries_list[boundary] = (nodes_array, weights_array)
 
         return boundaries_list
-
