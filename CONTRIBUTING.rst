@@ -98,11 +98,22 @@ Pull Request Guidelines
 
 Before you submit a pull request, check that it meets these guidelines:
 
-1. The pull request should include tests.
-2. If the pull request adds functionality, the docs should be updated. Put
+1. The pull request should include tests. In this way, test locally before submiting a pull request
+   using **pytest**, as::
+   
+   $ pytest --durations=0 tests/
+    
+2. As not all the tests are really necessary for
+   a given modification in the source code, we recommend the usage of the pytest plugin 
+   **testmon** (https://github.com/tarpas/pytest-testmon), which will select the correct tests to be
+   executed at each commit/pull request::
+    
+    $ pytest --durations=0 --testmon tests/
+   
+3. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
-3. The pull request should work for Python 3.6, 3.7, 3.8, and 3.9. Check
+4. The pull request should work for Python 3.6, 3.7, 3.8, and 3.9. Check
    https://travis-ci.org/ltizzei/simulai/pull_requests
    and make sure that the tests pass for all supported Python versions.
 
