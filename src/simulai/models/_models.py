@@ -87,6 +87,7 @@ class ModelPool:
         self.regressions_module = 'simulai.regression'
         self.default_residual = 'surrogate'
         self.default_loss = 'square-mean'
+        self.independent_case = ('independent_series', 'no_communication_series')
         self.no_group_value = -1
 
         # Initialize attributes
@@ -156,6 +157,12 @@ class ModelPool:
             assert self.group_size != self.no_group_value, "group_size cannot be -1 when n_inputs is provided"
         else:
             self.group_size = self.n_inputs
+
+        self.stencil = int(self.stencil_size / 2)
+
+        self._configure_parameters(no_parallelism_signal)
+
+        self.no_parallelism_signal = no_parallelism_signal
 
     @property
     def sub_models(self):
@@ -674,7 +681,7 @@ class ModelPool:
 
                 print("Preparing the model {}".format(model_id))
 
-                # Getting the correspond datasets for each model
+                # Getting the corresponding datasets for each model
                 dataset = sub_datasets[model_id]
                 dataset_target = sub_datasets_target[model_id]
 

@@ -38,7 +38,7 @@ Using pip
 Contributing code to SimulAI
 ============================
 
-See `CONTRIBUTING <CONTRIBUTING.rst>`_.
+If you are interested in directly contributing to this project, please see `CONTRIBUTING <CONTRIBUTING.rst>`_.
 
 Using MPI
 =========
