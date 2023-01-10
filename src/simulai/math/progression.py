@@ -14,6 +14,28 @@
 
 # Geometrical progression
 def gp(init, factor, n) -> list:
+    """
+    Generate a geometric progression of numbers.
+    
+    Parameters
+    ----------
+    init: int or float
+        The first number in the progression.
+    factor: int or float
+        The factor by which each number in the progression is multiplied by to generate the next number.
+    n: int
+        The number of numbers to generate in the progression.
+    
+    Returns
+    -------
+    list
+        A list of `n` numbers in the geometric progression, starting with `init` and multiplying by `factor` for each subsequent number.
+    
+    Raises
+    ------
+    Exception
+        If `n` is not higher than 0.
+    """
     if n == 1:
         return [init]
     elif n > 1:
