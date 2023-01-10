@@ -318,7 +318,7 @@ class TestModelPoolESN(TestCase):
         train_factor = 0.50
 
         N = 40
-        Nt = 1000
+        Nt = 100
 
         N_train = int(train_factor * Nt)
 

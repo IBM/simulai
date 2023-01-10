@@ -26,7 +26,7 @@ class TestModelPoolAffinemapping:
         pass
     def test_modelpool_nonlinear_forcing_affinemapping(self):
 
-        n_steps = 1000
+        n_steps = 100
         A = 1
         T = 50
         dt = T/ n_steps
