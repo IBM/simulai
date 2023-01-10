@@ -150,39 +150,38 @@ class ExplicitIntegrator(Integral):
         return variables_state_, k_weighted
 
     # Looping over multiple steps without using forcings
-    def step_with_forcings_separated(self, variables_state_initial:np.ndarray,
-                                    forcing_state:np.ndarray, dt:float) -> Tuple[np.ndarray, np.ndarray]:
+    def _loop(self, initial_state: np.ndarray, epochs: int, dt: float) -> list:
+
         """
-        March a single step in the time-integration process, with variables and forcings being treated separately.
-        
+        Time-integration loop.
+
         Parameters
         ----------
-        variables_state_initial : np.ndarray
-            Initial state of the variables.
-        forcing_state : np.ndarray
-            State of the forcing terms.
+        initial_state : np.ndarray
+            Initial state of the system.
+        epochs : int
+            Number of steps to be used in the time-integration.
         dt : float
             Timestep size.
-        
+
         Returns
         -------
-        tuple
-            Integrated state and its time-derivative.
+        list
+            List of integrated states.
         """
-        variables_state = {'input_data': variables_state_initial, 'forcing_data': forcing_state}
-        residuals_list = np.zeros((self.n_stages,) + variables_state_initial.shape[1:])
 
-        k_weighted = None
+        ii = 0
+        integrated_variables = list()
 
-        for stage in range(self.n_stages):
-            k = self.right_operator(**variables_state)
-            residuals_list[stage, :] = k
-            k_weighted = self.weights[stage].dot(residuals_list)
-            variables_state_ = variables_state_initial + self.coeffs[stage] * dt * k_weighted
-            variables_state = {'input_data': variables_state_, 'forcing_data': forcing_state}
+        while ii < epochs:
+            state, derivative_state = self.step(initial_state, dt)
+            integrated_variables.append(state)
+            initial_state = state
+            sys.stdout.write("\r {}, iteration: {}/{}".format(self.log_phrase, ii + 1, epochs))
+            sys.stdout.flush()
+            ii += 1
 
-        return variables_state_, k_weighted
-
+        return integrated_variables
 
     # Looping over multiple steps using forcings
     def _loop_forcings(self,  initial_state:np.ndarray, forcings:np.ndarray, epochs:int, dt:float) -> list:
