@@ -24,13 +24,14 @@ from utils import configure_device
 DEVICE = configure_device()
 
 # Model template
-def model():
+def model(activation:str='tanh'):
+
     from simulai.regression import ResDenseNetwork as DenseNetwork
 
     # Configuration for the fully-connected branch network
     encoder_config = {
         'layers_units': [50, 50, 50],  # Hidden layers
-        'activations': 'tanh',
+        'activations': activation,
         'input_size': 2,
         'output_size': 1,
         'name': 'net'
@@ -38,7 +39,9 @@ def model():
 
     # Instantiating and training the surrogate model
     net = DenseNetwork(**encoder_config)
-
+    
+    net.summary()
+    
     return net
 
 class TestDenseNetwork(TestCase):
@@ -51,46 +54,24 @@ class TestDenseNetwork(TestCase):
         return np.sin(4 * np.pi * t * np.cos(5 * np.pi * (t / t_max)) * (x / L - 1 / 2) ** 2) * np.cos(
             5 * np.pi * (t / t_max - 1 / 2) ** 2)
 
-    def test_densenetwork_instantiation(self):
+    def test_densenetwork_instantiation(self) -> None:
 
         from simulai.regression import DenseNetwork
 
         for activation in ['tanh', 'relu', 'sigmoid', 'sin', 'cos', 'elu', 'selu']:
 
-            # Configuration for the fully-connected branch network
-            encoder_config = {
-                'layers_units': [50, 50, 50],  # Hidden layers
-                'activations': activation,
-                'input_size': 2,
-                'output_size': 1,
-                'name': 'net'
-            }
+            model(activation=activation)
 
-            # Instantiating and training the surrogate model
-            net = DenseNetwork(**encoder_config)
-            net.summary()
-
-    def test_densenetwork_instantiation_special(self):
+    def test_densenetwork_instantiation_special(self) -> None:
 
         from simulai.regression import ResDenseNetwork as DenseNetwork
         from simulai.activations import Siren
 
         for activation in [Siren(omega_0=30, c=6)]:
 
-            # Configuration for the fully-connected branch network
-            encoder_config = {
-                'layers_units': [50, 50, 50],  # Hidden layers
-                'activations': activation,
-                'input_size': 2,
-                'output_size': 1,
-                'name': 'net'
-            }
+            model(activation=activation)
 
-            # Instantiating and training the surrogate model
-            net = DenseNetwork(**encoder_config)
-            net.summary()
-
-    def test_densenetwork_forward(self):
+    def test_densenetwork_forward(self) -> None:
 
         net = model()
 
@@ -129,7 +110,7 @@ class TestDenseNetwork(TestCase):
 
         assert output_estimated.shape == output_train.shape
 
-    def test_densenetwork_optimization_and_persistency(self):
+    def test_densenetwork_optimization_and_persistency(self) -> None:
         net = model()
 
         net.summary()
