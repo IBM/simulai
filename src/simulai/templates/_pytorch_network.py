@@ -39,7 +39,6 @@ class NetworkTemplate(torch.nn.Module):
         self.activations = None
         self.initializations = None
 
-        self.weights = list()
 
     @property
     def weights_l2(self) -> torch.Tensor:

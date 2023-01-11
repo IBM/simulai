@@ -81,6 +81,7 @@ class ImprovedDenseNetwork(NetworkTemplate):
         self.add_module('encoder_u', self.encoder_u)
         self.add_module('encoder_v', self.encoder_v)
 
+        self.weights = list()
         self.weights += self.network.weights
         self.weights += self.encoder_u.weights
         self.weights += self.encoder_v.weights
