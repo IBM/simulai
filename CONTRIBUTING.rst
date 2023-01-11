@@ -100,7 +100,7 @@ Before you submit a pull request, check that it meets these guidelines:
 
 1. We strongly recommend you to create a dedicated branch when modifying core features. It can be easily tested by everyone
    and afterwards merged to **main**. 
-2. The pull request should include tests. In this way, test locally (we plan to automate this task shortly) before submiting a pull request
+2. The pull request should include tests. In this way, test locally (we plan to automate this task shortly) before submitting a pull request
    using **pytest**, as::
    
    $ pytest --durations=0 tests/
