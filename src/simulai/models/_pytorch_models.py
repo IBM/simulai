@@ -43,7 +43,8 @@ class ImprovedDenseNetwork(NetworkTemplate):
 
     def __init__(self, network:ConvexDenseNetwork,
                        encoder_u: NetworkTemplate=None,
-                       encoder_v: NetworkTemplate=None):
+                       encoder_v: NetworkTemplate=None,
+                       devices:Union[str, list]='cpu'):
 
         """
 
@@ -58,6 +59,8 @@ class ImprovedDenseNetwork(NetworkTemplate):
         :type encoder_u: NetworkTemplate
         :param: encoder_v: second_auxiliary encoder
         :type encoder_u: NetworkTemplate
+        :param devices: devices in which the model will be executed
+        :type devices: str
         :return: nothing
 
         """
@@ -69,13 +72,17 @@ class ImprovedDenseNetwork(NetworkTemplate):
         eu_os = encoder_u.output_size
         ev_os = encoder_v.output_size
 
+        # Determining the kind of device to be used for allocating the
+        # subnetworks used in the DeepONet model
+        self.device = self._set_device(devices=devices)
+
         assert n_hs == eu_os == ev_os, "The output of the encoders must have the same dimension" \
                                        " of the network hidden size, but got" \
                                        f" {eu_os}, {ev_os} and {n_hs}."
 
-        self.network = network
-        self.encoder_u = encoder_u
-        self.encoder_v = encoder_v
+        self.network = network.to(self.device)
+        self.encoder_u = encoder_u.to(self.device)
+        self.encoder_v = encoder_v.to(self.device)
 
         self.add_module('network', self.network)
         self.add_module('encoder_u', self.encoder_u)
@@ -101,7 +108,7 @@ class ImprovedDenseNetwork(NetworkTemplate):
         v = self.encoder_v.forward(input_data=input_data)
         u = self.encoder_u.forward(input_data=input_data)
 
-        output = self.trunk_network.forward(input_data=input_data, u=u, v=v).to(self.device)
+        output = self.network.forward(input_data=input_data, u=u, v=v).to(self.device)
 
         return output
 

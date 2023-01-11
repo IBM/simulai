@@ -121,14 +121,12 @@ class TestDenseNetwork(TestCase):
 
         net.summary()
 
-        lr = 5e-5
-        n_epochs = 2_000
-        n_train = 20_000
+        n_train = 2_000
 
         t_max = 10
         L = 5
         K = 512
-        N = 100_000
+        N = 10_000
 
         x_interval = [0, L]
         time_interval = [0, t_max]
@@ -140,7 +138,6 @@ class TestDenseNetwork(TestCase):
         output_data = self.u(T, X, L=L, t_max=t_max)
 
         positions = np.stack([X[::100].flatten(), T[::100].flatten()], axis=1)
-        positions = 2 * positions / np.array([L, t_max]) - 1
 
         n_t, n_x = output_data.shape
 
@@ -155,73 +152,83 @@ class TestDenseNetwork(TestCase):
         assert output_estimated.shape == output_train.shape
 
     def test_densenetwork_optimization_and_persistency(self) -> None:
-        net = model()
 
-        net.summary()
+        for architecture in ['DenseNetwork', 'ResDenseNetwork', 'ImprovedDenseNetwork']:
 
-        lr = 5e-5
-        n_epochs = 2_000
-        n_train = 20_000
+            print(f"Testing architecture: {architecture}.")
 
-        t_max = 10
-        L = 5
-        K = 512
-        N = 100_000
+            if architecture == 'ImprovedDenseNetwork':
+                model_ = model_convex
+            else:
+                model_ = model
 
-        x_interval = [0, L]
-        time_interval = [0, t_max]
+            for activation in ['tanh', 'relu', 'sigmoid', 'sin', 'elu', 'selu']:
 
-        x = np.linspace(*x_interval, K)
-        t = np.linspace(*time_interval, N)
+                net = model_(activation=activation, architecture=architecture)
 
-        T, X = np.meshgrid(t, x, indexing='ij')
-        output_data = self.u(T, X, L=L, t_max=t_max)
+                lr = 5e-5
+                n_epochs = 2_000
+                n_train = 2_000
 
-        positions = np.stack([X[::100].flatten(), T[::100].flatten()], axis=1)
-        positions = 2 * positions / np.array([L, t_max]) - 1
+                t_max = 10
+                L = 5
+                K = 512
+                N = 10_000
 
-        optimizer_config = {'lr': lr}
+                x_interval = [0, L]
+                time_interval = [0, t_max]
 
-        n_t, n_x = output_data.shape
+                x = np.linspace(*x_interval, K)
+                t = np.linspace(*time_interval, N)
 
-        x_i = np.random.randint(0, n_x, size=(n_train, 1))
-        t_i = np.random.randint(0, n_t, size=(n_train, 1))
+                T, X = np.meshgrid(t, x, indexing='ij')
+                output_data = self.u(T, X, L=L, t_max=t_max)
 
-        input_train = 2 * np.hstack([x[x_i], t[t_i]]) / np.array([L, t_max]) - 1
-        output_train = output_data[t_i, x_i]
+                positions = np.stack([X[::100].flatten(), T[::100].flatten()], axis=1)
+                positions = 2 * positions / np.array([L, t_max]) - 1
 
-        # Configuring Optimizer
-        params = {'lambda_1': 0., 'lambda_2': 1e-14}
+                optimizer_config = {'lr': lr}
 
-        optimizer = Optimizer('adam', params=optimizer_config)
+                n_t, n_x = output_data.shape
 
-        optimizer.fit(op=net, input_data=input_train, target_data=output_train,
-                      n_epochs=n_epochs, loss="rmse", params=params, batch_size=1_000, device=DEVICE)
+                x_i = np.random.randint(0, n_x, size=(n_train, 1))
+                t_i = np.random.randint(0, n_t, size=(n_train, 1))
 
-        # First evaluation
-        approximated_data = net.eval(input_data=positions)
+                input_train = 2 * np.hstack([x[x_i], t[t_i]]) / np.array([L, t_max]) - 1
+                output_train = output_data[t_i, x_i]
 
-        l2_norm = L2Norm()
+                # Configuring Optimizer
+                params = {'lambda_1': 0., 'lambda_2': 1e-14}
 
-        projection_error = 100 * l2_norm(data=approximated_data, reference_data=output_data[::100], relative_norm=True)
+                optimizer = Optimizer('adam', params=optimizer_config)
 
-        print(f"Projection error: {projection_error} %")
+                optimizer.fit(op=net, input_data=input_train, target_data=output_train,
+                              n_epochs=n_epochs, loss="rmse", params=params, batch_size=1_000, device=DEVICE)
 
-        # Saving model
-        print("Saving model.")
-        saver = SPFile(compact=False)
-        saver.write(save_dir='/tmp', name='data_representation', model=net, template=model)
+                # First evaluation
+                approximated_data = net.eval(input_data=positions)
 
-        # Testing to reload from disk
-        saver = SPFile(compact=False)
-        net_reload = saver.read(model_path="/tmp/data_representation")
+                l2_norm = L2Norm()
 
-        # Post-processing
-        approximated_data = net_reload.eval(input_data=positions)
-        approximated_data = approximated_data.reshape(-1, K)
+                projection_error = 100 * l2_norm(data=approximated_data, reference_data=output_data[::100], relative_norm=True)
 
-        l2_norm = L2Norm()
+                print(f"Projection error: {projection_error} %")
 
-        projection_error = 100 * l2_norm(data=approximated_data, reference_data=output_data[::100], relative_norm=True)
+                # Saving model
+                print("Saving model.")
+                saver = SPFile(compact=False)
+                saver.write(save_dir='/tmp', name='data_representation', model=net, template=model)
 
-        print(f"Projection error: {projection_error} %")
+                # Testing to reload from disk
+                saver = SPFile(compact=False)
+                net_reload = saver.read(model_path="/tmp/data_representation")
+
+                # Post-processing
+                approximated_data = net_reload.eval(input_data=positions)
+                approximated_data = approximated_data.reshape(-1, K)
+
+                l2_norm = L2Norm()
+
+                projection_error = 100 * l2_norm(data=approximated_data, reference_data=output_data[::100], relative_norm=True)
+
+                print(f"Projection error: {projection_error} %")
