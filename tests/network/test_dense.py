@@ -23,13 +23,16 @@ from utils import configure_device
 
 DEVICE = configure_device()
 
-# Model template
-def model(activation:str='tanh'):
+# Model template 1
+def model(activation:str='tanh', architecture:str='DenseNetwork'):
 
-    from simulai.regression import ResDenseNetwork as DenseNetwork
+    import importlib
+
+    regression_module = importlib.import_module('simulai.regression')
+    DenseNetwork = getattr(regression_module, architecture)
 
     # Configuration for the fully-connected branch network
-    encoder_config = {
+    config = {
         'layers_units': [50, 50, 50],  # Hidden layers
         'activations': activation,
         'input_size': 2,
@@ -38,11 +41,37 @@ def model(activation:str='tanh'):
     }
 
     # Instantiating and training the surrogate model
-    net = DenseNetwork(**encoder_config)
+    net = DenseNetwork(**config)
     
     net.summary()
     
     return net
+
+# Model template 2
+def model_convex(activation: str = 'tanh', **kwargs):
+
+    from simulai.models import ImprovedDenseNetwork
+    from simulai.regression import ConvexDenseNetwork, SLFNN
+
+    # Configuration for the fully-connected branch network
+    config = {
+        'layers_units': [50, 50, 50],  # Hidden layers
+        'activations': activation,
+        'input_size': 2,
+        'output_size': 1,
+        'name': 'net'
+    }
+
+    encoder_u = SLFNN(input_size=2, output_size=50, activation='tanh')
+    encoder_v = SLFNN(input_size=2, output_size=50, activation='tanh')
+
+    net_ = ConvexDenseNetwork(**config)
+
+    # Instantiating and training the surrogate model
+    net =  ImprovedDenseNetwork(network=net_, encoder_u=encoder_u, encoder_v=encoder_v)
+
+    return net
+
 
 class TestDenseNetwork(TestCase):
 
@@ -56,20 +85,35 @@ class TestDenseNetwork(TestCase):
 
     def test_densenetwork_instantiation(self) -> None:
 
-        from simulai.regression import DenseNetwork
+        for architecture in ['DenseNetwork', 'ResDenseNetwork', 'ImprovedDenseNetwork']:
 
-        for activation in ['tanh', 'relu', 'sigmoid', 'sin', 'cos', 'elu', 'selu']:
+            print(f"Testing architecture: {architecture}.")
 
-            model(activation=activation)
+            if architecture == 'ImprovedDenseNetwork':
+                model_ = model_convex
+            else:
+                model_ = model
+
+            for activation in ['tanh', 'relu', 'sigmoid', 'sin', 'cos', 'elu', 'selu']:
+
+                model_(activation=activation, architecture=architecture)
 
     def test_densenetwork_instantiation_special(self) -> None:
 
-        from simulai.regression import ResDenseNetwork as DenseNetwork
         from simulai.activations import Siren
 
-        for activation in [Siren(omega_0=30, c=6)]:
+        for architecture in ['DenseNetwork', 'ResDenseNetwork', 'ImprovedDenseNetwork']:
 
-            model(activation=activation)
+            print(f"Testing architecture: {architecture}.")
+
+            if architecture == 'ImprovedDenseNetwork':
+                model_ = model_convex
+            else:
+                model_ = model
+
+            for activation in [Siren(omega_0=30, c=6)]:
+
+                model_(activation=activation, architecture=architecture)
 
     def test_densenetwork_forward(self) -> None:
 
