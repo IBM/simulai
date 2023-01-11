@@ -35,7 +35,7 @@ class MetaModel:
 #### Improved Dense Network
 ############################
 
-# Dense network with hidden encoders aimed at improving the convergence
+# Dense network with hidden encoders aimed at improving convergence
 class ImprovedDenseNetwork(NetworkTemplate):
 
     name = 'improveddense'
@@ -50,9 +50,9 @@ class ImprovedDenseNetwork(NetworkTemplate):
         Improved DenseNetwork
 
         It uses auxiliary encoder networks in order to enrich
-        the hidden spaces between layers
+        the hidden spaces
 
-        :param network: a convex dense networks (it supports convex sums operations in the hidden spaces)
+        :param network: a convex dense network (it supports convex sum operations in the hidden spaces)
         :type: ConvexDenseNetwork
         :param encoder_u: first auxiliary encoder
         :type encoder_u: NetworkTemplate

@@ -164,7 +164,7 @@ class OpInf:
         else:
             return 'memory'
 
-    # Splitting the global solution into correspondent operators
+    # Splitting the global solution into corresponding operators
     def set_operators(self, global_matrix:np.ndarray=None) -> None:
 
         """Setting up each operator using the global system solution
