@@ -971,7 +971,27 @@ class QQM:
 
         return self.W_transform(data=data) @ self.V_bar
 
+    def save(self, save_path: str = None, model_name: str = None) -> None:
 
+        """Complete saving
+
+        :param save_path: path to the saving directory
+        :type: str
+        :param model_name: name for the model
+        :type model_name: str
+        :return: nothing
+        """
+
+        blacklist = ['optimizer']
+        for el in blacklist:
+            setattr(self, el, None)
+
+        path = os.path.join(save_path, model_name + '.pkl')
+        try:
+            with open(path, 'wb') as fp:
+                pickle.dump(self, fp, protocol=4)
+        except Exception as e:
+            print(e, e.args)
 
 
 

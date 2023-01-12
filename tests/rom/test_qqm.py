@@ -16,7 +16,6 @@
 from unittest import TestCase
 import numpy as np
 
-from simulai.metrics import L2Norm
 from simulai.file import load_pkl
 from simulai.rom import QQM
 
@@ -62,3 +61,16 @@ class TestQQM(TestCase):
 
         print("\n Moore-Penrose pseudoinverse")
         assert np.isinstance(qqm.V_bar, np.ndarray)
+
+    def test_qqm_save_load(self):
+
+        qqm = QQM(n_inputs=3, lambd=1e-3, alpha_0=100, use_mean=True)
+
+        # Using the Moore-Penrose generalized inverse
+        qqm.fit(input_data=self.s, target_data=self.e, pinv=True)
+
+        qqm.save(save_path='/tmp', model_name='qqm')
+
+        qqm_reload = load_pkl('/tmp/qqm.pkl')
+
+        assert isinstance(qqm_reload.V_bar, np.ndarray)
