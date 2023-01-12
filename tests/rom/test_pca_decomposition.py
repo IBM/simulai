@@ -127,6 +127,7 @@ class TestPCADecomposition(TestCase):
 
         self._exec_PCA_tests(fit_data, test_data, N_components)
 
+
     def _exec_PCA_tests(self, fit_data, test_data, N_components, svd_filter=None) -> None:
 
         for n_components in N_components:
