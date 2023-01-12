@@ -34,7 +34,7 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
                      auxiliary_expressions: list = None, constants:dict=None) -> object:
 
 
-    # It constructs tensor operators using symbolic expressions
+    # It constructs tensor operators using symbolic expressions using PyTorch
     class SymbolicOperatorClass(torch.nn.Module if engine == 'torch'
                                 else object):
 
