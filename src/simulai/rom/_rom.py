@@ -537,7 +537,7 @@ class HOSVD(ROM):
         elif self.engine == 'dask':
             return [ParallelSVD(n_components=n) for n in self.n_components]
         else:
-            raise Exception(f"The engine {self.engine}, it must be in ['sklearn', 'dask'].")
+            raise Exception(f"The engine {self.engine} is not supported, it must be in ['sklearn', 'dask'].")
 
     def _set_components(self) -> None:
 

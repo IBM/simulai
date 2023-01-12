@@ -25,12 +25,12 @@ class TestHOSVDDecomposition(TestCase):
     def setUp(self) -> None:
         pass
 
-    def test_hosvd_numpy(self):
+    def test_hosvd_sklearn(self):
 
         # Constructing dataset
         N_x = 32
         N_y = 32
-        N_t = 125
+        N_t = 200
         N_v = 3
 
         center_x = 0.5
@@ -64,7 +64,7 @@ class TestHOSVDDecomposition(TestCase):
         Z_fit = Z[:N_train, :]
         Z_test = Z[N_train:, :]
 
-        hosvd = HOSVD(n_components=[20, 128, 128, 3], components_names=['t', 'x', 'y', 'v'], engine='dask')
+        hosvd = HOSVD(n_components=[20, 32, 32, 3], components_names=['t', 'x', 'y', 'v'], engine='sklearn')
 
         hosvd.fit(data=Z_fit)
 
@@ -104,9 +104,9 @@ class TestHOSVDDecomposition(TestCase):
         import dask.array as da
 
         # Constructing dataset
-        N_x = 128
-        N_y = 128
-        N_t = 500
+        N_x = 32
+        N_y = 32
+        N_t = 200
         N_v = 3
 
         center_x = 0.5
@@ -142,7 +142,7 @@ class TestHOSVDDecomposition(TestCase):
         Z_fit = Z[:N_train, :]
         Z_test = Z[N_train:, :]
 
-        hosvd = HOSVD(n_components=[20, 128, 128, 3], components_names=['t', 'x', 'y', 'v'], engine='dask')
+        hosvd = HOSVD(n_components=[20, 32, 32, 3], components_names=['t', 'x', 'y', 'v'], engine='dask')
 
         hosvd.fit(data=Z_fit)
 
