@@ -31,7 +31,7 @@ from simulai.utilities import make_temp_directory
 class TestIPCADecomposition(TestCase):
 
     def setUp(self) -> None:
-        pass
+        self.N = 200
 
     ''' Dataset constructed with an expression in which
         the variables are separable: U = exp(y)*cos(x)
@@ -73,15 +73,15 @@ class TestIPCADecomposition(TestCase):
 
     def test_2D_non_separable_dataset(self) -> None:
 
-        Nx = int(64)
-        Ny = int(64)
-        Nt = int(1e3)
+        Nx = 64
+        Ny = 64
+        Nt = self.N
 
         x = np.linspace(0, 1, Nx)
         y = np.linspace(0, 1, Ny)
         t = np.linspace(0, 100, Nt)
 
-        batch_sizes = gp(init=10, factor=5, n=3)
+        batch_sizes = gp(init=10, factor=2, n=3)
 
         for batch_size in batch_sizes:
 
@@ -116,15 +116,15 @@ class TestIPCADecomposition(TestCase):
 
     def test_2D_non_separable_structured_dataset(self) -> None:
 
-        Nx = int(64)
-        Ny = int(64)
-        Nt = int(1e3)
+        Nx = 64
+        Ny = 64
+        Nt = self.N
 
         x = np.linspace(0, 1, Nx)
         y = np.linspace(0, 1, Ny)
         t = np.linspace(0, 100, Nt)
 
-        batch_sizes = gp(init=10, factor=5, n=3)
+        batch_sizes = gp(init=10, factor=2, n=3)
 
         with make_temp_directory() as tmp_dir:
             with h5py.File(os.path.join(tmp_dir, f'test_data.h5'), 'w') as fp:

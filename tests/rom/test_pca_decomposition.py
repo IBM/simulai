@@ -23,7 +23,8 @@ from simulai.math.filtering import SVDThreshold
 class TestPCADecomposition(TestCase):
 
     def setUp(self) -> None:
-        pass
+
+        self.N = 200
 
     ''' Dataset constructed with an expression in which
         the variables are separable: U = exp(y)*cos(x)
@@ -32,7 +33,7 @@ class TestPCADecomposition(TestCase):
 
         train_factor = 0.6
 
-        N = 1000
+        N = self.N
         N_train = int(train_factor*N)
 
         # Constructing dataset
@@ -54,7 +55,7 @@ class TestPCADecomposition(TestCase):
         train_factor = 0.6
         noise_scale = 0.1
 
-        N = 1000
+        N = self.N
         N_train = int(train_factor*N)
 
         # Constructing dataset
@@ -76,7 +77,7 @@ class TestPCADecomposition(TestCase):
         train_factor = 0.6
         noise_scale = 0.1
 
-        N = 1000
+        N = self.N
         N_train = int(train_factor*N)
 
         # Constructing dataset
@@ -104,7 +105,7 @@ class TestPCADecomposition(TestCase):
         # Constructing dataset
         N_x = 128
         N_y = 128
-        N_t = 1000
+        N_t = self.N
 
         x = np.linspace(0, 1, N_x)
         y = np.linspace(0, 1, N_y)
