@@ -76,8 +76,6 @@ class TestSymbolicOperator(TestCase):
         x_interval = [x_0, L]
         t_interval = [0, T]
 
-        intervals = [x_interval, t_interval]
-
         # Regular grid
         x_0, x_L = x_interval
         t_0, t_L = t_interval

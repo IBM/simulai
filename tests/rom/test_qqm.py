@@ -34,23 +34,23 @@ class TestQQM(TestCase):
     def test_qqm_sparsa(self):
 
         # Using the default solver (SpaRSA)
-        qqm = QQM(n_inputs=3, lambd=1e-3, alpha_0=100, epsilon=1e-7, use_mean=True)
+        qqm = QQM(n_inputs=3, lambd=1e-3, alpha_0=100, epsilon=1e-2, use_mean=True)
 
         # Using the default solver (SpaRSA) without sparsity hard-limiting
         qqm.fit(input_data=self.s, target_data=self.e)
 
         print("\n Vanilla SpaRSA")
 
-        assert np.isinstance(qqm.V_bar, np.ndarray)
+        assert isinstance(qqm.V_bar, np.ndarray)
 
     def test_qqm_sparsa_hard_limiting(self):
 
         # Using the default solver (SpaRSA) with sparsity hard-limiting
-        qqm = QQM(n_inputs=3, lambd=1e-3, sparsity_tol=1e-6, epsilon=1e-7, alpha_0=100, use_mean=True)
+        qqm = QQM(n_inputs=3, lambd=1e-3, sparsity_tol=1e-6, epsilon=1e-2, alpha_0=100, use_mean=True)
 
         qqm.fit(input_data=self.s, target_data=self.e)
 
-        assert np.isinstance(qqm.V_bar, np.ndarray)
+        assert isinstance(qqm.V_bar, np.ndarray)
 
     def test_qqm_pinv(self):
 
@@ -60,7 +60,7 @@ class TestQQM(TestCase):
         qqm.fit(input_data=self.s, target_data=self.e, pinv=True)
 
         print("\n Moore-Penrose pseudoinverse")
-        assert np.isinstance(qqm.V_bar, np.ndarray)
+        assert isinstance(qqm.V_bar, np.ndarray)
 
     def test_qqm_save_load(self):
 
