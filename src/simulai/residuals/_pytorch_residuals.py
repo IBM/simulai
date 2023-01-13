@@ -17,6 +17,7 @@ import torch
 import numpy as np
 import sympy
 from sympy.parsing.sympy_parser import parse_expr
+from sympy import sympify
 from torch.autograd import grad
 from torch.autograd.functional import jacobian
 import importlib
@@ -55,9 +56,17 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
             else:
                 pass
 
+            self.engine = importlib.import_module(engine)
+
             self.constants = constants
             self.processing = processing
             self.periodic_bc_protected_key = 'periodic'
+
+            self.protected_funcs = ['cos', 'sin', 'sqrt']
+            self.protected_operators = ['L', 'Div', 'Identity', 'Kronecker']
+
+            self.protected_funcs_subs = self._construct_protected_functions()
+            self.protected_operators_subs = self._construct_implict_operators()
 
             # Configuring the device to be used during the fitting process
             if device == 'gpu':
@@ -73,8 +82,6 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
                 raise Exception(f"The device must be cpu or gpu, but received: {device}")
 
             self.device = device
-
-            self.engine = importlib.import_module(engine)
 
             self.expressions = [self._parse_expression(expr=expr)  for expr in expressions]
 
@@ -108,9 +115,6 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
 
             self.feed_vars = None
 
-            self.protected_funcs = ['cos', 'sin', 'sqrt']
-
-            self.protected_funcs_subs = {func:getattr(self.engine, func) for func in self.protected_funcs}
 
             for name in self.output_names:
                 setattr(self, name, None)
@@ -147,11 +151,25 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
             else:
                 raise Exception(f"Processing case {self.processing} not supported.")
 
+        def _construct_protected_functions(self):
+
+            protected_funcs = {func: getattr(self.engine, func) for func in self.protected_funcs}
+
+            return protected_funcs
+
+        def _construct_implict_operators(self):
+
+            operators_engine = importlib.import_module('simulai.tokens')
+
+            protected_operators = {func: getattr(operators_engine, func) for func in self.protected_operators}
+
+            return protected_operators
+
         def _parse_expression(self, expr=Union[sympy.Expr, str]) -> sympy.Expr:
 
             if isinstance(expr, str):
                 try:
-                    expr_ = parse_expr(expr, evaluate=False)
+                    expr_ = sympify(expr, locals=self.protected_operators_subs, evaluate=False)
 
                     if self.constants is not None:
                         expr_ = expr_.subs(self.constants)
