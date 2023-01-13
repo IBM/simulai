@@ -19,15 +19,9 @@ import torch
 
 from simulai.residuals import SymbolicOperator
 
-def model():
+def model(n_inputs:int=1, n_outputs:int=1):
 
     from simulai.regression import DenseNetwork
-
-    input_labels = ['x', 't']
-    output_labels = ['u']
-
-    n_inputs = len(input_labels)
-    n_outputs = len(output_labels)
 
     # Configuration for the fully-connected network
     config = {
@@ -49,10 +43,63 @@ class TestSymbolicOperator(TestCase):
 
         pass
 
+    """
+    def test_symbolic_operator_ode(self):
+
+        for token in ['Sin', 'Cos', 'Tanh', 'Identity', 'Kronecker']:
+
+            f = f'D(u, t) - alpha*{token}(u)'
+
+            input_labels = ['t']
+            output_labels = ['u']
+
+            T = 1
+            t_interval = [0, T]
+
+            net = model(n_inputs=len(input_labels), n_outputs=len(output_labels))
+
+            residual = SymbolicOperator(expressions=[f], input_vars=input_labels,
+                                        constants={'alpha': 5},
+                                        output_vars=output_labels, function=net,
+                                        engine='torch')
+
+            t = np.linspace(*t_interval)[:, None]
+
+            residual(t)
+
+    def test_symbolic_operator_diff_operators(self):
+
+        for operator in ['L', 'Div']:
+
+            f = f'D(u, x) - alpha*{operator}(u, (x, y))'
+
+            input_labels = ['x', 'y']
+            output_labels = ['u']
+
+            L_x = 1
+            L_y = 1
+            N_x = 100
+            N_y = 100
+            dx = L_x/N_x
+            dy = L_y/N_y
+
+            grid = np.mgrid[0:L_x:dx, 0:L_y:dy]
+
+            data = np.hstack([grid[1].flatten()[:, None],
+                              grid[0].flatten()[:, None]])
+
+            net = model(n_inputs=len(input_labels), n_outputs=len(output_labels))
+
+            residual = SymbolicOperator(expressions=[f], input_vars=input_labels,
+                                        constants={'alpha': 5},
+                                        output_vars=output_labels, function=net,
+                                        engine='torch')
+
+            residual(data)
+    """
     def test_symbolic_operator_1d_pde(self):
 
-
-        # Allen-cahn equation
+        # Allen-Cahn equation
         f_0 = 'D(u, t) - mu*D(D(u, x), x) + alpha*(u**3) + beta*u'
         # Invented 1
         f_1 = 'D(D(u, t),t) - mu*D(D(u, x), x) + alpha*(u**3) + beta*u'
@@ -65,7 +112,7 @@ class TestSymbolicOperator(TestCase):
         input_labels = ['x', 't']
         output_labels = ['u']
 
-        net = model()
+        net = model(n_inputs=len(input_labels), n_outputs=len(output_labels))
 
         # Generating the training grid
         L = 1
