@@ -25,17 +25,15 @@ Tanh = sympy.Function('Tanh')
 Identity = sympy.Function('Identity')
 Kronecker = sympy.Function('Kronecker')
 
-def L(u:sympy.Symbol, vars:list) -> callable:
-    l = 0
-    for var in vars:
-        l += D(D(u, var), var)
+def L(u:sympy.Symbol, vars:tuple) -> callable:
+
+    l = sum([D(D(u, var), var) for var in vars])
 
     return l
 
-def Div(u:sympy.Symbol, vars:list) -> callable:
-    l = 0
-    for var in vars:
-        l += D(u, var)
+def Div(u:sympy.Symbol, vars:tuple) -> callable:
+
+    l = sum([D(u, var) for var in vars])
 
     return l
 
