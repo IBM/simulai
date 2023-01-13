@@ -43,10 +43,9 @@ class TestSymbolicOperator(TestCase):
 
         pass
 
-    """
     def test_symbolic_operator_ode(self):
 
-        for token in ['Sin', 'Cos', 'Tanh', 'Identity', 'Kronecker']:
+        for token in ['sin', 'cos', 'sqrt']:
 
             f = f'D(u, t) - alpha*{token}(u)'
 
@@ -65,7 +64,7 @@ class TestSymbolicOperator(TestCase):
 
             t = np.linspace(*t_interval)[:, None]
 
-            residual(t)
+            assert all([isinstance(item, torch.Tensor) for item in residual(t)])
 
     def test_symbolic_operator_diff_operators(self):
 
@@ -95,8 +94,8 @@ class TestSymbolicOperator(TestCase):
                                         output_vars=output_labels, function=net,
                                         engine='torch')
 
-            residual(data)
-    """
+            assert all([isinstance(item, torch.Tensor) for item in residual(data)])
+
     def test_symbolic_operator_1d_pde(self):
 
         # Allen-Cahn equation
