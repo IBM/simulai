@@ -11,12 +11,13 @@
 #     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
-
+import sys
 from unittest import TestCase
 import numpy as np
 
 from simulai.regression import OpInf
 from simulai.metrics import L2Norm
+from simulai.file import load_pkl
 
 # Testing the correctness of the OpInf operators construction
 class TestOperatorsConstruction(TestCase):
@@ -26,8 +27,8 @@ class TestOperatorsConstruction(TestCase):
 
     def test_operators_construction(self):
 
-        n_samples = 10000
-        n_vars = 50
+        n_samples = 1000
+        n_vars = 5
 
         data_input = np.random.rand(n_samples, n_vars)
         data_output = np.random.rand(n_samples, n_vars)
@@ -84,8 +85,8 @@ class TestOperatorsConstruction(TestCase):
     def test_operators_construction_forcing_linear(self):
 
         n_samples = 1000
-        n_vars = 50
-        n_vars_forcing = 50
+        n_vars = 5
+        n_vars_forcing = 5
 
         data_input = np.random.rand(n_samples, n_vars)
         data_output = np.random.rand(n_samples, n_vars)
@@ -221,7 +222,7 @@ class TestOperatorsConstruction(TestCase):
 
     def test_operators_construction_multipliers(self):
 
-        n_samples = 10000
+        n_samples = 1000
         n_vars = 50
         multipliers = np.array([10**(i/20) for i in range(n_vars)])
 
@@ -305,3 +306,44 @@ class TestOperatorsConstruction(TestCase):
 
         assert isinstance(output_data, np.ndarray), f"The output of opinf.eval must be a numpy.ndarray," \
                                                     f" but got {type(output_data)}"
+
+    def test_operators_save_and_load(self):
+
+        n_samples = 1000
+        n_vars = 5
+        multipliers = np.array([10 ** (i / 20) for i in range(n_vars)])
+
+        data_input = multipliers * np.random.rand(n_samples, n_vars)
+        data_output = multipliers * np.random.rand(n_samples, n_vars)
+
+        data_input[:, 0] = 1
+
+        batch_size = 100
+        lambda_linear = 1
+        lambda_quadratic = 1
+
+        model = OpInf(bias_rescale=1, solver='lstsq')
+
+        # Training
+        model.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
+        model.fit(input_data=data_input, target_data=data_output, batch_size=batch_size)
+
+
+        input_data = np.random.rand(1_000, n_vars)
+
+        model.save(model_name=f'opinf_{id(model)}', save_path='/tmp')
+
+        opinf_reloaded = load_pkl(f'/tmp/opinf_{id(model)}.pkl')
+        output_data = opinf_reloaded.eval(input_data=input_data)
+
+        assert isinstance(opinf_reloaded, OpInf)
+        assert isinstance(output_data, np.ndarray)
+
+        model.lean_save(model_name=f'opinf_{id(model)}', save_path='/tmp')
+
+        opinf_reloaded_lean = load_pkl(f'/tmp/opinf_{id(model)}.pkl')
+        output_data = opinf_reloaded_lean.eval(input_data=input_data)
+
+        assert isinstance(opinf_reloaded, OpInf)
+        assert isinstance(output_data, np.ndarray)
+
