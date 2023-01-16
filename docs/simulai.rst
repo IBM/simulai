@@ -13,6 +13,7 @@ Subpackages
    simulai.regression
    simulai.residuals
    simulai.rom
+   simulai.sampling
    simulai.templates
    simulai.utilities
    simulai.workflows

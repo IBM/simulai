@@ -146,7 +146,8 @@ input_data = {'input_branch': branch_input_train, 'input_trunk': trunk_input_tra
 
 optimizer = Optimizer('adam', params=optimizer_config, lr_decay_scheduler_params={'name': 'ExponentialLR',
                                                                                           'gamma': 0.9,
-                                                                                          'decay_frequency': 5_000})
+                                                                                          'decay_frequency': 5_000},
+                      summary_writer=True)
 
 params = {'lambda_1': lambda_1,
           'lambda_2': lambda_2,

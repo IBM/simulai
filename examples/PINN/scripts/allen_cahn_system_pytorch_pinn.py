@@ -92,7 +92,7 @@ class TestAllencahnPINN:
         plt.show()
         plt.close()
 
-        n_epochs = 20 #2_000  # Maximum number of iterations for ADAM
+        n_epochs = 200_000  # Maximum number of iterations for ADAM
         lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
         def model():
@@ -125,10 +125,10 @@ class TestAllencahnPINN:
         net = model()
 
         residual = SymbolicOperator(expressions=[f], input_vars=input_labels,
-                                        auxiliary_expressions={'periodic_u': g_u, 'periodic_du': g_ux},
-                                        constants={'mu':1e-4, 'alpha':5, 'beta':-5},
-                                        output_vars=output_labels, function=net,
-                                        engine='torch')
+                                    auxiliary_expressions={'periodic_u': g_u, 'periodic_du': g_ux},
+                                    constants={'mu':1e-4, 'alpha':5, 'beta':-5},
+                                    output_vars=output_labels, function=net,
+                                    engine='torch')
 
         # It prints a summary of the network features
         net.summary()
@@ -137,7 +137,8 @@ class TestAllencahnPINN:
         optimizer = Optimizer('adam', params=optimizer_config, lr_decay_scheduler_params={'name': 'ExponentialLR',
                                                                                           'gamma': 0.9,
                                                                                           'decay_frequency': 5_000},
-                              shuffle=False)
+                              shuffle=False,
+                              summary_writer=True)
 
         params = {'residual': residual,
                   'initial_input': data_boundary_t0,
@@ -146,12 +147,11 @@ class TestAllencahnPINN:
                                      'periodic_du': [data_boundary_xL, data_boundary_x0]},
                   'boundary_penalties': [1, 1],
                   'initial_penalty': 10,
-                  'causality_preserving': True,
                   'grid_shape': (T_DIM, X_DIM),
                   'causality_parameter': 1e2}
 
         optimizer.fit(op=net, input_data=data,
-                      n_epochs=n_epochs, loss="pirmse", params=params)
+                      n_epochs=n_epochs, loss="pirmse", params=params, batch_size=1_000)
 
         saver = SPFile(compact=False)
         saver.write(save_dir='/tmp', name='allen_cahn_net', model=net, template=model)
