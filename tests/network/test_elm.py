@@ -16,10 +16,7 @@ import numpy as np
 from unittest import TestCase
 
 from simulai.regression import ELM
-
-from simulai.file import SPFile
-from simulai.metrics import L2Norm
-from simulai.optimization import Optimizer
+from simulai.file import load_pkl
 
 class TestELM(TestCase):
 
@@ -69,5 +66,38 @@ class TestELM(TestCase):
         approximator.fit(input_data=input_train, target_data=output_train, lambd=1e-5)
 
         evaluated = approximator.eval(input_data=positions[::100])
-
         assert isinstance(evaluated, np.ndarray)
+
+        approximator.save(name='elm_model', path='/tmp')
+
+        # Testing to save and reload ELM
+        approximator_reloaded = load_pkl(path='/tmp/elm_model.pkl')
+
+        assert isinstance(approximator_reloaded, ELM)
+
+    def test_failed_load_pkl(self):
+
+        config = {'n_i': 2,
+                  'n_o': 1,
+                  'h': 800}
+
+        approximator = ELM(**config)
+
+        model_reloaded = None
+
+        try:
+           model_reloaded = load_pkl(path=f'/tmp/elm_model.{id(approximator)}')
+
+        except:
+
+           pass
+
+        assert model_reloaded == None
+
+        try:
+           model_reloaded = load_pkl(path=f'/tmp/elm_model_{id(approximator)}.pkl')
+
+        except :
+           pass
+
+        assert model_reloaded == None
