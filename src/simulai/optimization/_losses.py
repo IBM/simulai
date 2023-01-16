@@ -29,7 +29,7 @@ class LossBasics:
         """
         Loss functions parent class
         """
-        pass
+        self.loss_states = None
 
     # Choosing the kind of multiplication to be done for each
     # type of lambda penalties and regularization terms
@@ -88,6 +88,7 @@ class RMSELoss(LossBasics):
         super().__init__()
 
         self.operator = operator
+        self.loss_states = {'loss': list()}
 
     def _data_loss(self, output_tilde:torch.Tensor=None, norm_value:torch.Tensor=None,
                          target_data_tensor:torch.Tensor=None) -> torch.Tensor:
@@ -169,6 +170,8 @@ class RMSELoss(LossBasics):
             # Back-propagation
             loss.backward()
 
+            self.loss_states['loss'].append(float(loss.detach().data))
+
             sys.stdout.write(("\rloss: {} {}").format(loss, call_back))
             sys.stdout.flush()
 
@@ -202,6 +205,8 @@ class WRMSELoss(LossBasics):
 
         self.min_causality_weight = self.tol
         self.mean_causality_weight = 0
+
+        self.loss_states = {'loss': list()}
 
     def _data_loss(self, output_tilde:torch.Tensor=None, weights:list=None,
                          target_data_tensor:torch.Tensor=None, axis:int=-1) -> list:
@@ -424,6 +429,8 @@ class WRMSELoss(LossBasics):
             # Back-propagation
             loss.backward()
 
+            self.loss_states['loss'].append(float(loss.detach().data))
+
             sys.stdout.write(("\rloss: {} {}").format(loss, call_back))
             sys.stdout.flush()
 
@@ -454,6 +461,8 @@ class PIRMSELoss(LossBasics):
 
         self.min_causality_weight = self.tol
         self.mean_causality_weight = 0
+
+        self.loss_states = {'pde': list(), 'init': list(), 'bound': list()}
 
     def _convert(self, input_data:Union[dict, np.ndarray]=None, device:str=None) -> Union[dict, torch.Tensor]:
 
@@ -684,6 +693,10 @@ class PIRMSELoss(LossBasics):
 
             call_back = f", causality_weights: {self.causality_weights_interval}"
 
+            self.loss_states['pde'].append(float(pde.detach().data))
+            self.loss_states['init'].append(float(init.detach().data))
+            self.loss_states['bound'].append(float(bound.detach().data))
+
             sys.stdout.write(("\rpde: {}, init: {}, bound: {} {}").format(pde, init, bound, call_back))
             sys.stdout.flush()
 
@@ -710,6 +723,8 @@ class OPIRMSELoss(LossBasics):
 
         self.min_causality_weight = self.tol
         self.mean_causality_weight = 0
+
+        self.loss_states = {'pde': list(), 'init': list(), 'bound': list()}
 
     def _convert(self, input_data:Union[dict, np.ndarray]=None, device:str=None) -> Union[dict, torch.Tensor]:
 
@@ -873,6 +888,10 @@ class OPIRMSELoss(LossBasics):
             loss.backward()
 
             call_back = f", causality_weights: {self.causality_weights_interval}"
+
+            self.loss_states['pde'].append(float(loss.detach().data))
+            self.loss_states['init'].append(float(init.detach().data))
+            self.loss_states['bound'].append(float(bound.detach().data))
 
             sys.stdout.write(("\rpde: {}, init: {}, bound: {} {}").format(pde, init, bound, call_back))
             sys.stdout.flush()

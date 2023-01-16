@@ -18,10 +18,13 @@ import numpy as np
 import torch
 from torch.distributed.optim import DistributedOptimizer
 from torch.distributed.rpc import RRef
+from torch.utils.tensorboard import SummaryWriter
 from functools import reduce
 
 from simulai.abstract import Regression
 from simulai.abstract import Dataset
+
+from ._losses import LossBasics
 
 # Basic built-in optimization toolkit for SimulAI
 
@@ -86,7 +89,7 @@ def _convert_tensor_format(method):
 # algorithms
 class Optimizer:
 
-    def __init__(self, optimizer: str=None, early_stopping:bool=False, shuffle:bool=True,
+    def __init__(self, optimizer: str=None, early_stopping:bool=False, summary_writer:bool=False, shuffle:bool=True,
                        lr_decay_scheduler_params:dict=None,
                        params: dict=None, early_stopping_params:dict=None) -> None:
 
@@ -100,6 +103,8 @@ class Optimizer:
 
         self.early_stopping = early_stopping
         self.early_stopping_params = early_stopping_params
+
+        self.summary_writer = summary_writer
 
         self.shuffle = shuffle
 
@@ -122,6 +127,12 @@ class Optimizer:
 
         else:
             self.stop_handler = self._bypass_stop_handler
+
+        if self.summary_writer is True:
+            self.writer = SummaryWriter()
+            self.summary_writer = self._summary_writer
+        else:
+            self.summary_writer = self._bypass_summary_writer
 
         # Determining the kind of sampling will be executed
         if self.shuffle:
@@ -164,6 +175,15 @@ class Optimizer:
     def _no_shuffling(self, size:int=None) -> torch.Tensor:
 
         return torch.arange(size)
+
+    def _summary_writer(self, loss_instance:LossBasics=None, epoch:int=None) -> None:
+
+        for k, v in loss_instance.loss_states.items():
+            loss = v[epoch]
+            self.writer.add_scalar(k, loss, epoch)
+
+    def _bypass_summary_writer(self, **kwargs) -> None:
+        pass
 
     # Doing nothing
     def _bypass_stop_handler(self, **kwargs):
@@ -230,7 +250,6 @@ class Optimizer:
         return input_data_dict
 
     # Preparing the batches (converting format and moving to the correct device)
-    # in a batch-wise optimization loop
     def _batchwise_make_input_data(self, input_data:Union[dict, torch.Tensor], device='cpu',
                                          batch_indices:torch.Tensor=None) -> dict:
 
@@ -351,6 +370,8 @@ class Optimizer:
                                               call_back=self.accuracy_str, **params)
 
                 self.optimizer_instance.step(loss_function)
+
+                self.summary_writer(loss_instance=loss_instance, epoch=b_epoch)
 
                 self.lr_decay_handler(epoch=b_epoch)
 

@@ -135,3 +135,22 @@ class TestAutoencoder(TestCase):
         saver.write(save_dir="/tmp", name='autoencoder_rb_just_test', model=autoencoder, template=model)
 
         print(optimizer.loss_states)
+
+    def test_autoencoder_train_tensorboard(self):
+
+        data = np.random.rand(1_000, 3, 16, 16)
+
+        lr = 1e-3
+        n_epochs = 10_000
+
+        autoencoder = model()
+
+        autoencoder.summary(input_shape=[None, 3, 16, 16])
+
+        optimizer_config = {'lr': lr}
+        params = {'lambda_1': 0., 'lambda_2': 0., 'use_mean':False, 'relative':True}
+
+        optimizer = Optimizer('adam', params=optimizer_config, summary_writer=True)
+
+        optimizer.fit(op=autoencoder, input_data=data, target_data=data,
+                      n_epochs=n_epochs, loss="vaermse", params=params, batch_size=100)
