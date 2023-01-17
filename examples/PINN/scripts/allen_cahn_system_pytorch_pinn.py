@@ -151,7 +151,7 @@ class TestAllencahnPINN:
                   'causality_parameter': 1e2}
 
         optimizer.fit(op=net, input_data=data,
-                      n_epochs=n_epochs, loss="pirmse", params=params, batch_size=1_000)
+                      n_epochs=n_epochs, loss="pirmse", params=params)
 
         saver = SPFile(compact=False)
         saver.write(save_dir='/tmp', name='allen_cahn_net', model=net, template=model)
