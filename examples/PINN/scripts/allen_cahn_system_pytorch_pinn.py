@@ -88,7 +88,7 @@ class TestAllencahnPINN:
         plt.show()
         plt.close()
 
-        n_epochs = 20_000  # Maximum number of iterations for ADAM
+        n_epochs = 50_000  # Maximum number of iterations for ADAM
         lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
         def model():
@@ -162,7 +162,7 @@ class TestAllencahnPINN:
                             T_f.flatten()[:, None]])
 
         # Evaluation in training dataset
-        approximated_data = net.eval(input_data=data_f)
+        approximated_data = net.cpu().eval(input_data=data_f)
 
         U_f = approximated_data.reshape(T_DIM_F, X_DIM_F)
 
