@@ -88,7 +88,7 @@ class TestAllencahnPINN:
         plt.show()
         plt.close()
 
-        n_epochs = 200_000  # Maximum number of iterations for ADAM
+        n_epochs = 20_000  # Maximum number of iterations for ADAM
         lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
         def model():
@@ -141,8 +141,7 @@ class TestAllencahnPINN:
                   'boundary_input': {'periodic_u': [data_boundary_xL, data_boundary_x0],
                                      'periodic_du': [data_boundary_xL, data_boundary_x0]},
                   'boundary_penalties': [1, 1],
-                  'initial_penalty': 100,
-                  'grid_shape': (T_DIM, X_DIM)}
+                  'initial_penalty': 100}
 
         optimizer.fit(op=net, input_data=data,
                       n_epochs=n_epochs, loss="pirmse", params=params, device='gpu')
@@ -280,10 +279,7 @@ class TestAllencahnPINN:
                   'boundary_input': {'periodic_u': [data_boundary_xL, data_boundary_x0],
                                      'periodic_du': [data_boundary_xL, data_boundary_x0]},
                   'boundary_penalties': [1, 1],
-                  'initial_penalty': 100,
-                  'causality_preserving': True,
-                  'grid_shape': (T_DIM, X_DIM),
-                  'causality_parameter': 1e2}
+                  'initial_penalty': 100}
 
         optimizer.fit(op=net, input_data=data,
                       n_epochs=n_epochs, loss="pirmse", params=params)
