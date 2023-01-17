@@ -21,7 +21,7 @@ os.environ['engine'] = 'pytorch'
 
 from simulai.utilities.lorenz_solver import lorenz_solver, lorenz_solver_forcing
 from simulai.utilities.oscillator_solver import oscillator_solver_forcing
-from simulai.regression import OpInf, KoopmanOperator
+from simulai.regression import OpInf, ExtendedOpInf
 from simulai.math.integration import RK4, LSODA, FunctionWrapper, ClassWrapper
 from simulai.metrics import LyapunovUnits, L2Norm
 
@@ -30,7 +30,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class TestModelPoolESN:
+class TestOpInfNonlinear:
 
     def __init__(self):
         pass
@@ -259,17 +259,17 @@ class TestModelPoolESN:
 
         operator_config = {'bias_rescale':1e-15, 'solver': 'pinv'}
 
-        #lorenz_op = KoopmanOperator(observables=['x'], operator_config=operator_config)
-        #lorenz_op = KoopmanOperator(observables=['x', 'sin(4*x)', 'cos(4*x)'], operator_config=operator_config)
-        lorenz_op = KoopmanOperator(observables=['x', 'x**2', 'tanh(x)'], operator_config=operator_config)
-        #lorenz_op = KoopmanOperator(observables=['x', 'Kronecker(x)'], operator_config=operator_config)
-        #lorenz_op = KoopmanOperator(observables=['x', 'Kronecker(x)', 'x**3'], operator_config=operator_config)
-        #lorenz_op = KoopmanOperator(observables=['x', 'Kronecker(Kronecker(x))'], operator_config=operator_config)
-        #lorenz_op = KoopmanOperator(observables=['x', 'tanh(sin(Kronecker(x)))'], operator_config=operator_config)
+        #lorenz_op = ExtendedOpInf(observables=['x'], operator_config=operator_config)
+        #lorenz_op = ExtendedOpInf(observables=['x', 'sin(4*x)', 'cos(4*x)'], operator_config=operator_config)
+        lorenz_op = ExtendedOpInf(observables=['x', 'x**2', 'tanh(x)'], operator_config=operator_config)
+        #lorenz_op = ExtendedOpInf(observables=['x', 'Kronecker(x)'], operator_config=operator_config)
+        #lorenz_op = ExtendedOpInf(observables=['x', 'Kronecker(x)', 'x**3'], operator_config=operator_config)
+        #lorenz_op = ExtendedOpInf(observables=['x', 'Kronecker(Kronecker(x))'], operator_config=operator_config)
+        #lorenz_op = ExtendedOpInf(observables=['x', 'tanh(sin(Kronecker(x)))'], operator_config=operator_config)
 
         lorenz_op.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
         lorenz_op.fit(input_data=train_field, target_data=train_field_derivative,
-                      batch_size=10000, force_lazy_access=True, k_svd=51)
+                      batch_size=10000, force_lazy_access=False, k_svd=51)
 
         print(f"A_hat: {np.array_str(lorenz_op.A_hat, precision=2, suppress_small=True)}")
         print(f"H_hat: {np.array_str(lorenz_op.H_hat, precision=2, suppress_small=True)}")
@@ -363,7 +363,7 @@ class TestModelPoolESN:
 
         operator_config = {'bias_rescale': 1e-15}
 
-        lorenz_op = KoopmanOperator(observables=['x', 'x**2', 'tanh(x)'], intervals=[-1, -1, -1],
+        lorenz_op = ExtendedOpInf(observables=['x', 'x**2', 'tanh(x)'], intervals=[-1, -1, -1],
                                     operator_config=operator_config)
 
         lorenz_op.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
