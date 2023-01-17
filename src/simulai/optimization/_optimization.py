@@ -24,7 +24,6 @@ from functools import reduce
 from simulai.abstract import Regression
 from simulai.abstract import Dataset
 
-from ._losses import LossBasics
 
 # Basic built-in optimization toolkit for SimulAI
 
@@ -176,9 +175,9 @@ class Optimizer:
 
         return torch.arange(size)
 
-    def _summary_writer(self, loss_instance:LossBasics=None, epoch:int=None) -> None:
+    def _summary_writer(self, loss_states:dict=None, epoch:int=None) -> None:
 
-        for k, v in loss_instance.loss_states.items():
+        for k, v in loss_states.items():
             loss = v[epoch]
             self.writer.add_scalar(k, loss, epoch)
 
@@ -297,11 +296,15 @@ class Optimizer:
             return f"loss must be str or callable, but received {type(loss)}"
 
     # Single batch optimization loop
-    def _optimization_loop(self, n_epochs:int=None, loss_function=None, validation_loss_function=None) -> None:
+    def _optimization_loop(self, n_epochs:int=None, loss_function=None, loss_states:dict=None,
+                           validation_loss_function=None) -> None:
 
         for epoch in range(n_epochs):
+
             self.optimizer_instance.zero_grad()
             self.optimizer_instance.step(loss_function)
+
+            self.summary_writer(loss_states=loss_states, epoch=epoch)
 
     # Basic version of the mini-batch optimization loop
     # TODO It could be parallelized
@@ -371,7 +374,7 @@ class Optimizer:
 
                 self.optimizer_instance.step(loss_function)
 
-                self.summary_writer(loss_instance=loss_instance, epoch=b_epoch)
+                self.summary_writer(loss_states=loss_instance.loss_states, epoch=b_epoch)
 
                 self.lr_decay_handler(epoch=b_epoch)
 
@@ -528,6 +531,7 @@ class Optimizer:
 
             # Executing the optimization loop
             self._optimization_loop(n_epochs=n_epochs, loss_function=loss_function,
+                                    loss_states=loss_instance.loss_states,
                                     validation_loss_function=validation_loss_function)
 
 # Interface for using scipy implemented optimizers
