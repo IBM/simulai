@@ -192,8 +192,8 @@ class DenseNetwork(NetworkTemplate):
         layer = torch.nn.Linear(input_size, output_size, bias=bias)
 
         if initialization == 'xavier':
-            torch.nn.init.xavier_normal(layer.weight,
-                                        gain=self._calculate_gain(
+            torch.nn.init.xavier_normal_(layer.weight,
+                                         gain=self._calculate_gain(
                                              self.activations_str[0]))
             return layer
 
