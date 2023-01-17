@@ -39,7 +39,7 @@ from simulai.parallel import PipelineMPI
 class OpInf:
 
     def __init__(self, forcing:str=None, bias_rescale:float=1,
-                       solver:Union[str, callable]=None, parallel: Union[str, None]=None,
+                       solver:Union[str, callable]='lstsq', parallel: Union[str, None]=None,
                        show_log:bool=False, engine:str='numpy') -> None:
 
         """Operator Inference (OpInf)
@@ -173,8 +173,8 @@ class OpInf:
         :type global_matrix: np.ndarray
         :return: nothing
         """
-
-        self.n_inputs = self.n_outputs = global_matrix.shape[1]
+        if self.n_inputs == None and self.n_outputs == None:
+            self.n_inputs = self.n_outputs = global_matrix.shape[1]
 
         if self.raw_model == True:
             self.construct()
@@ -803,8 +803,8 @@ class OpInf:
             warnings.warn("Finishing fitting process without modifications.")
             
         else:
-            raise Exception(f"The option type(self.solver) is not suported.\
-                            it must be callble or str.")
+            raise Exception(f"The option {type(self.solver)} is not suported.\
+                            it must be callable or str.")
                             
         print("Fitting process concluded.")
 
