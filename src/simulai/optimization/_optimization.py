@@ -18,7 +18,6 @@ import numpy as np
 import torch
 from torch.distributed.optim import DistributedOptimizer
 from torch.distributed.rpc import RRef
-from torch.utils.tensorboard import SummaryWriter
 from functools import reduce
 
 from simulai.abstract import Regression
@@ -128,6 +127,7 @@ class Optimizer:
             self.stop_handler = self._bypass_stop_handler
 
         if self.summary_writer is True:
+            from torch.utils.tensorboard import SummaryWriter
             self.writer = SummaryWriter()
             self.summary_writer = self._summary_writer
         else:
