@@ -1098,27 +1098,28 @@ class AutoencoderCNN(NetworkTemplate):
         reconstructed_data = self.reconstruction(input_data=input_data)
 
         return reconstructed_data.cpu().detach().numpy()
-
-class AutoencoderKoopman(NetworkTemplate):
+    
+class AutoencoderExtendedOpInf(NetworkTemplate):
 
     """
 
-           This is an implementation of a Koopman autoencoder as
-           Reduced Order Model;
+    This is an implementation of a ExtendedOpInf autoencoder as
+    
+    Reduced Order Model:
+    --------------------
+    A ExtendedOpInf autoencoder architecture consists of five stages:
+    --> The convolutional encoder [Optional]
+    --> Fully-connected encoder
+    --> ExtendedOpInf operator
+    --> Fully connected decoder
+    --> The convolutional decoder [Optional]
 
-               A Koopman autoencoder architecture consists of five stages:
-               --> The convolutional encoder [Optional]
-               --> Fully-connected encoder
-               --> Koopman operator
-               --> Fully connected decoder
-               --> The convolutional decoder [Optional]
-
-           SCHEME:
-                                                         K (KOOPMAN OPERATOR)
+    SCHEME:
+                                            E (EXTENDEDOPINF OPERATOR)
                                                          ^
                                                   |      |      |
                                                   |  |   |   |  |
-           Z -> [Conv] -> [Conv] -> ... [Conv] -> |  | | - | |  | -> [Conv.T] -> [Conv.T] -> ... [Conv.T] -> Z_til
+    Z -> [Conv] -> [Conv] -> ... [Conv] -> |  | | - | |  | -> [Conv.T] -> [Conv.T] -> ... [Conv.T] -> Z_til
                                                   |  |       |  |
                                                   |             |
 
@@ -1132,7 +1133,7 @@ class AutoencoderKoopman(NetworkTemplate):
                        decoder: Union[ConvolutionalNetwork, DenseNetwork]=None,
                        devices:Union[str, list]='cpu') -> None:
 
-        super(AutoencoderKoopman, self).__init__()
+        super(AutoencoderExtendedOpInf, self).__init__()
 
         self.weights = list()
 
@@ -1148,6 +1149,18 @@ class AutoencoderKoopman(NetworkTemplate):
 
         self.weights += self.encoder.weights
         self.weights += self.decoder.weights
+
+        # These subnetworks are optional
+        if bottleneck_encoder is not None and bottleneck_decoder is not None:
+
+            self.bottleneck_encoder = bottleneck_encoder.to(self.device)
+            self.bottleneck_decoder = bottleneck_decoder.to(self.device)
+
+            self.add_module('bottleneck_encoder', self.bottleneck_encoder)
+            self.add_module('bottleneck_decoder', self.bottleneck_decoder)
+
+            self.weights += self.bottleneck_encoder.weights
+            self.weights += self.bottleneck_decoder.weights
 
         # These subnetworks are optional
         if bottleneck_encoder is not None and bottleneck_decoder is not None:
