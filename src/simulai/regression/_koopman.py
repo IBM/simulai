@@ -19,7 +19,7 @@ from simulai.math.expressions import FromSymbol2FLambda
 from simulai.regression import OpInf
 
 # Wrapper class for constructing Koopman operators
-class KoopmanOperator(OpInf):
+class ExtendedOpInf(OpInf):
 
     def __init__(self, observables:List[str]=None, fobservables:List[str]=None, variables:List[str]=None,
                        intervals:List[Union[int, list]]=None, fintervals: List[Union[int, list]] = None,
