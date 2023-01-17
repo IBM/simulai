@@ -19,7 +19,7 @@ from ._esn import EchoStateNetwork, DeepEchoStateNetwork, WideEchoStateNetwork
 from ._elm import ELM
 from ._affine import AffineMapping
 from ._opinf import OpInf
-from ._koopman import KoopmanOperator
+from ._koopman import ExtendedOpInf
 from ._pinv import CompressedPinv
 
 # Back-propagation mechanisms
