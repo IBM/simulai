@@ -1099,31 +1099,31 @@ class AutoencoderCNN(NetworkTemplate):
 
         return reconstructed_data.cpu().detach().numpy()
     
-class AutoencoderExtendedOpInf(NetworkTemplate):
+class AutoencoderKoopman(NetworkTemplate):
 
     """
 
-    This is an implementation of a ExtendedOpInf autoencoder as
+    This is an implementation of a Koopman autoencoder as
     
     Reduced Order Model:
     --------------------
-    A ExtendedOpInf autoencoder architecture consists of five stages:
+    A Koopman autoencoder architecture consists of five stages:
     --> The convolutional encoder [Optional]
     --> Fully-connected encoder
-    --> ExtendedOpInf operator
+    --> Koopman operator
     --> Fully connected decoder
     --> The convolutional decoder [Optional]
 
     SCHEME:
-                                            E (EXTENDEDOPINF OPERATOR)
-                                                         ^
-                                                  |      |      |
-                                                  |  |   |   |  |
+                                         (Koopman OPERATOR)
+                                                  ^
+                                           |      |      |
+                                           |  |   |   |  |
     Z -> [Conv] -> [Conv] -> ... [Conv] -> |  | | - | |  | -> [Conv.T] -> [Conv.T] -> ... [Conv.T] -> Z_til
-                                                  |  |       |  |
-                                                  |             |
+                                           |  |       |  |
+                                           |             |
 
-                          ENCODER               DENSE BOTTLENECK           DECODER
+                    ENCODER               DENSE BOTTLENECK           DECODER
 
     """
 
@@ -1133,7 +1133,7 @@ class AutoencoderExtendedOpInf(NetworkTemplate):
                        decoder: Union[ConvolutionalNetwork, DenseNetwork]=None,
                        devices:Union[str, list]='cpu') -> None:
 
-        super(AutoencoderExtendedOpInf, self).__init__()
+        super(AutoencoderKoopman, self).__init__()
 
         self.weights = list()
 
