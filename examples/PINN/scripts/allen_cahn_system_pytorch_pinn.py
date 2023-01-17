@@ -39,12 +39,9 @@ class TestAllencahnPINN:
         input_labels = ['x', 't']
         output_labels = ['u']
 
-        n_inputs = len(input_labels)
-        n_outputs = len(output_labels)
-
         # Some fixed values
-        X_DIM = 100
-        T_DIM = 200
+        X_DIM = 256
+        T_DIM = 100
 
         L = 1
         x_0 = -1
@@ -108,7 +105,7 @@ class TestAllencahnPINN:
             # Configuration for the fully-connected network
             config = {
                         'layers_units': [128, 128, 128, 128],
-                        'activations': 'sin',
+                        'activations': 'tanh',
                         'input_size': n_inputs,
                         'output_size': n_outputs,
                         'name': 'allen_cahn_net'
@@ -119,7 +116,6 @@ class TestAllencahnPINN:
 
             return net
 
-        # optimizer_config = {'lr' : 1e-2, 'threshold0' : 20, 'threshold' : 100, 'v0' : 1e-4, 'n_fixed_bounces' : 4, 'consEn' : True}
         optimizer_config = {'lr': lr}
 
         net = model()
@@ -128,12 +124,12 @@ class TestAllencahnPINN:
                                     auxiliary_expressions={'periodic_u': g_u, 'periodic_du': g_ux},
                                     constants={'mu':1e-4, 'alpha':5, 'beta':-5},
                                     output_vars=output_labels, function=net,
-                                    engine='torch')
+                                    engine='torch',
+                                    device='gpu')
 
         # It prints a summary of the network features
         net.summary()
 
-        #optimizer = Optimizer('bbi', params=optimizer_config)
         optimizer = Optimizer('adam', params=optimizer_config, lr_decay_scheduler_params={'name': 'ExponentialLR',
                                                                                           'gamma': 0.9,
                                                                                           'decay_frequency': 5_000},
@@ -146,12 +142,11 @@ class TestAllencahnPINN:
                   'boundary_input': {'periodic_u': [data_boundary_xL, data_boundary_x0],
                                      'periodic_du': [data_boundary_xL, data_boundary_x0]},
                   'boundary_penalties': [1, 1],
-                  'initial_penalty': 10,
-                  'grid_shape': (T_DIM, X_DIM),
-                  'causality_parameter': 1e2}
+                  'initial_penalty': 100,
+                  'grid_shape': (T_DIM, X_DIM)}
 
         optimizer.fit(op=net, input_data=data,
-                      n_epochs=n_epochs, loss="pirmse", params=params)
+                      n_epochs=n_epochs, loss="pirmse", params=params, device='gpu')
 
         saver = SPFile(compact=False)
         saver.write(save_dir='/tmp', name='allen_cahn_net', model=net, template=model)
@@ -178,7 +173,7 @@ class TestAllencahnPINN:
         gf = ax.pcolormesh(X_f, T_f, U_f, cmap='jet')
         fig.colorbar(gf)
 
-        plt.show()
+        plt.savefig('allen_cahn.png')
 
     def test_allen_cahn_rbf(self):
 
@@ -319,3 +314,6 @@ class TestAllencahnPINN:
 
         plt.show()
 
+if __name__ == "__main__":
+
+    TestAllencahnPINN().test_allen_cahn()
