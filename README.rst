@@ -57,7 +57,7 @@ If you have problems installing ``gcc`` using the command above, we recommend yo
 Using Tensorboard
 =================
 
-Tensorboards is supported for monitoring neural network training tasks. For a tutorial about how to set it see `this example <https://github.com/IBM/simulai/blob/main/examples/Dense/miscellaneous/notebooks/lorenz_96_chaotic.ipynb>`_ .
+`Tensorboard <https://www.tensorflow.org/tensorboard>`_ is supported for monitoring neural network training tasks. For a tutorial about how to set it see `this example <https://github.com/IBM/simulai/blob/main/examples/Dense/miscellaneous/notebooks/lorenz_96_chaotic.ipynb>`_.
 
 Documentation
 =============
