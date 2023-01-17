@@ -127,7 +127,10 @@ class Optimizer:
             self.stop_handler = self._bypass_stop_handler
 
         if self.summary_writer is True:
-            from torch.utils.tensorboard import SummaryWriter
+            try:
+                from torch.utils.tensorboard import SummaryWriter
+            except:
+                raise Exception("It is necessary to have tensorboard installed to use summary writing.")
             self.writer = SummaryWriter()
             self.summary_writer = self._summary_writer
         else:

@@ -13,7 +13,6 @@
 #     limitations under the License.
 
 import numpy as np
-import torch
 import matplotlib.pyplot as plt
 
 from simulai.regression import DenseNetwork, ModalRBFNetwork
