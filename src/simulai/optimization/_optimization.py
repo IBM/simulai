@@ -119,13 +119,14 @@ class Optimizer:
 
         self.losses_module = importlib.import_module("simulai.optimization")
 
-        # Use early_stopping or not
+        # Using early_stopping or not
         if self.early_stopping is True:
             self.stop_handler = self._early_stopping_handler
 
         else:
             self.stop_handler = self._bypass_stop_handler
 
+        # Using summary writing (necessary for tensorboard), or not
         if self.summary_writer is True:
             try:
                 from torch.utils.tensorboard import SummaryWriter
@@ -143,7 +144,7 @@ class Optimizer:
         else:
             self.sampler = self._no_shuffling
 
-        # Use lr decay or not
+        # Using lr decay or not
         if self.lr_decay_scheduler_params is not None:
             self.lr_decay_handler = self._lr_decay_handler
 
