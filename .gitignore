@@ -45,7 +45,7 @@ pip-log.txt
 nosetests.xml
 #htmlcov/*.*
 .testmondata
-docs/_build/*
+_build/*
 # Translations
 *.mo
 
