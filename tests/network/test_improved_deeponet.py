@@ -21,7 +21,7 @@ from utils import configure_device
 DEVICE = configure_device()
 
 # Model template
-def model(product_type=None, multiply_by_trunk:bool=False, n_outputs:int=4):
+def model(product_type=None, multiply_by_trunk:bool=False, n_outputs:int=4, residual:bool=False):
 
     import numpy as np
 
@@ -74,6 +74,7 @@ def model(product_type=None, multiply_by_trunk:bool=False, n_outputs:int=4):
                            rescale_factors=np.random.rand(n_outputs),
                            product_type=product_type,
                            multiply_by_trunk=multiply_by_trunk,
+                           residual=residual,
                            devices=DEVICE,
                            model_id='net')
 
@@ -89,13 +90,13 @@ class TestImprovedDeeponet(TestCase):
         net = model()
 
         data_trunk = torch.rand(1_000, 1)
-        data_branch = torch.rand(1_000, 3)
+        data_branch = torch.rand(1_000, 4)
 
         output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
         
         print(f"Network has {net.n_parameters} parameters.")
         
-        assert output.shape[1] == 2, "The network output is not like expected."
+        assert output.shape[1] == 4, "The network output is not like expected."
 
     def test_deeponet_train(self):
 

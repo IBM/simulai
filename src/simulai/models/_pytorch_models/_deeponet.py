@@ -406,14 +406,16 @@ class ResDeepONet(DeepONet):
                                           model_id=model_id)
 
         input_dim = self.branch_network.input_size
-        assert  input_dim == var_dim, "For a residual network, it is necessary to have" \
-                                      "size of branch_network input equal to var_dim, but " \
-                                      f"received {input_dim} and {var_dim}."
 
         self.forward_ = super().forward
 
         if residual == True:
+
+            assert input_dim == var_dim, "For a residual network, it is necessary to have " \
+                                         "size of branch_network input equal to var_dim, but " \
+                                         f"received {input_dim} and {var_dim}."
             self.forward = self._forward_default
+
         elif multiply_by_trunk == True:
             self.forward = self._forward_multiplied_by_trunk
         else:
