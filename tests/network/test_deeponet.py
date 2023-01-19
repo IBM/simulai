@@ -21,10 +21,20 @@ from utils import configure_device
 DEVICE = configure_device()
 
 # Model template
-def model(product_type=None, n_outputs:int=2):
+def model(product_type=None, n_outputs:int=2, residual:bool=False, multiply_by_trunk:bool=False):
+
+    import importlib
 
     from simulai.regression import DenseNetwork
-    from simulai.models import DeepONet
+
+    if residual is True:
+        arch_name = 'ResDeepONet'
+    else:
+        arch_name = 'DeepONet'
+
+    models_engine = importlib.import_module('simulai.models', arch_name)
+
+    DeepONet = getattr(models_engine, arch_name)
 
     n_inputs = 4
     n_outputs = n_outputs
@@ -57,11 +67,16 @@ def model(product_type=None, n_outputs:int=2):
     trunk_net.summary()
     branch_net.summary()
 
-    net = DeepONet(trunk_network=trunk_net,
-                   branch_network=branch_net,
-                   var_dim=n_outputs,
-                   product_type=product_type,
-                   model_id='deeponet')
+    config = {'trunk_network': trunk_net,
+              'branch_network': branch_net,
+              'var_dim': n_outputs,
+              'product_type': product_type,
+              'model_id': 'deeponet'}
+
+    if residual is True:
+        config['multiply_by_trunk'] = multiply_by_trunk
+
+    net = DeepONet(**config)
 
     return net
 
@@ -196,6 +211,17 @@ class TestDeeponet(TestCase):
         optimizer = Optimizer('adam', params=optimizer_config)
 
         model_dict = {None: model, 'dense': model_dense_product}
+
+        for multiply_by_trunk in [True, False]:
+
+            net = model(n_outputs=4, residual=True, multiply_by_trunk=multiply_by_trunk)
+
+            optimizer.fit(op=net, input_data=input_data, target_data=output_target,
+                          n_epochs=n_epochs, loss="wrmse", params=params, device=DEVICE)
+
+            output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
+
+            assert output.shape[1] == 4, "The network output is not like expected."
 
         for product_type in [None, 'dense']:
 
