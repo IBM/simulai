@@ -48,8 +48,9 @@ class AutoencoderMLP(NetworkTemplate):
     """
 
     def __init__(self, encoder: DenseNetwork = None,
-                 decoder: DenseNetwork = None,
-                 devices: Union[str, list] = 'cpu') -> None:
+                       decoder: DenseNetwork = None,
+                       devices: Union[str, list] = 'cpu') -> None:
+
         super(AutoencoderMLP, self).__init__()
 
         self.weights = list()
