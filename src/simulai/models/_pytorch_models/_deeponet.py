@@ -481,7 +481,7 @@ class ResDeepONet(DeepONet):
 
 class ImprovedDeepONet(ResDeepONet):
 
-    name = "resdeeponet"
+    name = "improveddeeponet"
     engine = "torch"
 
     def __init__(self, trunk_network: ConvexDenseNetwork = None,
@@ -576,7 +576,7 @@ class ImprovedDeepONet(ResDeepONet):
 
 class FlexibleDeepONet(ResDeepONet):
 
-    name = "resdeeponet"
+    name = "flexibledeeponet"
     engine = "torch"
 
     def __init__(self, trunk_network: NetworkTemplate = None,
