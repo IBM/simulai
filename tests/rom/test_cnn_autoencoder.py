@@ -5,10 +5,14 @@ from unittest import TestCase
 from simulai.optimization import Optimizer
 from simulai.file import SPFile
 
-def model():
+def model(architecture:str='AutoencoderVariational'):
+
+    import importlib
 
     from simulai.regression import ConvolutionalNetwork, SLFNN
-    from simulai.models import AutoencoderVariational
+
+    models_engine = importlib.import_module('simulai.models')
+    autoencoder = getattr(models_engine, architecture)
 
     transpose = False
 
@@ -72,9 +76,9 @@ def model():
     decoder = ConvolutionalNetwork(layers=decoder_layers, activations='tanh', case='2d', transpose=transpose,
                                    name="decoder")
 
-    autoencoder = AutoencoderVariational(encoder=encoder, bottleneck_encoder=bottleneck_encoder,
-                                         bottleneck_decoder=bottleneck_decoder,
-                                         decoder=decoder, encoder_activation='tanh')
+    autoencoder = autoencoder(encoder=encoder, bottleneck_encoder=bottleneck_encoder,
+                              bottleneck_decoder=bottleneck_decoder,
+                              decoder=decoder, encoder_activation='tanh')
 
     autoencoder.summary(input_shape=[None, 3, 16, 16])
 
@@ -101,37 +105,47 @@ class TestAutoencoder(TestCase):
 
         data = np.random.rand(1_000, 3, 16, 16)
 
-        autoencoder = model()
+        for arch in ['AutoencoderVariational', 'AutoencoderCNN']:
 
-        saver = SPFile(compact=False)
-        saver.write(save_dir="/tmp", name=f'autoencoder_{id(autoencoder)}', model=autoencoder, template=model)
+            autoencoder = model(architecture=arch)
 
-        autoencoder_reload = saver.read(model_path=os.path.join('/tmp', f'autoencoder_{id(autoencoder)}'))
+            saver = SPFile(compact=False)
+            saver.write(save_dir="/tmp", name=f'autoencoder_{id(autoencoder)}', model=autoencoder, template=model)
 
-        estimated_output = autoencoder_reload.eval(input_data=data)
+            autoencoder_reload = saver.read(model_path=os.path.join('/tmp', f'autoencoder_{id(autoencoder)}'))
 
-        assert estimated_output.shape == data.shape
+            estimated_output = autoencoder_reload.eval(input_data=data)
+
+            assert estimated_output.shape == data.shape
 
     def test_autoencoder_train(self):
 
+        loss_function = {'AutoencoderVariational':'vaermse',
+                         'AutoencoderCNN':'wrmse'}
+
+        params_dict = {'AutoencoderVariational': {'lambda_1': 0., 'lambda_2': 0.,
+                                                  'use_mean':False, 'relative':True},
+                       'AutoencoderCNN': {'lambda_1': 0., 'lambda_2': 0., 'axis': 1,
+                                          'weights': [1, 1, 1], 'use_mean':False, 'relative':True}
+                       }
         data = np.random.rand(1_000, 3, 16, 16)
 
         lr = 1e-3
-        n_epochs = 1_00
+        n_epochs = 10
 
-        autoencoder = model()
+        for arch in ['AutoencoderVariational', 'AutoencoderCNN']:
 
-        autoencoder.summary(input_shape=[None, 3, 16, 16])
+            autoencoder = model(architecture=arch)
 
-        optimizer_config = {'lr': lr}
-        params = {'lambda_1': 0., 'lambda_2': 0., 'use_mean':False, 'relative':True}
+            autoencoder.summary(input_shape=[None, 3, 16, 16])
 
-        optimizer = Optimizer('adam', params=optimizer_config)
+            optimizer_config = {'lr': lr}
+            params = params_dict.get(arch)
 
-        optimizer.fit(op=autoencoder, input_data=data, target_data=data,
-                      n_epochs=n_epochs, loss="vaermse", params=params)
+            optimizer = Optimizer('adam', params=optimizer_config)
 
-        saver = SPFile(compact=False)
-        saver.write(save_dir="/tmp", name='autoencoder_rb_just_test', model=autoencoder, template=model)
+            optimizer.fit(op=autoencoder, input_data=data, target_data=data,
+                          n_epochs=n_epochs, loss=loss_function.get(arch), params=params)
 
-        print(optimizer.loss_states)
+            saver = SPFile(compact=False)
+            saver.write(save_dir="/tmp", name='autoencoder_rb_just_test', model=autoencoder, template=model)
