@@ -12,8 +12,9 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-from typing import Optional, Union
+from typing import Optional
 import os
+import sys
 import pickle
 import psutil
 import numpy as np
@@ -318,7 +319,8 @@ class OpInf:
 
         for ii, (i_chunk, t_chunk, f_chunk) in enumerate(zip(input_chunks, target_chunks, forcing_chunks)):
 
-            print(f"Processing chunk {ii}")
+            sys.stdout.write("\rProcessing chunk {} of {}".format(ii + 1, len(input_chunks)))
+            sys.stdout.flush()
 
             D_o_ii, R_matrix_ii = self._construct_operators(input_data=i_chunk,
                                                             target_data=t_chunk,
