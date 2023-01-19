@@ -88,6 +88,7 @@ class TestImprovedDeeponet(TestCase):
     def test_deeponet_forward(self):
         
         net = model()
+        net.summary()
 
         data_trunk = torch.rand(1_000, 1)
         data_branch = torch.rand(1_000, 4)

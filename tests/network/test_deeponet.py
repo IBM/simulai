@@ -112,10 +112,6 @@ def model_dense_product(product_type=None, n_outputs:int=2):
     trunk_net = DenseNetwork(**trunk_config)
     branch_net = DenseNetwork(**branch_config)
 
-    # It prints a summary of the network features
-    trunk_net.summary()
-    branch_net.summary()
-
     net = DeepONet(trunk_network=trunk_net,
                    branch_network=branch_net,
                    var_dim=n_outputs,
@@ -182,6 +178,7 @@ class TestDeeponet(TestCase):
     def test_deeponet_forward(self):
         
         net = model()
+        net.summary()
 
         data_trunk = torch.rand(1_000, 1)
         data_branch = torch.rand(1_000, 4)
