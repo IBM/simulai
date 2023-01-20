@@ -28,10 +28,10 @@ from simulai.regression import ConvolutionalNetwork, Linear
 class AutoencoderMLP(NetworkTemplate):
     """
 
-     This is an implementation of a cFully-connected AutoEncoder as
+     This is an implementation of a Fully-connected AutoEncoder as
            Reduced Order Model;
 
-               A MLP autoencoder architecture consists of three stages:
+               A MLP autoencoder architecture consists of two stages:
                --> Fully-connected encoder
                --> Fully connected decoder
 
