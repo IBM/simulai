@@ -55,6 +55,9 @@ Source = "https://github.com/IBM/simulai"
 Tracker = "https://github.com/IBM/simulai/issues"
 Documentation = "https://simulai-toolkit.readthedocs.io"
 
+[tool.setuptools]
+packages = ['simulai']
+
 [tool.bumpver]
 current_version = "0.99.8"
 version_pattern = "MAJOR.MINOR.PATCH"
