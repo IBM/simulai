@@ -8,14 +8,14 @@ Quick Start
 .. image:: https://readthedocs.org/projects/simulai-toolkit/badge/?version=latest
    :target: https://simulai-toolkit.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
-.. image:: ../figs/coverage.svg
+.. image:: ../assets/coverage.svg
    :target: tests/ 
     
-.. image:: ../figs/logo.svg
+.. image:: _static/logo.png
 
 A Python package with data-driven pipelines for physics-informed machine learning.
 
-.. image:: ../figs/simulai_diagram.svg
+.. image:: ../assets/simulai_diagram.svg
 
 The SimulAI toolkit provides easy access to state-of-the-art models and algorithms for physics-informed machine learning. Currently, it includes the following methods described in the literature:
 
@@ -130,6 +130,6 @@ DOI:`10.1038/s41467-018-07210-0 <https://doi.org/10.1038/s41467-018-07210-0>`_.
 *McQuarrie, S., Huang, C. and Willcox*, K. (2021).
 "Data-driven reduced-order models via regularized operator inference for a single-injector combustion process," 
 
-*Journal of the Royal Society of New Zealand*, **51**(2): 194-211.
+*Journal of the Royal Society of New Zealand, **51** (2): 194-211.
 ISSN: 0303-6758.
 DOI:`10.1080/03036758.2020.1863237 <https://doi.org/10.1080/03036758.2020.1863237>`_.
