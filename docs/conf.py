@@ -66,7 +66,7 @@ html_theme_path = [sphinx_theme.get_html_theme_path('stanford-theme')]
 # sphinx readthedocs theme
 #html_theme = 'sphinx_rtd_theme'
 
-html_logo = '_static/logo.png'
+html_logo = '../assets/logo.png'
 
 # Below html_theme_options config depends on the theme.
 # For Stanford theme:
