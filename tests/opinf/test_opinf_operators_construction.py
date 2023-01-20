@@ -25,7 +25,48 @@ class TestOperatorsConstruction(TestCase):
     def setUp(self) -> None:
         pass
 
-    def test_operators_construction(self):
+    def test_operators_construction_pinv(self):
+
+        n_samples = 10_000
+        BATCH_SIZES = [None, 1000]
+        n_vars = 5
+        FORCE_LAZY=[False, True]
+
+        for force_lazy, batch_size in zip(FORCE_LAZY, BATCH_SIZES):
+
+            data_input = np.random.rand(n_samples, n_vars)
+            data_output = np.random.rand(n_samples, n_vars)
+
+            # Instantiating OpInf
+            model = OpInf(bias_rescale=1, solver='pinv')
+
+            # Training
+            model.fit(input_data=data_input, target_data=data_output, batch_size=batch_size,
+                      force_lazy_access=force_lazy)
+
+            assert isinstance(model.A_hat, np.ndarray)
+            assert isinstance(model.H_hat, np.ndarray)
+            assert isinstance(model.c_hat, np.ndarray)
+
+    def test_operators_jacobian(self):
+
+        n_samples = 1000
+        n_vars = 5
+
+        data_input = np.random.rand(n_samples, n_vars)
+        data_output = np.random.rand(n_samples, n_vars)
+
+        # Instantiating OpInf
+        model = OpInf(bias_rescale=1, solver='pinv')
+
+        # Training
+        model.fit(input_data=data_input, target_data=data_output)
+
+        model.construct_K_op()
+
+        assert isinstance(model.K_op, np.ndarray)
+
+    def test_operators_construction_lstsq(self):
 
         n_samples = 1000
         n_vars = 5
@@ -49,7 +90,11 @@ class TestOperatorsConstruction(TestCase):
 
             # Training
             model.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
-            model.fit(input_data=data_input, target_data=data_output, batch_size=batch_size, continuing=False)
+            model.fit(input_data=data_input, target_data=data_output, batch_size=batch_size)
+
+            assert isinstance(model.A_hat, np.ndarray)
+            assert isinstance(model.H_hat, np.ndarray)
+            assert isinstance(model.c_hat, np.ndarray)
 
             D_o = model.D_o
             R_matrix = model.R_matrix
