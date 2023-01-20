@@ -90,11 +90,23 @@ class TestImprovedDeeponet(TestCase):
         data_trunk = torch.rand(1_000, 1)
         data_branch = torch.rand(1_000, 4)
 
-        output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
-        
         print(f"Network has {net.n_parameters} parameters.")
-        
+
+        output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
+
         assert output.shape[1] == 4, "The network output is not like expected."
+
+        output = net.eval_subnetwork(name='trunk', trunk_data=data_trunk, branch_data=data_branch)
+        assert output.shape[1] == 400, "The network output is not like expected."
+        assert isinstance(output, np.ndarray)
+
+        output = net.eval_subnetwork(name='branch', trunk_data=data_trunk, branch_data=data_branch)
+        assert output.shape[1] == 400, "The network output is not like expected."
+        assert isinstance(output, np.ndarray)
+
+        output = net.eval_subnetwork(name='pre', trunk_data=data_trunk, branch_data=data_branch)
+        assert output.shape[1] == 2, "The network output is not like expected."
+        assert isinstance(output, np.ndarray)
 
     def test_deeponet_train(self):
 
