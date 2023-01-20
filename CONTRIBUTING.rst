@@ -23,6 +23,8 @@ If you are reporting a bug, please include:
 * Any details about your local setup that might be helpful in troubleshooting.
 * Detailed steps to reproduce the bug.
 
+Be sure to take a look at the template here: https://github.com/IBM/simulai/tree/main/docs/_templates/ISSUE_TEMPLATE.rst
+
 Fix Bugs
 ~~~~~~~~
 
