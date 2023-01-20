@@ -71,5 +71,3 @@ push = false
     'current_version = "{version}"',
     'version = "{version}"'
 ]
-    
-    
