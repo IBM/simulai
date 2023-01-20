@@ -617,6 +617,8 @@ class FlexibleDeepONet(ResDeepONet):
 
         self.pre_network = pre_network
         self.forward_ = self._forward_flexible
+        self.subnetworks += [self.pre_network]
+        self.subnetworks_names += ['pre']
 
     def _rescaling_operation(self, input_data:torch.Tensor=None, rescaling_tensor:torch.Tensor=None):
 
@@ -645,6 +647,9 @@ class FlexibleDeepONet(ResDeepONet):
                               branch_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
 
         assert name in self.subnetworks_names, f"The name {name} is not a subnetwork of {self}."
+
+        # Pre and branch network has the same input
+        pre_data = branch_data
 
         network_instance = getattr(self, name + '_network')
         input_data = locals()[name + '_data']
