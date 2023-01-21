@@ -1,5 +1,5 @@
-simulai.utilities package
-=========================
+Utilities Package
+=================
 
 simulai.utilities.lorenz\_solver module
 ---------------------------------------
