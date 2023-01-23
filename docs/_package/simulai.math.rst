@@ -1,5 +1,5 @@
-simulai.math package
-====================
+Math Package
+============
 
 simulai.math.differentiation module
 -----------------------------------
@@ -36,7 +36,7 @@ simulai.math.integration module
 simulai.math.kansas module
 --------------------------
 
-.. automodule:: simulai.:math.expression
+.. automodule:: simulai.math.kansas
    :members:
    :undoc-members:
    :show-inheritance:
