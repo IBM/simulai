@@ -720,7 +720,7 @@ class DeepEchoStateNetwork:
     Echo State Network, a subclass of the Reservoir Computing methods
     """
 
-    def __init__(self, reservoir_dim=None, sparsity_level=None, n_layers=None,
+    def __init__(self, reservoir_dim=None, sparsity_level=None, n_layers=2,
                        radius=None, number_of_inputs=None, sigma=None, beta=None, kappa=None,
                        leak_rate=1, activation='tanh', Win_interval=[-1, 1], tau=None,
                        Win_init='global', transformation='T1', solver='direct_inversion',
@@ -1432,7 +1432,7 @@ class WideEchoStateNetwork:
     Echo State Network, a subclass of the Reservoir Computing methods
     """
 
-    def __init__(self, reservoir_dim=None, sparsity_level=None, n_layers=None,
+    def __init__(self, reservoir_dim=None, sparsity_level=None, n_layers=2,
                        radius=None, number_of_inputs=None, sigma=None, beta=None, kappa=None,
                        leak_rate=1, activation='tanh', Win_interval=[-1, 1], tau=None,
                        Win_init='global', transformation='T1', solver='direct_inversion',
