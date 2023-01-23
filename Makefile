@@ -80,7 +80,7 @@ coverage: ## check code coverage quickly with the default Python
 	mv coverage.svg assets/
 
 coverage-testmon: ## check code coverage quickly with the default Python
-	coverage run --source src/simulai -m pytest --testmon tests # pytest
+	coverage run --source simulai -m pytest --testmon tests # pytest
 	coverage report -m
 	coverage html
 	$(BROWSER) htmlcov/index.html
