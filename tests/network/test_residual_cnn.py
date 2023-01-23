@@ -186,6 +186,6 @@ class TestResidualConv(TestCase):
                       n_epochs=n_epochs, loss="rmse", params=params, device='gpu')
 
         ### Evaluating
-        data_test_eval = resnet.eval(input_data=data_l_test)
+        data_test_eval = resnet.eval(input_data=data_l_test)[:,0,:]
 
         assert data_test_eval.shape == data_test.shape
