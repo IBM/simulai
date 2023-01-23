@@ -72,12 +72,12 @@ test-all: ## run tests on every Python version with tox
 	tox
 
 coverage: ## check code coverage quickly with the default Python
-	coverage run --source src/simulai -m pytest tests # pytest
+	coverage run --source simulai -m pytest tests # pytest
 	coverage report -m
 	coverage html
 	$(BROWSER) htmlcov/index.html
 	coverage-badge -o coverage
-	mv coverage.svg figs/
+	mv coverage.svg assets/
 
 coverage-testmon: ## check code coverage quickly with the default Python
 	coverage run --source src/simulai -m pytest --testmon tests # pytest
