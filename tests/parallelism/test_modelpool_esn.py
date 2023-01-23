@@ -253,7 +253,8 @@ class TestModelPoolESN(TestCase):
 
         self.test_case = "independent_series_single_fit"
 
-        self._run_ESN(rc_config, pool_config=pool_config)
+        for model_type in ['EchoStateNetwork', 'DeepEchoStateNetwork', 'WideEchoStateNetwork']:
+            self._run_ESN(rc_config, pool_config=pool_config, model_type=model_type)
 
     ''' Maybe this test is no more useful
     def test_modelpool_ESN_no_parallelism(self):
@@ -345,7 +346,7 @@ class TestModelPoolESN(TestCase):
 
         return field_train_data, forcings_train_data, field_test_data, forcings_test_data
 
-    def _run_ESN(self, rc_config, pool_config=None, fit=True, model=None, output=False):
+    def _run_ESN(self, rc_config, pool_config=None, fit=True, model=None, model_type:str='EchoStateNetwork', output=False):
 
         field_train_data, forcings_train_data, field_test_data, forcings_test_data = self.get_manufactured_dataset()
 
@@ -376,7 +377,7 @@ class TestModelPoolESN(TestCase):
 
         if fit and model is None:
 
-            pool = ModelPool(config=pool_config, model_type='EchoStateNetwork',
+            pool = ModelPool(config=pool_config, model_type=model_type,
                              model_config=rc_config)
 
             if self.test_case is not "independent_series_multi_fit":
