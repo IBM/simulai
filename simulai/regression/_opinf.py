@@ -12,6 +12,8 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
+from simulai.parallel import PipelineMPI
+from ._pinv import CompressedPinv
 from typing import Optional
 import os
 import sys
@@ -31,31 +33,36 @@ try:
 except:
     MPI_GLOBAL_AVAILABILITY = False
     warnings.warn(f'Trying to import MPI in {__file__}.')
-    warnings.warn('mpi4py is not installed. If you want to execute MPI jobs, we recommend you install it.')
+    warnings.warn(
+        'mpi4py is not installed. If you want to execute MPI jobs, we recommend you install it.')
 
-from ._pinv import CompressedPinv
-from simulai.parallel import PipelineMPI
 
 # Operator inference using quadratic non-linearity
+
 class OpInf:
-
-    def __init__(self, forcing:str=None, bias_rescale:float=1,
-                       solver:Union[str, callable]='lstsq', parallel: Union[str, None]=None,
-                       show_log:bool=False, engine:str='numpy') -> None:
-
+    def __init__(self, forcing: str = None, bias_rescale: float = 1,
+                 solver: Union[str, callable] = 'lstsq', parallel: Union[str, None] = None,
+                 show_log: bool = False, engine: str = 'numpy') -> None:
         """Operator Inference (OpInf)
 
-        :param forcing: the kind of forcing to be used, 'linear' or 'nonlinear'
-        :type forcing: str
-        :param bias_rescale: factor for rescaling the linear coefficients (c_hat)
-        :type bias_rescale: float
-        :param solver: solver to be used for solving the global system, e. g. 'lstsq'.
-        :type solver: Union[str, callable]
-        :param parallel: the kind of parallelism to be used (currently, 'mpi' or None)
-        :type parallel: str
-        :param engine: the engine to be used for constructing the global system (currently just 'numpy')
-        :type engine: str
-        :return: nothing
+        Parameters
+        ----------
+        forcing : str, optional
+            the kind of forcing to be used, 'linear' or 'nonlinear', by default None
+        bias_rescale : float, optional
+            factor for rescaling the linear coefficients (c_hat), by default 1
+        solver : Union[str, callable], optional
+            solver to be used for solving the global system, e. g. 'lstsq', by default 'lstsq'
+        parallel : Union[str, None], optional
+            the kind of parallelism to be used (currently, 'mpi' or None), by default None
+        show_log : bool, optional
+            whether to show log or not, by default False
+        engine : str, optional
+            the engine to be used for constructing the global system (currently just 'numpy'), by default 'numpy'
+
+        Returns
+        -------
+        None
         """
 
         # forcing is chosen among (None, 'linear', 'nonlinear')
@@ -82,9 +89,11 @@ class OpInf:
             if MPI_GLOBAL_AVAILABILITY == True:
                 self.dispatcher = self._parallel_operators_construction_dispatcher
             else:
-                raise Exception('Trying to execute a MPI job but there is no MPI distribution available.')
+                raise Exception(
+                    'Trying to execute a MPI job but there is no MPI distribution available.')
         else:
-            raise Exception(f'The option {self.parallel} for parallel is not valid. It must be None or mpi')
+            raise Exception(
+                f'The option {self.parallel} for parallel is not valid. It must be None or mpi')
 
         self.lambda_linear = 0
         self.lambda_quadratic = 0
@@ -102,10 +111,10 @@ class OpInf:
         self.R_matrix = None
 
         # OpInf adjustable operators
-        self.c_hat = None # Bias
-        self.A_hat = None # Coefficients for the linear field variable terms
-        self.H_hat = None # Coefficients for the nonlinear quadratic terms
-        self.B_hat = None # Coefficients for the linear forcing terms
+        self.c_hat = None  # Bias
+        self.A_hat = None  # Coefficients for the linear field variable terms
+        self.H_hat = None  # Coefficients for the nonlinear quadratic terms
+        self.B_hat = None  # Coefficients for the linear forcing terms
 
         self.success = None
         self.continuing = 1
@@ -116,7 +125,6 @@ class OpInf:
     # Matrix containing all the model parameters
     @property
     def O_hat(self) -> np.ndarray:
-
         """The concatenation of all the coefficients matrices
         """
 
@@ -127,7 +135,6 @@ class OpInf:
 
     @property
     def D_matrix_dim(self) -> np.ndarray:
-
         """The dimension of the data matrix
         """
 
@@ -135,7 +142,6 @@ class OpInf:
 
     @property
     def Res_matrix_dim(self) -> np.ndarray:
-
         """The dimension of the right-hand side residual matrix
         """
 
@@ -143,7 +149,6 @@ class OpInf:
 
     @property
     def m_indices(self) -> list:
-
         """Indices for the non-repeated observables in the Kronecker
            product output
         """
@@ -151,7 +156,6 @@ class OpInf:
 
     @property
     def solver_nature(self) -> str:
-
         """It classifies the solver used
            in 'lazy' (when data is stored on disk)
            and 'memory' (when data is all allocated in memory)
@@ -166,8 +170,7 @@ class OpInf:
             return 'memory'
 
     # Splitting the global solution into corresponding operators
-    def set_operators(self, global_matrix:np.ndarray=None) -> None:
-
+    def set_operators(self, global_matrix: np.ndarray = None) -> None:
         """Setting up each operator using the global system solution
 
         :param global_matrix: the solution of the global system
@@ -183,8 +186,10 @@ class OpInf:
         if self.forcing is not None:
             self.c_hat = global_matrix[:1].T
             self.A_hat = global_matrix[1:self.n_inputs + 1].T
-            self.B_hat = global_matrix[self.n_inputs + 1: self.n_inputs + 1 + self.n_forcing_inputs].T
-            self.H_hat = global_matrix[self.n_inputs + 1 + self.n_forcing_inputs:].T
+            self.B_hat = global_matrix[self.n_inputs +
+                                       1: self.n_inputs + 1 + self.n_forcing_inputs].T
+            self.H_hat = global_matrix[self.n_inputs +
+                                       1 + self.n_forcing_inputs:].T
         else:
             self.c_hat = global_matrix[:1].T
             self.A_hat = global_matrix[1:self.n_inputs + 1].T
@@ -192,7 +197,6 @@ class OpInf:
 
     # Setting up model parameters
     def set(self, **kwargs):
-
         """Setting up extra parameters (as regularization terms)
 
         :param kwargs: dictionary containing extra parameters
@@ -205,7 +209,6 @@ class OpInf:
 
     @property
     def check_fits_in_memory(self) -> str:
-
         """It checks if the data matrices, D and Res_matrix, can fit on memory
 
         :return: the method for dealing with the data matrix, 'batch-wise' or 'global'
@@ -226,8 +229,7 @@ class OpInf:
             return 'global'
 
     # It checks if a matrix is symmetric
-    def _is_symmetric(self, matrix:np.ndarray=None) -> bool:
-
+    def _is_symmetric(self, matrix: np.ndarray = None) -> bool:
         """It checks if the system matrix is symmetric
 
         :param matrix: the global system matrix
@@ -238,8 +240,7 @@ class OpInf:
 
         return np.array_equal(matrix, matrix.T)
 
-    def _kronecker_product(self, a:np.ndarray=None, b:np.ndarray=None) -> np.ndarray:
-
+    def _kronecker_product(self, a: np.ndarray = None, b: np.ndarray = None) -> np.ndarray:
         """Kronecker product between two arrays
 
         :param a: first element of the Kronecker product
@@ -254,18 +255,18 @@ class OpInf:
 
         kron_output = np.einsum('bi, bj->bij', a, b)
 
-        assert np.isnan(kron_output).max() == False, "There are NaN in the Kronecker output"
+        assert np.isnan(kron_output).max(
+        ) == False, "There are NaN in the Kronecker output"
 
         # Checking if the Kronecker output tensor is symmetric or not
-        if np.array_equal(kron_output, kron_output.transpose(0,2,1)):
+        if np.array_equal(kron_output, kron_output.transpose(0, 2, 1)):
             return kron_output[:, self.i_u, self.j_u]
         else:
             shapes = kron_output.shape[1:]
             return kron_output.reshape(-1, np.prod(shapes))
 
     # Kronecker product augmented using extra variables (such as forcing terms)
-    def _augmented_kronecker_product(self, a:np.ndarray=None, b:np.ndarray=None) -> np.ndarray:
-
+    def _augmented_kronecker_product(self, a: np.ndarray = None, b: np.ndarray = None) -> np.ndarray:
         """Kronecker product between two arrays with self products for a and b
 
         :param a: first element of the Kronecker product
@@ -282,8 +283,7 @@ class OpInf:
         return kron_ab
 
     # Kronecker product for the variables themselves
-    def _simple_kronecker_product(self, a:np.ndarray=None, **kwargs) -> np.ndarray:
-
+    def _simple_kronecker_product(self, a: np.ndarray = None, **kwargs) -> np.ndarray:
         """Kronecker product with a=b
 
         :param a: first element of the Kronecker product
@@ -297,12 +297,11 @@ class OpInf:
         return kron_aa
 
     # Serially constructing operators
-    def _serial_operators_construction_dispatcher(self, input_chunks:list=None,
-                                                        target_chunks:list=None,
-                                                        forcing_chunks:list=None,
-                                                        D_o:np.ndarray=None,
-                                                        R_matrix:np.ndarray=None) -> (np.ndarray, np.ndarray):
-
+    def _serial_operators_construction_dispatcher(self, input_chunks: list = None,
+                                                  target_chunks: list = None,
+                                                  forcing_chunks: list = None,
+                                                  D_o: np.ndarray = None,
+                                                  R_matrix: np.ndarray = None) -> Union[np.ndarray, np.ndarray]:
         """ Dispatching the batch-wise global data matrix evaluation in a serial way
 
         :param input_chunks: list of input data chunks
@@ -319,7 +318,8 @@ class OpInf:
 
         for ii, (i_chunk, t_chunk, f_chunk) in enumerate(zip(input_chunks, target_chunks, forcing_chunks)):
 
-            sys.stdout.write("\rProcessing chunk {} of {}".format(ii + 1, len(input_chunks)))
+            sys.stdout.write("\rProcessing chunk {} of {}".format(
+                ii + 1, len(input_chunks)))
             sys.stdout.flush()
 
             D_o_ii, R_matrix_ii = self._construct_operators(input_data=i_chunk,
@@ -332,11 +332,10 @@ class OpInf:
         return D_o, R_matrix
 
     # Parallely constructing operators
-    def _parallel_operators_construction_dispatcher(self, input_chunks:list=None, target_chunks:list=None,
-                                                          forcing_chunks:list=None,
-                                                          D_o:np.ndarray=None,
-                                                          R_matrix:np.ndarray=None) -> (np.ndarray, np.ndarray):
-
+    def _parallel_operators_construction_dispatcher(self, input_chunks: list = None, target_chunks: list = None,
+                                                    forcing_chunks: list = None,
+                                                    D_o: np.ndarray = None,
+                                                    R_matrix: np.ndarray = None) -> Union[np.ndarray, np.ndarray]:
         """ Dispatching the batch-wise global data matrix evaluation in a parallel way
 
         :param input_chunks: list of input data chunks
@@ -389,7 +388,8 @@ class OpInf:
                   'key': keys}
 
         # Pipeline for executing MPI jobs for independent sub-processes
-        mpi_run = PipelineMPI(exec=self._parallel_exec_wrapper, collect=True, show_log=self.show_log)
+        mpi_run = PipelineMPI(exec=self._parallel_exec_wrapper,
+                              collect=True, show_log=self.show_log)
 
         # Fitting the model instances in parallel
         mpi_run.run(kwargs=kwargs)
@@ -414,8 +414,8 @@ class OpInf:
         return D_o, R_matrix
 
     # Wrapper for the independent parallel process
-    def _parallel_exec_wrapper(self, input_chunks:np.ndarray=None, target_chunks:np.ndarray=None,
-                                     forcing_chunks:list=None, key:str=None) -> dict:
+    def _parallel_exec_wrapper(self, input_chunks: np.ndarray = None, target_chunks: np.ndarray = None,
+                               forcing_chunks: list = None, key: str = None) -> dict:
 
         D_o_ii, R_matrix_ii = self._construct_operators(input_data=input_chunks,
                                                         target_data=target_chunks,
@@ -423,9 +423,9 @@ class OpInf:
 
         return {key: [D_o_ii, R_matrix_ii]}
 
-    def _generate_data_matrices(self, input_data:np.ndarray=None,
-                                      target_data:np.ndarray=None,
-                                      forcing_data:np.ndarray=None, **kwargs) -> (np.ndarray, np.ndarray):
+    def _generate_data_matrices(self, input_data: np.ndarray = None,
+                                target_data: np.ndarray = None,
+                                forcing_data: np.ndarray = None, **kwargs) -> Union[np.ndarray, np.ndarray]:
 
         # If forcing_data is None, the Kronecker product is applied just for the field
         # variables, thus reducing to the no forcing term case
@@ -433,7 +433,8 @@ class OpInf:
 
         n_samples = input_data.shape[0]
 
-        quadratic_input_data = self.kronecker_product(a=input_data, b=forcing_data)
+        quadratic_input_data = self.kronecker_product(
+            a=input_data, b=forcing_data)
 
         # Matrix used for including constant terms in the operator expression
         unitary_matrix = self.bias_rescale * np.ones((n_samples, 1))
@@ -442,7 +443,8 @@ class OpInf:
         if forcing_data is not None:
 
             # Constructing D using purely linear forcing terms
-            D = np.hstack([unitary_matrix, input_data, forcing_data, quadratic_input_data])
+            D = np.hstack([unitary_matrix, input_data,
+                          forcing_data, quadratic_input_data])
 
         else:
             D = np.hstack([unitary_matrix, input_data, quadratic_input_data])
@@ -453,12 +455,12 @@ class OpInf:
         return D, Res_matrix
 
     # Creating datasets on disk with lazy access
-    def _lazy_generate_data_matrices(self, input_data:np.ndarray=None, target_data:np.ndarray=None,
-                                           forcing_data:np.ndarray=None,
-                                           save_path:str=None,
-                                           batch_size:int=None) -> (h5py.Dataset, h5py.Dataset, List[slice]):
+    def _lazy_generate_data_matrices(self, input_data: np.ndarray = None, target_data: np.ndarray = None,
+                                     forcing_data: np.ndarray = None,
+                                     save_path: str = None,
+                                     batch_size: int = None) -> Union[h5py.Dataset, h5py.Dataset, List[slice]]:
 
-        def batch_forcing(batch:np.ndarray=None) -> np.ndarray:
+        def batch_forcing(batch: np.ndarray = None) -> np.ndarray:
             return forcing_data[batch]
 
         def pass_forcing(*args) -> np.ndarray:
@@ -475,11 +477,14 @@ class OpInf:
         filename = os.path.join(save_path, 'data_matrices.hdf5')
         f = h5py.File(filename, mode='w')
 
-        Ddset = f.create_dataset('D', shape=tuple(self.D_matrix_dim), dtype='f')
-        Rdset = f.create_dataset('Res_matrix', shape=tuple(self.Res_matrix_dim), dtype='f')
+        Ddset = f.create_dataset(
+            'D', shape=tuple(self.D_matrix_dim), dtype='f')
+        Rdset = f.create_dataset('Res_matrix', shape=tuple(
+            self.Res_matrix_dim), dtype='f')
 
         max_batches = int(self.n_samples/batch_size)
-        batches = [slice(item[0], item[-1]) for item in np.array_split(np.arange(0, self.n_samples, 1), max_batches)]
+        batches = [slice(item[0], item[-1])
+                   for item in np.array_split(np.arange(0, self.n_samples, 1), max_batches)]
 
         for batch in batches:
 
@@ -493,9 +498,9 @@ class OpInf:
         return Ddset, Rdset, batches, filename
 
     # Direct construction
-    def _construct_operators(self, input_data:np.ndarray=None,
-                                   target_data:np.ndarray=None,
-                                   forcing_data:np.ndarray=None, **kwargs) -> (np.ndarray, np.ndarray):
+    def _construct_operators(self, input_data: np.ndarray = None,
+                             target_data: np.ndarray = None,
+                             forcing_data: np.ndarray = None, **kwargs) -> Union[np.ndarray, np.ndarray]:
 
         # Generating the data-driven matrices
         D, Res_matrix = self._generate_data_matrices(input_data=input_data,
@@ -512,10 +517,10 @@ class OpInf:
 
     # Operators can be constructed incrementally when the dimensions are too large to
     # fit in common RAM. It also can be parallelized without major issues
-    def _incremental_construct_operators(self, input_data:np.ndarray=None,
-                                               target_data:np.ndarray=None,
-                                               forcing_data:np.ndarray=None,
-                                               batch_size:int=None) -> (np.ndarray, np.ndarray):
+    def _incremental_construct_operators(self, input_data: np.ndarray = None,
+                                         target_data: np.ndarray = None,
+                                         forcing_data: np.ndarray = None,
+                                         batch_size: int = None) -> Union[np.ndarray, np.ndarray]:
 
         D_o = np.zeros((self.n_linear_terms + self.n_quadratic_inputs,
                         self.n_linear_terms + self.n_quadratic_inputs))
@@ -549,13 +554,13 @@ class OpInf:
 
         return self.jacobian_op(x)
 
-    def _get_H_hat_column_position(self, i:int, j:int) -> Union[int, None]:
+    def _get_H_hat_column_position(self, i: int, j: int) -> Union[int, None]:
 
         jj = j - i
 
         return int((i/2)*(2*self.n_inputs + 1 - i) + jj)
 
-    def _define_H_hat_coefficient_function(self, k:int, l:int, n:int, m:int):
+    def _define_H_hat_coefficient_function(self, k: int, l: int, n: int, m: int):
 
         if m is not None:
             H_coeff = self.H_hat[k, m]
@@ -570,18 +575,21 @@ class OpInf:
         self.K_op[k, l, n] = H_term
 
     # Constructing a tensor for evaluating Jacobians
-    def construct_K_op(self, op:callable=None) -> None:
+    def construct_K_op(self, op: callable = None) -> None:
 
         # Vector versions of the index functions
-        get_H_hat_column_position = np.vectorize(self._get_H_hat_column_position)
-        define_H_hat_coefficient_function = np.vectorize(self._define_H_hat_coefficient_function)
+        get_H_hat_column_position = np.vectorize(
+            self._get_H_hat_column_position)
+        define_H_hat_coefficient_function = np.vectorize(
+            self._define_H_hat_coefficient_function)
 
         if hasattr(self, 'n_outputs') is False:
             self.n_outputs = self.n_inputs
 
         if op is None:
 
-            self.K_op = np.zeros((self.n_outputs, self.n_inputs, self.n_inputs))
+            self.K_op = np.zeros(
+                (self.n_outputs, self.n_inputs, self.n_inputs))
             K = np.zeros((self.n_outputs, self.n_inputs, self.n_inputs))
 
             for k in range(self.n_outputs):
@@ -610,8 +618,8 @@ class OpInf:
             self.jacobian = self._external_jacobian
 
     # Constructing the basic setup
-    def construct(self, input_data:np.ndarray=None, target_data:np.ndarray=None,
-                        forcing_data:np.ndarray=None) -> None:
+    def construct(self, input_data: np.ndarray = None, target_data: np.ndarray = None,
+                  forcing_data: np.ndarray = None) -> None:
 
         # Collecting information dimensional information from the datasets
         if isinstance(input_data, np.ndarray) == isinstance(target_data, np.ndarray) == True:
@@ -647,8 +655,8 @@ class OpInf:
         # When no dataset is provided to fit, it is necessary directly setting up the dimension values
         elif isinstance(input_data, np.ndarray) == isinstance(target_data, np.ndarray) == False:
 
-            assert (self.n_inputs != None and self.n_outputs !=None), "It is necessary to provide some" \
-                                                                      " value to n_inputs and n_outputs"
+            assert (self.n_inputs != None and self.n_outputs != None), "It is necessary to provide some" \
+                " value to n_inputs and n_outputs"
 
         else:
             raise Exception("There is no way for executing the system construction"
@@ -663,11 +671,13 @@ class OpInf:
         # When the forcing interaction is 'nonlinear', there operator H_hat is extended
         elif self.forcing == 'nonlinear':
             # Getting the upper component indices of a symmetric matrix
-            self.i_u, self.j_u = np.triu_indices(self.n_inputs + self.n_forcing_inputs)
+            self.i_u, self.j_u = np.triu_indices(
+                self.n_inputs + self.n_forcing_inputs)
             self.n_quadratic_inputs = self.i_u.shape[0]
 
         else:
-            print(f"The option {self.forcing} is not allowed for the forcing kind.")
+            print(
+                f"The option {self.forcing} is not allowed for the forcing kind.")
 
         # Number of linear terms
         if forcing_data is not None:
@@ -680,12 +690,11 @@ class OpInf:
         self.raw_model = False
 
     # Evaluating the model operators
-    def fit(self, input_data:np.ndarray=None, target_data:np.ndarray=None,
-                  forcing_data:np.ndarray=None, batch_size:int=None,
-                  Lambda:np.ndarray=None, continuing:Optional[bool]=True,
-                  fit_partial:Optional[bool]=False, force_lazy_access:Optional[bool]=False,
-                  k_svd:Optional[int]=None, save_path:Optional[str]=None) -> None:
-
+    def fit(self, input_data: np.ndarray = None, target_data: np.ndarray = None,
+            forcing_data: np.ndarray = None, batch_size: int = None,
+            Lambda: np.ndarray = None, continuing: Optional[bool] = True,
+            fit_partial: Optional[bool] = False, force_lazy_access: Optional[bool] = False,
+            k_svd: Optional[int] = None, save_path: Optional[str] = None) -> None:
         """Solving an Operator Inference system from large dataset
 
         :param input_data: dataset for the input data
@@ -701,27 +710,27 @@ class OpInf:
         """
 
         if type(self.solver) == str:
-            
-            self.construct(input_data=input_data, target_data=target_data, forcing_data=forcing_data)
-    
-    
+
+            self.construct(input_data=input_data,
+                           target_data=target_data, forcing_data=forcing_data)
+
             # Constructing the system operators
             if self.solver_nature == 'memory':
-    
+
                 # This operation can require a large memory footprint, so it also can be executed
                 # in chunks and, eventually, in parallel.
-    
+
                 if isinstance(batch_size, int):
                     construct_operators = self._incremental_construct_operators
                 else:
                     construct_operators = self._construct_operators
-    
+
                 if self.D_o is None and self.R_matrix is None:
                     D_o, R_matrix = construct_operators(input_data=input_data, target_data=target_data,
                                                         forcing_data=forcing_data, batch_size=batch_size)
                     self.D_o = D_o
                     self.R_matrix = R_matrix
-    
+
                 if type(self.D_o) == np.ndarray and type(self.R_matrix) == np.ndarray and fit_partial is True:
                     D_o, R_matrix = construct_operators(input_data=input_data, target_data=target_data,
                                                         forcing_data=forcing_data, batch_size=batch_size)
@@ -731,27 +740,29 @@ class OpInf:
                     D_o = self.D_o
                     R_matrix = self.R_matrix
                     self.continuing = 1
-    
+
                 # If just system matrices, D_o and R_matrix are desired, the execution can be interrupted
                 # here.
                 if self.continuing and continuing is not False:
-    
+
                     # Regularization operator
                     if Lambda is None:
-                        Lambda = np.ones(self.n_linear_terms + self.n_quadratic_inputs)
+                        Lambda = np.ones(self.n_linear_terms +
+                                         self.n_quadratic_inputs)
                         Lambda[:self.n_linear_terms] = self.lambda_linear
                         Lambda[self.n_linear_terms:] = self.lambda_quadratic
                     else:
                         print("Using an externally defined Lambda vector.")
-    
-                    Gamma = Lambda * np.eye(self.n_linear_terms + self.n_quadratic_inputs)
-    
+
+                    Gamma = Lambda * \
+                        np.eye(self.n_linear_terms + self.n_quadratic_inputs)
+
                     # Left operator
-                    L_operator  = D_o + Gamma.T @ Gamma
-    
+                    L_operator = D_o + Gamma.T @ Gamma
+
                     # Solving the linear system via least squares
                     print("Solving linear system ...")
-    
+
                     if self._is_symmetric(L_operator) and self.solver is None:
                         print("L_operator is symmetric.")
                         solution = solve(L_operator, R_matrix, assume_a="sym")
@@ -759,59 +770,62 @@ class OpInf:
                         D_o_pinv = np.linalg.pinv(D_o)
                         solution = D_o_pinv @ R_matrix
                     else:
-                        solution = np.linalg.lstsq(L_operator, R_matrix, rcond=None)[0]
-    
+                        solution = np.linalg.lstsq(
+                            L_operator, R_matrix, rcond=None)[0]
+
                     # Setting up the employed matrix operators
                     self.set_operators(global_matrix=solution)
-    
+
             # It corresponds to the case 'lazy' in which data is temporally stored on disk.
             # In case of using the Moore-Penrose pseudo-inverse it is necessary
             # to store the entire data matrices in order to solve the undetermined system
             else:
-    
-                    if self.check_fits_in_memory == 'global' and force_lazy_access is False:
-                        D, Res_matrix = self._generate_data_matrices(input_data=input_data,
-                                                                     target_data=target_data,
-                                                                     forcing_data=forcing_data)
-    
-                        D_pinv = np.linalg.pinv(D)
-                        solution = D_pinv @ Res_matrix.T
-    
-                    else:
-    
-                        if force_lazy_access is True:
-                            print("The batchwise execution is being forced.")
-    
-                        assert batch_size is not None, f"It is necessary to define batch_size but received {batch_size}."
-                        D, Res_matrix, batches, filename = self._lazy_generate_data_matrices(input_data=input_data,
-                                                                                             target_data=target_data,
-                                                                                             forcing_data=forcing_data,
-                                                                                             save_path=save_path,
-                                                                                             batch_size=batch_size)
-                        if k_svd is None: k_svd = self.n_inputs
-    
-                        pinv = CompressedPinv(D=D, chunks=(batch_size, self.n_inputs), k=k_svd)
-                        solution = pinv(Y=Res_matrix, batches=batches)
-    
-                        # Removing the file stored in disk
-                        os.remove(filename)
-    
-                    # Setting up the employed matrix operators
-                    self.set_operators(global_matrix=solution)
+
+                if self.check_fits_in_memory == 'global' and force_lazy_access is False:
+                    D, Res_matrix = self._generate_data_matrices(input_data=input_data,
+                                                                 target_data=target_data,
+                                                                 forcing_data=forcing_data)
+
+                    D_pinv = np.linalg.pinv(D)
+                    solution = D_pinv @ Res_matrix.T
+
+                else:
+
+                    if force_lazy_access is True:
+                        print("The batchwise execution is being forced.")
+
+                    assert batch_size is not None, f"It is necessary to define batch_size but received {batch_size}."
+                    D, Res_matrix, batches, filename = self._lazy_generate_data_matrices(input_data=input_data,
+                                                                                         target_data=target_data,
+                                                                                         forcing_data=forcing_data,
+                                                                                         save_path=save_path,
+                                                                                         batch_size=batch_size)
+                    if k_svd is None:
+                        k_svd = self.n_inputs
+
+                    pinv = CompressedPinv(D=D, chunks=(
+                        batch_size, self.n_inputs), k=k_svd)
+                    solution = pinv(Y=Res_matrix, batches=batches)
+
+                    # Removing the file stored in disk
+                    os.remove(filename)
+
+                # Setting up the employed matrix operators
+                self.set_operators(global_matrix=solution)
 
         elif callable(self.solver):
-            
+
             warnings.warn("Iterative solvers are not currently supported.")
             warnings.warn("Finishing fitting process without modifications.")
-            
+
         else:
             raise Exception(f"The option {type(self.solver)} is not suported.\
                             it must be callable or str.")
-                            
+
         print("Fitting process concluded.")
 
     # Making residual evaluations using the trained operator without forcing terms
-    def _eval(self, input_data:np.ndarray=None) -> np.ndarray:
+    def _eval(self, input_data: np.ndarray = None) -> np.ndarray:
 
         # If forcing_data is None, the Kronecker product is applied just for the field
         # variables, thus reducing to the no forcing term case
@@ -824,11 +838,12 @@ class OpInf:
         return output
 
     # Making residual evaluations using the trained operator with forcing terms
-    def _eval_forcing(self, input_data:np.ndarray=None, forcing_data:np.ndarray=None) -> np.ndarray:
+    def _eval_forcing(self, input_data: np.ndarray = None, forcing_data: np.ndarray = None) -> np.ndarray:
 
         # If forcing_data is None, the Kronecker product is applied just for the field
         # variables, thus reducing to the no forcing term case
-        quadratic_input_data = self.kronecker_product(a=input_data, b=forcing_data)
+        quadratic_input_data = self.kronecker_product(
+            a=input_data, b=forcing_data)
 
         output = input_data @ self.A_hat.T
         output += quadratic_input_data @ self.H_hat.T
@@ -837,8 +852,7 @@ class OpInf:
 
         return output
 
-    def eval(self, input_data:np.ndarray=None, **kwargs) -> np.ndarray:
-
+    def eval(self, input_data: np.ndarray = None, **kwargs) -> np.ndarray:
         """Evaluating using the trained model
 
         :param input_data: array containing the input data
@@ -850,8 +864,7 @@ class OpInf:
         return self.eval_op(input_data=input_data, **kwargs)
 
     # Saving to disk the complete model
-    def save(self, save_path:str=None, model_name:str=None) -> None:
-
+    def save(self, save_path: str = None, model_name: str = None) -> None:
         """Complete saving
 
         :param save_path: path to the saving directory
@@ -870,7 +883,6 @@ class OpInf:
 
     # Saving to disk a lean version of the model
     def lean_save(self, save_path: str = None, model_name: str = None) -> None:
-
         """Lean saving
 
         :param save_path: path to the saving directory
@@ -895,4 +907,3 @@ class OpInf:
                 pickle.dump(self_copy, fp, protocol=4)
         except Exception as e:
             print(e, e.args)
-

@@ -21,75 +21,75 @@ from typing import Union
 from simulai.templates import NetworkTemplate
 
 
-def load_pkl(path:str=None) -> Union[object, None]:
+def load_pkl(path: str = None) -> Union[object, None]:
+    """
+    Load a pickle file into a Python object.
 
-    """Load a pickle file into a Python object.
-     
-     Parameters:
-     -----------
-     path : str, optional
-         The path to the pickle file.
+    Parameters:
+    -----------
+    path : str, optional
+        The path to the pickle file.
 
-     Returns:
-     -------
-     object or None
-         The loaded object, if possible. None if the file cannot be loaded
-         
-     Raises:
-     ------
-     Exception :
-         if the provided path is not a file or cannot be opened
+    Returns:
+    -------
+    object or None
+        The loaded object, if possible. None if the file cannot be loaded
+
+    Raises:
+    ------
+    Exception :
+        if the provided path is not a file or cannot be opened
      """
 
     import pickle
-    
+
     filename = os.path.basename(path)
     file_extension = filename.split('.')[-1]
 
     if file_extension == "pkl":
-         if os.path.isfile(path):
-             try:
-                 with open(path, "rb") as fp:
-                     model = pickle.load(fp)
+        if os.path.isfile(path):
+            try:
+                with open(path, "rb") as fp:
+                    model = pickle.load(fp)
 
-                 return model
-             except:
-                 raise Exception(f"The file {path} could not be opened.")
-         else:
-             raise Exception(f"The file {path} is not a file.")
+                return model
+            except:
+                raise Exception(f"The file {path} could not be opened.")
+        else:
+            raise Exception(f"The file {path} is not a file.")
     else:
-        raise Exception(f"The file format {file_extension} is not supported. It must be pickle.")
-        
+        raise Exception(
+            f"The file format {file_extension} is not supported. It must be pickle.")
+
 
 # This class creates a directory containing all the necessary to save and
 # restore a NetworkTemplate object
 class SPFile:
 
-    def __init__(self, compact:bool=False) -> None:
+    def __init__(self, compact: bool = False) -> None:
         """
         Class for handling persistence of Pytorch Module-like objects.
-        
+
         SimulAI Persistency File
         It saves PyTorch Module-like objects in a directory containing the model template and
         its coefficients dictionary
-        
-         Parameters:
-         -----------
-         compact : bool, optional
-             Compress the directory to a tar file or not. Default : False
-    
+
+        Parameters:
+        -----------
+        compact : bool, optional
+            Compress the directory to a tar file or not. Default : False
         """
         self.compact = compact
 
-    def _leading_size(self, first_line:str=None) -> int:
+    def _leading_size(self, first_line: str = None) -> int:
         """
          Returns the number of leading white spaces in the given line
-         
+
          Parameters:
          -----------
          first_line : str, optional
              The line for which to find the number of leading white spaces.
-         
+
          Returns:
          --------
          int
@@ -98,16 +98,15 @@ class SPFile:
         leading_whitespaces = len(first_line) - len(first_line.lstrip())
         return leading_whitespaces
 
-
-    def _process_code(self, code:str=None) -> str:
+    def _process_code(self, code: str = None) -> str:
         """
          Returns the code string with leading white spaces removed from each line
-         
+
          Parameters:
          -----------
          code : str, optional
              The code string which to remove the leading whitespaces
-         
+
          Returns:
          --------
          str
@@ -121,12 +120,11 @@ class SPFile:
 
         return '\n'.join(code_lines_)
 
-    def write(self, save_dir:str=None, name:str=None,
-                    template:callable=None, model:NetworkTemplate=None, device:str=None) -> None:
-
+    def write(self, save_dir: str = None, name: str = None,
+              template: callable = None, model: NetworkTemplate = None, device: str = None) -> None:
         """
         Writes the model and its instantiating function to a directory.
-         
+
          Parameters:
          -----------
          save_dir : str, optional
@@ -139,7 +137,7 @@ class SPFile:
              The model to be saved.
          device : str, optional
              The device on which the model is located (gpu or cpu).
-         
+
          Returns:
          --------
          None
@@ -160,23 +158,23 @@ class SPFile:
         # Saving the model coefficients
         model.save(save_dir=model_dir, name=name, device=device)
 
-    def read(self, model_path:str=None, device:str=None, template_name:str=None) -> NetworkTemplate:
+    def read(self, model_path: str = None, device: str = None, template_name: str = None) -> NetworkTemplate:
         """
         Reads a model from the specified file path, imports it as a module, and initializes it as an object of the corresponding class.
-         
-         Parameters:
-         -----------
-         model_path : str, optional
-             Complete path to the model.
-         device : str, optional
-             Device to load the model onto.
-         template_name: str, optional
-             Name of the class within the imported module to initialize as an object. 
 
-         Returns:
-         --------
-         NetworkTemplate (child of torch.nn.Module)
-             The model restored to memory.
+        Parameters:
+        -----------
+        model_path : str, optional
+            Complete path to the model.
+        device : str, optional
+            Device to load the model onto.
+        template_name: str, optional
+            Name of the class within the imported module to initialize as an object. 
+
+        Returns:
+        --------
+        NetworkTemplate (child of torch.nn.Module)
+            The model restored to memory.
         """
         name = os.path.basename(model_path)
         save_dir = model_path
@@ -185,11 +183,13 @@ class SPFile:
 
         module = importlib.import_module(name+'_template')
 
-        callables = {attr:getattr(module, attr) for attr in dir(module) if callable(getattr(module, attr))}
+        callables = {attr: getattr(module, attr) for attr in dir(
+            module) if callable(getattr(module, attr))}
 
         if len(callables) > 1:
-            if  template_name is None:
-                raise Exception(f"There are {len(callables)} models in the module, please provide a value for name.")
+            if template_name is None:
+                raise Exception(
+                    f"There are {len(callables)} models in the module, please provide a value for name.")
             else:
                 Model = callables[template_name]()
 
