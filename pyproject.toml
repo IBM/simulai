@@ -55,12 +55,15 @@ Source = "https://github.com/IBM/simulai"
 Tracker = "https://github.com/IBM/simulai/issues"
 Documentation = "https://simulai-toolkit.readthedocs.io"
 
-[tool.setuptools]
-packages = ['simulai']
+#[tool.setuptools]
+#packages = ['simulai']
+
+[tool.setuptools.packages.find]
+where = ["simulai"]
 
 [tool.bumpver]
 current_version = "0.99.8"
-version_pattern = "MAJOR.MINOR.PATCH"
+version_pattern = "MAJOR.MINOR.PATCH[PYTAGNUM]"
 commit_message = "Bump version {old_version} -> {new_version}"
 commit = true
 tag = true
