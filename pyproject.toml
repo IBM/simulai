@@ -59,7 +59,8 @@ Documentation = "https://simulai-toolkit.readthedocs.io"
 #packages = ['simulai']
 
 [tool.setuptools.packages.find]
-where = ["simulai"]
+where = ["simulai", "simulai.*"]
+namespaces = false
 
 [tool.bumpver]
 current_version = "0.99.11"
