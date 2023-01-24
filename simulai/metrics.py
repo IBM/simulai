@@ -452,7 +452,7 @@ class RosensteinKantz:
 
         return v[ref_index + shift]
 
-    def __call__(self, data:np.ndarray=None) -> None:
+    def __call__(self, data:np.ndarray=None) -> float:
 
         # It is expected data to be an array with shape (n_timesteps, n_variables)
         n_timesteps = data.shape[0]
@@ -500,7 +500,8 @@ class RosensteinKantz:
 
 
             S_tau = np.array(S_tau)
-            print('.')
+
+            return S_tau[-1]
 
 class PerturbationMethod:
 
