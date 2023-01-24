@@ -11,30 +11,30 @@ Welcome to simulai's documentation!
    :maxdepth: 2
    :caption: Sub Packages
 
-   _package/simulai.math
-   _package/simulai.models
-   _package/simulai.optimization
-   _package/simulai.regression
-   _package/simulai.residuals
-   _package/simulai.rom
-   _package/simulai.sampling
-   _package/simulai.utilities
+   source/_package/simulai.math
+   source/_package/simulai.models
+   source/_package/simulai.optimization
+   source/_package/simulai.regression
+   source/_package/simulai.residuals
+   source/_package/simulai.rom
+   source/_package/simulai.sampling
+   source/_package/simulai.utilities
 
 .. toctree::
    :maxdepth: 2
    :titlesonly:
    :caption: Sub Modules
 
-   _modules/simulai.abstract
-   _modules/simulai.activations
-   _modules/simulai.batching
-   _modules/simulai.file
-   _modules/simulai.io
-   _modules/simulai.mesh
-   _modules/simulai.metrics
-   _modules/simulai.normalization
-   _modules/simulai.output
-   _modules/simulai.parallel
-   _modules/simulai.simulation
-   _modules/simulai.special
-   _modules/simulai.tokens
+   source/_modules/simulai.abstract
+   source/_modules/simulai.activations
+   source/_modules/simulai.batching
+   source/_modules/simulai.file
+   source/_modules/simulai.io
+   source/_modules/simulai.mesh
+   source/_modules/simulai.metrics
+   source/_modules/simulai.normalization
+   source/_modules/simulai.output
+   source/_modules/simulai.parallel
+   source/_modules/simulai.simulation
+   source/_modules/simulai.special
+   source/_modules/simulai.tokens

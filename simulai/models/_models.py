@@ -30,13 +30,14 @@ try:
 except:
     MPI_GLOBAL_AVAILABILITY = False
     warnings.warn(f'Trying to import MPI in {__file__}.')
-    warnings.warn('mpi4py is not installed. If you want to execute MPI jobs, we recommend you install it.')
+    warnings.warn(
+        'mpi4py is not installed. If you want to execute MPI jobs, we recommend you install it.')
 
 
 def exec_model_wrapper(input_data=None, target_data=None, model=None, key=None):
     """
     Fit a model with given input_data and target_data and returns a dictionary with the key and the model.
-    
+
     Parameters
     ----------
     input_data : array-like, shape (n_samples, n_features)
@@ -47,7 +48,7 @@ def exec_model_wrapper(input_data=None, target_data=None, model=None, key=None):
         The model to fit with the given data
     key : hashable
         The key to access the model on the returned dictionary
-        
+
     Returns
     -------
     dict
@@ -56,15 +57,14 @@ def exec_model_wrapper(input_data=None, target_data=None, model=None, key=None):
     model.fit(input_data=input_data, target_data=target_data)
     return {key: model}
 
-        
+
 # Executes a parallel fitting process using multiple sub-models following the approach shown in Vlachas et al, https://arxiv.org/abs/1910.05266
 class ModelPool:
 
-    def __init__(self, config: dict=None,
-                       model_type: str='EchoStateNetwork',
-                       model_config: dict=None,
-                       parallel: str=None) -> None:
-        
+    def __init__(self, config: dict = None,
+                 model_type: str = 'EchoStateNetwork',
+                 model_config: dict = None,
+                 parallel: str = None) -> None:
         """
         Initialize a ModelPool instance with a given configuration, model type, model configuration, and parallel computation option.
 
@@ -87,7 +87,8 @@ class ModelPool:
         self.regressions_module = 'simulai.regression'
         self.default_residual = 'surrogate'
         self.default_loss = 'square-mean'
-        self.independent_case = ('independent_series', 'no_communication_series')
+        self.independent_case = ('independent_series',
+                                 'no_communication_series')
         self.no_group_value = -1
 
         # Initialize attributes
@@ -110,7 +111,8 @@ class ModelPool:
         self.n_groups = None
 
         # Ensure the parallel option is supported
-        assert parallel in [None, 'mpi'], f"The option {parallel} is not supported for parallel."
+        assert parallel in [
+            None, 'mpi'], f"The option {parallel} is not supported for parallel."
 
         # Set the sub_model_pool_dispatcher method
         if self.compute_parallel == 'mpi':
@@ -123,7 +125,8 @@ class ModelPool:
         self.optional_keys = ['n_inputs', 'n_outputs', 'n_auxiliary']
         self.fundamental_tags = self.essential_tags + ['optimizers_list']
         if not all([item in config.keys() for item in self.essential_tags]):
-            assert 'template' in config.keys(), "If the configuration is incomplete, a template must be provided"
+            assert 'template' in config.keys(
+            ), "If the configuration is incomplete, a template must be provided"
             self.config = self._get_template(name=config['template'])
             self.template = config['template']
         else:
@@ -132,7 +135,8 @@ class ModelPool:
         # Set attributes from config
         for tag in self.config:
             if tag in self.fundamental_tags:
-                assert tag in self.config, "It is necessary to provide a value to {}".format(tag)
+                assert tag in self.config, "It is necessary to provide a value to {}".format(
+                    tag)
             setattr(self, tag, self.config[tag])
 
         for key in self.optional_keys:
@@ -145,13 +149,14 @@ class ModelPool:
             no_parallelism_signal = 2
         else:
             no_parallelism_signal = 0
-        
+
         # Preserve the pool configuration for restoring
         self.config_pool = config
-        
+
         # Ensure stencil_size is divisible by 2
-        assert 0 == (self.stencil_size % 2), "stencil_size must be an even number"
-        
+        assert 0 == (self.stencil_size %
+                     2), "stencil_size must be an even number"
+
         # Ensure group_size is not -1 if n_inputs is provided
         if self.n_inputs is not None:
             assert self.group_size != self.no_group_value, "group_size cannot be -1 when n_inputs is provided"
@@ -168,7 +173,7 @@ class ModelPool:
     def sub_models(self):
         """
         Returns the list of values of the model instances list
-        
+
         Returns
         -------
         list
@@ -180,7 +185,7 @@ class ModelPool:
     def sub_models_keys(self):
         """
         Returns the list of keys of the model instances list
-        
+
         Returns
         -------
         list
@@ -191,33 +196,33 @@ class ModelPool:
     def _get_template(self, name=None):
         """
         Returns the predefined templates according to the input name
-        
+
         Parameters
         ----------
         name : str
             name of the template
-        
+
         Returns
         -------
         template : dict
             Dictionary of the template.
         """
         templates = {'independent_series': {
-                                            'group_size': 1,
-                                            'stencil_size': 0,
-                                            'skip_size': 1
-                                           },
-                     'no_communication_series': {
-                                            'group_size': 1,
-                                            'stencil_size': 0,
-                                            'skip_size': 1
-                                          },
-                     'no_parallelism': {
-                                            'group_size': -1,
-                                            'stencil_size': 0,
-                                            'skip_size': 1
-                                        }
-                    }
+            'group_size': 1,
+            'stencil_size': 0,
+            'skip_size': 1
+        },
+            'no_communication_series': {
+            'group_size': 1,
+            'stencil_size': 0,
+            'skip_size': 1
+        },
+            'no_parallelism': {
+            'group_size': -1,
+            'stencil_size': 0,
+            'skip_size': 1
+        }
+        }
 
         template = templates.get(name, None)
 
@@ -229,7 +234,7 @@ class ModelPool:
     def _construct_subdatasets(self, groups_indices, data, auxiliary_data=None):
         """
         Constructs the subdatasets using the groups indices and the data.
-        
+
         Parameters
         ----------
         groups_indices : list
@@ -238,7 +243,7 @@ class ModelPool:
             Input data.
         auxiliary_data : numpy array, Optional
             Additional data that will be concatenated to the input data in each group
-            
+
         Returns
         -------
         sub_datasets : dict
@@ -250,20 +255,20 @@ class ModelPool:
             if auxiliary_data is None:
                 sub_group = data[..., slice(*group)]
             else:
-                sub_group = np.hstack([data[..., slice(*group)], auxiliary_data])
+                sub_group = np.hstack(
+                    [data[..., slice(*group)], auxiliary_data])
             sub_datasets[dataset_id] = sub_group
         return sub_datasets
-
 
     def _adequate_input_history(self, sub_datasets):
         """
         Truncates the input history of the subdatasets to the appropriate length.
-        
+
         Parameters
         ----------
         sub_datasets : dict
             Dictionary of subdatasets with dataset_id as key and subgroup as value
-            
+
         Returns
         -------
         new_sub_datasets : dict
@@ -275,11 +280,10 @@ class ModelPool:
             new_sub_datasets[group_id] = dataset[:, -history_size:, ...]
         return new_sub_datasets
 
-
     def _construct_input_groups(self, no_subdivision=None):
         """
         Constructs the indices intervals of the input datasets for each sub-group.
-        
+
         Parameters
         ----------
         no_subdivision : int or None
@@ -287,7 +291,7 @@ class ModelPool:
             If None, it uses the stencil to construct the indices. 
             If 1, it uses all the time-series repeated for each sub-group.
             If 2, it uses just the current time-series for each sub-group.
-            
+
         Returns
         -------
         groups_indices_input : list
@@ -298,11 +302,13 @@ class ModelPool:
         # When the option no_subdivision is active all the input series
         # are used for all the sub-groups
         if not no_subdivision:
-            groups_indices_input.append((0, self.input_size + self.stencil_size))
+            groups_indices_input.append(
+                (0, self.input_size + self.stencil_size))
 
             for group in self.groups_indices_target[1:-1]:
                 first, second = group
-                groups_indices_input.append((first - self.stencil, second + self.stencil))
+                groups_indices_input.append(
+                    (first - self.stencil, second + self.stencil))
 
             if self.n_groups > 1:
                 groups_indices_input.append((self.n_inputs - self.input_size - self.stencil_size - self.n_auxiliary,
@@ -320,7 +326,6 @@ class ModelPool:
 
         return groups_indices_input
 
-
     def _construct_target_groups(self):
         """
         Constructs the indices intervals of the target datasets for each sub-group
@@ -330,14 +335,15 @@ class ModelPool:
         groups_indices_target : Complex -> List[Tuple[int, int]] 
             A list of tuple of indices intervals for each sub-group
         """
-        indices = np.arange(0, self.n_outputs + self.group_size, self.group_size)
+        indices = np.arange(0, self.n_outputs +
+                            self.group_size, self.group_size)
         indices_first = indices[:-1]
         indices_second = indices[1:]
 
-        groups_indices_target = [(first, second) for first, second in zip(indices_first, indices_second)]
+        groups_indices_target = [
+            (first, second) for first, second in zip(indices_first, indices_second)]
 
         return groups_indices_target
-
 
     def _construct_config_dict_to(self, model_config, method):
         """
@@ -358,7 +364,6 @@ class ModelPool:
         kwargs = inspect.getfullargspec(method).args
 
         return {key: value for key, value in model_config.items() if key in kwargs}
-
 
     def _history_dependent_input(self, model_id=None, previous_data=None, data=None):
         """
@@ -393,7 +398,7 @@ class ModelPool:
             The index of the model in the pool
         data : ndarray
             The input data.
-            
+
         Returns:
         -------
         history_dependent_data : ndarray
@@ -464,7 +469,8 @@ class ModelPool:
         tuple
             A tuple of the prepared input dataset.
         """
-        assert type(data) is list, f"The input must be a list of datasets, but received type {type(data)}"
+        assert type(
+            data) is list, f"The input must be a list of datasets, but received type {type(data)}"
 
         if shuffle:
 
@@ -476,7 +482,7 @@ class ModelPool:
 
         else:
             return tuple(data)
-        
+
     def _configure_parameters(self, no_parallelism_signal):
 
         group_dimension = self.group_size
@@ -497,7 +503,8 @@ class ModelPool:
         self.n_groups = len(self.groups_indices_target)
 
         # Constructing the groups indices for the input variables
-        self.groups_indices_input = self._construct_input_groups(no_subdivision=no_parallelism_signal)
+        self.groups_indices_input = self._construct_input_groups(
+            no_subdivision=no_parallelism_signal)
 
     # It prepares the datasets and the more important parameters
     def _configure_data(self, input_data=None, target_data=None, auxiliary_data=None):
@@ -523,7 +530,8 @@ class ModelPool:
         sub_datasets = self._construct_subdatasets(self.groups_indices_input, input_data,
                                                    auxiliary_data=auxiliary_data)
 
-        sub_datasets_target = self._construct_subdatasets(self.groups_indices_target, target_data)
+        sub_datasets_target = self._construct_subdatasets(
+            self.groups_indices_target, target_data)
 
         return sub_datasets, sub_datasets_target
 
@@ -535,7 +543,8 @@ class ModelPool:
 
         for net_id in range(n_groups):
 
-            self._configure_single_model(model_config, net_id=net_id, regression=regression)
+            self._configure_single_model(
+                model_config, net_id=net_id, regression=regression)
 
     def _configure_single_model(self, model_config, net_id=None, regression=None) -> None:
 
@@ -549,14 +558,17 @@ class ModelPool:
             model_config['model_id'] = model_id
 
             var_input_names = ['var_' + str(i) for i in range(self.input_size)]
-            var_target_names = ['var_' + str(i) + '_o' for i in range(self.group_size)]
+            var_target_names = [
+                'var_' + str(i) + '_o' for i in range(self.group_size)]
 
             model_config['inputs_names'] = [var_input_names]
             model_config['outputs_names'] = [var_target_names]
-            model_config['number_of_inputs'] = self.input_size_ + self.stencil_size # self.n_auxiliary is already
-                                                                                    # included in self.input_size_
+            model_config['number_of_inputs'] = self.input_size_ + \
+                self.stencil_size  # self.n_auxiliary is already
+            # included in self.input_size_
 
-            model_config = self._construct_config_dict_to(model_config, regression)
+            model_config = self._construct_config_dict_to(
+                model_config, regression)
 
             model_instance = regression(**model_config)
 
@@ -580,8 +592,9 @@ class ModelPool:
         engine_module = importlib.import_module(self.regressions_module)
         # Getting up the correspondent regression class to be instantiated.
         # At the moment, the regression must be the same for all the sub-models
-        regression = getattr(engine_module, self.model_type) # TODO It could be specific for each
-                                                             #  sub-model
+        # TODO It could be specific for each
+        regression = getattr(engine_module, self.model_type)
+        #  sub-model
 
         return regression
 
@@ -595,7 +608,8 @@ class ModelPool:
         # _configure_single_model will basically instantiate the list of model instances
         if index is not None:
 
-            self._configure_single_model(model_config, net_id=index, regression=regression)
+            self._configure_single_model(
+                model_config, net_id=index, regression=regression)
 
         else:
 
@@ -615,7 +629,8 @@ class ModelPool:
                                                    model_config=model_config)
 
                 print(f"Broadcasting value from rank 0.")
-                self.model_instances_list = comm.bcast(self.model_instances_list, root=0)
+                self.model_instances_list = comm.bcast(
+                    self.model_instances_list, root=0)
 
                 comm.barrier()
 
@@ -645,7 +660,7 @@ class ModelPool:
 
     # Loop for dispatching for a list of sub-models
     def _sub_model_serial_pool_dispatcher(self, sub_datasets=None, sub_datasets_target=None,
-                                                model_instances_list=None, shuffle=False):
+                                          model_instances_list=None, shuffle=False):
 
         # Serial dispatcher
         for model_id, model in model_instances_list.items():
@@ -657,14 +672,15 @@ class ModelPool:
             dataset_target = sub_datasets_target[model_id]
 
             # Executing shuffling, if necessary
-            dataset_, dataset_target_ = self._dataset(data=[dataset, dataset_target], shuffle=shuffle)
+            dataset_, dataset_target_ = self._dataset(
+                data=[dataset, dataset_target], shuffle=shuffle)
 
             # Fitting the model instance
             model.fit(input_data=dataset_, target_data=dataset_target_)
 
     # Loop for dispatching list of sub-models in parallel using the MPI API
-    def _sub_model_parallel_mpi_pool_dispatcher(self, sub_datasets: dict=None, sub_datasets_target: dict=None,
-                                                  model_instances_list: dict=None, shuffle: bool=False) -> None:
+    def _sub_model_parallel_mpi_pool_dispatcher(self, sub_datasets: dict = None, sub_datasets_target: dict = None,
+                                                model_instances_list: dict = None, shuffle: bool = False) -> None:
 
         # Lists to be used for dispatching the sub-processes in parallel
         datasets = list()
@@ -686,7 +702,8 @@ class ModelPool:
                 dataset_target = sub_datasets_target[model_id]
 
                 # Executing shuffling, if necessary
-                dataset_, dataset_target_ = self._dataset(data=[dataset, dataset_target], shuffle=shuffle)
+                dataset_, dataset_target_ = self._dataset(
+                    data=[dataset, dataset_target], shuffle=shuffle)
 
                 datasets.append(dataset_)
                 datasets_target.append(dataset_target_)
@@ -740,7 +757,8 @@ class ModelPool:
                                                      'an optimizers list'
 
             optimizers_list = self.config.get('optimizers_list')
-            residuals_type = self.n_groups*self.group_size*[self.default_residual]
+            residuals_type = self.n_groups * \
+                self.group_size*[self.default_residual]
             losses = self.n_groups*self.group_size*[self.default_loss]
 
             models_instance_list = list(self.model_instances_list.values())
@@ -786,7 +804,6 @@ class ModelPool:
         """
         return np.hstack([data, auxiliary_data[step][None, ...]])
 
-  
     def _bypass(self, data=None, **kwargs):
         """
         If no auxiliary variable (such as forcings) is required, at each iteration
@@ -815,54 +832,70 @@ class ModelPool:
         all_autoexecutable : bool
             True if all models in the pool are auto-executable
         """
-        all_autoexecutable = sum([hasattr(inst, 'fit') for inst in self.model_instances_list.values()])
+        all_autoexecutable = sum([hasattr(inst, 'fit')
+                                 for inst in self.model_instances_list.values()])
         return all_autoexecutable == len(self.model_instances_list.keys())
-    
+
     def set_parameters(self, parameters):
         """
         Set the parameters of the all models in the model pool
-        
+
         Parameters
         ----------
         parameters : dict
             A dictionary containing the parameters for each model in the pool
-        
+
         Raises
         ------
         AssertionError
             If one of the models in the pool does not have a 'set_parameters' method
         """
         for model_id, model in self.model_instances_list.items():
-            assert hasattr(model, 'set_parameters'), 'This model has not a parameters setting method.'
+            assert hasattr(
+                model, 'set_parameters'), 'This model has not a parameters setting method.'
             model.set_parameters(parameters)
 
     def fit(self, input_data=None, target_data=None, auxiliary_data=None, index=None, shuffle=False):
         """
         Fits the model(s) using the given input data, target data, and auxiliary data.
 
-        Parameters:
-        input_data (ndarray): The input data to fit the model(s) on.
-        target_data (ndarray): The target data to fit the model(s) on.
-        auxiliary_data (ndarray): Additional data to fit the model(s) on.
-        index (int): The index of the model to fit if the pool is independent_case.
-        shuffle (bool): Whether to shuffle the data before fitting or not.
+        Parameters
+        ----------
+        input_data : numpy ndarray, optional
+            The input data to fit the model(s) on.
+        target_data : numpy ndarray, optional
+            The target data to fit the model(s) on.
+        auxiliary_data : numpy ndarray, optional
+            Additional data to fit the model(s) on.
+        index : int, optional
+            The index of the model to fit if the pool is independent_case.
+        shuffle : bool, optional
+            Whether to shuffle the data before fitting or not.
 
-        Returns:
-        msg : str
+        Returns
+        -------
+        Union[str, None]
             Message indicating the completion of the fitting process, in case the pool is independent_case, otherwise None.
+
+        Example
+        -------
+        >>> model.fit(input_data, target_data, auxiliary_data, index=0, shuffle=True)
+        'Fitting completed for model 0'
         """
         if auxiliary_data is not None:
-            assert self.n_auxiliary == auxiliary_data.shape[1], f'auxiliary_data must have {self.n_auxiliary} columns'
+            assert self.n_auxiliary == auxiliary_data.shape[
+                1], f'auxiliary_data must have {self.n_auxiliary} columns'
 
-        self._configure_data(input_data=input_data, target_data=target_data, auxiliary_data=auxiliary_data)
+        self._configure_data(
+            input_data=input_data, target_data=target_data, auxiliary_data=auxiliary_data)
 
         # The configuration is done for all the models involved in the pool at a time
         # or individually if an index is provided.
         self._configure_model(model_config=self.model_config, index=index)
 
         sub_datasets, sub_datasets_target = self._get_sub_datasets(input_data=input_data,
-                                                                target_data=target_data,
-                                                                auxiliary_data=auxiliary_data)
+                                                                   target_data=target_data,
+                                                                   auxiliary_data=auxiliary_data)
 
         # It is used in case of models which depends on the history data
         if len(self.history_sizes) > 0:
@@ -878,30 +911,32 @@ class ModelPool:
 
         if index is not None:
             assert self.template in self.independent_case, f"It is not possible " \
-                                                        f"to independently execute the sub-model {index} " \
-                                                        f"if the model pool is not independent_series."
+                f"to independently execute the sub-model {index} " \
+                f"if the model pool is not independent_series."
 
             model_id = self._make_id(idx=index)
             sub_datasets_model_id = sub_datasets[model_id]
             sub_datasets_target_model_id = sub_datasets_target[model_id]
 
-            self._single_sub_model_dispatcher(model_id, sub_datasets_model_id, sub_datasets_target_model_id, shuffle=shuffle)
+            self._single_sub_model_dispatcher(
+                model_id, sub_datasets_model_id, sub_datasets_target_model_id, shuffle=shuffle)
 
         else:
             # Executing the fitting process for all the sub-models
             # contained in this pool
-            msg = self._sub_model_dispatcher(sub_datasets, sub_datasets_target, shuffle=shuffle)
+            msg = self._sub_model_dispatcher(
+                sub_datasets, sub_datasets_target, shuffle=shuffle)
 
         print("Model configuration concluded.")
 
         return msg
 
-
     # Serial prediction
+
     def predict(self, initial_state=None, horizon=None, auxiliary_data=None, index=None, compare_data=None):
         """
         Generates predictions for the future state of a system given an initial state. The predictions can be made one step at a time or for the entire future trajectory at once.
-        
+
         Parameters
         ----------
         initial_state : numpy.ndarray, optional
@@ -914,7 +949,7 @@ class ModelPool:
             The index of the model in the model pool to use for predictions. If not provided, predictions will be made using all models in the model pool.
         compare_data : numpy.ndarray, optional
             An array of true values that can be used to compare against the predictions. The error is computed as the L2 norm.
-        
+
         Returns
         -------
         predictions : numpy.ndarray
@@ -930,10 +965,12 @@ class ModelPool:
             If `index` is provided and `horizon` is different from 1
         """
 
-        assert len(initial_state.shape) >= 2, 'Input must have two dimensions at most.'
+        assert len(
+            initial_state.shape) >= 2, 'Input must have two dimensions at most.'
 
         if isinstance(auxiliary_data, np.ndarray):
-            assert self.n_auxiliary == auxiliary_data.shape[1], f'auxiliary_data must have {self.n_auxiliary} columns'
+            assert self.n_auxiliary == auxiliary_data.shape[
+                1], f'auxiliary_data must have {self.n_auxiliary} columns'
             prepare_state = self._stack_auxiliary
             if horizon is None:
                 horizon = auxiliary_data.shape[0]
@@ -945,7 +982,8 @@ class ModelPool:
         if index is not None:
             assert horizon == 1
             model_id = self._make_id(idx=index)
-            simulate_instances = {model_id: self.model_instances_list[model_id]}
+            simulate_instances = {
+                model_id: self.model_instances_list[model_id]}
         else:
             simulate_instances = self.model_instances_list
 
@@ -982,7 +1020,8 @@ class ModelPool:
                     print("Extrapolation step {} concluded".format(step))
                 else:
                     if step < compare_data.shape[0]:
-                        print("Extrapolation step {} concluded. Error {}".format(step, np.linalg.norm(current_state_-compare_data[step:step+1, ...])))
+                        print("Extrapolation step {} concluded. Error {}".format(
+                            step, np.linalg.norm(current_state_-compare_data[step:step+1, ...])))
 
                 if step >= horizon-1:
                     break
@@ -1008,7 +1047,8 @@ class ModelPool:
                 for model_id, model in simulate_instances.items():
 
                     data = state_datasets.get(model_id)
-                    data = self.train_input_data_preparer(model_id=model_id, data=data)
+                    data = self.train_input_data_preparer(
+                        model_id=model_id, data=data)
                     out = model.step(data=data)
                     step_outputs_list.append(out)
 
@@ -1043,11 +1083,12 @@ class ModelPool:
         """
         for model_id, model in self.model_instances_list.items():
 
-            assert hasattr(model, 'reset'), f"The moodel {model} has no method reset."
+            assert hasattr(
+                model, 'reset'), f"The moodel {model} has no method reset."
 
             print(f'Resetting model {model_id}')
             model.reset()
-            
+
     def set_reference(self, reference=None):
         """
         Set the reference state for all models in the model pool.
@@ -1064,11 +1105,12 @@ class ModelPool:
         """
         for model_id, model in self.model_instances_list.items():
 
-            assert hasattr(model, 'current_state'), f"The model {model} cannot set reference."
+            assert hasattr(
+                model, 'current_state'), f"The model {model} cannot set reference."
 
             print(f'Setting up reference state for the model {model_id}')
             model.set_reference(reference=reference)
-            
+
     def save(self, path=None):
         """
         Save the current state of the model pool to the given file path.
@@ -1095,7 +1137,6 @@ class ModelPool:
             print(e, e.args)
             raise Exception(f"The object {self} is not serializable.")
 
-
     def save_pool_config(self, path=None):
         """
         Save the configuration of the pool to the given file path.
@@ -1108,7 +1149,7 @@ class ModelPool:
         """
         with open(path, 'w') as fp:
             json.dump(self.config_pool, fp, indent=6)
-            
+
     def save_model(self, path: str, model_id: str):
         """
         Save a specific model instance in the pool to the given file path.
