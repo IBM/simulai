@@ -17,7 +17,7 @@ import numpy as np
 import torch
 import h5py
 import random
-from typing import Union, Dict, List
+from typing import Union, Dict, List, Tuple
 from torch import Tensor
 from numpy.lib import recfunctions
 
@@ -191,7 +191,7 @@ class ScalerReshaper(Reshaper):
         else:
             return self.prepare_output_structured_data(data)
 
-    def _get_structured_bias_scale(self, dtype: np.dtype = None) -> Union[float, float]:
+    def _get_structured_bias_scale(self, dtype: np.dtype = None) -> Tuple[dict, dict]:
 
         bias = self.bias
         if isinstance(self.bias, float):
@@ -537,7 +537,7 @@ class MovingWindow:
 
         return batch
 
-    def __call__(self, input_data: np.ndarray = None, output_data: np.ndarray = None) -> Union[np.ndarray, np.ndarray]:
+    def __call__(self, input_data: np.ndarray = None, output_data: np.ndarray = None) -> Tuple[np.ndarray, np.ndarray]:
         """
 
         :param input_data: 2D array (time-series) to be used for constructing the history size
