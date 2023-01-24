@@ -664,14 +664,11 @@ class IntersectingBatches:
 
     Example:
     --------
-    batch n    ------------
-                |
-                |
-                |
-    batch n+1  ------------
-                |
-                |
-                |
+    batch n
+    ------------
+
+        batch n+1
+        ------------
     ----
     skip
     """
