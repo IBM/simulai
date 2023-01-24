@@ -15,7 +15,6 @@
 from unittest import TestCase
 
 import numpy as np
-import torch
 
 from simulai.metrics import RosensteinKantz
 
@@ -29,5 +28,5 @@ class TestPointwise(TestCase):
 
         tau = rosenstein_kantz(data=data)
 
-        assert type(tau, float)
+        assert isinstance(tau, float)
 
