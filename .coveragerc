@@ -1,2 +1,4 @@
 [run]
-omit=simulai/utilities/*
+omit=
+     simulai/utilities/*
+     simulai/special.py
