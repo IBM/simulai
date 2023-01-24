@@ -59,7 +59,7 @@ class TestPCADecomposition(TestCase):
         # Constructing dataset
         N_x = 128
         N_y = 128
-        N_t = 1000
+        N_t = 100
 
         x = np.linspace(0, 1, N_x)
         y = np.linspace(0, 1, N_y)

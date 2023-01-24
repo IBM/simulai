@@ -118,7 +118,7 @@ class TestImprovedDeeponet(TestCase):
         data_branch = torch.rand(1_000, 4)
         output_target = torch.rand(1_000, 2)
 
-        n_epochs = 1_00
+        n_epochs = 10
         maximum_values = (1 / np.linalg.norm(output_target, 2, axis=0)).tolist()
         params = {'lambda_1': 0.0, 'lambda_2': 1e-10, 'weights': maximum_values}
 

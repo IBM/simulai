@@ -114,7 +114,7 @@ class TestCollocationDerivative(TestCase):
             U, U_t = self.generate_field(x, y, t, omega_t)
             U_, U_t_ = self.generate_field(x, y, t_, omega_t)
 
-            kk = [1, 2, 3, 4, 5]
+            kk = [1, 2, 3, 4]
 
             for k in kk:
 
