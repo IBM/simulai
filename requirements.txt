@@ -21,3 +21,4 @@ pytest
 optuna
 nose
 urllib3
+sphinx_theme
