@@ -14,13 +14,14 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+from unittest import TestCase
 
 from simulai.optimization import Optimizer
 from simulai.residuals import SymbolicOperator
 
-class TestAllencahnPINN:
+class TestAllencahnPINN(TestCase):
 
-    def __init__(self):
+    def setUp(self) -> None:
         pass
 
     def test_allen_cahn(self):

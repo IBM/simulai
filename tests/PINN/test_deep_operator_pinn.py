@@ -13,13 +13,14 @@
 #     limitations under the License.
 
 import numpy as np
+from unittest import TestCase
 
 from simulai.optimization import Optimizer
 from simulai.residuals import SymbolicOperator
 
-class TestDeepOperatorROBERPINN:
+class TestDeepOperatorROBERPINN(TestCase):
 
-    def __init__(self):
+    def setUp(self) -> None:
         pass
 
     def test_rober_deeponet_pinn(self):
