@@ -394,6 +394,7 @@ class AutoencoderKoopman(NetworkTemplate):
                  bottleneck_encoder: Optional[Union[Linear, DenseNetwork]] = None,
                  bottleneck_decoder: Optional[Union[Linear, DenseNetwork]] = None,
                  decoder: Union[ConvolutionalNetwork, DenseNetwork] = None,
+                 encoder_activation: str = 'relu',
                  devices: Union[str, list] = 'cpu') -> None:
 
         super(AutoencoderKoopman, self).__init__()
@@ -456,6 +457,8 @@ class AutoencoderKoopman(NetworkTemplate):
         self.K_op = torch.nn.Linear(self.latent_dimension,
                                     self.latent_dimension, bias=False).weight.to(self.device)
 
+        self.encoder_activation = self._get_operation(operation=encoder_activation)
+
     def summary(self, input_data: Union[np.ndarray, torch.Tensor] = None, input_shape: list = None) -> torch.Tensor:
 
         self.encoder.summary(input_data=input_data, input_shape=input_shape, device=self.device)
@@ -486,7 +489,7 @@ class AutoencoderKoopman(NetworkTemplate):
     @as_tensor
     def _reconstruction_with_bottleneck(self, input_data: Union[torch.Tensor, np.ndarray] = None) -> torch.Tensor:
 
-        bottleneck_output = torch.nn.ReLU()(self.bottleneck_decoder.forward(input_data=input_data))
+        bottleneck_output = self.encoder_activation(self.bottleneck_decoder.forward(input_data=input_data))
 
         bottleneck_output = bottleneck_output.reshape((-1,) + self.before_flatten_dimension)
 
