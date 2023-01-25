@@ -79,15 +79,6 @@ coverage: ## check code coverage quickly with the default Python
 	coverage-badge -o coverage
 	mv coverage.svg assets/
 
-coverage-testmon: ## check code coverage quickly with the default Python
-	coverage run --source simulai -m pytest --testmon tests # pytest
-	coverage report -m
-	coverage html
-	$(BROWSER) htmlcov/index.html
-	coverage-badge -o coverage
-	mv coverage.svg figs/
-
-
 docs: ## generate Sphinx HTML documentation, including API docs
 	rm -f docs/simulai.rst
 	rm -f docs/modules.rst
