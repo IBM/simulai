@@ -38,6 +38,7 @@ dependencies = [
     "h5py",
     "dask",
     "netCDF4",
+    "sphinx-theme"
     "six",
     "numexpr",
     "minio",
@@ -55,8 +56,6 @@ Source = "https://github.com/IBM/simulai"
 Tracker = "https://github.com/IBM/simulai/issues"
 Documentation = "https://simulai-toolkit.readthedocs.io"
 
-#[tool.setuptools]
-#packages = ['simulai']
 
 [tool.setuptools.packages.find]
 include = ["simulai", "simulai.*"]
