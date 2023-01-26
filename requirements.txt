@@ -1,5 +1,3 @@
-imageio
-imageio-ffmpeg
 numpy
 numba
 scipy

@@ -23,8 +23,6 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
 dependencies = [
-    "imageio",
-    "imageio-ffmpeg",
     "numpy",
     "numba",
     "scipy<1.9.0",
