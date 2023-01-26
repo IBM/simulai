@@ -18,7 +18,7 @@ import warnings
 from typing import Union
 
 from simulai.templates import NetworkTemplate, as_tensor
-from simulai.regression.pytorch import LinearNumpy
+from simulai.regression._pytorch import LinearNumpy
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
