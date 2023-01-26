@@ -27,7 +27,6 @@ dependencies = [
     "imageio-ffmpeg",
     "numpy",
     "numba",
-    "pyDOE",
     "scipy<1.9.0",
     "sympy",
     "torch<1.13.0",

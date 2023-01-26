@@ -2,7 +2,6 @@ imageio
 imageio-ffmpeg
 numpy
 numba
-pyDOE
 scipy
 sympy
 torch
