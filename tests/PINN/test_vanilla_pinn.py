@@ -117,20 +117,22 @@ class TestAllencahnPINN(TestCase):
         # It prints a summary of the network features
         net.summary()
 
-        optimizer = Optimizer('adam', params=optimizer_config, lr_decay_scheduler_params={'name': 'ExponentialLR',
-                                                                                          'gamma': 0.9,
-                                                                                          'decay_frequency': 5_000},
-                              shuffle=False,
-                              summary_writer=True)
+        for optimizer_str in ['adam', 'bbi']:
 
-        params = {'residual': residual,
-                  'initial_input': data_boundary_t0,
-                  'initial_state': u_init,
-                  'boundary_input': {'periodic_u': [data_boundary_xL, data_boundary_x0],
-                                     'periodic_du': [data_boundary_xL, data_boundary_x0]},
-                  'boundary_penalties': [1, 1],
-                  'initial_penalty': 100}
+            optimizer = Optimizer(optimizer_str, params=optimizer_config, lr_decay_scheduler_params={'name': 'ExponentialLR',
+                                                                                              'gamma': 0.9,
+                                                                                              'decay_frequency': 5_000},
+                                  shuffle=False,
+                                  summary_writer=True)
 
-        optimizer.fit(op=net, input_data=data,
-                      n_epochs=n_epochs, loss="pirmse", params=params, device='gpu')
+            params = {'residual': residual,
+                      'initial_input': data_boundary_t0,
+                      'initial_state': u_init,
+                      'boundary_input': {'periodic_u': [data_boundary_xL, data_boundary_x0],
+                                         'periodic_du': [data_boundary_xL, data_boundary_x0]},
+                      'boundary_penalties': [1, 1],
+                      'initial_penalty': 100}
+
+            optimizer.fit(op=net, input_data=data,
+                          n_epochs=n_epochs, loss="pirmse", params=params, device='gpu')
 
