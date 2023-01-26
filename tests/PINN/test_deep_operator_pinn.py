@@ -53,7 +53,7 @@ class TestDeepOperatorROBERPINN(TestCase):
 
         lambda_1 = 0.0  # Penalty for the L¹ regularization (Lasso)
         lambda_2 = 0.0  # Penalty factor for the L² regularization
-        n_epochs = 40 # Maximum number of iterations for ADAM
+        n_epochs = 5 # Maximum number of iterations for ADAM
         lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
         def model():

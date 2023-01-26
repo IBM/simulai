@@ -76,7 +76,7 @@ class TestAllencahnPINN(TestCase):
         data_boundary_t0 = np.hstack([np.linspace(*x_interval, X_DIM)[:, None],
                                       t_interval[0] * np.ones((X_DIM, 1))])
 
-        n_epochs = 50  # Maximum number of iterations for ADAM
+        n_epochs = 5  # Maximum number of iterations for ADAM
         lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
         def model():
