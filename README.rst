@@ -90,6 +90,25 @@ If you find SimulAI to be useful, please consider citing it in your published wo
       year = {2022},
     }
 
+or, via Zenodo: 
+
+.. code-block:: python
+
+    @software{joao_lucas_de_sousa_almeida_2023_7566603,
+          author       = {João Lucas de Sousa Almeida and
+                          Leonardo Martins and
+                          Tarık Kaan Koç and
+                          John Bampton and
+                          IBM Open Source Bot},
+          title        = {IBM/simulai: 0.99.13},
+          month        = jan,
+          year         = 2023,
+          publisher    = {Zenodo},
+          version      = {0.99.13},
+          doi          = {10.5281/zenodo.7566603},
+          url          = {https://doi.org/10.5281/zenodo.7566603}
+        }
+
 References
 ==========
 
