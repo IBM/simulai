@@ -14,10 +14,8 @@ dask
 netCDF4
 six
 numexpr
-nose
 minio
 pytest
 optuna
-nose
 urllib3
 sphinx_theme
