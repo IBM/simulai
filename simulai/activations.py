@@ -14,12 +14,22 @@
 
 import torch
 
-# SIREN (Sinusoidal Representation Networks)
-class Siren(torch.nn.Module):
 
+class Siren(torch.nn.Module):
+    """Sinusoidal Representation Networks (SIREN)
+
+    Parameters
+    ----------
+    omega_0 : float, optional
+        Parameter for the SIREN model.
+    c : float, optional
+        Parameter for the SIREN model.
+
+    """
     name = 'Siren'
 
-    def __init__(self, omega_0:float=None, c:float=None) -> None:
+    def __init__(self, omega_0: float = None, c: float = None) -> None:
+        """Initialize SIREN model with given parameters."""
 
         super(Siren, self).__init__()
 
@@ -28,23 +38,58 @@ class Siren(torch.nn.Module):
 
     @property
     def share_to_host(self) -> dict:
+        """Return the parameters of the SIREN model.
 
-        return {'omega_0': self.omega_0,
-                'c': self.c}
+        Returns
+        -------
+        params : dict
+            A dictionary containing the parameters 'omega_0' and 'c'.
+
+        """
+        return {'omega_0': self.omega_0, 'c': self.c}
 
     def forward(self, input: torch.Tensor) -> torch.Tensor:
+        """Perform the forward pass of the SIREN model on the input.
 
-        return torch.sin(self.omega_0*input)
+        Parameters
+        ----------
+        input : torch.Tensor
+            The input to the SIREN model.
 
-# Sine activation
+        Returns
+        -------
+        output : torch.Tensor
+            The output of the SIREN model.
+
+        """
+        return torch.sin(self.omega_0 * input)
+
+
 class sin(torch.nn.Module):
+    """Sine activation function.
 
+    This module applies the sine function element-wise to the input.
+
+    """
     name = 'sin'
 
     def __init__(self) -> None:
+        """Initialize the sine activation function."""
 
         super(sin, self).__init__()
 
     def forward(self, input: torch.Tensor) -> torch.Tensor:
+        """Perform the forward pass of the sine activation function on the input.
 
+        Parameters
+        ----------
+        input : torch.Tensor
+            The input to the sine activation function.
+
+        Returns
+        -------
+        output : torch.Tensor
+            The output of the sine activation function.
+
+        """
         return torch.sin(input)

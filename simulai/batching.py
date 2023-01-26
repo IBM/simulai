@@ -20,11 +20,13 @@ from typing import List, Tuple
 
 # Sampling batches from disk
 class BatchwiseSampler:
-
-    def __init__(self, dataset:h5py.Group=None,
-                       input_variables:List[str]=None, target_variables:List[str]=None,
-                       input_normalizer:callable=None, target_normalizer:callable=None,
-                       channels_first:bool=None) -> None:
+    def __init__(self,
+                 dataset: h5py.Group = None,
+                 input_variables: List[str] = None,
+                 target_variables: List[str] = None,
+                 input_normalizer: callable = None,
+                 target_normalizer: callable = None,
+                 channels_first: bool = None) -> None:
         """
         Batchwise sampler for loading samples from disk and apply normalization if needed.
         
@@ -77,8 +79,10 @@ class BatchwiseSampler:
 
     # Evaluating the global minimum and maximum  for all the
     # datasets in self.dataset
-    def minmax(self, batch_size: int = None, data_interval: list = None) -> Tuple[float, float]:
-         """
+    def minmax(self,
+               batch_size: int = None,
+               data_interval: list = None) -> Tuple[float, float]:
+        """
          Evaluate the minimum and maximum values of all the target variables in the dataset.
 
          Parameters:
@@ -93,17 +97,17 @@ class BatchwiseSampler:
          --------
              A tuple of minimum and maximum value of the target variables.
         """
-         min_list = []
-         max_list = []
+        min_list = []
+        max_list = []
 
-         for k in self.target_variables:
-                min, max = self.minmax_eval(dataset=self.dataset[k], batch_size=batch_size,
-                                            data_interval=data_interval)
-                min_list.append(min)
-                max_list.append(max)
+        for k in self.target_variables:
+            min, max = self.minmax_eval(dataset=self.dataset[k],
+                                        batch_size=batch_size,
+                                        data_interval=data_interval)
+            min_list.append(min)
+            max_list.append(max)
 
-         return  np.min(min_list), np.max(max_list)
-
+        return np.min(min_list), np.max(max_list)
 
     def input_shape(self) -> list:
         """
@@ -116,13 +120,14 @@ class BatchwiseSampler:
         """
         if self.channels_first:
             shape_ = self.dataset[self.input_variables[0]].shape
-            shape = (shape_[0],) + (len(self.input_variables),) + shape_[1:]
+            shape = (shape_[0], ) + (len(self.input_variables), ) + shape_[1:]
         else:
-            shape = self.dataset[self.input_variables[0]].shape + (len(self.input_variables),)
+            shape = self.dataset[self.input_variables[0]].shape + (len(
+                self.input_variables), )
 
         return list(shape)
 
-    def _normalization_bypass(self, data:np.ndarray=None) -> np.ndarray:
+    def _normalization_bypass(self, data: np.ndarray = None) -> np.ndarray:
         """
          Bypass the normalization.
          
@@ -137,7 +142,7 @@ class BatchwiseSampler:
          """
         return data
 
-    def _target_normalization(self, data:np.ndarray=None) -> np.ndarray:
+    def _target_normalization(self, data: np.ndarray = None) -> np.ndarray:
         """
          Normalize the target data using the provided normalizer.
          
@@ -167,7 +172,8 @@ class BatchwiseSampler:
         """
         return self.input_normalizer(data=data)
 
-    def _transpose_first_channel(self, variables_list: list = None) -> torch.Tensor:
+    def _transpose_first_channel(self,
+                                 variables_list: list = None) -> torch.Tensor:
         """
          Transpose the first channel of the variables list.
          
@@ -206,7 +212,7 @@ class BatchwiseSampler:
 
         return torch.from_numpy(batch.astype('float32'))
 
-    def input_data(self, indices:np.ndarray=None) -> torch.Tensor:
+    def input_data(self, indices: np.ndarray = None) -> torch.Tensor:
         """
          Retrieve the input data for the given indices, apply normalization and adjust the dimension
          
@@ -221,11 +227,14 @@ class BatchwiseSampler:
         """
         indices = np.sort(indices)
 
-        variables_arr = [self.dataset[i][indices] for i in self.input_variables]
+        variables_arr = [
+            self.dataset[i][indices] for i in self.input_variables
+        ]
 
-        return self.exec_input_normalization(self.adjust_dimension(variables_list = variables_arr))
+        return self.exec_input_normalization(
+            self.adjust_dimension(variables_list=variables_arr))
 
-    def target_data(self, indices:np.ndarray=None) -> torch.Tensor:
+    def target_data(self, indices: np.ndarray = None) -> torch.Tensor:
         """
          Retrieve the target data for the given indices, apply normalization and adjust the dimension
          
@@ -241,11 +250,18 @@ class BatchwiseSampler:
 
         indices = np.sort(indices)
 
-        variables_arr = [torch.from_numpy(self.dataset[i][indices].astype('float32')) for i in self.target_variables]
+        variables_arr = [
+            torch.from_numpy(self.dataset[i][indices].astype('float32'))
+            for i in self.target_variables
+        ]
 
-        return self.exec_target_normalization(self.adjust_dimension(variables_list = variables_arr))
+        return self.exec_target_normalization(
+            self.adjust_dimension(variables_list=variables_arr))
 
-def batchdomain_constructor(data_interval:list=None, batch_size:int=None, batch_indices:list=None) -> list:
+
+def batchdomain_constructor(data_interval: list = None,
+                            batch_size: int = None,
+                            batch_indices: list = None) -> list:
     """
      Create a list of indices of the input data in the form of batches, using either an interval or a list of indices.
 
@@ -270,7 +286,8 @@ def batchdomain_constructor(data_interval:list=None, batch_size:int=None, batch_
         interval_size = len(batch_indices)
         interval = [batch_indices[0], batch_indices[-1]]
     else:
-        raise Exception("Either data_interval or batch_indices must be provided.")
+        raise Exception(
+            "Either data_interval or batch_indices must be provided.")
 
     if data_interval is not None:
 
@@ -286,12 +303,15 @@ def batchdomain_constructor(data_interval:list=None, batch_size:int=None, batch_
             batch_size_plus = floor(residual / n_batches)
             batch_size_plus_residual = residual % n_batches
 
-            batch_size_up = batch_size+batch_size_plus
+            batch_size_up = batch_size + batch_size_plus
 
-            batches_ = [interval[0]] + [batch_size_up+1] * batch_size_plus_residual + [batch_size_up] * (n_batches - batch_size_plus_residual)
+            batches_ = [interval[0]
+                        ] + [batch_size_up + 1] * batch_size_plus_residual + [
+                            batch_size_up
+                        ] * (n_batches - batch_size_plus_residual)
             batches_ = np.cumsum(batches_)
 
-        batches = [batches_[i:i + 2]for i in range(batches_.shape[0] - 1)]
+        batches = [batches_[i:i + 2] for i in range(batches_.shape[0] - 1)]
     else:
         if interval_size < batch_size:
             batches_ = batch_indices
@@ -307,20 +327,22 @@ def batchdomain_constructor(data_interval:list=None, batch_size:int=None, batch_
 
     return batches
 
-def indices_batchdomain_constructor(indices:list=None, batch_size:int=None) -> list:
+
+def indices_batchdomain_constructor(indices: list = None,
+                                    batch_size: int = None) -> list:
     """
      Create a list of batches of indices.
      
      Parameters:
      -----------
-         indices : list
-             A list of indices to be divided into batches.
-         batch_size : int
-             The desired size of the batches.
+    indices : list
+        A list of indices to be divided into batches.
+    batch_size : int
+        The desired size of the batches.
 
      Returns:
      --------
-         A list of lists containing the indices of the input data in the form of batches.
+     A list of lists containing the indices of the input data in the form of batches.
     """
     interval_size = indices.shape[0]
 
