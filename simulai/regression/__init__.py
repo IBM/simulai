@@ -27,12 +27,12 @@ assert engine is not None, "The variable engine was not defined."
 
 if engine == "pytorch":
 
-    from .pytorch._dense import DenseNetwork, ResDenseNetwork, ConvexDenseNetwork, Linear, SLFNN, ShallowNetwork
-    from .pytorch._opinf import OpInfNetwork
-    from .pytorch._koopman import KoopmanNetwork, AutoEncoderKoopman
-    from .pytorch._rbf import RBFLayer, RBFNetwork, ModalRBFNetwork
-    from .pytorch._numpy import LinearNumpy
-    from .pytorch._conv import ConvolutionalNetwork, ResConvolutionalNetwork
+    from ._pytorch._dense import DenseNetwork, ResDenseNetwork, ConvexDenseNetwork, Linear, SLFNN, ShallowNetwork
+    from ._pytorch._opinf import OpInfNetwork
+    from ._pytorch._koopman import KoopmanNetwork, AutoEncoderKoopman
+    from ._pytorch._rbf import RBFLayer, RBFNetwork, ModalRBFNetwork
+    from ._pytorch._numpy import LinearNumpy
+    from ._pytorch._conv import ConvolutionalNetwork, ResConvolutionalNetwork
 
 elif engine == "numpy":
 

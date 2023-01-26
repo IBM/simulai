@@ -47,47 +47,47 @@ simulai.regression._pinv module
 Regression Pytorch Package
 --------------------------
 
-simulai.regression.pytorch._conv module
+simulai.regression._pytorch._conv module
+----------------------------------------
+.. automodule:: simulai.regression._pytorch._conv
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+simulai.regression._pytorch._dense module
+-----------------------------------------
+.. automodule:: simulai.regression._pytorch._dense
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+simulai.regression._pytorch._koopman module
+-------------------------------------------
+.. automodule:: simulai.regression._pytorch._koopman
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+simulai.regression._pytorch._numpy module
+-----------------------------------------
+.. automodule:: simulai.regression._pytorch._numpy
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+simulai.regression._pytorch._opinf module
+-----------------------------------------
+.. automodule:: simulai.regression._pytorch._opinf
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+simulai.regression._pytorch._rbf module
 ---------------------------------------
-.. automodule:: simulai.regression.pytorch._conv
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-simulai.regression.pytorch._dense module
-----------------------------------------
-.. automodule:: simulai.regression.pytorch._dense
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-simulai.regression.pytorch._koopman module
-------------------------------------------
-.. automodule:: simulai.regression.pytorch._koopman
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-simulai.regression.pytorch._numpy module
-----------------------------------------
-.. automodule:: simulai.regression.pytorch._numpy
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-simulai.regression.pytorch._opinf module
-----------------------------------------
-.. automodule:: simulai.regression.pytorch._opinf
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-simulai.regression.pytorch._rbf module
---------------------------------------
-.. automodule:: simulai.regression.pytorch._rbf
+.. automodule:: simulai.regression._pytorch._rbf
    :members:
    :undoc-members:
    :show-inheritance:
