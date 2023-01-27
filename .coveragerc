@@ -2,7 +2,6 @@
 omit=
      simulai/utilities/*
      simulai/special.py
-     simulai/output.py
      simulai/mesh.py
      simulai/math/quadratures.py
 
