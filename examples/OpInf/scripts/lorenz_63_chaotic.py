@@ -15,7 +15,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from simulai.utilities.lorenz_solver import lorenz_solver
+from examples.utils.lorenz_solver import lorenz_solver
 from simulai.regression import OpInf
 from simulai.math.integration import LSODA, ClassWrapper
 

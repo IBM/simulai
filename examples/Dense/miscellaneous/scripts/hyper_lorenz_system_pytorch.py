@@ -22,7 +22,7 @@ from unittest import TestCase
 # simulai
 
 from simulai.templates import HyperTrainTemplate
-from simulai.utilities.lorenz_solver import lorenz_solver
+from examples.utils.lorenz_solver import lorenz_solver
 from simulai.workflows import ParamHyperOpt
 from simulai.regression import DenseNetwork
 from simulai.optimization import Optimizer

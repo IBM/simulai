@@ -23,9 +23,8 @@ os.environ['engine'] = "pytorch"
 
 from simulai.regression import DenseNetwork, RBFNetwork
 from simulai.optimization import Optimizer
-from simulai.metrics import L2Norm
 from simulai.residuals import SymbolicOperator
-from simulai.utilities.lotka_volterra_solver import LotkaVolterra
+from examples.utils.lotka_volterra_solver import LotkaVolterra
 
 # This is a very basic script for exploring the PDE solving via
 # feedforward fully-connected neural networks

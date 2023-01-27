@@ -12,14 +12,11 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import random
 import os
-import optuna
 from argparse import ArgumentParser
 
 import numpy as np
-import matplotlib.pyplot as plt
-from simulai.utilities.oscillator_solver import oscillator_solver_forcing
+from examples.utils.oscillator_solver import oscillator_solver_forcing
 from simulai.workflows import StepwiseExtrapolation
 from simulai.regression import EchoStateNetwork
 from simulai.templates import HyperTrainTemplate

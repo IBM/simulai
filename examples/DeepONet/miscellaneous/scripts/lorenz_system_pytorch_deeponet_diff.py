@@ -22,7 +22,7 @@ import os
 # simulai
 os.environ['engine'] = 'pytorch'
 
-from simulai.utilities.lorenz_solver import lorenz_solver_forcing
+from examples.utils.lorenz_solver import lorenz_solver_forcing
 from simulai.regression import DenseNetwork
 from simulai.models import DeepONet
 from simulai.optimization import Optimizer

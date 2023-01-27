@@ -22,7 +22,7 @@ import sympy
 # simulai
 os.environ['engine'] = "pytorch"
 
-from simulai.utilities.lorenz_solver import lorenz_solver
+from examples.utils.lorenz_solver import lorenz_solver
 from simulai.regression import DenseNetwork
 from simulai.optimization import Optimizer
 from simulai.metrics import L2Norm

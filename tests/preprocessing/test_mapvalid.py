@@ -92,7 +92,7 @@ class TestMapValid(TestCase):
             assert np.all(data[not_nan] == recovered_data[not_nan]),\
                 "The original and the recovered are not equal"
 
-    def test_mapvalid_structutred(self):
+    def test_mapvalid_structured(self):
 
         # Generating test_data
         Nx = 500

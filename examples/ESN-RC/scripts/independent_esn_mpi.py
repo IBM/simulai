@@ -29,7 +29,7 @@ except:
 
 from argparse import ArgumentParser
 
-from simulai.utilities.oscillator_solver import oscillator_solver_forcing
+from examples.utils.oscillator_solver import oscillator_solver_forcing
 from simulai.models import ModelPool
 from simulai.utilities import make_temp_directory
 from simulai.metrics import L2Norm

@@ -16,7 +16,7 @@
 import numpy as np
 
 
-from simulai.utilities.oscillator_solver import oscillator_solver_forcing
+from examples.utils.oscillator_solver import oscillator_solver_forcing
 from simulai.models import ModelPool
 from simulai.utilities import make_temp_directory
 

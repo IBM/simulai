@@ -12,12 +12,12 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import sys, os
+import sys
 import numpy as np
-from simulai.utilities.problem_classes import NonlinearOscillator
+from examples.utils.problem_classes import NonlinearOscillator
 from simulai.math.integration import RK4
 from argparse import ArgumentParser
-sys.path.insert(0, '.')
+sys.path.insert(0, '../../simulai/utilities')
 
 # Testing to solve a nonlinear oscillator problem using
 # a 4th order and a four steps Runge-Kutta

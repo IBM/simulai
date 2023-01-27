@@ -19,7 +19,7 @@ import os
 
 os.environ['engine'] = 'pytorch'
 
-from simulai.utilities.oscillator_solver import oscillator_solver
+from examples.utils.oscillator_solver import oscillator_solver
 from simulai.regression import DenseNetwork
 from simulai.models import DeepONet
 from simulai.optimization import Optimizer

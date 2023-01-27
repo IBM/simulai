@@ -14,7 +14,7 @@
 
 import numpy as np
 
-from simulai.utilities.lorenz_solver import lorenz_solver
+from examples.utils.lorenz_solver import lorenz_solver
 from simulai.regression import OpInf
 
 # Set up

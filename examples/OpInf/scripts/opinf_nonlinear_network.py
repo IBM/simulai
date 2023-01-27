@@ -21,7 +21,7 @@ import sys
 # job
 os.environ['engine'] = 'pytorch'
 
-from simulai.utilities.lorenz_solver import lorenz_solver
+from examples.utils.lorenz_solver import lorenz_solver
 from simulai.optimization import Optimizer, ScipyInterface
 from simulai.regression import OpInfNetwork, DenseNetwork, AutoEncoderKoopman, KoopmanNetwork
 from simulai.math.integration import  LSODA, ClassWrapper

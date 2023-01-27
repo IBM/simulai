@@ -12,11 +12,9 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import random
 import os
 import warnings
 import numpy as np
-import matplotlib.pyplot as plt
 
 MPI_GLOBAL_AVAILABILITY = True
 
@@ -29,7 +27,7 @@ except:
 
 from argparse import ArgumentParser
 
-from simulai.utilities.oscillator_solver import oscillator_solver_forcing
+from examples.utils.oscillator_solver import oscillator_solver_forcing
 from simulai.models import ModelPool
 from simulai.workflows import ParamHyperOpt
 from simulai.templates import HyperTrainTemplate
