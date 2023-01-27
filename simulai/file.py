@@ -73,45 +73,44 @@ class SPFile:
         It saves PyTorch Module-like objects in a directory containing the model template and
         its coefficients dictionary
         
-         Parameters:
-         -----------
-         compact : bool, optional
-             Compress the directory to a tar file or not. Default : False
-    
+        Parameters:
+        -----------
+        compact : bool, optional
+            Compress the directory to a tar file or not. Default : False
         """
         self.compact = compact
 
     def _leading_size(self, first_line:str=None) -> int:
         """
-         Returns the number of leading white spaces in the given line
+        Returns the number of leading white spaces in the given line
          
-         Parameters:
-         -----------
-         first_line : str, optional
-             The line for which to find the number of leading white spaces.
+        Parameters:
+        -----------
+        first_line : str, optional
+            The line for which to find the number of leading white spaces.
          
-         Returns:
-         --------
-         int
-             number of leading white spaces.
-         """
+        Returns:
+        --------
+        int
+            number of leading white spaces.
+        """
         leading_whitespaces = len(first_line) - len(first_line.lstrip())
         return leading_whitespaces
 
 
     def _process_code(self, code:str=None) -> str:
         """
-         Returns the code string with leading white spaces removed from each line
+        Returns the code string with leading white spaces removed from each line
          
-         Parameters:
-         -----------
-         code : str, optional
-             The code string which to remove the leading whitespaces
+        Parameters:
+        -----------
+        code : str, optional
+            The code string which to remove the leading whitespaces
          
-         Returns:
-         --------
-         str
-             The code string with leading white spaces removed.
+        Returns:
+        --------
+        str
+            The code string with leading white spaces removed.
         """
         code_lines = code.split('\n')
         first_line = code_lines[0]
@@ -127,22 +126,22 @@ class SPFile:
         """
         Writes the model and its instantiating function to a directory.
          
-         Parameters:
-         -----------
-         save_dir : str, optional
-             The absolute directory path to save the model
-         name : str, optional
-             A name for the model.
-         template : callable, optional
-             A function for instantiating the model.
-         model : NetworkTemplate, optional
-             The model to be saved.
-         device : str, optional
-             The device on which the model is located (gpu or cpu).
+        Parameters:
+        -----------
+        save_dir : str, optional
+            The absolute directory path to save the model
+        name : str, optional
+            A name for the model.
+        template : callable, optional
+            A function for instantiating the model.
+        model : NetworkTemplate, optional
+            The model to be saved.
+        device : str, optional
+            The device on which the model is located (gpu or cpu).
          
-         Returns:
-         --------
-         None
+        Returns:
+        --------
+        None
         """
         model_dir = os.path.join(save_dir, name)
 
@@ -164,19 +163,19 @@ class SPFile:
         """
         Reads a model from the specified file path, imports it as a module, and initializes it as an object of the corresponding class.
          
-         Parameters:
-         -----------
-         model_path : str, optional
-             Complete path to the model.
-         device : str, optional
-             Device to load the model onto.
-         template_name: str, optional
-             Name of the class within the imported module to initialize as an object. 
+        Parameters:
+        -----------
+        model_path : str, optional
+            Complete path to the model.
+        device : str, optional
+            Device to load the model onto.
+        template_name: str, optional
+            Name of the class within the imported module to initialize as an object. 
 
-         Returns:
-         --------
-         NetworkTemplate (child of torch.nn.Module)
-             The model restored to memory.
+        Returns:
+        --------
+        NetworkTemplate (child of torch.nn.Module)
+            The model restored to memory.
         """
         name = os.path.basename(model_path)
         save_dir = model_path
