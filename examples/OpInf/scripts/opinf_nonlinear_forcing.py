@@ -19,8 +19,8 @@ import os
 
 os.environ['engine'] = 'pytorch'
 
-from simulai.utilities.lorenz_solver import lorenz_solver, lorenz_solver_forcing
-from simulai.utilities.oscillator_solver import oscillator_solver_forcing
+from examples.utils.lorenz_solver import lorenz_solver, lorenz_solver_forcing
+from examples.utils.oscillator_solver import oscillator_solver_forcing
 from simulai.regression import OpInf, ExtendedOpInf
 from simulai.math.integration import RK4, LSODA, FunctionWrapper, ClassWrapper
 from simulai.metrics import LyapunovUnits, L2Norm

@@ -14,7 +14,6 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-from unittest import TestCase
 import os
 from argparse import ArgumentParser
 
@@ -23,7 +22,7 @@ from argparse import ArgumentParser
 # simulai
 os.environ['engine'] = 'pytorch'
 
-from simulai.utilities.lorenz_solver import lorenz_solver
+from examples.utils.lorenz_solver import lorenz_solver
 from simulai.regression import DenseNetwork
 from simulai.models import  ResDeepONet as DeepONet # The DeepONet is residual
 from simulai.optimization import Optimizer

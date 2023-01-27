@@ -15,11 +15,10 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.integrate import odeint
 
 os.environ["engine"] = "pytorch"
 
-from simulai.utilities.lorenz_solver import lorenz_solver
+from examples.utils.lorenz_solver import lorenz_solver
 from simulai.regression import DenseNetwork
 from simulai.residuals import SymbolicOperator
 from simulai.models import DeepONet

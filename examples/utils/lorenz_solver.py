@@ -15,7 +15,7 @@
 import sys
 import os
 import numpy as np
-from simulai.utilities.problem_classes import LorenzSystem
+from examples.utils.problem_classes import LorenzSystem
 from simulai.math.integration import RK4
 import matplotlib.pyplot as plt
 from fractions import Fraction
