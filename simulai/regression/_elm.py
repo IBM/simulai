@@ -146,6 +146,11 @@ class ELM:
         H = self.f_h(input_data=input_data)
         self.n_samples = input_data.shape[0]
 
+        if self.form == 'primal':
+            sys_dim = self.h
+        else:
+            sys_dim = self.n_samples
+
         if self.solver != 'pinv':
 
             if self.L_operator is None and self.R_matrix is None:
@@ -158,9 +163,9 @@ class ELM:
 
             if self._is_symmetric(self.L_operator) and self.solver is None:
                 print("L_operator is symmetric.")
-                solution = solve(self.L_operator + lambd*np.eye(self.h), self.R_matrix, assume_a="sym")
+                solution = solve(self.L_operator + lambd*np.eye(sys_dim), self.R_matrix, assume_a="sym")
             else:
-                solution = np.linalg.lstsq(self.L_operator + lambd*np.eye(self.h), self.R_matrix, rcond=None)[0]
+                solution = np.linalg.lstsq(self.L_operator + lambd*np.eye(sys_dim), self.R_matrix, rcond=None)[0]
         else:
 
             H_pinv = np.linalg.pinv(H)

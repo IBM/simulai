@@ -75,6 +75,54 @@ class TestELM(TestCase):
 
         assert isinstance(approximator_reloaded, ELM)
 
+    def test_elm_instantiation(self):
+
+        t_max = 10
+        L = 5
+        K = 512
+        N = 10_000
+
+        n_train = 200
+
+        x_interval = [0, L]
+        time_interval = [0, t_max]
+
+        x = np.linspace(*x_interval, K)
+        t = np.linspace(*time_interval, N)
+
+        T, X = np.meshgrid(t, x, indexing='ij')
+        output_data = self.u(T, X, L=L, t_max=t_max)
+
+        positions = np.stack([X[::100].flatten(), T[::100].flatten()], axis=1)
+        positions = 2 * positions / np.array([L, t_max]) - 1
+
+        n_t, n_x = output_data.shape
+
+        x_i = np.random.randint(0, n_x, size=(n_train, 1))
+        t_i = np.random.randint(0, n_t, size=(n_train, 1))
+
+        input_train = 2 * np.hstack([x[x_i], t[t_i]]) / np.array([L, t_max]) - 1
+        output_train = output_data[t_i, x_i]
+
+        config = {'n_i': 2,
+                  'n_o': 1,
+                  'h': 800}
+
+        approximator = ELM(**config, form='dual')
+
+        approximator.fit(input_data=input_train, target_data=output_train, lambd=1e-5)
+
+        evaluated = approximator.eval(input_data=positions[::100])
+        assert isinstance(evaluated, np.ndarray)
+
+        approximator.save(name='elm_model', path='/tmp')
+
+        # Testing to save and reload ELM
+        approximator_reloaded = load_pkl(path='/tmp/elm_model.pkl')
+
+        assert isinstance(approximator_reloaded, ELM)
+
+
     def test_failed_load_pkl(self):
 
         config = {'n_i': 2,
