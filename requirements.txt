@@ -3,7 +3,6 @@ numba
 scipy
 sympy
 torch
-xarray
 scikit-learn
 psutil
 h5py
