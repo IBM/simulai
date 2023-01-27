@@ -391,7 +391,7 @@ class Pipeline(BaseFramework):
             print(f"Projecting for the batch {batch_id+1}/{len(batches)} batch_size={chunk_array.shape[0]}")
 
             if self.data_preparer:
-                data_ = self.data_preparer.prepare_input_structured_data(chunk_array)
+                data_ = self.data_preparer.prepare_input_data(chunk_array)
             else:
                 data_ = chunk_array
 

@@ -639,7 +639,7 @@ class MapValid(Reshaper):
     Parameters:
     -----------
     config : dict, optional
-        configurations dictionary, by default None
+        configuration dictionary, by default None
     mask : int, np.NaN, np.inf, optional
         mask to select the invalid values, by default None
     channels_last : bool, optional
