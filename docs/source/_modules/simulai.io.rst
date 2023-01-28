@@ -1,4 +1,4 @@
-I/O module
+I/O Module
 ==========
 
 .. automodule:: simulai.io

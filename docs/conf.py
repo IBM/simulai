@@ -36,6 +36,8 @@ extensions = [
     'sphinx.ext.autosectionlabel'
 ]
 
+autodoc_mock_imports = ['mpi4py']
+
 # Napoleon settings
 napoleon_numpy_docstring = True
 
