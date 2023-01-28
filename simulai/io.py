@@ -20,7 +20,7 @@ import random
 from typing import Union, Dict, List, Tuple
 from torch import Tensor
 from numpy.lib import recfunctions
-
+import numpy as np 
 from simulai.batching import batchdomain_constructor
 from simulai.metrics import MemorySizeEval
 from simulai.abstract import DataPreparer
@@ -989,23 +989,9 @@ class MapValid(Reshaper):
     
     WARNING:
         The invalid positions are expected to be static in relation to n0.
-
-    Parameters
-    ----------
-
-    Returns
-    -------
-
-    Examples
-    --------
     
     NOTE:
     - This class is useful when the invalid elements in the data array are not dynamic and are located in the same positions in relation to the first dimension of the array.
-    >>> import numpy as np
-    >>> reshaper = MapValid(mask=0)
-    >>> reshaper.reshape(np.array([[1, 2, 0], [3, 4, 0]]))
-    array([[1., 2.],
-        [3., 4.]])
     """
     name = "map_valid"
     def __init__(self, config: dict = None, mask=None, channels_last: bool = True) -> None:
@@ -1027,11 +1013,6 @@ class MapValid(Reshaper):
              (Default value = None)
         channels_last: bool :
              (Default value = True)
-
-        Returns
-        -------
-
-        
         """
         super().__init__()
         self.default_dtype = 'float64'
@@ -1190,89 +1171,89 @@ class MapValid(Reshaper):
         return reshaped_data
 
 
-def prepare_input_structured_data(self, data: np.recarray = None) -> np.ndarray:
-    """This function is used to prepare structured input data for further processing.
-    
-    Parameters:
-    -----------
-    data : np.recarray, optional
-        The input data to be prepared, by default None
-    
-    Returns:
-    --------
-    np.ndarray
-        The prepared input data in the form of a numpy array
-    
-    Examples:
-    ---------
-    
-    NOTE:
-        This function is a wrapper function that calls the 'prepare_input_data' function internally.
+    def prepare_input_structured_data(self, data: np.recarray = None) -> np.ndarray:
+        """This function is used to prepare structured input data for further processing.
+        
+        Parameters:
+        -----------
+        data : np.recarray, optional
+            The input data to be prepared, by default None
+        
+        Returns:
+        --------
+        np.ndarray
+            The prepared input data in the form of a numpy array
+        
+        Examples:
+        ---------
+        
+        NOTE:
+            This function is a wrapper function that calls the 'prepare_input_data' function internally.
 
-    Parameters
-    ----------
-    data : np.recarray :
-        (Default value = None)
-    data : np.recarray :
-        (Default value = None)
-    data: np.recarray :
-         (Default value = None)
+        Parameters
+        ----------
+        data : np.recarray :
+            (Default value = None)
+        data : np.recarray :
+            (Default value = None)
+        data: np.recarray :
+            (Default value = None)
 
-    Returns
-    -------
+        Returns
+        -------
 
-    
-    >>> import numpy as np
-    >>> data = np.array([(1, 2, 3), (4, 5, 6)], dtype=[('a', int), ('b', int), ('c', int)])
-    >>> model = MapValid()
-    >>> prepared_data = MapValid.prepare_input_structured_data(data)
-    >>> prepared_data
-    array([[1, 2, 3],
-           [4, 5, 6]])
-    """
-    return self.prepare_input_data(data)
+        
+        >>> import numpy as np
+        >>> data = np.array([(1, 2, 3), (4, 5, 6)], dtype=[('a', int), ('b', int), ('c', int)])
+        >>> model = MapValid()
+        >>> prepared_data = MapValid.prepare_input_structured_data(data)
+        >>> prepared_data
+        array([[1, 2, 3],
+            [4, 5, 6]])
+        """
+        return self.prepare_input_data(data)
 
-def prepare_output_structured_data(self, data: np.ndarray = None) -> np.ndarray:
-    """This function is used to prepare structured output data for further processing.
-    
-    Parameters:
-    -----------
-    data : np.ndarray, optional
-        The output data to be prepared, by default None
-    
-    Returns:
-    --------
-    np.ndarray
-        The prepared output data in the form of a numpy array
-    
-    Examples:
-    ---------
-    
-    NOTE:
-        This function is a wrapper function that calls the 'prepare_output_data' function internally.
+    def prepare_output_structured_data(self, data: np.ndarray = None) -> np.ndarray:
+        """This function is used to prepare structured output data for further processing.
+        
+        Parameters:
+        -----------
+        data : np.ndarray, optional
+            The output data to be prepared, by default None
+        
+        Returns:
+        --------
+        np.ndarray
+            The prepared output data in the form of a numpy array
+        
+        Examples:
+        ---------
+        
+        NOTE:
+            This function is a wrapper function that calls the 'prepare_output_data' function internally.
 
-    Parameters
-    ----------
-    data : np.ndarray :
-        (Default value = None)
-    data : np.ndarray :
-        (Default value = None)
-    data: np.ndarray :
-         (Default value = None)
+        Parameters
+        ----------
+        data : np.ndarray :
+            (Default value = None)
+        data : np.ndarray :
+            (Default value = None)
+        data: np.ndarray :
+            (Default value = None)
 
-    Returns
-    -------
+        Returns
+        -------
 
-    
-    >>> import numpy as np
-    >>> data = np.array([[1, 2, 3], [4, 5, 6]])
-    >>> model = MapValid()
-    >>> prepared_data = MapValid.prepare_output_structured_data(data)
-    >>> prepared_data
-    array([[1, 2, 3],
-           [4, 5, 6]])
-    """
-    return self.prepare_output_data(data)
+        
+        >>> import numpy as np
+        >>> data = np.array([[1, 2, 3], [4, 5, 6]])
+        >>> model = MapValid()
+        >>> prepared_data = MapValid.prepare_output_structured_data(data)
+        >>> prepared_data
+        array([[1, 2, 3],
+            [4, 5, 6]])
+        """
+        return self.prepare_output_data(data)
 
 class Sampling(DataPreparer):
     """This class is used for sampling data from the input dataset.
@@ -1991,7 +1972,7 @@ class SlidingWindow:
             windowed_samples.append(window)
         return windowed_samples 
 
-    def __call__(self, input_data: np.ndarray = None, output_data: np.ndarray = None) -> tuple[np.ndarray, np.ndarray]:
+    def __call__(self, input_data: np.ndarray = None, output_data: np.ndarray = None) -> Tuple[np.ndarray, np.ndarray]:
         """Applies a sliding window operation on the given time series and returns the windowed samples.
         
         Parameters:

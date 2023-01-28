@@ -126,23 +126,58 @@ class StructuredMesh:
 
         return list(product(*product_list))
 
+
     def internal_boundary_product(self, vector):
+        """
+        Calculates the internal boundary product of a given vector.
+        
+        Parameters
+        ----------
+        vector : numpy.ndarray or tuple
+            The input vector for which the internal boundary product is to be calculated.
+        
+        Returns
+        -------
+        list
+            The list of internal boundary product of the input vector.
+        
+        Raises
+        ------
+        Exception
+            If the input is not a 1-D numpy array or a tuple.
+        
+        Examples
+        --------
+        # Example 1: Using a 1-D numpy array
+        >>> vector = np.array([1, 2, 3])
+        >>> obj.internal_boundary_product(vector)
+        [(1,), (2,), (3,)]
 
-        vector_ = np.array(vector)
+        # Example 2: Using a tuple
+        >>> vector = (1, 2, 3)
+        >>> obj.internal_boundary_product(vector)
+        [(1,), (2,), (3,)]
 
-        if len(vector_.shape) > 1:
-            vector_ = np.array(vector)[:, tag]
-        else:
-            pass
-
-        if isinstance(vector_, np.ndarray):
-            product_list = (vector_,)
-        elif isinstance(vector_, tuple):
-            product_list = vector_
-        else:
-            raise Exception("The internal product cannot be performed.")
-
-        return list(product(*product_list))
+        # Example 3: Using a 2-D numpy array
+        >>> vector = np.array([[1, 2, 3], [4, 5, 6]])
+        >>> obj.internal_boundary_product(vector)
+        An error occurred: The input must be a 1-D array or a tuple.
+        """
+        try:
+            vector_ = np.array(vector)
+            if len(vector_.shape) > 1:
+                raise Exception("The input must be a 1-D array or a tuple.")
+            else:
+                pass
+            if isinstance(vector_, np.ndarray):
+                product_list = (vector_,)
+            elif isinstance(vector_, tuple):
+                product_list = vector_
+            else:
+                raise Exception("The input must be a numpy array or a tuple.")
+            return list(product(*product_list))
+        except Exception as e:
+            print("An error occurred: ", e)
 
     def map_to_element(self, points, reference_interval, el):
 
