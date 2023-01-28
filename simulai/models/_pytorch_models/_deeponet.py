@@ -23,19 +23,23 @@ from simulai.regression import ConvexDenseNetwork
 #### DeepONet family
 #####################
 
+
 class DeepONet(NetworkTemplate):
 
     name = "deeponet"
     engine = "torch"
 
-    def __init__(self, trunk_network: NetworkTemplate=None,
-                       branch_network: NetworkTemplate=None,
-                       decoder_network: NetworkTemplate=None, # The decoder network is optional and considered
-                       var_dim: int=1,                        # less effective than the output reshaping alternative
-                       devices:Union[str, list]='cpu',
-                       product_type:str=None,
-                       model_id=None) -> None:
-
+    def __init__(
+            self,
+            trunk_network: NetworkTemplate = None,
+            branch_network: NetworkTemplate = None,
+            decoder_network:
+        NetworkTemplate = None,  # The decoder network is optional and considered
+            var_dim:
+        int = 1,  # less effective than the output reshaping alternative
+            devices: Union[str, list] = 'cpu',
+            product_type: str = None,
+            model_id=None) -> None:
         """
 
         Classical Deep Operator Network (DeepONet), a deep learning version
@@ -112,9 +116,11 @@ class DeepONet(NetworkTemplate):
                                                      f" but received {output_branch}" \
                                                      f" and {self.var_dim}"
 
-        self.subnetworks = [net for net in [self.trunk_network,
-                                            self.branch_network,
-                                            self.decoder_network] if net is not None]
+        self.subnetworks = [
+            net for net in
+            [self.trunk_network, self.branch_network, self.decoder_network]
+            if net is not None
+        ]
 
         self.input_trunk = None
         self.input_branch = None
@@ -135,8 +141,7 @@ class DeepONet(NetworkTemplate):
 
         self.subnetworks_names = ['trunk', 'branch']
 
-    def _latent_dimension_is_correct(self, dim:Union[int, tuple]) -> bool:
-
+    def _latent_dimension_is_correct(self, dim: Union[int, tuple]) -> bool:
         """
 
         It checks if the latent dimension is consistent
@@ -155,8 +160,9 @@ class DeepONet(NetworkTemplate):
             else:
                 return False
 
-    def _forward_decoder(self, output_trunk:torch.Tensor=None, output_branch:torch.Tensor=None) -> torch.Tensor:
-
+    def _forward_decoder(self,
+                         output_trunk: torch.Tensor = None,
+                         output_branch: torch.Tensor = None) -> torch.Tensor:
         """
 
         Forward method used when a decoder networks is present in the system
@@ -170,13 +176,16 @@ class DeepONet(NetworkTemplate):
 
         """
 
-        output_encoder = torch.sum(output_trunk * output_branch, dim=-1, keepdim=True)
+        output_encoder = torch.sum(output_trunk * output_branch,
+                                   dim=-1,
+                                   keepdim=True)
         output = self.decoder_network.forward(output_encoder)
 
         return output
 
-    def _forward_dense(self, output_trunk:torch.Tensor=None, output_branch:torch.Tensor=None) -> torch.Tensor:
-
+    def _forward_dense(self,
+                       output_trunk: torch.Tensor = None,
+                       output_branch: torch.Tensor = None) -> torch.Tensor:
         """
 
         Forward method used when the embeddings are multiplied using a matrix-like product, it means, the trunk
@@ -192,15 +201,17 @@ class DeepONet(NetworkTemplate):
         """
 
         latent_dim = int(output_branch.shape[-1] / self.var_dim)
-        output_branch_reshaped = torch.reshape(output_branch, (-1, self.var_dim, latent_dim))
+        output_branch_reshaped = torch.reshape(output_branch,
+                                               (-1, self.var_dim, latent_dim))
 
         output = torch.matmul(output_branch_reshaped, output_trunk[..., None])
         output = torch.squeeze(output)
 
         return output
 
-    def _forward_pointwise(self, output_trunk:torch.Tensor=None, output_branch:torch.Tensor=None) -> torch.Tensor:
-
+    def _forward_pointwise(self,
+                           output_trunk: torch.Tensor = None,
+                           output_branch: torch.Tensor = None) -> torch.Tensor:
         """
 
         Forward method used when the embeddings are multiplied using a simple point-wise product, after that a
@@ -216,14 +227,19 @@ class DeepONet(NetworkTemplate):
         """
 
         latent_dim = int(output_trunk.shape[-1] / self.var_dim)
-        output_trunk_reshaped = torch.reshape(output_trunk, (-1, latent_dim, self.var_dim))
-        output_branch_reshaped = torch.reshape(output_branch, (-1, latent_dim, self.var_dim))
-        output = torch.sum(output_trunk_reshaped * output_branch_reshaped, dim=-2, keepdim=False)
+        output_trunk_reshaped = torch.reshape(output_trunk,
+                                              (-1, latent_dim, self.var_dim))
+        output_branch_reshaped = torch.reshape(output_branch,
+                                               (-1, latent_dim, self.var_dim))
+        output = torch.sum(output_trunk_reshaped * output_branch_reshaped,
+                           dim=-2,
+                           keepdim=False)
 
         return output
 
-    def _forward_vanilla(self, output_trunk:torch.Tensor=None, output_branch:torch.Tensor=None) -> torch.Tensor:
-
+    def _forward_vanilla(self,
+                         output_trunk: torch.Tensor = None,
+                         output_branch: torch.Tensor = None) -> torch.Tensor:
         """
 
         Forward method used when the embeddings are multiplied using a simple point-wise product
@@ -242,7 +258,6 @@ class DeepONet(NetworkTemplate):
         return output
 
     def _forward_selector_(self) -> callable:
-
         """
 
         It selects the forward method to be used
@@ -271,9 +286,11 @@ class DeepONet(NetworkTemplate):
 
         # It checks all the data arrays in self.var_map have the same
         # batches dimension
-        batches_dimensions = set([value.shape[0] for value in self.var_map.values()])
+        batches_dimensions = set(
+            [value.shape[0] for value in self.var_map.values()])
 
-        assert len(batches_dimensions) == 1, "This dataset is not proper to apply shuffling"
+        assert len(batches_dimensions
+                   ) == 1, "This dataset is not proper to apply shuffling"
 
         dim = list(batches_dimensions)[0]
 
@@ -281,7 +298,10 @@ class DeepONet(NetworkTemplate):
 
         np.random.shuffle(indices)
 
-        var_map_shuffled = {key: value[indices] for key, value in self.var_map.items()}
+        var_map_shuffled = {
+            key: value[indices]
+            for key, value in self.var_map.items()
+        }
 
         return var_map_shuffled
 
@@ -290,9 +310,11 @@ class DeepONet(NetworkTemplate):
 
         return sum([net.weights for net in self.subnetworks], [])
 
-    def forward(self, input_trunk:Union[np.ndarray, torch.Tensor]=None,
-                      input_branch:Union[np.ndarray, torch.Tensor]=None) -> torch.Tensor:
-
+    def forward(
+            self,
+            input_trunk: Union[np.ndarray, torch.Tensor] = None,
+            input_branch: Union[np.ndarray,
+                                torch.Tensor] = None) -> torch.Tensor:
         """
 
         Wrapper forward method
@@ -309,16 +331,19 @@ class DeepONet(NetworkTemplate):
         # Forward method execution
         output_trunk = self.trunk_network.forward(input_trunk).to(self.device)
 
-        output_branch = self.branch_network.forward(input_branch).to(self.device)
+        output_branch = self.branch_network.forward(input_branch).to(
+            self.device)
 
-        output = self._forward(output_trunk=output_trunk, output_branch=output_branch)
+        output = self._forward(output_trunk=output_trunk,
+                               output_branch=output_branch)
 
         return output
 
     @guarantee_device
-    def eval(self, trunk_data:Union[np.ndarray, torch.Tensor]=None,
-                   branch_data:Union[np.ndarray, torch.Tensor]=None) -> np.ndarray:
-
+    def eval(
+            self,
+            trunk_data: Union[np.ndarray, torch.Tensor] = None,
+            branch_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
         """
 
         It uses the network to make evaluations
@@ -332,12 +357,16 @@ class DeepONet(NetworkTemplate):
 
         """
 
-        output_tensor = self.forward(input_trunk=trunk_data, input_branch=branch_data)
+        output_tensor = self.forward(input_trunk=trunk_data,
+                                     input_branch=branch_data)
 
         return output_tensor.cpu().detach().numpy()
 
     @guarantee_device
-    def eval_subnetwork(self, name: str = None, input_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
+    def eval_subnetwork(
+            self,
+            name: str = None,
+            input_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
 
         assert name in self.subnetworks_names, f"The name {name} is not a subnetwork of {self}."
 
@@ -352,23 +381,25 @@ class DeepONet(NetworkTemplate):
         print("Branch Network:")
         self.branch_network.summary()
 
+
 class ResDeepONet(DeepONet):
 
     name = "resdeeponet"
     engine = "torch"
-
     '''The operation performed is: output = input_branch + D(param, input_branch)'''
-
-    def __init__(self, trunk_network: NetworkTemplate = None,
-                       branch_network: NetworkTemplate = None,
-                       decoder_network: NetworkTemplate = None,  # The decoder network is optional and considered
-                       var_dim: int = 1,                         # less effective than the output reshaping alternative
-                       devices: Union[str, list] = 'cpu',
-                       product_type:str=None,
-                       residual: bool = True,
-                       multiply_by_trunk: bool = False,
-                       model_id=None) -> None:
-
+    def __init__(
+            self,
+            trunk_network: NetworkTemplate = None,
+            branch_network: NetworkTemplate = None,
+            decoder_network:
+        NetworkTemplate = None,  # The decoder network is optional and considered
+            var_dim:
+        int = 1,  # less effective than the output reshaping alternative
+            devices: Union[str, list] = 'cpu',
+            product_type: str = None,
+            residual: bool = True,
+            multiply_by_trunk: bool = False,
+            model_id=None) -> None:
         """
 
         Residual Deep Operator Network (DeepONet)
@@ -397,13 +428,16 @@ class ResDeepONet(DeepONet):
 
         """
 
-        super(ResDeepONet, self).__init__(trunk_network=trunk_network,
-                                          branch_network=branch_network,
-                                          decoder_network=decoder_network,  # The decoder network is optional and considered
-                                          var_dim=var_dim,                  # less effective than the output reshaping alternative
-                                          devices=devices,
-                                          product_type=product_type,
-                                          model_id=model_id)
+        super(ResDeepONet, self).__init__(
+            trunk_network=trunk_network,
+            branch_network=branch_network,
+            decoder_network=
+            decoder_network,  # The decoder network is optional and considered
+            var_dim=
+            var_dim,  # less effective than the output reshaping alternative
+            devices=devices,
+            product_type=product_type,
+            model_id=model_id)
 
         input_dim = self.branch_network.input_size
 
@@ -421,9 +455,11 @@ class ResDeepONet(DeepONet):
         else:
             self.forward = self._forward_cut_residual
 
-    def _forward_default(self, input_trunk: Union[np.ndarray, torch.Tensor] = None,
-                               input_branch: Union[np.ndarray, torch.Tensor] = None) -> torch.Tensor:
-
+    def _forward_default(
+            self,
+            input_trunk: Union[np.ndarray, torch.Tensor] = None,
+            input_branch: Union[np.ndarray,
+                                torch.Tensor] = None) -> torch.Tensor:
         """
 
         Wrapper forward method
@@ -437,13 +473,16 @@ class ResDeepONet(DeepONet):
 
         """
 
-        output_residual = self.forward_(input_trunk=input_trunk, input_branch=input_branch)
+        output_residual = self.forward_(input_trunk=input_trunk,
+                                        input_branch=input_branch)
 
         return input_branch + output_residual
 
-    def _forward_multiplied_by_trunk(self, input_trunk: Union[np.ndarray, torch.Tensor] = None,
-                                           input_branch: Union[np.ndarray, torch.Tensor] = None) -> torch.Tensor:
-
+    def _forward_multiplied_by_trunk(
+            self,
+            input_trunk: Union[np.ndarray, torch.Tensor] = None,
+            input_branch: Union[np.ndarray,
+                                torch.Tensor] = None) -> torch.Tensor:
         """
 
         Wrapper forward method
@@ -457,13 +496,16 @@ class ResDeepONet(DeepONet):
 
         """
 
-        output_residual = self.forward_(input_trunk=input_trunk, input_branch=input_branch)
+        output_residual = self.forward_(input_trunk=input_trunk,
+                                        input_branch=input_branch)
 
-        return input_branch + output_residual*input_trunk
+        return input_branch + output_residual * input_trunk
 
-    def _forward_cut_residual(self, input_trunk: Union[np.ndarray, torch.Tensor] = None,
-                                    input_branch: Union[np.ndarray, torch.Tensor] = None) -> torch.Tensor:
-
+    def _forward_cut_residual(
+            self,
+            input_trunk: Union[np.ndarray, torch.Tensor] = None,
+            input_branch: Union[np.ndarray,
+                                torch.Tensor] = None) -> torch.Tensor:
         """
 
         Wrapper forward method
@@ -477,27 +519,30 @@ class ResDeepONet(DeepONet):
 
         """
 
-        output = self.forward_(input_trunk=input_trunk, input_branch=input_branch)
+        output = self.forward_(input_trunk=input_trunk,
+                               input_branch=input_branch)
 
         return output
+
 
 class ImprovedDeepONet(ResDeepONet):
 
     name = "improveddeeponet"
     engine = "torch"
 
-    def __init__(self, trunk_network: ConvexDenseNetwork = None,
-                       branch_network: ConvexDenseNetwork = None,
-                       decoder_network: NetworkTemplate = None,
-                       encoder_trunk: NetworkTemplate=None,
-                       encoder_branch: NetworkTemplate=None,
-                       var_dim: int = 1,
-                       devices: Union[str, list] = 'cpu',
-                       product_type: str = None,
-                       rescale_factors:np.ndarray=None,
-                       residual:bool=False,
-                       multiply_by_trunk:bool=False,
-                       model_id=None) -> None:
+    def __init__(self,
+                 trunk_network: ConvexDenseNetwork = None,
+                 branch_network: ConvexDenseNetwork = None,
+                 decoder_network: NetworkTemplate = None,
+                 encoder_trunk: NetworkTemplate = None,
+                 encoder_branch: NetworkTemplate = None,
+                 var_dim: int = 1,
+                 devices: Union[str, list] = 'cpu',
+                 product_type: str = None,
+                 rescale_factors: np.ndarray = None,
+                 residual: bool = False,
+                 multiply_by_trunk: bool = False,
+                 model_id=None) -> None:
 
         # Guaranteeing the compatibility between the encoders and the branch and trunk networks
         t_hs = trunk_network.hidden_size
@@ -509,22 +554,27 @@ class ImprovedDeepONet(ResDeepONet):
                                                 " of the trunk network hidden size, but got"\
                                                 f" {encoder_trunk.output_size} and {trunk_network.hidden_size}"
 
-        super(ImprovedDeepONet, self).__init__(trunk_network=trunk_network,
-                                               branch_network=branch_network,
-                                               decoder_network=decoder_network,
-                                               var_dim=var_dim,
-                                               devices=devices,
-                                               product_type=product_type,
-                                               residual=residual,
-                                               multiply_by_trunk=multiply_by_trunk,
-                                               model_id=model_id)
+        super(ImprovedDeepONet,
+              self).__init__(trunk_network=trunk_network,
+                             branch_network=branch_network,
+                             decoder_network=decoder_network,
+                             var_dim=var_dim,
+                             devices=devices,
+                             product_type=product_type,
+                             residual=residual,
+                             multiply_by_trunk=multiply_by_trunk,
+                             model_id=model_id)
 
         # Rescaling factors for the output
         if rescale_factors is not None:
-            assert len(rescale_factors) == var_dim, "The number of rescaling factors must be equal to var_dim."
-            rescale_factors = torch.from_numpy(rescale_factors.astype('float32'))
+            assert len(
+                rescale_factors
+            ) == var_dim, "The number of rescaling factors must be equal to var_dim."
+            rescale_factors = torch.from_numpy(
+                rescale_factors.astype('float32'))
         else:
-            rescale_factors = torch.from_numpy(np.ones(self.var_dim).astype('float32'))
+            rescale_factors = torch.from_numpy(
+                np.ones(self.var_dim).astype('float32'))
 
         self.rescale_factors = rescale_factors.to(self.device)
 
@@ -536,24 +586,35 @@ class ImprovedDeepONet(ResDeepONet):
 
         self.forward_ = self._forward_improved
 
-    def _forward_improved(self, input_trunk: Union[np.ndarray, torch.Tensor] = None,
-                                input_branch: Union[np.ndarray, torch.Tensor] = None) -> torch.Tensor:
+    def _forward_improved(
+            self,
+            input_trunk: Union[np.ndarray, torch.Tensor] = None,
+            input_branch: Union[np.ndarray,
+                                torch.Tensor] = None) -> torch.Tensor:
 
         # Forward method execution
         v = self.encoder_trunk.forward(input_data=input_trunk)
         u = self.encoder_branch.forward(input_data=input_branch)
 
-        output_trunk = self.trunk_network.forward(input_data=input_trunk, u=u, v=v).to(self.device)
+        output_trunk = self.trunk_network.forward(input_data=input_trunk,
+                                                  u=u,
+                                                  v=v).to(self.device)
 
-        output_branch = self.branch_network.forward(input_data=input_branch, u=u, v=v).to(self.device)
+        output_branch = self.branch_network.forward(input_data=input_branch,
+                                                    u=u,
+                                                    v=v).to(self.device)
 
-        output = self._forward(output_trunk=output_trunk, output_branch=output_branch)
+        output = self._forward(output_trunk=output_trunk,
+                               output_branch=output_branch)
 
-        return output*self.rescale_factors
+        return output * self.rescale_factors
 
     @guarantee_device
-    def eval_subnetwork(self, name: str = None, trunk_data:Union[np.ndarray, torch.Tensor]=None,
-                              branch_data:Union[np.ndarray, torch.Tensor]=None) -> np.ndarray:
+    def eval_subnetwork(
+            self,
+            name: str = None,
+            trunk_data: Union[np.ndarray, torch.Tensor] = None,
+            branch_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
 
         assert name in self.subnetworks_names, f"The name {name} is not a subnetwork of {self}."
 
@@ -563,7 +624,8 @@ class ImprovedDeepONet(ResDeepONet):
         v = self.encoder_trunk.forward(input_data=trunk_data)
         u = self.encoder_branch.forward(input_data=branch_data)
 
-        return network_instance.forward(input_data=input_data, u=u, v=v).cpu().detach().numpy()
+        return network_instance.forward(input_data=input_data, u=u,
+                                        v=v).cpu().detach().numpy()
 
     def summary(self) -> None:
 
@@ -576,21 +638,23 @@ class ImprovedDeepONet(ResDeepONet):
         print("Branch Network:")
         self.branch_network.summary()
 
+
 class FlexibleDeepONet(ResDeepONet):
 
     name = "flexibledeeponet"
     engine = "torch"
 
-    def __init__(self, trunk_network: NetworkTemplate = None,
-                       branch_network: NetworkTemplate = None,
-                       decoder_network: NetworkTemplate = None,
-                       pre_network: NetworkTemplate = None,
-                       var_dim: int = 1,
-                       devices: Union[str, list] = 'cpu',
-                       product_type: str = None,
-                       residual: bool = False,
-                       multiply_by_trunk: bool = False,
-                       model_id=None) -> None:
+    def __init__(self,
+                 trunk_network: NetworkTemplate = None,
+                 branch_network: NetworkTemplate = None,
+                 decoder_network: NetworkTemplate = None,
+                 pre_network: NetworkTemplate = None,
+                 var_dim: int = 1,
+                 devices: Union[str, list] = 'cpu',
+                 product_type: str = None,
+                 residual: bool = False,
+                 multiply_by_trunk: bool = False,
+                 model_id=None) -> None:
 
         # Guaranteeing the compatibility between the pre and the branch and trunk networks
         t_is = trunk_network.input_size
@@ -604,47 +668,60 @@ class FlexibleDeepONet(ResDeepONet):
 
         self.t_is = t_is
 
-        super(FlexibleDeepONet, self).__init__(trunk_network=trunk_network,
-                                               branch_network=branch_network,
-                                               decoder_network=decoder_network,
-                                               var_dim=var_dim,
-                                               devices=devices,
-                                               product_type=product_type,
-                                               residual=residual,
-                                               multiply_by_trunk=multiply_by_trunk,
-                                               model_id=model_id)
-
+        super(FlexibleDeepONet,
+              self).__init__(trunk_network=trunk_network,
+                             branch_network=branch_network,
+                             decoder_network=decoder_network,
+                             var_dim=var_dim,
+                             devices=devices,
+                             product_type=product_type,
+                             residual=residual,
+                             multiply_by_trunk=multiply_by_trunk,
+                             model_id=model_id)
 
         self.pre_network = pre_network
         self.forward_ = self._forward_flexible
         self.subnetworks += [self.pre_network]
         self.subnetworks_names += ['pre']
 
-    def _rescaling_operation(self, input_data:torch.Tensor=None, rescaling_tensor:torch.Tensor=None):
+    def _rescaling_operation(self,
+                             input_data: torch.Tensor = None,
+                             rescaling_tensor: torch.Tensor = None):
 
-        angular = rescaling_tensor[:,:self.t_is]
+        angular = rescaling_tensor[:, :self.t_is]
         linear = rescaling_tensor[:, self.t_is:]
 
-        return angular*input_data + linear
+        return angular * input_data + linear
 
-    def _forward_flexible(self, input_trunk: Union[np.ndarray, torch.Tensor] = None,
-                                input_branch: Union[np.ndarray, torch.Tensor] = None) -> torch.Tensor:
+    def _forward_flexible(
+            self,
+            input_trunk: Union[np.ndarray, torch.Tensor] = None,
+            input_branch: Union[np.ndarray,
+                                torch.Tensor] = None) -> torch.Tensor:
 
         # Forward method execution
-        output_branch = self.branch_network.forward(input_data=input_branch).to(self.device)
+        output_branch = self.branch_network.forward(
+            input_data=input_branch).to(self.device)
 
-        rescaling = self.pre_network.forward(input_data=input_branch).to(self.device)
-        input_trunk_rescaled = self._rescaling_operation(input_data=input_trunk, rescaling_tensor=rescaling)
+        rescaling = self.pre_network.forward(input_data=input_branch).to(
+            self.device)
+        input_trunk_rescaled = self._rescaling_operation(
+            input_data=input_trunk, rescaling_tensor=rescaling)
 
-        output_trunk = self.trunk_network.forward(input_data=input_trunk_rescaled).to(self.device)
+        output_trunk = self.trunk_network.forward(
+            input_data=input_trunk_rescaled).to(self.device)
 
-        output = self._forward(output_trunk=output_trunk, output_branch=output_branch)
+        output = self._forward(output_trunk=output_trunk,
+                               output_branch=output_branch)
 
         return output
 
     @guarantee_device
-    def eval_subnetwork(self, name: str = None, trunk_data: Union[np.ndarray, torch.Tensor] = None,
-                              branch_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
+    def eval_subnetwork(
+            self,
+            name: str = None,
+            trunk_data: Union[np.ndarray, torch.Tensor] = None,
+            branch_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
 
         assert name in self.subnetworks_names, f"The name {name} is not a subnetwork of {self}."
 
@@ -654,7 +731,8 @@ class FlexibleDeepONet(ResDeepONet):
         network_instance = getattr(self, name + '_network')
         input_data = locals()[name + '_data']
 
-        return network_instance.forward(input_data=input_data).cpu().detach().numpy()
+        return network_instance.forward(
+            input_data=input_data).cpu().detach().numpy()
 
     def summary(self) -> None:
         print("Trunk Network:")
@@ -663,5 +741,6 @@ class FlexibleDeepONet(ResDeepONet):
         self.pre_network.summary()
         print("Branch Network:")
         self.branch_network.summary()
+
 
 ####
