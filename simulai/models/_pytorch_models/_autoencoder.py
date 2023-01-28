@@ -27,7 +27,6 @@ from simulai.regression import ConvolutionalNetwork, Linear
 
 class AutoencoderMLP(NetworkTemplate):
     """
-
      This is an implementation of a Fully-connected AutoEncoder as
            Reduced Order Model;
 
@@ -43,10 +42,7 @@ class AutoencoderMLP(NetworkTemplate):
                    |         |
 
               ENCODER       DECODER
-
-
     """
-
     def __init__(self, encoder: DenseNetwork = None,
                        decoder: DenseNetwork = None,
                        devices: Union[str, list] = 'cpu') -> None:
@@ -146,29 +142,23 @@ class AutoencoderMLP(NetworkTemplate):
 
 # Convolutional AutoEncoder
 class AutoencoderCNN(NetworkTemplate):
+    r"""
+    This is an implementation of a convolutional autoencoder as Reduced Order Model. An autoencoder architecture consists of three stages:
+    
+    * The convolutional encoder
+    
+    The bottleneck stage, subdivided in:
+        * Fully-connected encoder
+        * Fully connected decoder
+        * The convolutional decoder
+
+    SCHEME:
+    
+    Z -> [Conv] -> [Conv] -> ... [Conv] -> |  | | |  | -> [Conv.T] -> [Conv.T] -> ... [Conv.T] -> Z_til
+
+
+    ENCODER               DENSE BOTTLENECK           DECODER
     """
-
-    This is an implementation of a convolutional autoencoder as
-           Reduced Order Model;
-
-               An autoencoder architecture consists of three stages:
-               --> The convolutional encoder
-               --> The bottleneck stage, subdivided in:
-                   --> Fully-connected encoder
-                   --> Fully connected decoder
-               --> The convolutional decoder
-
-           SCHEME:
-                                                  |         |
-                                                  |  |   |  |
-           Z -> [Conv] -> [Conv] -> ... [Conv] -> |  | | |  | -> [Conv.T] -> [Conv.T] -> ... [Conv.T] -> Z_til
-                                                  |  |   |  |
-                                                  |         |
-
-                          ENCODER               DENSE BOTTLENECK           DECODER
-
-    """
-
     def __init__(self, encoder: ConvolutionalNetwork = None,
                  bottleneck_encoder: Linear = None,
                  bottleneck_decoder: Linear = None,
