@@ -41,7 +41,7 @@ dependencies = [
 requires-python = ">=3.8"
 
 [project.optional-dependencies]
-dev = ["bumpver", "flake8", "coverage", "pytest"]
+dev = ["yapf","bumpver", "flake8", "coverage", "pytest"]
 mpi = ["mpi4py"]
 
 [project.urls]
