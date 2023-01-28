@@ -29,7 +29,6 @@ release = '2022'
 
 extensions = [
     'sphinx.ext.napoleon',
-    'sphinx.ext.duration',
     'sphinx.ext.doctest',
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
@@ -37,12 +36,15 @@ extensions = [
 ]
 
 autodoc_mock_imports = ['mpi4py']
+suppress_warnings = ['autosectionlabel.*']
+
 
 # Napoleon settings
 napoleon_numpy_docstring = True
 
 # Make sure the target is unique
-autosectionlabel_prefix_document = True
+autosectionlabel_use_sections = False
+
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3/', None),

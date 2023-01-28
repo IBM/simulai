@@ -31,14 +31,14 @@ def load_pkl(path:str=None) -> Union[object, None]:
          The path to the pickle file.
 
      Returns:
-     -------
+     --------
      object or None
          The loaded object, if possible. None if the file cannot be loaded
          
      Raises:
-     ------
+     -------
      Exception :
-         if the provided path is not a file or cannot be opened
+        if the provided path is not a file or cannot be opened
      """
 
     import pickle

@@ -33,7 +33,6 @@ Welcome to simulai's documentation!
    source/_modules/simulai.mesh
    source/_modules/simulai.metrics
    source/_modules/simulai.normalization
-   source/_modules/simulai.output
    source/_modules/simulai.parallel
    source/_modules/simulai.simulation
    source/_modules/simulai.special

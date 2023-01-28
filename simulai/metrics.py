@@ -19,7 +19,7 @@ import psutil
 import numpy as np
 import torch
 import dask.array as da
-from typing import Union
+from typing import Union, Tuple
 
 from simulai.math.integration import RK4
 from simulai.abstract import DataPreparer
@@ -79,7 +79,7 @@ class L2Norm:
 
         return d
 
-    def _clean_nan_and_large(self, data:np.ndarray, reference_data:np.ndarray) -> (np.ndarray, np.ndarray):
+    def _clean_nan_and_large(self, data:np.ndarray, reference_data:np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
 
         """It removes NaNs and large number of the input and the reference dataset
         :param data: the data to be evaluated in the norm

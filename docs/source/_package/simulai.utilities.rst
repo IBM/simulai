@@ -4,7 +4,7 @@ Utilities Package
 simulai.utilities.lorenz\_solver module
 ---------------------------------------
 
-.. automodule:: simulai.utilities.lorenz_solver
+.. automodule:: simulai.utilities._makedirs_to_file
    :members:
    :undoc-members:
    :show-inheritance:
@@ -12,7 +12,7 @@ simulai.utilities.lorenz\_solver module
 simulai.utilities.lotka\_volterra\_solver module
 ------------------------------------------------
 
-.. automodule:: simulai.utilities.lotka_volterra_solver
+.. automodule:: simulai.utilities._tmp_dir
    :members:
    :undoc-members:
    :show-inheritance:
@@ -21,22 +21,6 @@ simulai.utilities.opinf\_deviation module
 -----------------------------------------
 
 .. automodule:: simulai.utilities.opinf_deviation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-simulai.utilities.oscillator\_solver module
--------------------------------------------
-
-.. automodule:: simulai.utilities.oscillator_solver
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-simulai.utilities.problem\_classes module
------------------------------------------
-
-.. automodule:: simulai.utilities.problem_classes
    :members:
    :undoc-members:
    :show-inheritance:
