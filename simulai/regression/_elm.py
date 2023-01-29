@@ -22,7 +22,7 @@ from scipy.linalg import solve as solve
 class ELM:
 
     def __init__(self, n_i:int=None, h:int=None, n_o:int=None,
-                       activation='tanh', form:str='primal', solver:str='ltsq') -> None:
+                       activation='tanh', form:str='primal', solver:str='lstsq') -> None:
 
         """Extreme Learning Machine
 

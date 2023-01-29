@@ -543,6 +543,12 @@ class ImprovedDeepONet(ResDeepONet):
                  residual: bool = False,
                  multiply_by_trunk: bool = False,
                  model_id=None) -> None:
+    
+        """
+          The so-called Improved DeepONet architecture aims at enhancing the communication
+          between the trunk and branch pipelines during the training process, thus allowing 
+                      better generalzation capabilities for the composite model.
+        """
 
         # Guaranteeing the compatibility between the encoders and the branch and trunk networks
         t_hs = trunk_network.hidden_size
@@ -655,6 +661,16 @@ class FlexibleDeepONet(ResDeepONet):
                  residual: bool = False,
                  multiply_by_trunk: bool = False,
                  model_id=None) -> None:
+
+        """
+
+        Flexible DeepONet uses a sub-network called 'pre-network', which
+                    plays the role of rescaling the trunk input according to the branch input.
+        It is an attempt of reducing the training bias related to the different
+                    orders of magnitude contained in the dataset.
+ 
+  	    """
+
 
         # Guaranteeing the compatibility between the pre and the branch and trunk networks
         t_is = trunk_network.input_size

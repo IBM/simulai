@@ -75,7 +75,7 @@ class TestELM(TestCase):
 
         assert isinstance(approximator_reloaded, ELM)
 
-    def test_elm_instantiation(self):
+    def test_elm_instantiation_dual(self):
 
         t_max = 10
         L = 5
