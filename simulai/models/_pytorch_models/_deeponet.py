@@ -669,7 +669,7 @@ class FlexibleDeepONet(ResDeepONet):
         It is an attempt of reducing the training bias related to the different
                     orders of magnitude contained in the dataset.
  
-  	    """
+  	"""
 
 
         # Guaranteeing the compatibility between the pre and the branch and trunk networks
