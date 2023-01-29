@@ -13,6 +13,7 @@
 #     limitations under the License.
 
 import warnings
+from typing import Tuple
 
 MPI_GLOBAL_AVAILABILITY = True
 
@@ -61,7 +62,7 @@ class PipelineMPI:
         return lengths[0]
 
     # The workload can be executed serially in each worker node
-    def _split_kwargs(self, kwargs:dict, rank:int, size:int, total_size:int) -> (dict, int):
+    def _split_kwargs(self, kwargs:dict, rank:int, size:int, total_size:int) -> Tuple[dict, int]:
 
         # Decrement rank and size by 1, because they are usually 0-indexed in Python
         size -= 1
