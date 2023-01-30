@@ -14,7 +14,7 @@
 
 from simulai import engine
 
-from ._templates import ReservoirComputing
+from ._templates import ReservoirComputing, NetworkInstanceGen
 
 if engine == "pytorch":
     from ._pytorch_network import (NetworkTemplate, ConvNetworkTemplate, HyperTrainTemplate,
