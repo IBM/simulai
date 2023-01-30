@@ -47,7 +47,12 @@ class ReservoirComputing(Regression):
         return sparse.rand(self.reservoir_dim, self.reservoir_dim,
                            density=self._reservoir_dim_corrected_sparsity_level)
 
+
 class NetworkInstanceGen:
+
+    """
+    It generates instances of networks considering default choices
+    """
 
     def __init__(self,
                  architecture : str,
@@ -76,7 +81,7 @@ class NetworkInstanceGen:
 
         if architecture == 'cnn':
 
-            assert dim in ['1d', '2d'], "dim must be '1d' or '2d'. "
+            assert dim in ['1d', '2d', '3d'], "dim must be in ['1d', '2d', '3d']. "
 
             self.dim = dim
 
@@ -139,19 +144,19 @@ class NetworkInstanceGen:
 
         return config_dict
 
-    def _is_div_cnn_dims(self, dim: Tuple[int, ...]):
+    def _is_div_cnn_dims(self, dim: Tuple[int, ...]) -> bool:
 
         reduce_dims = dim[2:]
 
         return all([idim % self.divisor == 0 for idim in reduce_dims])
 
-    def _div_cnn_dims(self, dim: Tuple[int, ...]):
+    def _div_cnn_dims(self, dim: Tuple[int, ...]) -> Tuple[int, ...]:
 
         reduce_dims = dim[2:]
 
         return dim[:2] + tuple([int(idim/self.divisor) for idim in reduce_dims])
 
-    def _multiply_cnn_dims(self, dim: Tuple[int, ...]):
+    def _multiply_cnn_dims(self, dim: Tuple[int, ...]) -> Tuple[int, ...]:
 
         reduce_dims = dim[2:]
 
