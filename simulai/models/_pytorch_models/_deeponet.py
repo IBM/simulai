@@ -23,7 +23,6 @@ from simulai.regression import ConvexDenseNetwork
 #### DeepONet family
 #####################
 
-
 class DeepONet(NetworkTemplate):
 
     name = "deeponet"
@@ -524,7 +523,6 @@ class ResDeepONet(DeepONet):
 
         return output
 
-
 class ImprovedDeepONet(ResDeepONet):
 
     name = "improveddeeponet"
@@ -547,7 +545,7 @@ class ImprovedDeepONet(ResDeepONet):
         """
           The so-called Improved DeepONet architecture aims at enhancing the communication
           between the trunk and branch pipelines during the training process, thus allowing 
-                      better generalzation capabilities for the composite model.
+                      better generalization capabilities for the composite model.
         """
 
         # Guaranteeing the compatibility between the encoders and the branch and trunk networks
@@ -644,7 +642,6 @@ class ImprovedDeepONet(ResDeepONet):
         print("Branch Network:")
         self.branch_network.summary()
 
-
 class FlexibleDeepONet(ResDeepONet):
 
     name = "flexibledeeponet"
@@ -664,7 +661,7 @@ class FlexibleDeepONet(ResDeepONet):
 
         """
 
-        Flexible DeepONet uses a sub-network called 'pre-network', which
+        Flexible DeepONet uses a subnetwork called 'pre-network', which
                     plays the role of rescaling the trunk input according to the branch input.
         It is an attempt of reducing the training bias related to the different
                     orders of magnitude contained in the dataset.
@@ -759,4 +756,3 @@ class FlexibleDeepONet(ResDeepONet):
         self.branch_network.summary()
 
 
-####

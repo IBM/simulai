@@ -155,7 +155,8 @@ class AutoencoderMLP(NetworkTemplate):
 # Convolutional AutoEncoder
 class AutoencoderCNN(NetworkTemplate):
     r"""
-    This is an implementation of a convolutional autoencoder as Reduced Order Model. An autoencoder architecture consists of three stages:
+    This is an implementation of a convolutional autoencoder as Reduced Order Model.
+    An autoencoder architecture consists of three stages:
     
     * The convolutional encoder
     

@@ -43,3 +43,5 @@ class ReservoirComputing(Regression):
         return sparse.rand(self.reservoir_dim, self.reservoir_dim,
                            density=self._reservoir_dim_corrected_sparsity_level)
 
+
+    
