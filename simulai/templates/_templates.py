@@ -131,7 +131,7 @@ class NetworkInstanceGen:
 
         if input_dim > output_dim:
 
-            while (ref % self.divisor < ref) and (result > self.divisor * output_dim) :
+            while (ref % self.divisor < ref) and (result > 2 * self.divisor * output_dim) :
 
                 result, remainder = divmod(ref, self.divisor)
                 ref = result
@@ -139,7 +139,7 @@ class NetworkInstanceGen:
 
         else:
 
-            while (result < int(output_dim / self.multiplier)):
+            while (result < int(output_dim / (2*self.multiplier))):
 
                 result *= self.multiplier
 
