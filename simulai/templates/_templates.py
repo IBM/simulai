@@ -291,7 +291,7 @@ class NetworkInstanceGen:
                  **kwargs) -> NetworkTemplate:
 
         if name == None:
-            name = 'net' + id(self)
+            name = 'net' + str(id(self))
         else:
             pass
 

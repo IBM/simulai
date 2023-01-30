@@ -14,7 +14,7 @@
 
 import torch
 import numpy as np
-from typing import Union, Optional
+from typing import Union, Tuple, Optional
 
 from simulai.templates import NetworkTemplate, as_tensor
 from simulai.regression import DenseNetwork
@@ -46,11 +46,22 @@ class AutoencoderMLP(NetworkTemplate):
     def __init__(self,
                  encoder: DenseNetwork = None,
                  decoder: DenseNetwork = None,
+                 input_dim: Optional[int] = None,
+                 output_dim: Optional[int] = None,
+                 latent_dim: Optional[int] = None,
+                 activation: Optional[Union[list, str]] = None,
                  devices: Union[str, list] = 'cpu') -> None:
 
         super(AutoencoderMLP, self).__init__()
 
         self.weights = list()
+
+        if encoder == None and decoder == None:
+
+            encoder, decoder = self._autogen_pipeline(input_dim=input_dim,
+                                                      latent_dim=latent_dim,
+                                                      output_dim=output_dim,
+                                                      activation=activation)
 
         # Determining the kind of device to be used for allocating the
         # subnetworks used in the DeepONet model
@@ -66,6 +77,27 @@ class AutoencoderMLP(NetworkTemplate):
         self.weights += self.decoder.weights
 
         self.last_encoder_channels = None
+
+    def _autogen_pipeline(self, input_dim : int = None,
+                          latent_dim : int = None,
+                          output_dim : int = None,
+                          activation : str = None) -> Tuple[NetworkTemplate, ...]:
+
+        from simulai.templates import NetworkInstanceGen
+
+        msg = "If no encoder and decoder networks are provided, it is necessary to " \
+              "provide values for input_dim, latent_dim and output_dim in order to" \
+              "automatically construct the autoencoder."
+
+        assert type(input_dim) == type(output_dim) == type(latent_dim), msg
+        assert type(activation) == str, "It is necessary to provide a value for the activation"
+
+        autogen = NetworkInstanceGen(architecture='dense')
+
+        encoder = autogen(input_dim=input_dim, output_dim=latent_dim, activation=activation)
+        decoder = autogen(input_dim=latent_dim, output_dim=output_dim, activation=activation)
+
+        return encoder, decoder
 
     def summary(self) -> None:
         """
