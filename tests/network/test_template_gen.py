@@ -75,6 +75,21 @@ def model_1d(reduce_dimensionality : bool = True, flatten : bool = True,
 
     return convnet
 
+def model_dense(input_dim : int = 16, output_dim : int = 8):
+
+    from simulai.templates import NetworkInstanceGen
+
+    # Configuring model
+
+    auto_gen = NetworkInstanceGen(architecture='dense')
+
+    convnet = auto_gen(input_dim=input_dim,
+                       output_dim=output_dim,
+                       activation='tanh',
+                       name='dense_net')
+
+    return convnet
+
 class TestAutoGenNet(TestCase):
 
     def setUp(self) -> None:
@@ -133,3 +148,28 @@ class TestAutoGenNet(TestCase):
         assert estimated_output_data.shape == input_data.shape, "The output of eval is not correct." \
                                                                 f" Expected {output_data.shape}," \
                                                                 f" but received {estimated_output_data.shape}."
+
+    def test_densenetwork_reduce(self) -> None:
+
+        input_data = np.random.rand(100, 64)
+        output_data = np.random.rand(100, 8)
+
+        net = model_dense(input_dim=64, output_dim=8)
+        net.summary()
+
+        output_estimated = net.eval(input_data=input_data)
+
+        assert output_estimated.shape == output_data.shape
+
+    def test_densenetwork_increase(self) -> None:
+
+        input_data = np.random.rand(100, 8)
+        output_data = np.random.rand(100, 64)
+
+        net = model_dense(input_dim=8, output_dim=64)
+        net.summary()
+
+        output_estimated = net.eval(input_data=input_data)
+
+        assert output_estimated.shape == output_data.shape
+

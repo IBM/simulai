@@ -70,17 +70,25 @@ class NetworkInstanceGen:
         self.architecture_class = getattr(self.engine_module, self.architecture)
 
         self.divisor = 2
+        self.multiplier = 2
 
         # Selecting the architecture generator function to be used.
-        if architecture == 'dense':
-            self.gen_network = self._gen_dense_network
-        else:
-            if self.reduce_dimensionality == True:
-                self.gen_network = self._gen_cnn_network_reduce
+        if architecture == 'cnn':
+            if reduce_dimensionality == True:
+                self.method_tag = '_reduce'
             else:
-                self.gen_network = self._gen_cnn_network_increase
+                self.method_tag = '_increase'
+        else:
+            self.method_tag = ''
 
-        self.interp_tag = {'1d': 'linear', '2d': 'bicubic', '3d': 'trilinear'}
+        gen_network_name = f'_gen_{architecture}_network{self.method_tag}'
+
+        self.gen_network = getattr(self, gen_network_name)
+
+        # It is still hard-coded
+        self.interp_tag = {'1d': 'linear',
+                           '2d': 'bicubic',
+                           '3d': 'trilinear'}
 
         if architecture == 'cnn':
 
@@ -105,10 +113,12 @@ class NetworkInstanceGen:
             self.mode = self.interp_tag.get(dim)
             self.channels_position = 1
 
+        self.architecture_str = architecture
+
     def _gen_dense_network(self, input_dim : int = None,
-                          output_dim : int = None,
-                          activation : str = None,
-                          name : str = None) -> dict:
+                                 output_dim : int = None,
+                                 activation : str = None,
+                                 name : str = None) -> dict:
 
         assert type(input_dim) == int
         assert type(output_dim) == int
@@ -119,10 +129,21 @@ class NetworkInstanceGen:
         result = input_dim
         units_list = list()
 
-        while (ref % self.divisor < ref) or (result > output_dim) :
+        if input_dim > output_dim:
 
-            result, remainder = divmod(ref, self.divisor)
-            units_list.append(result)
+            while (ref % self.divisor < ref) and (result > self.divisor * output_dim) :
+
+                result, remainder = divmod(ref, self.divisor)
+                ref = result
+                units_list.append(result)
+
+        else:
+
+            while (result < int(output_dim / self.multiplier)):
+
+                result *= self.multiplier
+
+                units_list.append(result)
 
         units_list.append(output_dim)
 
@@ -150,7 +171,7 @@ class NetworkInstanceGen:
 
         reduce_dims = dim[2:]
 
-        return dim[:2] + tuple([int(idim * self.divisor) for idim in reduce_dims])
+        return dim[:2] + tuple([int(idim * self.multiplier) for idim in reduce_dims])
 
     def _gen_cnn_layer_increase_dimensionality(self, channels_in : int = None,
                                                channels_out: int = None) -> dict:
@@ -242,7 +263,6 @@ class NetworkInstanceGen:
         layers_list = list()
         ref_dim = input_dim
         channels = input_dim[self.channels_position]
-        layer_count = 0
 
         while not all([ii > jj for ii, jj in zip(self._multiply_cnn_dims(ref_dim)[2:], output_dim[2:])]):
 
@@ -253,8 +273,6 @@ class NetworkInstanceGen:
             layers_list.append(layer)
 
             ref_dim = self._multiply_cnn_dims(ref_dim)
-
-            layer_count += 1
 
         config_dict = {'layers' : layers_list,
                        'activations' : activation,
@@ -277,11 +295,13 @@ class NetworkInstanceGen:
         else:
             pass
 
-        if channels == None:
-            warnings.warn("As no value was provided for 'channels'," +
-                          f" the default value of {self.channels} is being used. ")
-        else:
-            self.channels = channels
+        if self.architecture_str == 'cnn':
+
+            if channels == None:
+                warnings.warn("As no value was provided for 'channels'," +
+                              f" the default value of {self.channels} is being used. ")
+            else:
+                self.channels = channels
 
         config_dict  =  self.gen_network(input_dim = input_dim,
                                          output_dim = output_dim,
