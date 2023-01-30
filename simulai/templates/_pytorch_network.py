@@ -421,6 +421,8 @@ class ConvNetworkTemplate(NetworkTemplate):
 
         self.interpolation_prefix = {'1d':'', '2d': 'bi', '3d': 'tri'}
 
+        self.output_shape = None
+
     def _no_flatten(self, input_data:torch.Tensor=None) -> torch.Tensor:
 
         return input_data
@@ -595,8 +597,10 @@ class ConvNetworkTemplate(NetworkTemplate):
 
         # When the network output is reshaped, it is necessary to correct the value of self.output_size
         if self.flatten == True:
+            self.output_shape = tuple(output_size)
             self.output_size = int(np.prod(output_size[1:]))
         else:
+            self.output_shape = tuple(output_size)
             self.output_size = output_size
 
 # Template used for defining a hyperparameter training.

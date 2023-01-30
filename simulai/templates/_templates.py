@@ -51,10 +51,7 @@ class NetworkInstanceGen:
 
     def __init__(self,
                  architecture : str,
-                 dim : str = None,
-                 reduce_dimensionality : bool = True) -> None:
-
-        self.reduce_dimensionality = reduce_dimensionality
+                 dim : str = None) -> None:
 
         if architecture == 'dense':
             self.architecture = 'DenseNetwork'
@@ -71,19 +68,6 @@ class NetworkInstanceGen:
 
         self.divisor = 2
         self.multiplier = 2
-
-        # Selecting the architecture generator function to be used.
-        if architecture == 'cnn':
-            if reduce_dimensionality == True:
-                self.method_tag = '_reduce'
-            else:
-                self.method_tag = '_increase'
-        else:
-            self.method_tag = ''
-
-        gen_network_name = f'_gen_{architecture}_network{self.method_tag}'
-
-        self.gen_network = getattr(self, gen_network_name)
 
         # It is still hard-coded
         self.interp_tag = {'1d': 'linear',
@@ -264,7 +248,9 @@ class NetworkInstanceGen:
         ref_dim = input_dim
         channels = input_dim[self.channels_position]
 
-        while not all([ii > jj for ii, jj in zip(self._multiply_cnn_dims(ref_dim)[2:], output_dim[2:])]):
+        layer_count = 0
+
+        while not (sum(ref_dim[2:]) >= int(sum(output_dim[2:]) / self.multiplier)):
 
             layer =  self._gen_cnn_layer_increase_dimensionality(channels_in=channels)
 
@@ -273,6 +259,13 @@ class NetworkInstanceGen:
             layers_list.append(layer)
 
             ref_dim = self._multiply_cnn_dims(ref_dim)
+
+            layer_count += 1
+
+
+        layer = self._gen_cnn_layer_increase_dimensionality(channels_in=channels,
+                                                            channels_out=self.channels)
+        layers_list.append(layer)
 
         config_dict = {'layers' : layers_list,
                        'activations' : activation,
@@ -288,7 +281,21 @@ class NetworkInstanceGen:
                  activation : str = None,
                  channels: int = None,
                  name : str = None,
+                 reduce_dimensionality: bool = True,
                  **kwargs) -> NetworkTemplate:
+
+        # Selecting the architecture generator function to be used.
+        if self.architecture_str == 'cnn':
+            if reduce_dimensionality == True:
+                self.method_tag = '_reduce'
+            else:
+                self.method_tag = '_increase'
+        else:
+            self.method_tag = ''
+
+        gen_network_name = f'_gen_{self.architecture_str}_network{self.method_tag}'
+
+        gen_network = getattr(self, gen_network_name)
 
         if name == None:
             name = 'net' + str(id(self))
@@ -303,10 +310,10 @@ class NetworkInstanceGen:
             else:
                 self.channels = channels
 
-        config_dict  =  self.gen_network(input_dim = input_dim,
-                                         output_dim = output_dim,
-                                         activation = activation,
-                                         name = name, **kwargs)
+        config_dict  =  gen_network(input_dim = input_dim,
+                                    output_dim = output_dim,
+                                    activation = activation,
+                                    name = name, **kwargs)
 
         return self.architecture_class(**config_dict)
 

@@ -173,16 +173,34 @@ class TestAutoGenNet(TestCase):
 
         assert output_estimated.shape == output_data.shape
 
-
     def test_autoencoder_mlp(self) -> None:
 
         from simulai.models import AutoencoderMLP
 
         input_data = np.random.rand(100, 64)
 
-        autoencoder = AutoencoderMLP(input_dim=64, latent_dim=8, output_dim=64, activation='tanh')
+        autoencoder = AutoencoderMLP(input_dim=64,
+                                     latent_dim=8,
+                                     output_dim=64,
+                                     activation='tanh')
 
         autoencoder.summary()
+
+        estimated_data = autoencoder.eval(input_data=input_data)
+
+        assert estimated_data.shape == input_data.shape
+
+    def test_autoencoder_cnn(self) -> None:
+
+        from simulai.models import AutoencoderCNN
+
+        input_data = np.random.rand(100, 1, 64, 64)
+
+        autoencoder = AutoencoderCNN(input_dim=(None, 1, 64, 64),
+                                     latent_dim=8,
+                                     output_dim=(None, 1, 64, 64),
+                                     activation='tanh',
+                                     case='2d')
 
         estimated_data = autoencoder.eval(input_data=input_data)
 

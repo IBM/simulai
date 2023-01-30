@@ -24,7 +24,6 @@ from simulai.regression import ConvolutionalNetwork, Linear
 ### Some usual AutoEncoder architectures
 ########################################
 
-
 class AutoencoderMLP(NetworkTemplate):
     """
      This is an implementation of a Fully-connected AutoEncoder as
@@ -56,6 +55,8 @@ class AutoencoderMLP(NetworkTemplate):
 
         self.weights = list()
 
+        # This option is used when no network is provided
+        # and it uses default choices for the architectures
         if encoder == None and decoder == None:
 
             encoder, decoder = self._autogen_pipeline(input_dim=input_dim,
@@ -78,7 +79,8 @@ class AutoencoderMLP(NetworkTemplate):
 
         self.last_encoder_channels = None
 
-    def _autogen_pipeline(self, input_dim : int = None,
+    @staticmethod
+    def _autogen_pipeline(input_dim : int = None,
                           latent_dim : int = None,
                           output_dim : int = None,
                           activation : str = None) -> Tuple[NetworkTemplate, ...]:
@@ -89,7 +91,7 @@ class AutoencoderMLP(NetworkTemplate):
               "provide values for input_dim, latent_dim and output_dim in order to" \
               "automatically construct the autoencoder."
 
-        assert type(input_dim) == type(output_dim) == type(latent_dim), msg
+        assert type(input_dim) == type(output_dim) == type(latent_dim) == int, msg
         assert type(activation) == str, "It is necessary to provide a value for the activation"
 
         autogen = NetworkInstanceGen(architecture='dense')
@@ -183,7 +185,6 @@ class AutoencoderMLP(NetworkTemplate):
 
         return self.projection(input_data=input_data).detach().numpy()
 
-
 # Convolutional AutoEncoder
 class AutoencoderCNN(NetworkTemplate):
     r"""
@@ -202,7 +203,7 @@ class AutoencoderCNN(NetworkTemplate):
     Z -> [Conv] -> [Conv] -> ... [Conv] -> |  | | |  | -> [Conv.T] -> [Conv.T] -> ... [Conv.T] -> Z_til
 
 
-    ENCODER               DENSE BOTTLENECK           DECODER
+                    ENCODER               DENSE BOTTLENECK           DECODER
     """
     def __init__(self,
                  encoder: ConvolutionalNetwork = None,
@@ -210,6 +211,12 @@ class AutoencoderCNN(NetworkTemplate):
                  bottleneck_decoder: Linear = None,
                  decoder: ConvolutionalNetwork = None,
                  encoder_activation: str = 'relu',
+                 input_dim: Optional[Tuple[int, ...]] = None,
+                 output_dim: Optional[Tuple[int, ...]] = None,
+                 latent_dim: Optional[int] = None,
+                 activation: Optional[Union[list, str]] = None,
+                 channels: Optional[int] = None,
+                 case: Optional[str] = None,
                  devices: Union[str, list] = 'cpu') -> None:
 
         super(AutoencoderCNN, self).__init__()
@@ -219,6 +226,18 @@ class AutoencoderCNN(NetworkTemplate):
         # Determining the kind of device to be used for allocating the
         # subnetworks
         self.device = self._set_device(devices=devices)
+
+        if all([isn == None for isn in [encoder, decoder,
+                                        bottleneck_encoder, bottleneck_decoder]]):
+
+            encoder, decoder,\
+            bottleneck_encoder,\
+            bottleneck_decoder = self._autogen_pipeline(input_dim=input_dim,
+                                                        latent_dim=latent_dim,
+                                                        output_dim=output_dim,
+                                                        activation=activation,
+                                                        channels=channels,
+                                                        case=case)
 
         self.encoder = encoder.to(self.device)
         self.bottleneck_encoder = bottleneck_encoder.to(self.device)
@@ -240,6 +259,52 @@ class AutoencoderCNN(NetworkTemplate):
 
         self.encoder_activation = self._get_operation(
             operation=encoder_activation)
+
+    def _autogen_pipeline(self, input_dim: int = None,
+                          latent_dim: int = None,
+                          output_dim: int = None,
+                          activation: str = None,
+                          channels: int = None,
+                          case: str = None) -> Tuple[NetworkTemplate, ...]:
+
+        from simulai.templates import NetworkInstanceGen
+
+        msg = "If no encoder and decoder networks are provided, it is necessary to " \
+              "provide values for input_dim, latent_dim and output_dim in order to" \
+              "automatically construct the autoencoder."
+
+        assert type(input_dim) == type(output_dim) == tuple, msg
+        assert type(latent_dim) == int, msg
+        assert type(activation) == str, "It is necessary to provide a value for the activation"
+        assert type(case) == str, "It is necessary to provide a value for the dimensional case"
+
+        autogen_cnn = NetworkInstanceGen(architecture='cnn', dim=case)
+        autogen_dense = NetworkInstanceGen(architecture='dense')
+
+        encoder = autogen_cnn(input_dim=input_dim,
+                              activation=activation,
+                              channels=channels,
+                              flatten=False)
+
+        encoder.summary(input_shape=list(input_dim))
+        dense_input_size = int(np.prod(encoder.output_size[1:]))
+
+        bottleneck_encoder = autogen_dense(input_dim=dense_input_size,
+                                           output_dim=latent_dim,
+                                           activation=activation)
+
+        bottleneck_decoder = autogen_dense(input_dim=latent_dim,
+                                           output_dim=dense_input_size,
+                                           activation=activation)
+
+        decoder = autogen_cnn(input_dim=encoder.output_shape,
+                              output_dim=output_dim,
+                              activation=activation,
+                              channels=output_dim[1],
+                              flatten=False,
+                              reduce_dimensionality=False)
+
+        return encoder, decoder, bottleneck_encoder, bottleneck_decoder
 
     def summary(self,
                 input_data: Union[np.ndarray, torch.Tensor] = None,
