@@ -39,39 +39,41 @@ def generate_data_1d(n_samples:int=None, vector_size:int=None,
     return torch.from_numpy(input_data.astype(np.float32)), torch.from_numpy(output_data.astype(np.float32))
 
 # Model template
-def model_2d(reduce_dimensionality : bool = True, flatten : bool = True,
+def model_2d(reduce_dimensionality : bool = True, flatten : bool = True, channels : int = 2,
              input_dim : tuple = (None, 1, 16, 16), output_dim : tuple = (None, 16, 1, 1)):
 
     from simulai.templates import NetworkInstanceGen
 
     # Configuring model
 
-    auto_gen = NetworkInstanceGen(architecture='cnn', dim='2d', reduce_dimensionality=reduce_dimensionality)
+    auto_gen = NetworkInstanceGen(architecture='cnn', dim='2d')
 
     convnet = auto_gen(input_dim=input_dim,
                        output_dim=output_dim,
-                       channels=2,
+                       channels=channels,
                        activation='tanh',
                        name='conv_2d',
-                       flatten=flatten)
+                       flatten=flatten,
+                       reduce_dimensionality=reduce_dimensionality)
 
     return convnet
 
-def model_1d(reduce_dimensionality : bool = True, flatten : bool = True,
+def model_1d(reduce_dimensionality : bool = True, flatten : bool = True, channels: int = 2,
              input_dim : tuple = (None, 1, 16), output_dim : tuple = (None, 16, 1)):
 
     from simulai.templates import NetworkInstanceGen
 
     # Configuring model
 
-    auto_gen = NetworkInstanceGen(architecture='cnn', dim='1d', reduce_dimensionality=reduce_dimensionality)
+    auto_gen = NetworkInstanceGen(architecture='cnn', dim='1d')
 
     convnet = auto_gen(input_dim=input_dim,
                        output_dim=output_dim,
-                       channels=2,
+                       channels=channels,
                        activation='tanh',
                        name='conv_1d',
-                       flatten=flatten)
+                       flatten=flatten,
+                       reduce_dimensionality=reduce_dimensionality)
 
     return convnet
 
@@ -125,6 +127,7 @@ class TestAutoGenNet(TestCase):
 
         convnet = model_2d(reduce_dimensionality=False,
                            flatten=False,
+                           channels=1,
                            input_dim=(None, 16, 1, 1),
                            output_dim=(None, 1, 16, 16))
 
@@ -140,6 +143,7 @@ class TestAutoGenNet(TestCase):
 
         convnet = model_1d(reduce_dimensionality=False,
                            flatten=False,
+                           channels=1,
                            input_dim=(None, 16, 1),
                            output_dim=(None, 1, 16))
 
