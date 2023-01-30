@@ -16,6 +16,7 @@ from typing import Tuple, Union, Optional
 import importlib
 import warnings
 import scipy.sparse as sparse
+import numpy as np
 
 from simulai.abstract import Regression
 from ._pytorch_network import NetworkTemplate
@@ -322,4 +323,79 @@ class NetworkInstanceGen:
 
         return self.architecture_class(**config_dict)
 
+# Templates used for creating autoenoders using automatically
+# generated configurations
+
+# MLP autoencoder
+def mlp_autoencoder_auto(input_dim : int = None,
+                         latent_dim : int = None,
+                         output_dim : int = None,
+                         activation : str = None) -> Tuple[NetworkTemplate, ...]:
+
+    from simulai.templates import NetworkInstanceGen
+
+    msg = "If no encoder and decoder networks are provided, it is necessary to " \
+            "provide values for input_dim, latent_dim and output_dim in order to" \
+            "automatically construct the autoencoder."
+
+    assert type(input_dim) == type(output_dim) == type(latent_dim) == int, msg
+    assert type(activation) == str, "It is necessary to provide a value for the activation"
+
+    autogen = NetworkInstanceGen(architecture='dense')
+
+    encoder = autogen(input_dim=input_dim, output_dim=latent_dim, activation=activation)
+    decoder = autogen(input_dim=latent_dim, output_dim=output_dim, activation=activation)
+
+    return encoder, decoder
+
+# CNN autoencoder
+def cnn_autoencoder_auto(input_dim: int = None,
+                         latent_dim: int = None,
+                         output_dim: int = None,
+                         activation: str = None,
+                         channels: int = None,
+                         case: str = None) -> Tuple[NetworkTemplate, ...]:
+
+        from simulai.templates import NetworkInstanceGen
+
+        msg = "If no encoder and decoder networks are provided, it is necessary to " \
+              "provide values for input_dim, latent_dim and output_dim in order to" \
+              "automatically construct the autoencoder."
+
+        assert type(input_dim) == type(output_dim) == tuple, msg
+        assert type(latent_dim) == int, msg
+        assert type(activation) == str, "It is necessary to provide a value for the activation"
+        assert type(case) == str, "It is necessary to provide a value for the dimensional case"
+
+        last_channels = output_dim[1]
+
+        autogen_cnn = NetworkInstanceGen(architecture='cnn', dim=case)
+        autogen_dense = NetworkInstanceGen(architecture='dense')
+
+        encoder = autogen_cnn(input_dim=input_dim,
+                              activation=activation,
+                              channels=channels,
+                              flatten=False)
+
+        encoder.summary(input_shape=list(input_dim))
+
+        # Product of the collapsible dimensions
+        dense_input_size = int(np.prod(encoder.output_size[1:]))
+
+        bottleneck_encoder = autogen_dense(input_dim=dense_input_size,
+                                           output_dim=latent_dim,
+                                           activation=activation)
+
+        bottleneck_decoder = autogen_dense(input_dim=latent_dim,
+                                           output_dim=dense_input_size,
+                                           activation=activation)
+
+        decoder = autogen_cnn(input_dim=encoder.output_shape,
+                              output_dim=output_dim,
+                              activation=activation,
+                              channels=last_channels,
+                              flatten=False,
+                              reduce_dimensionality=False)
+
+        return encoder, decoder, bottleneck_encoder, bottleneck_decoder
 

@@ -14,7 +14,8 @@
 
 from simulai import engine
 
-from ._templates import ReservoirComputing, NetworkInstanceGen
+from ._templates import (ReservoirComputing, NetworkInstanceGen,
+                         mlp_autoencoder_auto, cnn_autoencoder_auto)
 
 if engine == "pytorch":
     from ._pytorch_network import (NetworkTemplate, ConvNetworkTemplate, HyperTrainTemplate,
