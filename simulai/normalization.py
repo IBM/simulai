@@ -203,6 +203,7 @@ class UnitarySymmetricalNormalization(UnitaryNormalization):
 
         return data_array_info_dict
 
+
     def transform(self, data:np.ndarray=None, eval:bool=False, axis:int=4) -> np.ndarray:
 
         if eval:
@@ -217,6 +218,11 @@ class UnitarySymmetricalNormalization(UnitaryNormalization):
                 self.value_min = data.min(axis_)
             else:
                 pass
+
+            if len(self.value_max.shape) == len(self.value_min.shape) == 1:
+
+                self.value_max = self.value_max[None, :]
+                self.value_min = self.value_min[None, :]
 
             return 2*(data - self.value_min)/(self.value_max - self.value_min) - 1
 

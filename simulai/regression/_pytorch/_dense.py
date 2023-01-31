@@ -230,6 +230,7 @@ class DenseNetwork(NetworkTemplate):
 
         input_tensor_ = input_data
 
+        # TODO It can be done using the PyTorch Sequential object
         for layer_id in range(len(self.layers)):
             output_tensor_ = self.layers[layer_id](input_tensor_)
             _output_tensor_ = self.activations[layer_id](output_tensor_)
