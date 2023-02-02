@@ -60,7 +60,16 @@ class ELM:
         self._matrix = getattr(self, '_' + self.form + '_matrix')
         self._right_side = getattr(self, '_' + self.form + '_right_side')
 
-        self.activation_func = getattr(np, self.activation)
+        if self.activation in dir(np):
+            self.activation_func = getattr(np, self.activation)
+        elif '_' + self.activation in dir(self):
+            self.activation_func = getattr(self, '_' + self.activation)
+        else:
+            raise Exception(f"It was not possible to find the actvation {activation}.")
+
+    def _sigmoid(self, input_data:np.ndarray = None) -> np.ndarray:
+
+        return 1/(1 + np.exp(-input_data))
 
     def _is_symmetric(self, matrix: np.ndarray = None) -> bool:
 
