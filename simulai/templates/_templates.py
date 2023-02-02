@@ -399,3 +399,37 @@ def cnn_autoencoder_auto(input_dim: int = None,
 
         return encoder, decoder, bottleneck_encoder, bottleneck_decoder
 
+def autoencoder_auto(input_dim: int = None,
+                     latent_dim: int = None,
+                     output_dim: int = None,
+                     activation: str = None,
+                     channels: int = None,
+                     architecture: str = None,
+                     case: str = None) -> Tuple[Union[NetworkTemplate, None], ...]:
+
+        if architecture == 'dense':
+
+            encoder, decoder = mlp_autoencoder_auto(input_dim=input_dim,
+                                                    latent_dim=latent_dim,
+                                                    output_dim=output_dim,
+                                                    activation=activation)
+
+            return encoder, decoder, None, None
+
+        elif architecture == 'cnn':
+
+            encoder, decoder, \
+            bottleneck_encoder, \
+            bottleneck_decoder = cnn_autoencoder_auto(input_dim=input_dim,
+                                                      latent_dim=latent_dim,
+                                                      output_dim=output_dim,
+                                                      activation=activation,
+                                                      channels=channels,
+                                                      case=case)
+
+            return encoder, decoder, bottleneck_encoder, bottleneck_decoder
+
+        else:
+            raise Exception(f'The architecture {architecture} is not supported.')
+
+

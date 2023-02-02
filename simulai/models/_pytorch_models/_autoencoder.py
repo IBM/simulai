@@ -209,7 +209,7 @@ class AutoencoderCNN(NetworkTemplate):
         self.device = self._set_device(devices=devices)
 
         # If not network is provided, the automatic generation
-        # pipeline is ativated.
+        # pipeline is activated.
         if all([isn == None for isn in [encoder, decoder,
                                         bottleneck_encoder, bottleneck_decoder]]):
 
@@ -447,6 +447,13 @@ class AutoencoderKoopman(NetworkTemplate):
                  bottleneck_decoder: Optional[Union[Linear,
                                                     DenseNetwork]] = None,
                  decoder: Union[ConvolutionalNetwork, DenseNetwork] = None,
+                 input_dim: Optional[Tuple[int, ...]] = None,
+                 output_dim: Optional[Tuple[int, ...]] = None,
+                 latent_dim: Optional[int] = None,
+                 activation: Optional[Union[list, str]] = None,
+                 channels: Optional[int] = None,
+                 case: Optional[str] = None,
+                 architecture: Optional[str] = None,
                  encoder_activation: str = 'relu',
                  devices: Union[str, list] = 'cpu') -> None:
 
@@ -457,6 +464,23 @@ class AutoencoderKoopman(NetworkTemplate):
         # Determining the kind of device to be used for allocating the
         # subnetworks
         self.device = self._set_device(devices=devices)
+
+        # If not network is provided, the automatic generation
+        # pipeline is activated.
+        if all([isn == None for isn in [encoder, decoder,
+                                        bottleneck_encoder, bottleneck_decoder]]):
+
+            from simulai.templates import autoencoder_auto
+
+            encoder, decoder, \
+            bottleneck_encoder, \
+            bottleneck_decoder = autoencoder_auto(input_dim=input_dim,
+                                                  latent_dim=latent_dim,
+                                                  output_dim=output_dim,
+                                                  activation=activation,
+                                                  channels=channels,
+                                                  architecture=architecture,
+                                                  case=case)
 
         self.encoder = encoder.to(self.device)
         self.decoder = decoder.to(self.device)
@@ -655,7 +679,6 @@ class AutoencoderKoopman(NetworkTemplate):
 
         return reconstructed_data.cpu().detach().numpy()
 
-
 class AutoencoderVariational(NetworkTemplate):
     """
 
@@ -689,6 +712,13 @@ class AutoencoderVariational(NetworkTemplate):
                                                     DenseNetwork]] = None,
                  decoder: Union[ConvolutionalNetwork, DenseNetwork] = None,
                  encoder_activation: str = 'relu',
+                 input_dim: Optional[Tuple[int, ...]] = None,
+                 output_dim: Optional[Tuple[int, ...]] = None,
+                 latent_dim: Optional[int] = None,
+                 activation: Optional[Union[list, str]] = None,
+                 channels: Optional[int] = None,
+                 case: Optional[str] = None,
+                 architecture: Optional[str] = None,
                  scale: float = 1e-3,
                  devices: Union[str, list] = 'cpu') -> None:
 
@@ -699,6 +729,23 @@ class AutoencoderVariational(NetworkTemplate):
         # Determining the kind of device to be used for allocating the
         # subnetworks
         self.device = self._set_device(devices=devices)
+
+        # If not network is provided, the automatic generation
+        # pipeline is activated.
+        if all([isn == None for isn in [encoder, decoder,
+                                        bottleneck_encoder, bottleneck_decoder]]):
+
+            from simulai.templates import autoencoder_auto
+
+            encoder, decoder, \
+            bottleneck_encoder, \
+            bottleneck_decoder = autoencoder_auto(input_dim=input_dim,
+                                                  latent_dim=latent_dim,
+                                                  output_dim=output_dim,
+                                                  activation=activation,
+                                                  channels=channels,
+                                                  architecture=architecture,
+                                                  case=case)
 
         self.encoder = encoder.to(self.device)
         self.decoder = decoder.to(self.device)
