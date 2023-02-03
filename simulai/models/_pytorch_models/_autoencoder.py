@@ -25,7 +25,8 @@ from simulai.regression import ConvolutionalNetwork, Linear
 ########################################
 
 class AutoencoderMLP(NetworkTemplate):
-    """
+
+    r"""
      This is an implementation of a Fully-connected AutoEncoder as
            Reduced Order Model;
 
@@ -42,6 +43,7 @@ class AutoencoderMLP(NetworkTemplate):
 
               ENCODER       DECODER
     """
+
     def __init__(self,
                  encoder: DenseNetwork = None,
                  decoder: DenseNetwork = None,
@@ -168,6 +170,7 @@ class AutoencoderMLP(NetworkTemplate):
 
 # Convolutional AutoEncoder
 class AutoencoderCNN(NetworkTemplate):
+
     r"""
     This is an implementation of a convolutional autoencoder as Reduced Order Model.
     An autoencoder architecture consists of three stages:
@@ -186,6 +189,7 @@ class AutoencoderCNN(NetworkTemplate):
 
                     ENCODER               DENSE BOTTLENECK           DECODER
     """
+
     def __init__(self,
                  encoder: ConvolutionalNetwork = None,
                  bottleneck_encoder: Linear = None,
@@ -424,7 +428,8 @@ class AutoencoderCNN(NetworkTemplate):
 
 
 class AutoencoderKoopman(NetworkTemplate):
-    """
+
+    r"""
 
     This is an implementation of a Koopman autoencoder as
 
@@ -449,6 +454,7 @@ class AutoencoderKoopman(NetworkTemplate):
                     ENCODER               DENSE BOTTLENECK           DECODER
 
     """
+
     def __init__(self,
                  encoder: Union[ConvolutionalNetwork, DenseNetwork] = None,
                  bottleneck_encoder: Optional[Union[Linear,
@@ -727,7 +733,8 @@ class AutoencoderKoopman(NetworkTemplate):
         return reconstructed_data.cpu().detach().numpy()
 
 class AutoencoderVariational(NetworkTemplate):
-    """
+
+    r"""
 
            This is an implementation of a Koopman autoencoder as
            Reduced Order Model;
@@ -751,6 +758,7 @@ class AutoencoderVariational(NetworkTemplate):
                           ENCODER               DENSE BOTTLENECK           DECODER
 
     """
+
     def __init__(self,
                  encoder: Union[ConvolutionalNetwork, DenseNetwork] = None,
                  bottleneck_encoder: Optional[Union[Linear,
