@@ -48,7 +48,7 @@ class Kansas:
         """
     
         self.Nk = centers.shape[0] # number of centers of kernels
-        self.kernel= kernel #kernel function or string specifiying the type of kernel function
+        self.kernel = kernel #kernel function or string specifiying the type of kernel function
         self.eps = eps #tolerance to take off interpolation matrices elements
         self.points = np.float32(points) # interpolation points
         self.centers = np.float32(centers) # kernel centers
@@ -122,7 +122,7 @@ class Kansas:
             G : ndarray 
             The interpolation matrix.
         """
-        G = self.kernel(self.r2, self.sigma2, self.kernel)
+        G = self.Kernel(self.r2, self.sigma2, self.kernel)
 
         return G
 
@@ -402,7 +402,7 @@ class Kansas:
 
         return
 
-    def kernel(self, r2 : np.ndarray = None,
+    def Kernel(self, r2 : np.ndarray = None,
                sigma2 : float = None,
                kernel_type : str = None) -> np.ndarray:
         """
