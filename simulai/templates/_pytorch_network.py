@@ -524,7 +524,10 @@ class ConvNetworkTemplate(NetworkTemplate):
         return merged_list
 
     # It prints an overview of the network architecture
-    def summary(self, input_data:Union[torch.Tensor, np.ndarray]=None, input_shape:list=None, device:str='cpu') -> None:
+    def summary(self, input_data : Union[torch.Tensor, np.ndarray] = None,
+                input_shape : list = None,
+                device : str = 'cpu',
+                display : bool = True) -> None:
 
         import pprint
         from collections import OrderedDict
@@ -590,7 +593,8 @@ class ConvNetworkTemplate(NetworkTemplate):
 
             input_tensor_ = output_tensor_after_conv
 
-        pprint.pprint(shapes_dict, indent=2)
+        if display == True:
+            pprint.pprint(shapes_dict, indent=2)
 
         output_size = list(shapes_dict.values())[-1]['Output shape']
         self.input_size = list(shapes_dict.values())[0]['Input shape']
