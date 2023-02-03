@@ -194,6 +194,17 @@ class TestAutoGenNet(TestCase):
 
         assert estimated_data.shape == input_data.shape
 
+        # Removing explicit reference to output_dim
+        autoencoder = AutoencoderMLP(input_dim=64,
+                                     latent_dim=8,
+                                     activation='tanh')
+
+        autoencoder.summary()
+
+        estimated_data = autoencoder.eval(input_data=input_data)
+
+        assert estimated_data.shape == input_data.shape
+
     def test_autoencoder_cnn(self) -> None:
 
         from simulai.models import AutoencoderCNN
@@ -209,3 +220,62 @@ class TestAutoGenNet(TestCase):
         estimated_data = autoencoder.eval(input_data=input_data)
 
         assert estimated_data.shape == input_data.shape
+
+        # Removing explicit reference to output_dim
+        autoencoder = AutoencoderCNN(input_dim=(None, 1, 64, 64),
+                                     latent_dim=8,
+                                     activation='tanh',
+                                     case='2d')
+
+        estimated_data = autoencoder.eval(input_data=input_data)
+
+        assert estimated_data.shape == input_data.shape
+
+    def test_autoencoder_koopman(self) -> None:
+
+        from simulai.models import AutoencoderKoopman
+
+        input_data = np.random.rand(100, 1, 64, 64)
+
+        autoencoder = AutoencoderKoopman(input_dim=(None, 1, 64, 64),
+                                         latent_dim=8,
+                                         output_dim=(None, 1, 64, 64),
+                                         activation='tanh',
+                                         architecture='cnn',
+                                         case='2d')
+
+        estimated_data = autoencoder.predict(input_data=input_data, n_steps=1)
+
+        assert estimated_data.shape == input_data.shape
+
+        # Removing explicit reference to output_dim
+        autoencoder = AutoencoderKoopman(input_dim=(None, 1, 64, 64),
+                                         latent_dim=8,
+                                         activation='tanh',
+                                         architecture='cnn',
+                                         case='2d')
+
+        autoencoder.summary()
+        estimated_data = autoencoder.predict(input_data=input_data, n_steps=1)
+
+        assert estimated_data.shape == input_data.shape
+
+    def test_autoencoder_rectangle(self) -> None:
+
+        from simulai.models import AutoencoderVariational
+
+        input_data = np.random.rand(100, 1, 64, 128)
+
+        autoencoder = AutoencoderVariational(input_dim=(None, 1, 64, 128),
+                                             latent_dim=8,
+                                             activation='tanh',
+                                             architecture='cnn',
+                                             case='2d')
+
+        estimated_data = autoencoder.eval(input_data=input_data)
+
+        autoencoder.summary()
+
+        assert estimated_data.shape == input_data.shape
+
+

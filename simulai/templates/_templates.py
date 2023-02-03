@@ -121,7 +121,7 @@ class NetworkInstanceGen:
 
         if input_dim > output_dim:
 
-            while (ref % self.divisor < ref) and (result > 2 * self.divisor * output_dim) :
+            while (ref % self.divisor < ref) and (result > self.divisor * output_dim) :
 
                 result, remainder = divmod(ref, self.divisor)
                 ref = result
@@ -129,13 +129,11 @@ class NetworkInstanceGen:
 
         else:
 
-            while (result < int(output_dim / (2*self.multiplier))):
+            while (result < int(output_dim / (self.multiplier))):
 
                 result *= self.multiplier
 
                 units_list.append(result)
-
-        units_list.append(output_dim)
 
         config_dict = {'layers_units' : units_list,
                        'activations' : activation,
@@ -329,7 +327,7 @@ class NetworkInstanceGen:
 # MLP autoencoder
 def mlp_autoencoder_auto(input_dim : int = None,
                          latent_dim : int = None,
-                         output_dim : int = None,
+                         output_dim : Optional[int] = None,
                          activation : str = None) -> Tuple[NetworkTemplate, ...]:
 
     from simulai.templates import NetworkInstanceGen
@@ -337,6 +335,12 @@ def mlp_autoencoder_auto(input_dim : int = None,
     msg = "If no encoder and decoder networks are provided, it is necessary to " \
             "provide values for input_dim, latent_dim and output_dim in order to" \
             "automatically construct the autoencoder."
+
+    if output_dim == None:
+        print("As no output_dim was provided, it is considered an identity autoencoder, so" +
+              "output_dim == input_dim")
+
+        output_dim = input_dim
 
     assert type(input_dim) == type(output_dim) == type(latent_dim) == int, msg
     assert type(activation) == str, "It is necessary to provide a value for the activation"
@@ -349,9 +353,9 @@ def mlp_autoencoder_auto(input_dim : int = None,
     return encoder, decoder
 
 # CNN autoencoder
-def cnn_autoencoder_auto(input_dim: int = None,
+def cnn_autoencoder_auto(input_dim: Tuple[int, ...] = None,
                          latent_dim: int = None,
-                         output_dim: int = None,
+                         output_dim: Optional[Tuple[int, ...]] = None,
                          activation: str = None,
                          channels: int = None,
                          case: str = None) -> Tuple[NetworkTemplate, ...]:
@@ -361,6 +365,13 @@ def cnn_autoencoder_auto(input_dim: int = None,
         msg = "If no encoder and decoder networks are provided, it is necessary to " \
               "provide values for input_dim, latent_dim and output_dim in order to" \
               "automatically construct the autoencoder."
+
+        if output_dim == None:
+
+            print("As no output_dim was provided, it is considered an identity autoencoder, so"+
+                  "output_dim == input_dim")
+
+            output_dim = input_dim
 
         assert type(input_dim) == type(output_dim) == tuple, msg
         assert type(latent_dim) == int, msg
@@ -377,7 +388,7 @@ def cnn_autoencoder_auto(input_dim: int = None,
                               channels=channels,
                               flatten=False)
 
-        encoder.summary(input_shape=list(input_dim))
+        encoder.summary(input_shape=list(input_dim), display=False)
 
         # Product of the collapsible dimensions
         dense_input_size = int(np.prod(encoder.output_size[1:]))
@@ -399,9 +410,9 @@ def cnn_autoencoder_auto(input_dim: int = None,
 
         return encoder, decoder, bottleneck_encoder, bottleneck_decoder
 
-def autoencoder_auto(input_dim: int = None,
+def autoencoder_auto(input_dim: Union[int, Tuple[int, ...]] = None,
                      latent_dim: int = None,
-                     output_dim: int = None,
+                     output_dim: Optional[Union[int, Tuple[int, ...]]] = None,
                      activation: str = None,
                      channels: int = None,
                      architecture: str = None,
