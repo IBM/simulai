@@ -15,12 +15,18 @@
 import numpy as np
 import scipy as sp
 import scipy.spatial as spatial
+from scipy.sparse import csc_matrix
 import sympy as sy
 import numexpr as ne
+from typing import Union, Tuple
 
 class Kansas:
 
-    def __init__(self,points,centers, sigma2 ="auto",Kernel="gaussian", eps = 1e-8):
+    def __init__(self, points : np.ndarray = None,
+                 centers : np.ndarray = None,
+                 sigma2 : Union[str, float] = "auto",
+                 kernel : str = "gaussian",
+                 eps : float = 1e-8) -> None:
 
         """
         Initialize the radial basis function interpolator.
@@ -34,7 +40,7 @@ class Kansas:
         sigma2 : Union[str, float], optional
             The variance of the kernel functions. If set to "auto", the variance is calculated from the maximum distance
             between centers.
-        Kernel : str, optional
+        kernel : str, optional
             The type of kernel function to use.
         eps : float, optional
             The tolerance for eliminating elements from the interpolation matrices.
@@ -42,7 +48,7 @@ class Kansas:
         """
     
         self.Nk = centers.shape[0] # number of centers of kernels
-        self.Kernel= Kernel #kernel function or string specifiying the type of kernel function
+        self.kernel= kernel #kernel function or string specifiying the type of kernel function
         self.eps = eps #tolerance to take off interpolation matrices elements
         self.points = np.float32(points) # interpolation points
         self.centers = np.float32(centers) # kernel centers
@@ -71,7 +77,7 @@ class Kansas:
         self.use_optimized = False
         self.kernel_list = [ "gaussian", "MQ" ,"IMQ" ] #declare optimized implemented kernels
 
-        if self.Kernel in self.kernel_list :
+        if self.kernel in self.kernel_list :
 
             self.use_optimized = True
 
@@ -83,12 +89,10 @@ class Kansas:
             self.x = sy.symbols("x")
             x =self.x
             sigma2 = self.sigma2
-            self.expr = eval(self.Kernel)
+            self.expr = eval(self.kernel)
         return
 
-
-       
-    def get_interpolation_matrix(self):
+    def get_interpolation_matrix(self) -> None:
         """
         Calculates and returns the interpolation matrix for the given set of points. If `self.use_optimized` is True,
         the optimized version of the interpolation matrix is calculated and returned. Otherwise, the interpolation matrix
@@ -109,7 +113,7 @@ class Kansas:
 
         return G
 
-    def get_interpolation_matrix_optimized(self):
+    def get_interpolation_matrix_optimized(self) -> np.ndarray:
         """
         Calculate the interpolation matrix using an optimized method.
 
@@ -118,10 +122,11 @@ class Kansas:
             G : ndarray 
             The interpolation matrix.
         """
-        G = self.kernel(self.r2, self.sigma2, self.Kernel)
+        G = self.kernel(self.r2, self.sigma2, self.kernel)
+
         return G
 
-    def get_first_derivative_matrix(self, var_index):
+    def get_first_derivative_matrix(self, var_index : int) -> np.ndarray:
         """
         Calculate the first derivative matrix of a specific variable.
 
@@ -145,8 +150,7 @@ class Kansas:
 
         return Dx
 
-
-    def get_first_derivative_matrix_optimized(self, var_index):
+    def get_first_derivative_matrix_optimized(self, var_index : int = None) -> csc_matrix:
         """
         Compute the first derivative matrix of the kernel function with respect to the variable at the given index.
         
@@ -166,7 +170,7 @@ class Kansas:
          
         rx = self.points[:, [var_index]] - self.centers[:, var_index]
 
-        Dx = self.kernel_Dx(self.r2, rx, self.sigma2, self.Kernel)
+        Dx = self.kernel_Dx(self.r2, rx, self.sigma2, self.kernel)
 
         Dx[np.abs(Dx) < self.eps] = 0.0
 
@@ -174,8 +178,7 @@ class Kansas:
 
         return Dx
 
-       
-    def get_first_derivative_matrix_aux(self,var_index):
+    def get_first_derivative_matrix_aux(self,var_index : int = None) -> Tuple[csc_matrix, np.ndarray]:
         """
         Compute the auxiliary matrices needed to compute the first derivative matrix of the kernel function with respect to the variable at the given index.
         
@@ -211,8 +214,8 @@ class Kansas:
 
         return Dx, dr2dx
 
-
-    def get_cross_derivative_matrix(self,var_index1,var_index2):
+    def get_cross_derivative_matrix(self, var_index1 : int = None,
+                                    var_index2 : int = None) -> csc_matrix:
         """
         Compute the cross derivative matrix of the kernel function with respect to the variables at the given indices.
         
@@ -260,8 +263,8 @@ class Kansas:
 
         return Dxy
 
-
-    def get_cross_derivative_matrix_optimized(self, var_index1,var_index2):
+    def get_cross_derivative_matrix_optimized(self, var_index1 : int = None,
+                                              var_index2 : int = None) -> np.ndarray:
         """
         Compute the cross derivative matrix of the kernel function with respect to the variables at the given indices using an optimized method.
         
@@ -282,12 +285,11 @@ class Kansas:
 
         ry = self.points[:, [var_index2]] - self.centers[:, var_index2]
 
-        Dxy = self.kernel_Dxy(self.r2,rx,ry ,self.sigma2, self.Kernel)
+        Dxy = self.kernel_Dxy(self.r2,rx,ry ,self.sigma2, self.kernel)
 
         return Dxy
 
-
-    def get_second_derivative_matrix(self,var_index):
+    def get_second_derivative_matrix(self, var_index : int) -> csc_matrix:
         """
         Compute the second derivative matrix of the kernel function with respect to the variable at the given index.
         
@@ -332,7 +334,7 @@ class Kansas:
 
         return Dxx
 
-    def get_second_derivative_matrix_optimized(self, var_index):
+    def get_second_derivative_matrix_optimized(self, var_index : int) -> np.ndarray:
         """
         Compute the second derivative matrix of the kernel function with respect to the variable at the given index using an optimized method.
         
@@ -351,11 +353,11 @@ class Kansas:
 
         rx2 = (self.points[:, [var_index]] - self.centers[:, var_index])**2
 
-        Dxx = self.kernel_Dxx(self.r2,rx2 ,self.sigma2, self.Kernel)
+        Dxx = self.kernel_Dxx(self.r2,rx2 ,self.sigma2, self.kernel)
 
         return Dxx
 
-    def get_laplacian_matrix(self):
+    def get_laplacian_matrix(self) -> csc_matrix:
         """
         Compute the Laplacian matrix of the kernel function.
         
@@ -366,7 +368,7 @@ class Kansas:
         
         """
         if self.use_optimized:
-            L = self.kernel_Laplacian(self.r2, self.sigma2, self.Kernel)
+            L = self.kernel_Laplacian(self.r2, self.sigma2, self.kernel)
         else :
 
             d2expr = self.expr.diff(self.x,2)
@@ -384,7 +386,7 @@ class Kansas:
 
         return L
 
-    def gen_f1(self):
+    def gen_f1(self) -> None:
         """
         Generate the first derivative of the kernel function.
         
@@ -400,7 +402,9 @@ class Kansas:
 
         return
 
-    def kernel(self,r2,sigma2,Kernel_type):
+    def kernel(self, r2 : np.ndarray = None,
+               sigma2 : float = None,
+               kernel_type : str = None) -> np.ndarray:
         """
         Compute the kernel function.
         
@@ -410,7 +414,7 @@ class Kansas:
             The array of squared distances.
         sigma2 : float
             The variance parameter of the kernel function.
-        Kernel_type : str
+        kernel_type : str
             The type of kernel function to use. Can be "gaussian", "MQ", or "IMQ".
         
         Returns
@@ -419,27 +423,30 @@ class Kansas:
             The kernel function evaluated at the given squared distances.
         """
 
-        if Kernel_type == "gaussian":
+        if kernel_type == "gaussian":
             G = ne.evaluate('exp(-r2/(2.0*sigma2))' )
 
             #G = np.exp(-r2/(2.0*sigma2))
 
-        elif Kernel_type == "MQ" :
+        elif kernel_type == "MQ" :
 
             G = ne.evaluate("sqrt(r2 + sigma2)")
 
-        elif Kernel_type == "IMQ":
+        elif kernel_type == "IMQ":
             G = ne.evaluate("1.0/sqrt(r2 + sigma2)")
 
         else :
 
-            print(" this kernel does not exist: ", Kernel_type)
+            print(" this kernel does not exist: ", kernel_type)
 
         G = np.float32(G)
 
         return G
 
-    def kernel_Dx(self,r2,rx,sigma2,Kernel_type):
+    def kernel_Dx(self, r2 : float = None,
+                  rx : float = None,
+                  sigma2 : float = None,
+                  kernel_type : str = None) -> float:
         """
         Calculate the derivative of a kernel function with respect to a distance value.
 
@@ -451,7 +458,7 @@ class Kansas:
             Distance between two points in a single dimension.
         sigma2 : float
             Hyperparameter for the kernel function.
-        Kernel_type : str
+        kernel_type : str
             Type of kernel to use. Must be one of 'gaussian', 'MQ', or 'IMQ'.
 
         Returns
@@ -461,28 +468,31 @@ class Kansas:
 
         """
         
-        if Kernel_type == "gaussian":
+        if kernel_type == "gaussian":
             Dx = ne.evaluate('-(rx/sigma2)*exp(-r2/(2.0*sigma2))')
 
             #Dx = -(rx/sigma2)*np.exp(-r2/(2.0*sigma2))
 
-        elif Kernel_type == "MQ" :
+        elif kernel_type == "MQ" :
 
             Dx = ne.evaluate('rx/sqrt(r2 + sigma2)')
 
-        elif Kernel_type == "IMQ":
+        elif kernel_type == "IMQ":
 
             Dx = ne.evaluate('-rx*((r2 + sigma2)**(-1.5))')
 
         else :
-            print(" this kernel does not exist: ",Kernel_type)
+            print(" this kernel does not exist: ",kernel_type)
 
         Dx = np.float32(Dx)
 
         return Dx
 
-
-    def kernel_Dxy(self,r2,rx,ry,sigma2,Kernel_type):
+    def kernel_Dxy(self,r2 : float = None,
+                   rx : float = None,
+                   ry : float = None,
+                   sigma2 : float = None,
+                   kernel_type : str = None) -> float:
         """
         Calculate the mixed second partial derivative of a kernel function.
 
@@ -496,7 +506,7 @@ class Kansas:
             Distance between two points in a single dimension.
         sigma2 : float
             Hyperparameter for the kernel function.
-        Kernel_type : str
+        kernel_type : str
             Type of kernel to use. Must be one of 'gaussian', 'MQ', or 'IMQ'.
 
         Returns
@@ -504,25 +514,28 @@ class Kansas:
         Dxy : float
             Mixed second partial derivative of the kernel function with respect to `rx` and `ry`.
         """
-        if Kernel_type == "gaussian":
+        if kernel_type == "gaussian":
             Dxy = ne.evaluate('((rx*ry)/(sigma2**2))*exp(-r2/(2*sigma2))')
 
-        elif Kernel_type == "MQ" :
+        elif kernel_type == "MQ" :
 
             Dxy = ne.evaluate('3.0*rx*ry*((r2 + sigma2)**(-2.5))')
 
-        elif Kernel_type == "IMQ":
+        elif kernel_type == "IMQ":
 
             Dxy = ne.evaluate('5.0*rx*ry*((r2 + sigma2)**(-3.5))')
 
         else :
-            print(" this kernel does not exist: ",Kernel_type)
+            print(" this kernel does not exist: ",kernel_type)
 
         Dxy = np.float32(Dxy)
 
         return Dxy
 
-    def kernel_Dxx(self,r2,rx2,sigma2,Kernel_type):
+    def kernel_Dxx(self,r2 : float = None,
+                   rx2 : float = None,
+                   sigma2 : float = None,
+                   kernel_type : str = None) -> float:
         """
         Calculate the Dxx value for a given kernel type.
 
@@ -534,7 +547,7 @@ class Kansas:
             The square of the distance between two points in the x direction.
         sigma2 : float
             The square of the kernel width.
-        Kernel_type : str
+        kernel_type : str
             The type of kernel to use. Can be either "gaussian", "MQ", or "IMQ".
 
         Returns
@@ -543,25 +556,27 @@ class Kansas:
             The Dxx value for the given kernel type.
 
         """
-        if Kernel_type == "gaussian":
+        if kernel_type == "gaussian":
 
             Dxx = ne.evaluate('((rx2/(sigma2**2)) - (1.0/sigma2) )*exp(-r2/(2.0*sigma2))' )
 
 
-        elif Kernel_type == "MQ" :
+        elif kernel_type == "MQ" :
 
             Dxx = ne.evaluate('(1.0/sqrt(r2 + sigma2))-rx2*((r2 + sigma2)**(-1.5))')
-        elif Kernel_type == "IMQ":
+        elif kernel_type == "IMQ":
 
             Dxx = ne.evaluate('-((r2 + sigma2)**(-1.5))+3.0*rx2*((r2 + sigma2)**(-2.5))')
         else :
-            print(" thins kernel does not exist: ",Kernel_type)
+            print(" thins kernel does not exist: ",kernel_type)
 
         Dxx = np.float32(Dxx)
 
         return Dxx
 
-    def kernel_Laplacian(self,r2,sigma2,Kernel_type):
+    def kernel_Laplacian(self,r2 : float = None,
+                         sigma2 : float = None,
+                         kernel_type : str = None) -> float:
         """
         Calculate the Laplacian value for a given kernel type.
 
@@ -571,7 +586,7 @@ class Kansas:
             The square of the distance between two points.
         sigma2 : float
             The square of the kernel width.
-        Kernel_type : str
+        kernel_type : str
             The type of kernel to use. Can be either "gaussian", "MQ", or "IMQ".
 
         Returns
@@ -582,19 +597,19 @@ class Kansas:
         """
         ndim = float(self.ndim)
 
-        if Kernel_type == "gaussian":
+        if kernel_type == "gaussian":
             L = ne.evaluate('((r2/(sigma2**2.0)) - (ndim/sigma2) )*exp(-r2/(2.0*sigma2))' )
             #L =((r2 / (sigma2 ** 2.0)) - (ndim / sigma2)) * np.exp(-r2 / (2.0 * sigma2))
 
-        elif Kernel_type == "MQ" :
+        elif kernel_type == "MQ" :
             L = ne.evaluate('(ndim/sqrt(r2 + sigma2))-r2*((r2 + sigma2)**(-1.5))')
             #L = 2/np.sqrt(r2 + (2 * sigma2)) - r2*np.power(r2 + (2 * sigma2),1.5)
 
-        elif Kernel_type == "IMQ":
+        elif kernel_type == "IMQ":
             L = ne.evaluate('-ndim*((r2 + sigma2)**(-1.5))+3.0*r2*((r2 + sigma2)**(-2.5))')
             #L = -2*np.power(r2 + (2 * sigma2),-1.5)+3*r2*np.power(r2 + (2 * sigma2),-2.5)
         else :
-            print(" thins kernel does not exist: ",Kernel_type)
+            print(" thins kernel does not exist: ",kernel_type)
 
         L = np.float32(L)
 
