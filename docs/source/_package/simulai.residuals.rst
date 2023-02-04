@@ -3,7 +3,9 @@ Residuals Package
 
 simulai.residuals._pytorch_residuals module
 -------------------------------------------
-.. automodule:: simulai.residuals._pytorch_residuals
+.. currentmodule:: simulai.residuals._pytorch_residuals 
+
+.. autofunction:: SymbolicOperator
+
+.. autoclass:: SymbolicOperatorClass
    :members:
-   :undoc-members:
-   :show-inheritance:
