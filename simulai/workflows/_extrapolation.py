@@ -24,7 +24,6 @@ from simulai.templates import NetworkTemplate
 #  and replaced by |
 
 
-
 # This is a wrapper for extrapolation step by step using a pre-existent model
 class StepwiseExtrapolation:
     def __init__(

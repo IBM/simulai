@@ -29,7 +29,6 @@ from simulai.templates import ReservoirComputing
 #     limitations under the License.
 
 
-
 # It could be used for executing multi-core CPU or even GPU jobs
 # with NumPy arrays
 def tensor_dot(self, engine: str = "numba") -> callable:

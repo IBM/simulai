@@ -21,8 +21,9 @@ import torch
 
 from simulai.abstract import Regression
 from simulai.math.expressions import FromSymbol2FLambda
-from simulai.regression import OpInfNetwork
 from simulai.templates import NetworkTemplate, as_tensor, guarantee_device
+
+from ._opinf import OpInfNetwork
 
 
 # Wrapper class for constructing Koopman operators using tensor algebra

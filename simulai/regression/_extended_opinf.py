@@ -17,7 +17,8 @@ from typing import List, Union
 import numpy as np
 
 from simulai.math.expressions import FromSymbol2FLambda
-from simulai.regression import OpInf
+
+from ._opinf import OpInf
 
 
 # Wrapper class for constructing Koopman operators
