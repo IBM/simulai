@@ -12,13 +12,14 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import torch
-import numpy as np
-from typing import Union, List
+from typing import List, Union
 
+import numpy as np
+import torch
+
+from simulai.regression import SLFNN, ConvexDenseNetwork
 from simulai.templates import NetworkTemplate
-from simulai.regression import ConvexDenseNetwork
-from simulai.regression import SLFNN
+
 
 ############################
 #### Abstract
@@ -27,9 +28,11 @@ class ModelMaker:
     def __init__(self):
         pass
 
+
 class MetaModel:
     def __init__(self):
         pass
+
 
 ############################
 #### Improved Dense Network
@@ -38,13 +41,16 @@ class MetaModel:
 # Dense network with hidden encoders aimed at improving convergence
 class ImprovedDenseNetwork(NetworkTemplate):
 
-    name = 'improveddense'
-    engine = 'torch'
+    name = "improveddense"
+    engine = "torch"
 
-    def __init__(self, network:ConvexDenseNetwork,
-                       encoder_u: NetworkTemplate=None,
-                       encoder_v: NetworkTemplate=None,
-                       devices:Union[str, list]='cpu'):
+    def __init__(
+        self,
+        network: ConvexDenseNetwork,
+        encoder_u: NetworkTemplate = None,
+        encoder_v: NetworkTemplate = None,
+        devices: Union[str, list] = "cpu",
+    ):
 
         """
 
@@ -76,24 +82,28 @@ class ImprovedDenseNetwork(NetworkTemplate):
         # subnetworks used in the DeepONet model
         self.device = self._set_device(devices=devices)
 
-        assert n_hs == eu_os == ev_os, "The output of the encoders must have the same dimension" \
-                                       " of the network hidden size, but got" \
-                                       f" {eu_os}, {ev_os} and {n_hs}."
+        assert n_hs == eu_os == ev_os, (
+            "The output of the encoders must have the same dimension"
+            " of the network hidden size, but got"
+            f" {eu_os}, {ev_os} and {n_hs}."
+        )
 
         self.network = network.to(self.device)
         self.encoder_u = encoder_u.to(self.device)
         self.encoder_v = encoder_v.to(self.device)
 
-        self.add_module('network', self.network)
-        self.add_module('encoder_u', self.encoder_u)
-        self.add_module('encoder_v', self.encoder_v)
+        self.add_module("network", self.network)
+        self.add_module("encoder_u", self.encoder_u)
+        self.add_module("encoder_v", self.encoder_v)
 
         self.weights = list()
         self.weights += self.network.weights
         self.weights += self.encoder_u.weights
         self.weights += self.encoder_v.weights
 
-    def forward(self, input_data: Union[np.ndarray, torch.Tensor] = None) -> torch.Tensor:
+    def forward(
+        self, input_data: Union[np.ndarray, torch.Tensor] = None
+    ) -> torch.Tensor:
 
         """
 
@@ -112,19 +122,23 @@ class ImprovedDenseNetwork(NetworkTemplate):
 
         return output
 
+
 # Mixture of Experts POC
 class MoEPool(NetworkTemplate):
-
-    def __init__(self, experts_list:List[NetworkTemplate], gating_network:NetworkTemplate=None,
-                       input_size:int=None, devices:Union[list, str]=None,
-                       binary_selection:bool=False) -> None:
+    def __init__(
+        self,
+        experts_list: List[NetworkTemplate],
+        gating_network: NetworkTemplate = None,
+        input_size: int = None,
+        devices: Union[list, str] = None,
+        binary_selection: bool = False,
+    ) -> None:
 
         super(MoEPool, self).__init__()
 
         # Determining the kind of device to be used for allocating the
         # subnetworks used in the DeepONet model
         self.device = self._set_device(devices=devices)
-
 
         self.experts_list = experts_list
         self.n_experts = len(experts_list)
@@ -135,9 +149,11 @@ class MoEPool(NetworkTemplate):
 
         # The default gating network is a single-layer fully-connected network
         if gating_network is None:
-            self.gating_network = SLFNN(input_size=self.input_size,
-                                        output_size=self.n_experts,
-                                        activation='softmax').to(self.device)
+            self.gating_network = SLFNN(
+                input_size=self.input_size,
+                output_size=self.n_experts,
+                activation="softmax",
+            ).to(self.device)
 
         else:
             self.gating_network = gating_network.to(self.device)
@@ -146,10 +162,10 @@ class MoEPool(NetworkTemplate):
         for ei, expert in enumerate(self.experts_list):
             self.experts_list[ei] = expert.to(self.device)
 
-        self.add_module('gating', self.gating_network)
+        self.add_module("gating", self.gating_network)
 
         for ii, item in enumerate(self.experts_list):
-            self.add_module(f'expert_{ii}', item)
+            self.add_module(f"expert_{ii}", item)
 
         self.weights = sum([i.weights for i in self.experts_list], [])
         self.weights += self.gating_network.weights
@@ -161,11 +177,11 @@ class MoEPool(NetworkTemplate):
         else:
             self.get_weights = self._get_weights_bypass
 
-    def _get_weights_bypass(self, gating:torch.Tensor=None) -> torch.Tensor:
+    def _get_weights_bypass(self, gating: torch.Tensor = None) -> torch.Tensor:
 
-        return  gating
+        return gating
 
-    def _get_weights_binary(self, gating:torch.Tensor=None) -> torch.Tensor:
+    def _get_weights_binary(self, gating: torch.Tensor = None) -> torch.Tensor:
 
         maxs = torch.max(gating, dim=1).values[:, None]
 
@@ -178,7 +194,9 @@ class MoEPool(NetworkTemplate):
 
         return gating_weights_
 
-    def forward(self, input_data: Union[np.ndarray, torch.Tensor], **kwargs) -> torch.Tensor:
+    def forward(
+        self, input_data: Union[np.ndarray, torch.Tensor], **kwargs
+    ) -> torch.Tensor:
 
         gating_weights_ = self.gate(input_data=input_data)
 
@@ -189,4 +207,4 @@ class MoEPool(NetworkTemplate):
 
         output = list(map(_forward, self.experts_list))
 
-        return sum([g*o for g,o in zip(gating_weights, output)])
+        return sum([g * o for g, o in zip(gating_weights, output)])

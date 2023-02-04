@@ -12,16 +12,16 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
+import matplotlib.pyplot as plt
 import numpy as np
 import torch
-import matplotlib.pyplot as plt
 
-from simulai.regression import DenseNetwork
 from simulai.optimization import Optimizer
+from simulai.regression import DenseNetwork
 from simulai.residuals import SymbolicOperator
 
-class TestBurgersPINN:
 
+class TestBurgersPINN:
     def __init__(self):
         pass
 
@@ -30,12 +30,12 @@ class TestBurgersPINN:
         # Our PDE
         # Inviscid Burgers equation
 
-        f = 'D(u, t) + (1 / 2) * D(u ** 2, x)'
-        g_u = 'u'
-        g_l = 'u'
+        f = "D(u, t) + (1 / 2) * D(u ** 2, x)"
+        g_u = "u"
+        g_l = "u"
 
-        input_labels = ['x', 't']
-        output_labels = ['u']
+        input_labels = ["x", "t"]
+        output_labels = ["u"]
 
         n_inputs = len(input_labels)
         n_outputs = len(output_labels)
@@ -64,23 +64,34 @@ class TestBurgersPINN:
         dx = (x_L - x_0) / X_DIM
         dt = (t_L - t_0) / T_DIM
 
-        grid = np.mgrid[t_0+dt:t_L+dt:dt, x_0:x_L:dx]
+        grid = np.mgrid[t_0 + dt : t_L + dt : dt, x_0:x_L:dx]
 
-        data = np.hstack([grid[1].flatten()[:, None],
-                          grid[0].flatten()[:, None]])
+        data = np.hstack([grid[1].flatten()[:, None], grid[0].flatten()[:, None]])
 
         data_init = np.linspace(*x_interval, X_DIM)
         u_init = u0 * np.sin(2 * np.pi * data_init / L)[:, None]
 
         # Boundary grids
-        data_boundary_x0 = np.hstack([x_interval[0] * np.ones((T_DIM, 1)),
-                                      np.linspace(*t_interval, T_DIM)[:, None]])
+        data_boundary_x0 = np.hstack(
+            [
+                x_interval[0] * np.ones((T_DIM, 1)),
+                np.linspace(*t_interval, T_DIM)[:, None],
+            ]
+        )
 
-        data_boundary_xL = np.hstack([x_interval[-1] * np.ones((T_DIM, 1)),
-                                      np.linspace(*t_interval, T_DIM)[:, None]])
+        data_boundary_xL = np.hstack(
+            [
+                x_interval[-1] * np.ones((T_DIM, 1)),
+                np.linspace(*t_interval, T_DIM)[:, None],
+            ]
+        )
 
-        data_boundary_t0 = np.hstack([np.linspace(*x_interval, X_DIM)[:, None],
-                                      t_interval[0] * np.ones((X_DIM, 1))])
+        data_boundary_t0 = np.hstack(
+            [
+                np.linspace(*x_interval, X_DIM)[:, None],
+                t_interval[0] * np.ones((X_DIM, 1)),
+            ]
+        )
 
         # Visualizing the training mesh
         plt.scatter(*np.split(data, 2, axis=1))
@@ -96,44 +107,49 @@ class TestBurgersPINN:
 
         # Configuration for the fully-connected network
         config = {
-                    'layers_units': [50, 50, 50],
-                    'activations': 'tanh',
-                    'input_size': n_inputs,
-                    'output_size': n_outputs,
-                    'name': 'burgers_net'
-                 }
+            "layers_units": [50, 50, 50],
+            "activations": "tanh",
+            "input_size": n_inputs,
+            "output_size": n_outputs,
+            "name": "burgers_net",
+        }
 
-
-        #optimizer_config = {'lr' : 1e-2, 'threshold0' : 20, 'threshold' : 100, 'v0' : 1e-4, 'n_fixed_bounces' : 4, 'consEn' : True}
-        optimizer_config = {'lr': lr}
+        # optimizer_config = {'lr' : 1e-2, 'threshold0' : 20, 'threshold' : 100, 'v0' : 1e-4, 'n_fixed_bounces' : 4, 'consEn' : True}
+        optimizer_config = {"lr": lr}
 
         # Instantiating and training the surrogate model
         net = DenseNetwork(**config)
 
-        residual = SymbolicOperator(expressions=[f], input_vars=input_labels,
-                                    auxiliary_expressions={'upper': g_l, 'lower': g_u},
-                                    output_vars=output_labels, function=net,
-                                    engine='torch')
+        residual = SymbolicOperator(
+            expressions=[f],
+            input_vars=input_labels,
+            auxiliary_expressions={"upper": g_l, "lower": g_u},
+            output_vars=output_labels,
+            function=net,
+            engine="torch",
+        )
 
         # It prints a summary of the network features
         net.summary()
 
-        #optimizer = Optimizer('bbi', params=optimizer_config)
-        optimizer = Optimizer('adam', params=optimizer_config)
+        # optimizer = Optimizer('bbi', params=optimizer_config)
+        optimizer = Optimizer("adam", params=optimizer_config)
 
-        params = {'residual': residual,
-                  'initial_input': data_boundary_t0,
-                  'initial_state': u_init,
-                  'boundary_input': {'upper': data_boundary_xL, 'lower': data_boundary_x0},
-                  'boundary_penalties': [1, 1],
-                  'initial_penalty': 10,
-                  'causality_preserving': True,
-                  'grid_shape': (T_DIM, X_DIM),
-                  'causality_parameter': 0.10}
+        params = {
+            "residual": residual,
+            "initial_input": data_boundary_t0,
+            "initial_state": u_init,
+            "boundary_input": {"upper": data_boundary_xL, "lower": data_boundary_x0},
+            "boundary_penalties": [1, 1],
+            "initial_penalty": 10,
+            "causality_preserving": True,
+            "grid_shape": (T_DIM, X_DIM),
+            "causality_parameter": 0.10,
+        }
 
-        optimizer.fit(op=net, input_data=data,
-                      n_epochs=n_epochs, loss="pirmse", params=params)
-
+        optimizer.fit(
+            op=net, input_data=data, n_epochs=n_epochs, loss="pirmse", params=params
+        )
 
         # Evaluation and post-processing
         X_DIM_F = 5 * X_DIM
@@ -142,10 +158,9 @@ class TestBurgersPINN:
         x_f = np.linspace(*x_interval, X_DIM_F)
         t_f = np.linspace(*t_interval, T_DIM_F)
 
-        T_f, X_f = np.meshgrid(t_f, x_f, indexing='ij')
+        T_f, X_f = np.meshgrid(t_f, x_f, indexing="ij")
 
-        data_f = np.hstack([X_f.flatten()[:, None],
-                            T_f.flatten()[:, None]])
+        data_f = np.hstack([X_f.flatten()[:, None], T_f.flatten()[:, None]])
 
         # Evaluation in training dataset
         approximated_data = net.eval(input_data=data_f)
@@ -153,10 +168,8 @@ class TestBurgersPINN:
         U_f = approximated_data.reshape(T_DIM_F, X_DIM_F)
 
         fig, ax = plt.subplots()
-        ax.set_aspect('auto')
-        gf = ax.pcolormesh(X_f, T_f, U_f, cmap='jet')
+        ax.set_aspect("auto")
+        gf = ax.pcolormesh(X_f, T_f, U_f, cmap="jet")
         fig.colorbar(gf)
 
         plt.show()
-
-

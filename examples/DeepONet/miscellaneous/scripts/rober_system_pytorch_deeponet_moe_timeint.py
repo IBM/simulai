@@ -12,30 +12,32 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
-import matplotlib.pyplot as plt
-from unittest import TestCase
-import os
 import copy
+import os
+from unittest import TestCase
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 # In order to execute this script, it is necessary to
 # set the environment variable engine as "pytorch" before initializing
 # simulai
-os.environ['engine'] = 'pytorch'
+os.environ["engine"] = "pytorch"
 
-from simulai.regression import DenseNetwork
 from simulai.models import DeepONet, MoEPool
 from simulai.optimization import Optimizer
+from simulai.regression import DenseNetwork
 from simulai.residuals import SymbolicOperator
+
 
 def project_to_interval(interval, data):
 
-    return interval[1]*(data - data.min())/(data.max() - data.min()) + interval[0]
+    return interval[1] * (data - data.min()) / (data.max() - data.min()) + interval[0]
+
 
 # This is a very basic script for exploring the PDE solving via
 # feedforward fully-connected neural networks
 class TestROBER(TestCase):
-
     def setUp(self) -> None:
         pass
 
@@ -61,7 +63,7 @@ class TestROBER(TestCase):
         U_t = np.random.uniform(low=t_intv[0], high=t_intv[1], size=Q)
         U_s = np.random.uniform(low=s_intv[0], high=s_intv[1], size=(N, 3))
 
-        branch_input_train = np.tile(U_s[:, None, :], (1, Q, 1)).reshape(N*Q, -1)
+        branch_input_train = np.tile(U_s[:, None, :], (1, Q, 1)).reshape(N * Q, -1)
         trunk_input_train = np.tile(U_t[:, None], (N, 1))
 
         branch_input_test = np.tile(initial_state_test[None, :], Q)
@@ -69,8 +71,8 @@ class TestROBER(TestCase):
 
         initial_states = U_s
 
-        input_labels = ['t']
-        output_labels = ['s1', 's2', 's3']
+        input_labels = ["t"]
+        output_labels = ["s1", "s2", "s3"]
 
         n_inputs = len(input_labels)
         n_outputs = len(output_labels)
@@ -83,21 +85,21 @@ class TestROBER(TestCase):
 
         # Configuration for the fully-connected trunk network
         trunk_config = {
-                        'layers_units': 7*[100],  # Hidden layers
-                        'activations': 'tanh',
-                        'input_size': 1,
-                        'output_size': n_latent*n_outputs,
-                        'name': 'trunk_net'
-                       }
+            "layers_units": 7 * [100],  # Hidden layers
+            "activations": "tanh",
+            "input_size": 1,
+            "output_size": n_latent * n_outputs,
+            "name": "trunk_net",
+        }
 
         # Configuration for the fully-connected branch network
         branch_config = {
-                        'layers_units': 7*[100],  # Hidden layers
-                        'activations': 'tanh',
-                        'input_size': n_outputs,
-                        'output_size': n_latent*n_outputs,
-                        'name': 'branch_net',
-                        }
+            "layers_units": 7 * [100],  # Hidden layers
+            "activations": "tanh",
+            "input_size": n_outputs,
+            "output_size": n_latent * n_outputs,
+            "name": "branch_net",
+        }
 
         # Instantiating and training the surrogate model
         trunk_net = DenseNetwork(**trunk_config)
@@ -107,10 +109,12 @@ class TestROBER(TestCase):
         branch_net_2 = copy.copy(branch_net_0)
         branch_net_3 = copy.copy(branch_net_0)
 
-        branch_net = MoEPool(experts_list=[branch_net_0, branch_net_1, branch_net_2, branch_net_3],
-                             input_size=3)
+        branch_net = MoEPool(
+            experts_list=[branch_net_0, branch_net_1, branch_net_2, branch_net_3],
+            input_size=3,
+        )
 
-        optimizer_config = {'lr': lr}
+        optimizer_config = {"lr": lr}
 
         # Maximum derivative magnitudes to be used as loss weights
         penalties = [1, 1e6, 1]
@@ -118,48 +122,70 @@ class TestROBER(TestCase):
 
         # It prints a summary of the network features
         trunk_net.summary()
-        #branch_net.summary()
+        # branch_net.summary()
 
-        input_data = {'input_branch': branch_input_train, 'input_trunk': trunk_input_train}
+        input_data = {
+            "input_branch": branch_input_train,
+            "input_trunk": trunk_input_train,
+        }
 
-        rober_net = DeepONet(trunk_network=trunk_net,
-                             branch_network=branch_net,
-                             var_dim=n_outputs,
-                             model_id='rober_net')
+        rober_net = DeepONet(
+            trunk_network=trunk_net,
+            branch_network=branch_net,
+            var_dim=n_outputs,
+            model_id="rober_net",
+        )
 
-        residual = SymbolicOperator(expressions=[f_s1, f_s2, f_s3], input_vars=input_labels,
-                                    output_vars=output_labels, function=rober_net,
-                                    inputs_key='input_trunk',
-                                    constants={"k1": k1, "k2": k2,
-                                               "k3": k3},
-                                    engine='torch')
+        residual = SymbolicOperator(
+            expressions=[f_s1, f_s2, f_s3],
+            input_vars=input_labels,
+            output_vars=output_labels,
+            function=rober_net,
+            inputs_key="input_trunk",
+            constants={"k1": k1, "k2": k2, "k3": k3},
+            engine="torch",
+        )
 
-        optimizer = Optimizer('adam', params=optimizer_config, lr_decay_scheduler_params={'name': 'ExponentialLR',
-                                                                                          'gamma': 0.9,
-                                                                                          'decay_frequency': 5_0})
+        optimizer = Optimizer(
+            "adam",
+            params=optimizer_config,
+            lr_decay_scheduler_params={
+                "name": "ExponentialLR",
+                "gamma": 0.9,
+                "decay_frequency": 5_0,
+            },
+        )
 
-        params = {'lambda_1': lambda_1,
-                  'lambda_2': lambda_2,
-                  'residual': residual,
-                  'initial_input': {'input_trunk': np.zeros((N, 1)), 'input_branch': initial_states},
-                  'initial_state': initial_states,
-                  'weights_residual': [1, 1, 1],
-                  'weights': penalties}
+        params = {
+            "lambda_1": lambda_1,
+            "lambda_2": lambda_2,
+            "residual": residual,
+            "initial_input": {
+                "input_trunk": np.zeros((N, 1)),
+                "input_branch": initial_states,
+            },
+            "initial_state": initial_states,
+            "weights_residual": [1, 1, 1],
+            "weights": penalties,
+        }
 
-        optimizer.fit(op=rober_net, input_data=input_data,
-                      n_epochs=n_epochs, loss="opirmse", params=params, device='gpu', batch_size=batch_size)
+        optimizer.fit(
+            op=rober_net,
+            input_data=input_data,
+            n_epochs=n_epochs,
+            loss="opirmse",
+            params=params,
+            device="gpu",
+            batch_size=batch_size,
+        )
 
-        approximated_data = rober_net.eval(trunk_data=trunk_input_test, branch_data=branch_input_test)
+        approximated_data = rober_net.eval(
+            trunk_data=trunk_input_test, branch_data=branch_input_test
+        )
 
         for ii in range(n_inputs):
 
             plt.plot(approximated_data[:, ii], label="Approximated")
             plt.legend()
-            plt.savefig(f'rober_deeponet_time_int_{ii}.png')
+            plt.savefig(f"rober_deeponet_time_int_{ii}.png")
             plt.show()
-
-
-
-
-
-

@@ -3,8 +3,9 @@
 ####################################################################################################
 
 import numpy as np
-from simulai.regression import OpInf
+
 from simulai.metrics import L2Norm
+from simulai.regression import OpInf
 
 # Number of samples and number of variables
 N_SAMPLES = 10000
@@ -31,11 +32,16 @@ R_matrix_list = []
 # Iterate over the batch sizes
 for batch_size in batch_sizes:
     # Create an OpInf object
-    model = OpInf(solver='lstsq', parallel='mpi')
+    model = OpInf(solver="lstsq", parallel="mpi")
 
     # Set the regularization parameters and fit the model
     model.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
-    model.fit(input_data=data_input, target_data=data_output, batch_size=batch_size, continuing=False)
+    model.fit(
+        input_data=data_input,
+        target_data=data_output,
+        batch_size=batch_size,
+        continuing=False,
+    )
 
     # Store the results
     D_o_list.append(model.D_o)
@@ -52,13 +58,19 @@ l2_norm = L2Norm()
 for ii, (d_o, r_matrix) in enumerate(zip(D_o_list, R_matrix_list)):
     # Check if the matrices are equal
     if not np.all(np.isclose(ref_D_o, d_o).astype(int)):
-        print(f"The case with batch_size {batch_sizes[ii]} is divergent for the matrix D_o")
+        print(
+            f"The case with batch_size {batch_sizes[ii]} is divergent for the matrix D_o"
+        )
     if not np.all(np.isclose(ref_R_matrix, r_matrix).astype(int)):
-        print(f"The case with batch_size {batch_sizes[ii]} is divergent for the matrix R_matrix")
+        print(
+            f"The case with batch_size {batch_sizes[ii]} is divergent for the matrix R_matrix"
+        )
 
     # Calculate the error and deviation
     error_d_o = l2_norm(data=d_o, reference_data=ref_D_o, relative_norm=True)
-    error_r_matrix = l2_norm(data=r_matrix, reference_data=ref_R_matrix, relative_norm=True)
+    error_r_matrix = l2_norm(
+        data=r_matrix, reference_data=ref_R_matrix, relative_norm=True
+    )
     maximum_deviation_d_o = np.abs(d_o - ref_D_o).max()
     maximum_deviation_r_matrix = np.abs(r_matrix - ref_R_matrix).max()
 

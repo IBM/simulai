@@ -16,8 +16,8 @@ import numpy as np
 
 # Set of abstract classes to be used as identifiers
 
-class Transformation(object):
 
+class Transformation(object):
     def __init__(self):
         pass
 
@@ -27,28 +27,29 @@ class Transformation(object):
     def transform_inv(self, data=None):
         return data
 
-class Regression(object):
 
+class Regression(object):
     def __init__(self):
         pass
+
 
 class Model(object):
-
     def __init__(self):
         pass
 
-class Dataset(object):
 
+class Dataset(object):
     def __init__(self):
         pass
 
     def __call__(self):
         pass
 
-class Normalization(object):
 
+class Normalization(object):
     def __init__(self):
         pass
+
 
 # Parent class for the DataPreparer classes
 class DataPreparer(object):
@@ -57,6 +58,7 @@ class DataPreparer(object):
     DataPreparer classes are used to convert raw data to a proper format
     in order to be processed via others algorithms, as ROMs and ML algorithms
     """
+
     def __init__(self) -> None:
 
         self.purpose = "data_preparer"
@@ -76,29 +78,29 @@ class DataPreparer(object):
     def prepare_output_structured_data(self, data):
         pass
 
-class ROM(Transformation):
 
+class ROM(Transformation):
     def __init__(self) -> None:
 
-        self.purpose = 'rom'
+        self.purpose = "rom"
 
-        self.kind = 'global'
+        self.kind = "global"
 
         super().__init__()
 
-    def project(self, data:np.ndarray=None) -> np.ndarray:
+    def project(self, data: np.ndarray = None) -> np.ndarray:
         return data
 
-    def reconstruct(self, data:np.ndarray=None) -> np.ndarray:
+    def reconstruct(self, data: np.ndarray = None) -> np.ndarray:
         return data
 
-    def transform(self, data:np.ndarray=None, **kwargs) -> np.ndarray:
+    def transform(self, data: np.ndarray = None, **kwargs) -> np.ndarray:
         return self.project(data=data, **kwargs)
 
-    def transform_inv(self, data:np.ndarray=None) -> np.ndarray:
+    def transform_inv(self, data: np.ndarray = None) -> np.ndarray:
         return self.reconstruct(data=data)
 
-    def fit(self, data:np.ndarray=None):
+    def fit(self, data: np.ndarray = None):
         """
 
         :param data:
@@ -108,8 +110,8 @@ class ROM(Transformation):
         """
         pass
 
-class BaseFramework(object):
 
+class BaseFramework(object):
     def __init__(self):
 
         pass
@@ -129,16 +131,19 @@ class BaseFramework(object):
     def save(self):
         pass
 
+
 # This is like an identifier
 class Integral(object):
 
     """
     Parent class for the integration classes
     """
-    purpose = 'integration'
+
+    purpose = "integration"
 
     def __init__(self):
         pass
+
 
 # This is like an identifier
 class ByPassIntegrator(Integral):
@@ -146,6 +151,7 @@ class ByPassIntegrator(Integral):
     """
     It does nothing
     """
+
     name = "no_post_process_op"
 
     def __init__(self):

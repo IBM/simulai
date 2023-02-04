@@ -14,6 +14,7 @@
 
 import numpy as np
 
+
 def kronecker(a: np.ndarray) -> np.ndarray:
     """
     Calculate the Kronecker product of the input array.
@@ -50,7 +51,7 @@ def kronecker(a: np.ndarray) -> np.ndarray:
 
     i_u, j_u = np.triu_indices(n_inputs)
 
-    kron_output = np.einsum('bi, bj->bij', a, a)
+    kron_output = np.einsum("bi, bj->bij", a, a)
 
     assert np.isnan(kron_output).max() == False, "There are NaN in the Kronecker output"
 

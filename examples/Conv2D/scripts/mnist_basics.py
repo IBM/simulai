@@ -13,21 +13,24 @@
 #     limitations under the License.
 
 import os
+
+import matplotlib.pyplot as plt
 import numpy as np
 from scipy.ndimage import convolve
-import matplotlib.pyplot as plt
 
-os.environ['engine'] = 'pytorch'
+os.environ["engine"] = "pytorch"
 
-from simulai.regression import ConvolutionalNetwork
 from simulai.optimization import Optimizer
+from simulai.regression import ConvolutionalNetwork
+
 
 # Applying a simple nonlinear transformation
 def apply_transformation(data, k, cval=0):
 
-    y_ =  convolve(data, k, cval=cval)
+    y_ = convolve(data, k, cval=cval)
 
     return np.where(y_ > y_.mean(), y_, y_**2)
+
 
 # MinMax normalization
 def normalize(data_train, data_test):
@@ -35,29 +38,28 @@ def normalize(data_train, data_test):
     maximum = data_train.max()
     minimum = data_train.min()
 
-    data_train_ = (data_train - minimum)/(maximum - minimum)
-    data_test_ = (data_test - minimum)/(maximum - minimum)
+    data_train_ = (data_train - minimum) / (maximum - minimum)
+    data_test_ = (data_test - minimum) / (maximum - minimum)
 
     return data_train_, data_test_
 
+
 # Loading and pre-processing data
-path = '/tmp/mnist.npz'
+path = "/tmp/mnist.npz"
 
 # Loading the MNIST dataset
 mnist = np.load(path)
 
-x_train = mnist['x_train']
-y_train = mnist['y_train']
+x_train = mnist["x_train"]
+y_train = mnist["y_train"]
 
-x_test = mnist['x_test']
-y_test = mnist['y_test']
+x_test = mnist["x_test"]
+y_test = mnist["y_test"]
 
 x_train_norm, x_test_norm = normalize(x_train, x_test)
 
 # Kernel to be applied to the original data convolve transformation
-divergence_kernel = np.array([[0,  1,  0],
-                              [1,  4, -1],
-                              [0, -1,  0]])[None, ...]
+divergence_kernel = np.array([[0, 1, 0], [1, 4, -1], [0, -1, 0]])[None, ...]
 
 # Preparing datasets
 x_train_tra = apply_transformation(x_train_norm, divergence_kernel)[:, None, ...]
@@ -68,22 +70,50 @@ n_inputs = 1
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
 n_epochs = 100
 
-optimizer_config = {'lr': lr}
+optimizer_config = {"lr": lr}
 
-layers = [{'in_channels': n_inputs, 'out_channels': 4, 'kernel_size': (3, 3), 'stride': 1, 'padding': (1,1)},
-          {'in_channels': 4, 'out_channels': 2, 'kernel_size': (3, 3), 'stride': 1, 'padding': (1,1)},
-          {'in_channels': 2, 'out_channels': 1, 'kernel_size': (3, 3), 'stride': 1, 'padding': (1,1)}]
+layers = [
+    {
+        "in_channels": n_inputs,
+        "out_channels": 4,
+        "kernel_size": (3, 3),
+        "stride": 1,
+        "padding": (1, 1),
+    },
+    {
+        "in_channels": 4,
+        "out_channels": 2,
+        "kernel_size": (3, 3),
+        "stride": 1,
+        "padding": (1, 1),
+    },
+    {
+        "in_channels": 2,
+        "out_channels": 1,
+        "kernel_size": (3, 3),
+        "stride": 1,
+        "padding": (1, 1),
+    },
+]
 
 # Instantiating network
-convnet = ConvolutionalNetwork(layers=layers, activations='sigmoid')
+convnet = ConvolutionalNetwork(layers=layers, activations="sigmoid")
 
 # Instantiating optimizer
-params = {'lambda_1': 0., 'lambda_2': 0.}
-optimizer = Optimizer('adam', params=optimizer_config)
+params = {"lambda_1": 0.0, "lambda_2": 0.0}
+optimizer = Optimizer("adam", params=optimizer_config)
 
 ### Training
-optimizer.fit(op=convnet, input_data=x_train_norm, target_data=x_train_tra,
-              n_epochs=n_epochs, loss="rmse", params=params, batch_size=1000, device='gpu')
+optimizer.fit(
+    op=convnet,
+    input_data=x_train_norm,
+    target_data=x_train_tra,
+    n_epochs=n_epochs,
+    loss="rmse",
+    params=params,
+    batch_size=1000,
+    device="gpu",
+)
 
 ### Evaluating
 x_test_eval = convnet.eval(input_data=x_test_tra)

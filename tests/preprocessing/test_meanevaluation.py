@@ -12,25 +12,24 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
+import os
 # (C) Copyright IBM Corporation 2017, 2018, 2019
 # U.S. Government Users Restricted Rights:  Use, duplication or disclosure restricted
 # by GSA ADP Schedule Contract with IBM Corp.
 #
 # Author: Leonardo P. Tizzei <ltizzei@br.ibm.com>
 from unittest import TestCase
-from simulai.metrics import MeanEvaluation
-from simulai.metrics import MemorySizeEval
+
+import h5py
 import numpy as np
 import pytest
-import h5py
-import os
-from simulai.io import MapValid, Reshaper
 
+from simulai.io import MapValid, Reshaper
+from simulai.metrics import MeanEvaluation, MemorySizeEval
 from simulai.utilities import make_temp_directory
 
 
 class TestMeanEvaluator(TestCase):
-
     def setUp(self) -> None:
         pass
 
@@ -42,14 +41,13 @@ class TestMeanEvaluator(TestCase):
         data_interval_list = [[2, 4], [0, 7]]
         data_preparers = [MapValid(config={}), Reshaper(), None]
 
-
         Nx = int(3)
         Ny = int(5)
         Nt = int(7)
 
         x = np.ones((Nx,))
-        y = 2*np.ones((Ny,))
-        t = 3*np.ones((Nt,))
+        y = 2 * np.ones((Ny,))
+        t = 3 * np.ones((Nt,))
         vars_1 = [x, y, t]
 
         x = np.linspace(0, 1, Nx)
@@ -59,42 +57,57 @@ class TestMeanEvaluator(TestCase):
 
         for x, y, t in [vars_1, vars_2]:
 
-            T, X, Y = np.meshgrid(t, x, y, indexing='ij')
+            T, X, Y = np.meshgrid(t, x, y, indexing="ij")
 
-            Z_array = np.core.records.fromarrays([T, X, Y],
-                                                 names=['T', 'X', 'Y'],
-                                                 formats=['f8', 'f8', 'f8'])
+            Z_array = np.core.records.fromarrays(
+                [T, X, Y], names=["T", "X", "Y"], formats=["f8", "f8", "f8"]
+            )
 
             for data_preparer in data_preparers:
                 for data_interval in data_interval_list:
                     for batch_size in batch_size_list:
                         with make_temp_directory() as tmp_dir:
 
-                            test_data = os.path.join(tmp_dir, f'data.h5')
-                            with h5py.File(test_data, 'w') as fp:
+                            test_data = os.path.join(tmp_dir, f"data.h5")
+                            with h5py.File(test_data, "w") as fp:
 
-                                dataset = fp.create_dataset('data', shape=Z_array.shape, dtype=Z_array.dtype)
+                                dataset = fp.create_dataset(
+                                    "data", shape=Z_array.shape, dtype=Z_array.dtype
+                                )
 
                                 dataset[...] = Z_array
 
-                            with h5py.File(test_data, 'r') as fp:
-                                dataset = fp.get('data')
+                            with h5py.File(test_data, "r") as fp:
+                                dataset = fp.get("data")
                                 d = dataset[...]
                                 for name in dataset.dtype.names:
-                                    self.assertTrue(np.array_equal(d[name], Z_array[name]))
+                                    self.assertTrue(
+                                        np.array_equal(d[name], Z_array[name])
+                                    )
 
-                                mean = MeanEvaluation()(dataset=dataset,
-                                                        data_interval=data_interval,
-                                                        batch_size=batch_size,
-                                                        data_preparer=data_preparer)
+                                mean = MeanEvaluation()(
+                                    dataset=dataset,
+                                    data_interval=data_interval,
+                                    batch_size=batch_size,
+                                    data_preparer=data_preparer,
+                                )
 
                                 if data_preparer is not None:
-                                    z_cat = data_preparer.prepare_input_structured_data(Z_array)
+                                    z_cat = data_preparer.prepare_input_structured_data(
+                                        Z_array
+                                    )
                                 else:
-                                    z_cat = Reshaper().prepare_input_structured_data(Z_array)
+                                    z_cat = Reshaper().prepare_input_structured_data(
+                                        Z_array
+                                    )
 
-                                mean_numpy = z_cat[slice(*data_interval)].mean(0).reshape(-1)
+                                mean_numpy = (
+                                    z_cat[slice(*data_interval)].mean(0).reshape(-1)
+                                )
 
-                                self.assertTrue(np.array_equal(mean, mean_numpy), f'mean values are not equal')
+                                self.assertTrue(
+                                    np.array_equal(mean, mean_numpy),
+                                    f"mean values are not equal",
+                                )
 
-        self.assertTrue(True, 'end')
+        self.assertTrue(True, "end")

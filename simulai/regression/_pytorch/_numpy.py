@@ -15,9 +15,9 @@
 import numpy as np
 import torch
 
-class LinearNumpy:
 
-    def __init__(self, layer:torch.nn.Linear=None, name:str=None) -> None:
+class LinearNumpy:
+    def __init__(self, layer: torch.nn.Linear = None, name: str = None) -> None:
 
         self.weights = layer.weight.detach().numpy()
 
@@ -36,10 +36,10 @@ class LinearNumpy:
     def weights_l1(self):
         return sum([np.linalg.norm(weight, 1) for weight in self.weights])
 
-    def forward(self, input_field:np.ndarray=None) -> np.ndarray:
+    def forward(self, input_field: np.ndarray = None) -> np.ndarray:
 
         return input_field @ self.weights.T + self.bias
 
-    def eval(self, input_field:np.ndarray=None) -> np.ndarray:
+    def eval(self, input_field: np.ndarray = None) -> np.ndarray:
 
         return self.forward(input_field=input_field)

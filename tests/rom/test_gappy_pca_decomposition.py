@@ -12,34 +12,37 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
 from unittest import TestCase
 
-from simulai.rom import GPOD
+import numpy as np
+
 from simulai.math.progression import gp
-from simulai.special import Scattering, bidimensional_map_nonlin_3, time_function
+from simulai.rom import GPOD
+from simulai.special import (Scattering, bidimensional_map_nonlin_3,
+                             time_function)
+
 
 class TestPCADecomposition(TestCase):
-
     def setUp(self) -> None:
         pass
 
-    ''' Dataset constructed with an expression in which
+    """ Dataset constructed with an expression in which
         the variables are separable: U = exp(y)*cos(x)
-    '''
+    """
+
     def test_2D_separable_dataset(self) -> None:
 
         train_factor = 0.6
 
         N = 1000
-        N_train = int(train_factor*N)
+        N_train = int(train_factor * N)
 
         # Constructing dataset
         x = np.linspace(0, 1, N)
         y = np.linspace(0, 1, N)
 
         X, Y = np.meshgrid(x, y)
-        Z = np.exp(Y)*np.cos(X)
+        Z = np.exp(Y) * np.cos(X)
 
         fit_data = Z[:N_train, :]
         test_data = Z[N_train:, :]
@@ -48,10 +51,11 @@ class TestPCADecomposition(TestCase):
 
         self._exec_GPCA_tests(fit_data, test_data, N_components)
 
-    ''' Dataset constructed with an expression in which
+    """ Dataset constructed with an expression in which
         the variables are not clearly separable, see simulai.special for
         a description.
-    '''
+    """
+
     def test_2D_non_separable_dataset(self) -> None:
 
         train_factor = 0.6
@@ -65,15 +69,17 @@ class TestPCADecomposition(TestCase):
         y = np.linspace(0, 1, N_y)
         t = np.linspace(0, 100, N_t)
 
-        N_train = int(train_factor*N_t)
+        N_train = int(train_factor * N_t)
 
-        T, X, Y = np.meshgrid(t, x, y, indexing='ij')
+        T, X, Y = np.meshgrid(t, x, y, indexing="ij")
 
-        generator = Scattering(root=time_function, scatter_op=bidimensional_map_nonlin_3)
+        generator = Scattering(
+            root=time_function, scatter_op=bidimensional_map_nonlin_3
+        )
         Z_ = generator.exec(data=T, scatter_data=(X, Y, 0.5, 0.5))
         Z_ *= generator.exec(data=T, scatter_data=(X, Y, 0.25, 0.25))
 
-        Z = Z_.reshape(-1, Z_.shape[1]*Z_.shape[2])
+        Z = Z_.reshape(-1, Z_.shape[1] * Z_.shape[2])
 
         fit_data = Z[:N_train, :]
         test_data = Z[N_train:, :]
@@ -86,25 +92,29 @@ class TestPCADecomposition(TestCase):
 
         for n_components in N_components:
 
-            pca_config = {
-                          'n_components': n_components
-                         }
+            pca_config = {"n_components": n_components}
 
-            sensors_distribution = n_components*[12]
+            sensors_distribution = n_components * [12]
 
-            gpca_config = {'sensors_distribution': sensors_distribution}
+            gpca_config = {"sensors_distribution": sensors_distribution}
 
-            gpca = GPOD(pca_type='pod', pca_config=pca_config, config=gpca_config)
+            gpca = GPOD(pca_type="pod", pca_config=pca_config, config=gpca_config)
 
             print("Testing to fit a PCA ROM")
             gpca.fit(data=fit_data)
 
-            print('Testing to project.')
+            print("Testing to project.")
             projected = gpca.project(data=test_data)
 
-            print('Testing to reconstruct.')
+            print("Testing to reconstruct.")
             reconstructed = gpca.reconstruct(projected_data=projected)
 
-            error = 100*np.linalg.norm(test_data - reconstructed, 2)/np.linalg.norm(test_data,2)
+            error = (
+                100
+                * np.linalg.norm(test_data - reconstructed, 2)
+                / np.linalg.norm(test_data, 2)
+            )
 
-            print(f"PCA projection error for one-dimensional case performed with {n_components} components: {error}.")
+            print(
+                f"PCA projection error for one-dimensional case performed with {n_components} components: {error}."
+            )

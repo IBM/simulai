@@ -12,16 +12,18 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
 from unittest import TestCase
 
-from simulai.special import Scattering, bidimensional_map_nonlin_3, time_function
-from simulai.rom import HOSVD
-from simulai.metrics import L2Norm
+import numpy as np
+
 from simulai.file import load_pkl
+from simulai.metrics import L2Norm
+from simulai.rom import HOSVD
+from simulai.special import (Scattering, bidimensional_map_nonlin_3,
+                             time_function)
+
 
 class TestHOSVDDecomposition(TestCase):
-
     def setUp(self) -> None:
         pass
 
@@ -47,9 +49,11 @@ class TestHOSVDDecomposition(TestCase):
 
         N_train = int(train_factor * N_t)
 
-        T, X, Y = np.meshgrid(t, x, y, indexing='ij')
+        T, X, Y = np.meshgrid(t, x, y, indexing="ij")
 
-        generator = Scattering(root=time_function, scatter_op=bidimensional_map_nonlin_3)
+        generator = Scattering(
+            root=time_function, scatter_op=bidimensional_map_nonlin_3
+        )
 
         Z_list = list()
 
@@ -64,7 +68,11 @@ class TestHOSVDDecomposition(TestCase):
         Z_fit = Z[:N_train, :]
         Z_test = Z[N_train:, :]
 
-        hosvd = HOSVD(n_components=[20, 32, 32, 3], components_names=['t', 'x', 'y', 'v'], engine='sklearn')
+        hosvd = HOSVD(
+            n_components=[20, 32, 32, 3],
+            components_names=["t", "x", "y", "v"],
+            engine="sklearn",
+        )
 
         hosvd.fit(data=Z_fit)
 
@@ -72,10 +80,11 @@ class TestHOSVDDecomposition(TestCase):
 
         Z_reconstructed = hosvd.reconstruct(data=projected_Z_test)
 
-
         l2_norm = L2Norm()
 
-        error = 100*l2_norm(data=Z_reconstructed, reference_data=Z_fit, relative_norm=True)
+        error = 100 * l2_norm(
+            data=Z_reconstructed, reference_data=Z_fit, relative_norm=True
+        )
 
         print(f"Projection error: {error} %.")
 
@@ -83,21 +92,25 @@ class TestHOSVDDecomposition(TestCase):
 
         T_new = hosvd.T_decomp[-100:]
 
-        Z_reconstructed = hosvd.reconstruct(data=projected_Z_test, replace_components={'t': T_new})
+        Z_reconstructed = hosvd.reconstruct(
+            data=projected_Z_test, replace_components={"t": T_new}
+        )
 
         l2_norm = L2Norm()
 
-        error = 100 * l2_norm(data=Z_reconstructed, reference_data=Z_fit[-100:], relative_norm=True)
+        error = 100 * l2_norm(
+            data=Z_reconstructed, reference_data=Z_fit[-100:], relative_norm=True
+        )
 
         print(f"Projection error: {error} %.")
 
         print("Saving to disk.")
-        hosvd.save(save_path='/tmp', model_name='test_hosvd')
+        hosvd.save(save_path="/tmp", model_name="test_hosvd")
 
         print("Reloading from disk.")
-        hosvd_reloaded = load_pkl(path='/tmp/test_hosvd.pkl')
+        hosvd_reloaded = load_pkl(path="/tmp/test_hosvd.pkl")
 
-        print('Process completed.')
+        print("Process completed.")
 
     def test_hosvd_dask(self):
 
@@ -123,9 +136,11 @@ class TestHOSVDDecomposition(TestCase):
 
         N_train = int(train_factor * N_t)
 
-        T, X, Y = np.meshgrid(t, x, y, indexing='ij')
+        T, X, Y = np.meshgrid(t, x, y, indexing="ij")
 
-        generator = Scattering(root=time_function, scatter_op=bidimensional_map_nonlin_3)
+        generator = Scattering(
+            root=time_function, scatter_op=bidimensional_map_nonlin_3
+        )
 
         Z_list = list()
 
@@ -142,7 +157,11 @@ class TestHOSVDDecomposition(TestCase):
         Z_fit = Z[:N_train, :]
         Z_test = Z[N_train:, :]
 
-        hosvd = HOSVD(n_components=[20, 32, 32, 3], components_names=['t', 'x', 'y', 'v'], engine='dask')
+        hosvd = HOSVD(
+            n_components=[20, 32, 32, 3],
+            components_names=["t", "x", "y", "v"],
+            engine="dask",
+        )
 
         hosvd.fit(data=Z_fit)
 
@@ -152,7 +171,9 @@ class TestHOSVDDecomposition(TestCase):
 
         l2_norm = L2Norm()
 
-        error = 100 * l2_norm(data=Z_reconstructed, reference_data=Z_fit, relative_norm=True)
+        error = 100 * l2_norm(
+            data=Z_reconstructed, reference_data=Z_fit, relative_norm=True
+        )
 
         print(f"Projection error: {error} %.")
 
@@ -160,18 +181,22 @@ class TestHOSVDDecomposition(TestCase):
 
         T_new = hosvd.T_decomp[-100:]
 
-        Z_reconstructed = hosvd.reconstruct(data=projected_Z_test, replace_components={'t': T_new})
+        Z_reconstructed = hosvd.reconstruct(
+            data=projected_Z_test, replace_components={"t": T_new}
+        )
 
         l2_norm = L2Norm()
 
-        error = 100 * l2_norm(data=Z_reconstructed, reference_data=Z_fit[-100:], relative_norm=True)
+        error = 100 * l2_norm(
+            data=Z_reconstructed, reference_data=Z_fit[-100:], relative_norm=True
+        )
 
         print(f"Projection error: {error} %.")
 
         print("Saving to disk.")
-        hosvd.save(save_path='/tmp', model_name='test_hosvd')
+        hosvd.save(save_path="/tmp", model_name="test_hosvd")
 
         print("Reloading from disk.")
-        hosvd_reloaded = load_pkl(path='/tmp/test_hosvd.pkl')
+        hosvd_reloaded = load_pkl(path="/tmp/test_hosvd.pkl")
 
-        print('Process completed.')
+        print("Process completed.")

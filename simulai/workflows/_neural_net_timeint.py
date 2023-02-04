@@ -14,26 +14,27 @@
 
 from typing import Optional
 
+
 # Prototype
 class DeepOTimeIntegrator:
-
-    def __init__(self, trunk_net_config:dict=None,
-                       branch_net_config:dict=None,
-                       encoder_net_config:Optional[dict]=None,
-                       decoder_net_config:Optional[dict]=None,
-                       trunk_architecture:str='densenetwork',
-                       branch_architecture: str = 'densenetwork',
-                       encoder_architecture: Optional[str] = None,
-                       decoder_architecture: Optional[str] = None,
-                       deeponet_architecture:str='deeponet') -> None:
-
+    def __init__(
+        self,
+        trunk_net_config: dict = None,
+        branch_net_config: dict = None,
+        encoder_net_config: Optional[dict] = None,
+        decoder_net_config: Optional[dict] = None,
+        trunk_architecture: str = "densenetwork",
+        branch_architecture: str = "densenetwork",
+        encoder_architecture: Optional[str] = None,
+        decoder_architecture: Optional[str] = None,
+        deeponet_architecture: str = "deeponet",
+    ) -> None:
 
         self.trunk_architecture = trunk_architecture
         self.branch_architecture = branch_architecture
 
         self.trunk_net_config = trunk_net_config
         self.branch_net_config = branch_net_config
-
 
         self.encoder_architecture = encoder_architecture
         self.decoder_architecture = decoder_architecture
@@ -48,4 +49,3 @@ class DeepOTimeIntegrator:
 
     def predict(self):
         pass
-

@@ -12,24 +12,30 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
-import torch
 import warnings
 from typing import Union
 
-from simulai.templates import NetworkTemplate, as_tensor
+import numpy as np
+import torch
+
 from simulai.regression._pytorch import LinearNumpy
+from simulai.templates import NetworkTemplate, as_tensor
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
 # Linear operator F(u) = Au + b
 class Linear(NetworkTemplate):
 
-    name = 'linear'
-    engine = 'torch'
+    name = "linear"
+    engine = "torch"
 
-    def __init__(self, input_size:int=None, output_size:int=None,
-                       bias:bool=True, name:str=None) -> None:
+    def __init__(
+        self,
+        input_size: int = None,
+        output_size: int = None,
+        bias: bool = True,
+        name: str = None,
+    ) -> None:
 
         super(Linear, self).__init__()
 
@@ -40,7 +46,7 @@ class Linear(NetworkTemplate):
 
         self.layers = [torch.nn.Linear(input_size, output_size, bias=bias)]
 
-        self.add_module(self.name + '_' + 'linear_op', self.layers[0])
+        self.add_module(self.name + "_" + "linear_op", self.layers[0])
 
         self.weights = [item.weight for item in self.layers]
 
@@ -49,48 +55,68 @@ class Linear(NetworkTemplate):
         self.name = name
 
     @as_tensor
-    def forward(self, input_data:Union[torch.Tensor, np.ndarray]=None) -> torch.Tensor:
+    def forward(
+        self, input_data: Union[torch.Tensor, np.ndarray] = None
+    ) -> torch.Tensor:
 
         return self.layers[0](input_data)
 
     def to_numpy(self):
 
-        return  LinearNumpy(layer=self.layers[0], name=self.name)
+        return LinearNumpy(layer=self.layers[0], name=self.name)
+
 
 # Single layer fully-connected (dense) neural network
 class SLFNN(Linear):
+    def __init__(
+        self,
+        input_size: int = None,
+        output_size: int = None,
+        bias: bool = True,
+        name: str = None,
+        activation: str = "tanh",
+    ) -> None:
 
-    def __init__(self, input_size:int=None, output_size:int=None,
-                       bias:bool=True, name:str=None, activation:str='tanh') -> None:
-
-        super(SLFNN, self).__init__(input_size=input_size,
-                                    output_size=output_size,
-                                    bias=bias, name=name)
+        super(SLFNN, self).__init__(
+            input_size=input_size, output_size=output_size, bias=bias, name=name
+        )
 
         self.activation = self._get_operation(operation=activation)
 
-    def forward(self, input_data:Union[torch.Tensor, np.ndarray]=None) -> torch.Tensor:
+    def forward(
+        self, input_data: Union[torch.Tensor, np.ndarray] = None
+    ) -> torch.Tensor:
 
         return self.activation(super().forward(input_data=input_data))
 
+
 # ELM-like shallow network
 class ShallowNetwork(SLFNN):
+    def __init__(
+        self,
+        input_size: int = None,
+        hidden_size: int = None,
+        output_size: int = None,
+        bias: bool = True,
+        name: str = None,
+        activation: str = "tanh",
+    ) -> None:
 
-    def __init__(self, input_size: int = None, hidden_size:int=None, output_size: int = None,
-                       bias: bool = True, name: str = None, activation: str = 'tanh') -> None:
+        super(ShallowNetwork, self).__init__(
+            input_size=input_size, output_size=hidden_size, bias=bias, name=name
+        )
 
-        super(ShallowNetwork, self).__init__(input_size=input_size,
-                                             output_size=hidden_size,
-                                             bias=bias, name=name)
-
-        self.output_layer = Linear(input_size = hidden_size, output_size = output_size,
-                                   bias = False, name = 'output')
+        self.output_layer = Linear(
+            input_size=hidden_size, output_size=output_size, bias=False, name="output"
+        )
 
         self.output_size = output_size
 
-    def forward(self, input_data: Union[torch.Tensor, np.ndarray] = None) -> torch.Tensor:
+    def forward(
+        self, input_data: Union[torch.Tensor, np.ndarray] = None
+    ) -> torch.Tensor:
 
-        hidden_state =  self.activation(super().forward(input_data=input_data))
+        hidden_state = self.activation(super().forward(input_data=input_data))
 
         return self.output_layer.forward(input_data=hidden_state)
 
@@ -98,22 +124,32 @@ class ShallowNetwork(SLFNN):
 # Dense (fully-connected) neural network written in PyTorch
 class DenseNetwork(NetworkTemplate):
 
-    name = 'dense'
-    engine = 'torch'
+    name = "dense"
+    engine = "torch"
 
-    def __init__(self, layers_units:list=None, activations:Union[list, str]=None,
-                       input_size:int=None, output_size:int=None, normalization:str='bypass',
-                       name:str='', last_bias:bool=True, last_activation:str='identity', **kwargs) -> None:
+    def __init__(
+        self,
+        layers_units: list = None,
+        activations: Union[list, str] = None,
+        input_size: int = None,
+        output_size: int = None,
+        normalization: str = "bypass",
+        name: str = "",
+        last_bias: bool = True,
+        last_activation: str = "identity",
+        **kwargs,
+    ) -> None:
 
         super(DenseNetwork, self).__init__()
 
         assert layers_units, "Please, set a list of units for each layer"
 
-        assert activations, "Please, set a list of activation functions" \
-                            "or a string for all of them."
+        assert activations, (
+            "Please, set a list of activation functions" "or a string for all of them."
+        )
 
         # These activations support gain evaluation for the initial state
-        self.gain_supported_activations = ['sigmoid', 'tanh', 'relu', 'leaky_relu']
+        self.gain_supported_activations = ["sigmoid", "tanh", "relu", "leaky_relu"]
 
         # Default attributes
         self.layers_units = layers_units
@@ -137,10 +173,14 @@ class DenseNetwork(NetworkTemplate):
 
         self.default_last_activation = last_activation
 
-        self.activations, self.activations_str = self._setup_activations(activation=activations)
+        self.activations, self.activations_str = self._setup_activations(
+            activation=activations
+        )
 
-        self.initializations = [self._determine_initialization(activation) for
-                                            activation in self.activations_str]
+        self.initializations = [
+            self._determine_initialization(activation)
+            for activation in self.activations_str
+        ]
 
         self.layers = self._setup_hidden_layers(last_bias=last_bias)
 
@@ -153,12 +193,14 @@ class DenseNetwork(NetworkTemplate):
 
         self.layers_map = [[ll, ll + 1] for ll in range(0, 2 * n_layers, 2)]
 
-    def _calculate_gain(self, activation:str='Tanh') -> float:
+    def _calculate_gain(self, activation: str = "Tanh") -> float:
 
         if type(activation) is not str:
 
-            assert hasattr(activation, 'name'), f"Activation object {type(activation)} must have attribute ´name´."
-            name = getattr(activation, 'name')
+            assert hasattr(
+                activation, "name"
+            ), f"Activation object {type(activation)} must have attribute ´name´."
+            name = getattr(activation, "name")
         else:
             name = activation
 
@@ -168,65 +210,79 @@ class DenseNetwork(NetworkTemplate):
             return 1
 
     @staticmethod
-    def _determine_initialization(activation:str='Tanh') -> str:
+    def _determine_initialization(activation: str = "Tanh") -> str:
 
         if type(activation) is not str:
 
-            assert hasattr(activation, 'name'), f"Activation object {type(activation)} must have attribute ´name´."
-            name = getattr(activation, 'name')
+            assert hasattr(
+                activation, "name"
+            ), f"Activation object {type(activation)} must have attribute ´name´."
+            name = getattr(activation, "name")
         else:
             name = activation
 
-        if name in ['ReLU']:
+        if name in ["ReLU"]:
             return "kaiming"
-        elif name == 'Siren':
-            return 'siren'
+        elif name == "Siren":
+            return "siren"
         else:
             return "xavier"
 
-    def _setup_layer(self, input_size:int=0, output_size:int=0,
-                           initialization:str=None, bias:bool=True, first_layer:bool=False) -> torch.nn.Linear:
+    def _setup_layer(
+        self,
+        input_size: int = 0,
+        output_size: int = 0,
+        initialization: str = None,
+        bias: bool = True,
+        first_layer: bool = False,
+    ) -> torch.nn.Linear:
 
         # It instantiates a linear operation
         # f: y^l = f(x^(l-1)) = (W^l).dot(x^(l-1)) + b^l
         layer = torch.nn.Linear(input_size, output_size, bias=bias)
 
-        if initialization == 'xavier':
-            torch.nn.init.xavier_normal_(layer.weight,
-                                         gain=self._calculate_gain(
-                                             self.activations_str[0]))
+        if initialization == "xavier":
+            torch.nn.init.xavier_normal_(
+                layer.weight, gain=self._calculate_gain(self.activations_str[0])
+            )
             return layer
 
         # The Siren initialization requires some special consideration
-        elif initialization == 'siren':
+        elif initialization == "siren":
 
-            assert self.c is not None, "When using siren, the parameter c must be defined."
-            assert self.omega_0 is not None, "When using siren, the parameter omega_0 must be defined."
+            assert (
+                self.c is not None
+            ), "When using siren, the parameter c must be defined."
+            assert (
+                self.omega_0 is not None
+            ), "When using siren, the parameter omega_0 must be defined."
 
             if first_layer == True:
-                m = 1/input_size
+                m = 1 / input_size
             else:
-                m = np.sqrt(self.c/input_size)/self.omega_0
+                m = np.sqrt(self.c / input_size) / self.omega_0
 
-            torch.nn.init.trunc_normal_(layer.weight,
-                                        a=-m, b=m)
-            b = np.sqrt(1/input_size)
-            torch.nn.init.trunc_normal_(layer.bias,
-                                        a=-b, b=b)
+            torch.nn.init.trunc_normal_(layer.weight, a=-m, b=m)
+            b = np.sqrt(1 / input_size)
+            torch.nn.init.trunc_normal_(layer.bias, a=-b, b=b)
             return layer
 
-        elif initialization == 'kaiming':
+        elif initialization == "kaiming":
             return layer  # Kaiming is the default initialization in PyTorch
 
         else:
-            print("Initialization method still not implemented.\
-                  Using Kaiming instead")
+            print(
+                "Initialization method still not implemented.\
+                  Using Kaiming instead"
+            )
 
             return layer
 
     # The forward step of the network
     @as_tensor
-    def forward(self, input_data:Union[torch.Tensor, np.ndarray]=None) -> torch.Tensor:
+    def forward(
+        self, input_data: Union[torch.Tensor, np.ndarray] = None
+    ) -> torch.Tensor:
 
         input_tensor_ = input_data
 
@@ -240,35 +296,58 @@ class DenseNetwork(NetworkTemplate):
 
         return output_tensor
 
+
 # Residual Dense (fully-connected) neural network written in PyTorch
 class ResDenseNetwork(DenseNetwork):
 
-    name = 'residualdense'
-    engine = 'torch'
+    name = "residualdense"
+    engine = "torch"
 
-    def __init__(self, layers_units: list = None, activations: Union[list, str] = None,
-                       input_size: int = None, output_size: int = None, normalization: str = 'bypass',
-                       name: str = '', last_bias: bool = True, last_activation: str = 'identity',
-                       residual_size:int=1, **kwargs) -> None:
+    def __init__(
+        self,
+        layers_units: list = None,
+        activations: Union[list, str] = None,
+        input_size: int = None,
+        output_size: int = None,
+        normalization: str = "bypass",
+        name: str = "",
+        last_bias: bool = True,
+        last_activation: str = "identity",
+        residual_size: int = 1,
+        **kwargs,
+    ) -> None:
 
-        super().__init__(layers_units=layers_units, activations=activations, input_size=input_size,
-                         output_size=output_size, normalization=normalization,
-                         name=name, last_bias=last_bias, last_activation=last_activation, **kwargs)
+        super().__init__(
+            layers_units=layers_units,
+            activations=activations,
+            input_size=input_size,
+            output_size=output_size,
+            normalization=normalization,
+            name=name,
+            last_bias=last_bias,
+            last_activation=last_activation,
+            **kwargs,
+        )
 
         # Considering the activations layers
-        self.residual_size = 2*residual_size
+        self.residual_size = 2 * residual_size
         self.ratio = 0.5
 
         # Excluding the input and output layers
         merged_layers = self._merge(layer=self.layers, act=self.activations)
 
-        assert len(merged_layers[2:-2]) % self.residual_size == 0, "The number of layers must be divisible" \
-                                                                   " by the residual block size," \
-                                                                   f" but received {len(merged_layers)} and {residual_size}"
+        assert len(merged_layers[2:-2]) % self.residual_size == 0, (
+            "The number of layers must be divisible"
+            " by the residual block size,"
+            f" but received {len(merged_layers)} and {residual_size}"
+        )
 
         self.n_residual_blocks = int(len(merged_layers[2:-2]) / self.residual_size)
 
-        sub_layers = [item.tolist() for item in np.split(np.array(merged_layers[2:-2]), self.n_residual_blocks)]
+        sub_layers = [
+            item.tolist()
+            for item in np.split(np.array(merged_layers[2:-2]), self.n_residual_blocks)
+        ]
 
         self.input_block = torch.nn.Sequential(*merged_layers[:2])
         self.hidden_blocks = [torch.nn.Sequential(*item) for item in sub_layers]
@@ -298,14 +377,16 @@ class ResDenseNetwork(DenseNetwork):
 
     # The forward step of the network
     @as_tensor
-    def forward(self, input_data: Union[torch.Tensor, np.ndarray] = None) -> torch.Tensor:
+    def forward(
+        self, input_data: Union[torch.Tensor, np.ndarray] = None
+    ) -> torch.Tensor:
         input_tensor_ = input_data
 
         input_tensor_ = self.input_block(input_tensor_)
 
         for block in self.hidden_blocks:
 
-            output_tensor_ =  self.ratio*(input_tensor_ + block(input_tensor_))
+            output_tensor_ = self.ratio * (input_tensor_ + block(input_tensor_))
 
             input_tensor_ = output_tensor_
 
@@ -313,29 +394,47 @@ class ResDenseNetwork(DenseNetwork):
 
         return output_tensor
 
+
 # Dense network with convex combinations in the hidden layers
 # This architecture is useful when combined to the Improved Version ofr DeepONets
 class ConvexDenseNetwork(DenseNetwork):
 
-    name = 'convexdense'
-    engine = 'torch'
+    name = "convexdense"
+    engine = "torch"
 
-    def __init__(self, layers_units: list = None, activations: Union[list, str] = None,
-                       input_size: int = None, output_size: int = None, normalization: str = 'bypass',
-                       name: str = '', last_bias: bool = True, last_activation: str = 'identity',
-                       **kwargs) -> None:
+    def __init__(
+        self,
+        layers_units: list = None,
+        activations: Union[list, str] = None,
+        input_size: int = None,
+        output_size: int = None,
+        normalization: str = "bypass",
+        name: str = "",
+        last_bias: bool = True,
+        last_activation: str = "identity",
+        **kwargs,
+    ) -> None:
 
         self.hidden_size = None
-        assert self._check_regular_net(layers_units=layers_units), "All the hidden layers must be equal in" \
-                                                                   "a Convex Dense Network."
+        assert self._check_regular_net(layers_units=layers_units), (
+            "All the hidden layers must be equal in" "a Convex Dense Network."
+        )
 
-        super().__init__(layers_units=layers_units, activations=activations, input_size=input_size,
-                         output_size=output_size, normalization=normalization,
-                         name=name, last_bias=last_bias, last_activation=last_activation, **kwargs)
+        super().__init__(
+            layers_units=layers_units,
+            activations=activations,
+            input_size=input_size,
+            output_size=output_size,
+            normalization=normalization,
+            name=name,
+            last_bias=last_bias,
+            last_activation=last_activation,
+            **kwargs,
+        )
 
-    def _check_regular_net(self, layers_units:list):
+    def _check_regular_net(self, layers_units: list):
 
-        mean = int(sum(layers_units)/len(layers_units))
+        mean = int(sum(layers_units) / len(layers_units))
         self.hidden_size = mean
 
         if len([True for j in layers_units if j == mean]) == len(layers_units):
@@ -345,9 +444,12 @@ class ConvexDenseNetwork(DenseNetwork):
 
     # The forward step of the network
     @as_tensor
-    def forward(self, input_data: Union[torch.Tensor, np.ndarray] = None,
-                      u:Union[torch.Tensor, np.ndarray]=None,
-                      v:Union[torch.Tensor, np.ndarray]=None) -> torch.Tensor:
+    def forward(
+        self,
+        input_data: Union[torch.Tensor, np.ndarray] = None,
+        u: Union[torch.Tensor, np.ndarray] = None,
+        v: Union[torch.Tensor, np.ndarray] = None,
+    ) -> torch.Tensor:
 
         input_tensor_ = input_data
 
@@ -363,7 +465,7 @@ class ConvexDenseNetwork(DenseNetwork):
 
             output_tensor_ = layers_hidden[layer_id](input_tensor_)
             z = activations_hidden[layer_id](output_tensor_)
-            _output_tensor_ = (1 - z)*u + z*v
+            _output_tensor_ = (1 - z) * u + z * v
 
             input_tensor_ = _output_tensor_
 

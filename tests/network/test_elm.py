@@ -12,21 +12,23 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
 from unittest import TestCase
 
-from simulai.regression import ELM
+import numpy as np
+
 from simulai.file import load_pkl
+from simulai.regression import ELM
+
 
 class TestELM(TestCase):
-
     def setUp(self) -> None:
         self.errors = list()
 
     # Data preparing
     def u(self, t, x, L: float = None, t_max: float = None) -> np.ndarray:
-        return np.sin(4 * np.pi * t * np.cos(5 * np.pi * (t / t_max)) * (x / L - 1 / 2) ** 2) * np.cos(
-            5 * np.pi * (t / t_max - 1 / 2) ** 2)
+        return np.sin(
+            4 * np.pi * t * np.cos(5 * np.pi * (t / t_max)) * (x / L - 1 / 2) ** 2
+        ) * np.cos(5 * np.pi * (t / t_max - 1 / 2) ** 2)
 
     def test_elm_instantiation(self):
 
@@ -43,7 +45,7 @@ class TestELM(TestCase):
         x = np.linspace(*x_interval, K)
         t = np.linspace(*time_interval, N)
 
-        T, X = np.meshgrid(t, x, indexing='ij')
+        T, X = np.meshgrid(t, x, indexing="ij")
         output_data = self.u(T, X, L=L, t_max=t_max)
 
         positions = np.stack([X[::100].flatten(), T[::100].flatten()], axis=1)
@@ -57,9 +59,7 @@ class TestELM(TestCase):
         input_train = 2 * np.hstack([x[x_i], t[t_i]]) / np.array([L, t_max]) - 1
         output_train = output_data[t_i, x_i]
 
-        config = {'n_i': 2,
-                  'n_o': 1,
-                  'h': 800}
+        config = {"n_i": 2, "n_o": 1, "h": 800}
 
         approximator = ELM(**config)
 
@@ -68,10 +68,10 @@ class TestELM(TestCase):
         evaluated = approximator.eval(input_data=positions[::100])
         assert isinstance(evaluated, np.ndarray)
 
-        approximator.save(name='elm_model', path='/tmp')
+        approximator.save(name="elm_model", path="/tmp")
 
         # Testing to save and reload ELM
-        approximator_reloaded = load_pkl(path='/tmp/elm_model.pkl')
+        approximator_reloaded = load_pkl(path="/tmp/elm_model.pkl")
 
         assert isinstance(approximator_reloaded, ELM)
 
@@ -90,7 +90,7 @@ class TestELM(TestCase):
         x = np.linspace(*x_interval, K)
         t = np.linspace(*time_interval, N)
 
-        T, X = np.meshgrid(t, x, indexing='ij')
+        T, X = np.meshgrid(t, x, indexing="ij")
         output_data = self.u(T, X, L=L, t_max=t_max)
 
         positions = np.stack([X[::100].flatten(), T[::100].flatten()], axis=1)
@@ -104,48 +104,43 @@ class TestELM(TestCase):
         input_train = 2 * np.hstack([x[x_i], t[t_i]]) / np.array([L, t_max]) - 1
         output_train = output_data[t_i, x_i]
 
-        config = {'n_i': 2,
-                  'n_o': 1,
-                  'h': 800}
+        config = {"n_i": 2, "n_o": 1, "h": 800}
 
-        approximator = ELM(**config, form='dual')
+        approximator = ELM(**config, form="dual")
 
         approximator.fit(input_data=input_train, target_data=output_train, lambd=1e-5)
 
         evaluated = approximator.eval(input_data=positions[::100])
         assert isinstance(evaluated, np.ndarray)
 
-        approximator.save(name='elm_model', path='/tmp')
+        approximator.save(name="elm_model", path="/tmp")
 
         # Testing to save and reload ELM
-        approximator_reloaded = load_pkl(path='/tmp/elm_model.pkl')
+        approximator_reloaded = load_pkl(path="/tmp/elm_model.pkl")
 
         assert isinstance(approximator_reloaded, ELM)
 
-
     def test_failed_load_pkl(self):
 
-        config = {'n_i': 2,
-                  'n_o': 1,
-                  'h': 800}
+        config = {"n_i": 2, "n_o": 1, "h": 800}
 
         approximator = ELM(**config)
 
         model_reloaded = None
 
         try:
-           model_reloaded = load_pkl(path=f'/tmp/elm_model.{id(approximator)}')
+            model_reloaded = load_pkl(path=f"/tmp/elm_model.{id(approximator)}")
 
         except:
 
-           pass
+            pass
 
         assert model_reloaded == None
 
         try:
-           model_reloaded = load_pkl(path=f'/tmp/elm_model_{id(approximator)}.pkl')
+            model_reloaded = load_pkl(path=f"/tmp/elm_model_{id(approximator)}.pkl")
 
-        except :
-           pass
+        except:
+            pass
 
         assert model_reloaded == None

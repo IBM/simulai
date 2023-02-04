@@ -13,22 +13,22 @@
 #     limitations under the License.
 
 import copy
-
-import numpy as np
-import matplotlib.pyplot as plt
 import os
 
-os.environ['engine'] = 'pytorch'
+import matplotlib.pyplot as plt
+import numpy as np
+
+os.environ["engine"] = "pytorch"
 
 from examples.utils.lorenz_solver import lorenz_solver
-from simulai.regression import OpInf
 from simulai.math.integration import LSODA, ClassWrapper
 from simulai.metrics import L2Norm
+from simulai.regression import OpInf
 from simulai.templates import HyperTrainTemplate
 from simulai.workflows import ParamHyperOpt
 
-class LorenzJacobian:
 
+class LorenzJacobian:
     def __init__(self, sigma=None, rho=None, beta=None):
         self.sigma = sigma
         self.rho = rho
@@ -36,40 +36,45 @@ class LorenzJacobian:
 
     def __call__(self, data):
 
-            x = data[0]
-            y = data[1]
-            z = data[2]
+        x = data[0]
+        y = data[1]
+        z = data[2]
 
-            return np.array([
-                            [ self.sigma, self.sigma,    0],
-                            [-z + self.rho, -1,         -x],
-                            [     y,         x, -self.beta]
-                           ])
+        return np.array(
+            [[self.sigma, self.sigma, 0], [-z + self.rho, -1, -x], [y, x, -self.beta]]
+        )
+
 
 # This class is a base for the OpInf hyperparameter tuning.
 class HyperOpInfTwoParameters(HyperTrainTemplate):
-
-    def __init__(self, trial_config: dict = None, set_type='hard', path_to_model: str = None,
-                 other_params: dict = None):
+    def __init__(
+        self,
+        trial_config: dict = None,
+        set_type="hard",
+        path_to_model: str = None,
+        other_params: dict = None,
+    ):
 
         self.model = None
 
         self.path_to_model = path_to_model
         self.others_params = other_params
 
-        self.tag = 'model_'
+        self.tag = "model_"
         self.id = None
 
-        required_keys = ['id', 'tag']
+        required_keys = ["id", "tag"]
 
         for key in required_keys:
-            assert key in trial_config.keys(), f"The required parameter {key} is not in others_params."
+            assert (
+                key in trial_config.keys()
+            ), f"The required parameter {key} is not in others_params."
 
         for key, value in trial_config.items():
             setattr(self, key, value)
 
-        if 'baseline_model' in trial_config.keys():
-            self.baseline_model = trial_config.pop('baseline_model')
+        if "baseline_model" in trial_config.keys():
+            self.baseline_model = trial_config.pop("baseline_model")
         else:
             self.baseline_model = None
 
@@ -80,12 +85,12 @@ class HyperOpInfTwoParameters(HyperTrainTemplate):
     def _set_model(self):
 
         rc_config = {
-            'lambda_linear': 10**self.trial_config['lambda_linear_exp'],
-            'lambda_quadratic': 10**self.trial_config['lambda_quadratic_exp']
+            "lambda_linear": 10 ** self.trial_config["lambda_linear_exp"],
+            "lambda_quadratic": 10 ** self.trial_config["lambda_quadratic_exp"],
         }
 
         if self.baseline_model is None:
-            self.model = OpInf(bias_rescale=1e-15, solver='lstsq')
+            self.model = OpInf(bias_rescale=1e-15, solver="lstsq")
         else:
             print("Using baseline model.")
             self.model = copy.deepcopy(self.baseline_model)
@@ -94,13 +99,12 @@ class HyperOpInfTwoParameters(HyperTrainTemplate):
 
     def fit(self, input_train_data=None, target_train_data=None):
 
-        msg = self.model.fit(input_data=input_train_data,
-                             target_data=target_train_data)
+        msg = self.model.fit(input_data=input_train_data, target_data=target_train_data)
 
         return msg
 
-class ObjectiveWrapper:
 
+class ObjectiveWrapper:
     def __init__(self, test_data=None, t_test=None, initial_state=None):
 
         self.test_data = test_data
@@ -109,12 +113,17 @@ class ObjectiveWrapper:
 
     def __call__(self, trainer_instance=None, objective_function=None):
 
-        return objective_function(model=trainer_instance,
-                                  initial_state=self.initial_state,
-                                  t_test=self.t_test,
-                                  test_field=self.test_data)
+        return objective_function(
+            model=trainer_instance,
+            initial_state=self.initial_state,
+            t_test=self.t_test,
+            test_field=self.test_data,
+        )
 
-def objective(model=None, initial_state=None, t_test=None, test_field=None, jacobian=None):
+
+def objective(
+    model=None, initial_state=None, t_test=None, test_field=None, jacobian=None
+):
 
     model.model.construct_K_op(op=jacobian)
 
@@ -127,9 +136,12 @@ def objective(model=None, initial_state=None, t_test=None, test_field=None, jaco
 
     l2_norm = L2Norm()
 
-    error = 100 * l2_norm(data=estimated_field, reference_data=test_field, relative_norm=True)
+    error = 100 * l2_norm(
+        data=estimated_field, reference_data=test_field, relative_norm=True
+    )
 
     return error
+
 
 def test_opinf_nonlinear_int_lsoda():
 
@@ -137,7 +149,7 @@ def test_opinf_nonlinear_int_lsoda():
     T_max = 100
     rho = 28
     beta = 8 / 3
-    beta_str = '8/3'
+    beta_str = "8/3"
     sigma = 10
     n_field = 3
     train_fraction = 0.6
@@ -149,24 +161,33 @@ def test_opinf_nonlinear_int_lsoda():
 
     initial_state = np.array([1, 0, 0])[None, :]
 
-    lorenz_data, derivative_lorenz_data, time = lorenz_solver(rho=rho, dt=dt, T=T_max, sigma=sigma,
-                                                              initial_state=initial_state,
-                                                              beta=beta, beta_str=beta_str,
-                                                              data_path='on_memory', solver='RK45')
+    lorenz_data, derivative_lorenz_data, time = lorenz_solver(
+        rho=rho,
+        dt=dt,
+        T=T_max,
+        sigma=sigma,
+        initial_state=initial_state,
+        beta=beta,
+        beta_str=beta_str,
+        data_path="on_memory",
+        solver="RK45",
+    )
 
     t = time
     n_steps = time.shape[0]
     nt = int(train_fraction * n_steps)
     nv = int(validation_fraction * n_steps)
-    t_validation = t[nt:nt+nv]
-    t_test = t[nt + nv:]
+    t_validation = t[nt : nt + nv]
+    t_test = t[nt + nv :]
 
     train_field = lorenz_data[:nt]  # manufactured nonlinear oscillator data
     train_field_derivative = derivative_lorenz_data[:nt]
 
-    validation_field = lorenz_data[nt:nt+nv]  # manufactured nonlinear oscillator data
+    validation_field = lorenz_data[
+        nt : nt + nv
+    ]  # manufactured nonlinear oscillator data
 
-    test_field = lorenz_data[nt+nv:]  # manufactured nonlinear oscillator data
+    test_field = lorenz_data[nt + nv :]  # manufactured nonlinear oscillator data
 
     initial_state_validation = train_field[-1:]
     initial_state_test = validation_field[-1:]
@@ -175,50 +196,54 @@ def test_opinf_nonlinear_int_lsoda():
     # along the process.
     if use_baseline:
 
-        rc_config = {
-            'lambda_linear': 10 ** 0,
-            'lambda_quadratic': 10 ** 0
-        }
+        rc_config = {"lambda_linear": 10**0, "lambda_quadratic": 10**0}
 
-        baseline_model = OpInf(bias_rescale=1e-15, solver='lstsq')
+        baseline_model = OpInf(bias_rescale=1e-15, solver="lstsq")
         baseline_model.set(**rc_config)
 
-        baseline_model.fit(input_data=train_field,
-                           target_data=train_field_derivative, batch_size=1000)
+        baseline_model.fit(
+            input_data=train_field, target_data=train_field_derivative, batch_size=1000
+        )
 
     else:
         baseline_model = None
 
-    params_intervals = {'lambda_linear_exp': [-5, 0],
-                        'lambda_quadratic_exp': [-5, 0]}
+    params_intervals = {"lambda_linear_exp": [-5, 0], "lambda_quadratic_exp": [-5, 0]}
 
-    params_suggestions = {'lambda_linear_exp': 'float',
-                          'lambda_quadratic_exp': 'float'}
+    params_suggestions = {"lambda_linear_exp": "float", "lambda_quadratic_exp": "float"}
 
-    others_params = {'initial_state': initial_state_validation[0] ,
-                     'tag': 'model_',
-                     'jacobian': jacobian,
-                     'baseline_model': baseline_model}
+    others_params = {
+        "initial_state": initial_state_validation[0],
+        "tag": "model_",
+        "jacobian": jacobian,
+        "baseline_model": baseline_model,
+    }
 
-    objective_wrapper = ObjectiveWrapper(test_data=validation_field,
-                                         t_test=t_validation,
-                                         initial_state=initial_state_validation[0])
+    objective_wrapper = ObjectiveWrapper(
+        test_data=validation_field,
+        t_test=t_validation,
+        initial_state=initial_state_validation[0],
+    )
 
-    hyper_search = ParamHyperOpt(params_intervals=params_intervals,
-                                 params_suggestions=params_suggestions,
-                                 name='lorenz_hyper_search',
-                                 direction='minimize',
-                                 trainer_template=HyperOpInfTwoParameters,
-                                 objective_wrapper=objective_wrapper,
-                                 objective_function=objective,
-                                 others_params=others_params)
+    hyper_search = ParamHyperOpt(
+        params_intervals=params_intervals,
+        params_suggestions=params_suggestions,
+        name="lorenz_hyper_search",
+        direction="minimize",
+        trainer_template=HyperOpInfTwoParameters,
+        objective_wrapper=objective_wrapper,
+        objective_function=objective,
+        others_params=others_params,
+    )
 
-    hyper_search.set_data(input_train_data=train_field,
-                          target_train_data=train_field_derivative,
-                          input_validation_data=validation_field,
-                          target_validation_data=validation_field,
-                          input_test_data=test_field,
-                          target_test_data=test_field)
+    hyper_search.set_data(
+        input_train_data=train_field,
+        target_train_data=train_field_derivative,
+        input_validation_data=validation_field,
+        target_validation_data=validation_field,
+        input_test_data=test_field,
+        target_test_data=test_field,
+    )
 
     hyper_search.optimize(n_trials=n_trials)
 
@@ -236,11 +261,13 @@ def test_opinf_nonlinear_int_lsoda():
 
     l2_norm = L2Norm()
 
-    error = 100 * l2_norm(data=estimated_field, reference_data=test_field, relative_norm=True)
+    error = 100 * l2_norm(
+        data=estimated_field, reference_data=test_field, relative_norm=True
+    )
 
     print(f"Approximation error is {error} %")
 
-    tags = ['x', 'y', 'z']
+    tags = ["x", "y", "z"]
 
     for var in range(n_field):
 

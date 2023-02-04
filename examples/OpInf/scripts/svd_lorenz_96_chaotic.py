@@ -12,27 +12,31 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
+import os
 #!/usr/bin/env python
 import warnings
-import os
 
 with warnings.catch_warnings():
-    from scipy.integrate import odeint
-    import matplotlib.pyplot as plt
-    from matplotlib.colors import Normalize
-    import numpy as np
     from argparse import ArgumentParser
 
-    from simulai.regression import OpInf
-    from simulai.math.integration import LSODA, ClassWrapper
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from matplotlib.colors import Normalize
+    from scipy.integrate import odeint
+
     from simulai.math.differentiation import CollocationDerivative
+    from simulai.math.integration import LSODA, ClassWrapper
+    from simulai.regression import OpInf
 
 
 def explained_variance(s, n):
-    return np.sum(np.square(s[:n]))/np.sum(np.square(s))
+    return np.sum(np.square(s[:n])) / np.sum(np.square(s))
+
 
 def NRMSE(exact, approximated):
-    return np.sqrt(np.mean(np.square(exact - approximated) / exact.std(axis=0) ** 2, axis=1))
+    return np.sqrt(
+        np.mean(np.square(exact - approximated) / exact.std(axis=0) ** 2, axis=1)
+    )
 
 
 def NRSE(exact, approximated):
@@ -42,21 +46,21 @@ def NRSE(exact, approximated):
 # Reading command line arguments.
 parser = ArgumentParser(description="Reading input parameters")
 
-parser.add_argument('--save_path', type=str, help="Save path", default='/tmp')
-parser.add_argument('--F', type=float, help="Forcing value", default=8)
+parser.add_argument("--save_path", type=str, help="Save path", default="/tmp")
+parser.add_argument("--F", type=float, help="Forcing value", default=8)
 
 args = parser.parse_args()
 
 save_path = args.save_path
 F = args.F
 
-initial_states_file = os.path.join(save_path, 'initial_random.npy')
+initial_states_file = os.path.join(save_path, "initial_random.npy")
 
 tol = 0.5
 
 # These are our constants
 N = 40  # Number of variables
-K = 37 # Number of reduced variables
+K = 37  # Number of reduced variables
 
 n_initial = 100
 
@@ -83,7 +87,9 @@ if os.path.isfile(initial_states_file):
 else:
     initial_states_list = list()
     for nn in range(n_initial):
-        x0_nn = x0 + 0.01 * np.random.rand(N)  # Add small perturbation to the first variable
+        x0_nn = x0 + 0.01 * np.random.rand(
+            N
+        )  # Add small perturbation to the first variable
         initial_states_list.append(x0_nn[None, :])
     initial_states = np.vstack(initial_states_list)
 
@@ -125,12 +131,12 @@ for si in range(n_initial):
 
     label = f"n_{N}_F_{F}_init_{si}_svd"
 
-    lorenz_op = OpInf(bias_rescale=1, solver='pinv')
+    lorenz_op = OpInf(bias_rescale=1, solver="pinv")
     lorenz_op.fit(input_data=train_field, target_data=train_field_derivative)
 
     init_state = train_field[-1:]
     estimated_field_derivatives = lorenz_op.eval(input_data=test_field)
-    tags = [fr'x_{i}' for i in range(n_field)]
+    tags = [rf"x_{i}" for i in range(n_field)]
 
     # Construcing jacobian tensor (It could be used during the time-integrations, but seemingly it is not).
     lorenz_op.construct_K_op()
@@ -186,12 +192,19 @@ for si in range(n_initial):
     aspect = 15
     extent = (x_plot.min(), x_plot.max(), t_plot.min(), t_plot.max())
 
-    color_norm = Normalize(vmin=min(test_field.min(), estimated_field.min()),
-                           vmax=max(test_field.max(), estimated_field.max()))
+    color_norm = Normalize(
+        vmin=min(test_field.min(), estimated_field.min()),
+        vmax=max(test_field.max(), estimated_field.max()),
+    )
 
-    plt.imshow(np.flip(estimated_field, axis=0), extent=extent, aspect=aspect, cmap='seismic',
-               interpolation='bilinear',
-               norm=color_norm)
+    plt.imshow(
+        np.flip(estimated_field, axis=0),
+        extent=extent,
+        aspect=aspect,
+        cmap="seismic",
+        interpolation="bilinear",
+        norm=color_norm,
+    )
     plt.colorbar()
     plt.title("Approximated")
     plt.xlabel("Observable")
@@ -202,9 +215,14 @@ for si in range(n_initial):
     plt.savefig(os.path.join(save_path, f"approximated_2D_plot_{label}.png"))
     plt.close()
 
-    plt.imshow(np.flip(test_field, axis=0), extent=extent, aspect=aspect, cmap='seismic',
-               interpolation='bilinear',
-               norm=color_norm)
+    plt.imshow(
+        np.flip(test_field, axis=0),
+        extent=extent,
+        aspect=aspect,
+        cmap="seismic",
+        interpolation="bilinear",
+        norm=color_norm,
+    )
     plt.colorbar()
     plt.title("Target")
     plt.xlabel("Observable")
@@ -215,10 +233,13 @@ for si in range(n_initial):
     plt.savefig(os.path.join(save_path, f"exact_2D_plot_{label}.png"))
     plt.close()
 
-    plt.imshow(np.flip(nrse, axis=0), extent=extent, aspect=aspect,
-               interpolation='bilinear',
-               cmap='Oranges',
-               )
+    plt.imshow(
+        np.flip(nrse, axis=0),
+        extent=extent,
+        aspect=aspect,
+        interpolation="bilinear",
+        cmap="Oranges",
+    )
     plt.colorbar()
     plt.title("NRSE")
     plt.xlabel("Observable")
@@ -241,10 +262,11 @@ key_max = max(vpt_list, key=lambda x: vpt_list[x])
 
 print(f"The index of the best result is: {key_max}")
 
-lines = [f"Mean VPT for F={F}: {mean_value}\n",
-         f"Maximum VPT for F={F}: {max_value}\n",
-         f"The index of the best result is: {key_max}\n"]
+lines = [
+    f"Mean VPT for F={F}: {mean_value}\n",
+    f"Maximum VPT for F={F}: {max_value}\n",
+    f"The index of the best result is: {key_max}\n",
+]
 
 with open(os.path.join(save_path, f"output_F_{F}_svd.log"), "w+") as fp:
     fp.writelines(lines)
-

@@ -1,4 +1,3 @@
-
 import glob
 
 HEADER = """# (C) Copyright IBM Corp. 2019, 2020, 2021, 2022.
@@ -13,9 +12,9 @@ HEADER = """# (C) Copyright IBM Corp. 2019, 2020, 2021, 2022.
 #     limitations under the License.
 """
 
-HEADER_LINES = [line + '\n' for line in HEADER.split('\n')]
+HEADER_LINES = [line + "\n" for line in HEADER.split("\n")]
 
-MODULE_NAMES = ['simulai', 'examples']
+MODULE_NAMES = ["simulai", "examples"]
 
 for module_name in MODULE_NAMES:
     print(f"Entering directory {module_name}")
@@ -25,11 +24,11 @@ for module_name in MODULE_NAMES:
     for py_file in py_files:
         print(f"Updating header for the file {py_file}.")
 
-        with open(py_file, 'r') as fp:
+        with open(py_file, "r") as fp:
             content = fp.readlines()
 
-        if HEADER in ''.join(content):
+        if HEADER in "".join(content):
             print("This file already has the header.")
         else:
-            with open(py_file, 'w') as fp:
+            with open(py_file, "w") as fp:
                 fp.writelines(HEADER_LINES + content)

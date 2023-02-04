@@ -12,21 +12,20 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
+import random
 import sys
+from typing import Dict, List, Tuple, Union
+
+import h5py
 import numpy as np
 import torch
-import h5py
-import random
-from typing import Union, Dict, List, Tuple
-from torch import Tensor
 from numpy.lib import recfunctions
+from torch import Tensor
 
-from simulai.batching import batchdomain_constructor
+from simulai.abstract import DataPreparer, Dataset
+from simulai.batching import (batchdomain_constructor,
+                              indices_batchdomain_constructor)
 from simulai.metrics import MemorySizeEval
-from simulai.abstract import DataPreparer
-from simulai.batching import indices_batchdomain_constructor
-from simulai.abstract import Dataset
-
 
 """
     BEGIN DataPreparer children
@@ -43,7 +42,7 @@ class ByPassPreparer(DataPreparer):
     -----------
     channels_last : bool, optional
         Whether the channel dimension is the last dimension of the input data, by default False
-        
+
     Examples:
     ---------
     >>> import numpy as np
@@ -56,6 +55,7 @@ class ByPassPreparer(DataPreparer):
     NOTE:
         This class is used as a placeholder when no data preparation is needed.
     """
+
     name = "no_preparer"
 
     def __init__(self, channels_last: bool = False) -> None:
@@ -69,17 +69,17 @@ class ByPassPreparer(DataPreparer):
     def prepare_input_data(self, data: np.ndarray) -> np.ndarray:
         """
         Prepare input data.
-        
+
         Parameters
         ----------
         data : numpy.ndarray
             input data to be prepared
-        
+
         Returns
         -------
         numpy.ndarray
             The input data in the original format
-            
+
         Examples
         --------
         >>> import numpy as np
@@ -95,17 +95,17 @@ class ByPassPreparer(DataPreparer):
     def prepare_output_data(self, data: np.ndarray) -> np.ndarray:
         """
         Prepare output data.
-        
+
         Parameters:
         -----------
         data : numpy.ndarray
             output data to be prepared
-        
+
         Returns:
         --------
         numpy.ndarray
             The output data in the original format
-            
+
         Examples:
         ---------
         >>> import numpy as np
@@ -120,17 +120,17 @@ class ByPassPreparer(DataPreparer):
     def prepare_input_structured_data(self, data: np.recarray) -> np.ndarray:
         """
         Prepare structured input data by converting it to an ndarray.
-        
+
         Parameters:
         -----------
         data : np.recarray
             structured input data in the form of a numpy recarray.
-        
+
         Returns:
         --------
         output : np.ndarray
             numpy ndarray version of the input data.
-        
+
         Examples:
         ---------
         >>> import numpy as np
@@ -139,7 +139,7 @@ class ByPassPreparer(DataPreparer):
         >>> preparer.prepare_input_structured_data(data)
         array([[1, 'a', 0.5],
                [2, 'b', 0.6]])
-        
+
         NOTE:
             This function is used when the input data is in the form of a structured array and needs to be converted to a regular numpy ndarray.
         """
@@ -148,17 +148,17 @@ class ByPassPreparer(DataPreparer):
     def prepare_output_structured_data(self, data: np.ndarray) -> np.recarray:
         """
         Prepare structured output data by converting it to a recarray.
-        
+
         Parameters:
         -----------
         data : np.ndarray
             output data in the form of a numpy ndarray.
-        
+
         Returns:
         --------
         output :  np.recarray
             numpy recarray version of the output data.
-        
+
         Examples:
         >>> import numpy as np
         >>> data = np.array([[1, 'a', 0.5], [2, 'b', 0.6]])
@@ -166,7 +166,7 @@ class ByPassPreparer(DataPreparer):
         >>> preparer.prepare_output_structured_data(data)
         rec.array([(1, 'a', 0.5), (2, 'b', 0.6)],
         dtype=[('f0', '<i4'), ('f1', 'S1'), ('f2', '<f8')])
-        
+
         NOTE:
             This function is used when the output data needs to be in the form of a structured array and is currently in the form of a regular numpy ndarray.
         """
@@ -176,21 +176,22 @@ class ByPassPreparer(DataPreparer):
 class Reshaper(DataPreparer):
     """
     Reshaper converts n-dimensional arrays to two-dimensional ones, performing a simple reshaping operation F: (n0, n1, ..., nm) -> (n0, prod(n1, ..., nm))
-        
+
     Parameters
     ----------
     channels_last : bool, optional
         Whether the last axis of the input array corresponds to the channels dimension or not, by default False
-        
+
     Examples:
     ---------
     >>> reshaper = Reshaper(channels_last = True)
     >>> reshaper.channels_last
     True
-        
+
     NOTE:
         Reshaper converts n-dimensional arrays to two-dimensional ones, performing a simple reshaping operation F: (n0, n1, ..., nm) -> (n0, prod(n1, ..., nm))
     """
+
     name = "reshaper"
 
     def __init__(self, channels_last: bool = False) -> None:
@@ -208,22 +209,22 @@ class Reshaper(DataPreparer):
         -----------
         data : np.ndarray
             The input data to reshape.
-        
+
         Examples:
         ---------
         >>> reshaper = Reshaper()
         >>> reshaper._set_shapes_from_data(np.random.random((10,3,4,5)))
         >>> reshaper.collapsible_shapes
         (3, 4, 5)
-        
-        NOTE:   
+
+        NOTE:
             This function sets the value of the attribute collapsible_shapes and collapsed_shape based on the input data.
         """
         self.collapsible_shapes = data.shape[1:]
         self.collapsed_shape = np.prod(self.collapsible_shapes).astype(int)
         self._is_recarray = data.dtype.names is not None
         if self._is_recarray:
-            self.n_features = len(data.dtype.names)*self.collapsed_shape
+            self.n_features = len(data.dtype.names) * self.collapsed_shape
         else:
             self.n_features = self.collapsed_shape
 
@@ -233,12 +234,12 @@ class Reshaper(DataPreparer):
         -----------
         data : np.ndarray
             The input data to reshape.
-        
+
         Returns:
         --------
         np.ndarray
             The reshaped input data.
-            
+
         Examples:
         ---------
         >>> reshaper = Reshaper()
@@ -249,13 +250,12 @@ class Reshaper(DataPreparer):
             ...,
             [0.865, 0.947, ... , 0.865],
             [0.947, 0.865, ... , 0.947]])
-        
+
         NOTE:
             This function reshapes the input data to (n0, prod(n1, ..., nm)) shape.
         """
 
-        assert len(
-            data.shape) > 1, 'Error! data must have at least two dimensions'
+        assert len(data.shape) > 1, "Error! data must have at least two dimensions"
         return data.reshape((data.shape[0], self.n_features))
 
     def prepare_input_data(self, data: Union[np.ndarray, np.recarray]) -> np.ndarray:
@@ -266,7 +266,7 @@ class Reshaper(DataPreparer):
         ----------
         data: Union[np.ndarray, np.recarray]
             Input data.
-            
+
         Returns:
         -------
         np.ndarray
@@ -317,15 +317,17 @@ class Reshaper(DataPreparer):
         >>> reshaped_data.shape
         (2, 3, 4)
 
-        NOTE:   
+        NOTE:
             The original shape of the data is stored in `collapsible_shapes` attribute.
         """
         return data.reshape((data.shape[0],) + self.collapsible_shapes)
 
-    def _prepare_output_data(self, data: np.ndarray = None, single: bool = False) -> np.ndarray:
+    def _prepare_output_data(
+        self, data: np.ndarray = None, single: bool = False
+    ) -> np.ndarray:
         """
         Prepare the input data to be in the shape and format expected by the model.
-        
+
         Parameters:
         -----------
         data : np.ndarray, optional
@@ -397,7 +399,6 @@ class Reshaper(DataPreparer):
         """
         return self._prepare_input_structured_data(data)
 
-
     def prepare_output_structured_data(self, data: np.ndarray = None) -> np.recarray:
         """
         Prepare the output data to be in the shape and format expected by the user.
@@ -414,7 +415,6 @@ class Reshaper(DataPreparer):
         """
         return self._prepare_output_structured_data(data)
 
-
     def _prepare_output_structured_data(self, data: np.ndarray = None) -> np.recarray:
         """
         Prepare the output data to be in the shape and format expected by the user.
@@ -430,16 +430,18 @@ class Reshaper(DataPreparer):
             The prepared output structured data
         """
         data = data.reshape(
-            (data.shape[0], ) + self.collapsible_shapes + (len(self.dtype), ))
+            (data.shape[0],) + self.collapsible_shapes + (len(self.dtype),)
+        )
         output_data = recfunctions.unstructured_to_structured(data, self.dtype)
         output_data = self._reshape_to_output(output_data)
         return output_data
+
 
 class ScalerReshaper(Reshaper):
 
     """
     ScalerReshaper is a class that inherits from the Reshaper class and performs additional scaling on the input data.
-    
+
     Parameters:
     -----------
     bias : float, optional
@@ -449,9 +451,12 @@ class ScalerReshaper(Reshaper):
     channels_last : bool, optional
         Specifies whether the channels should be last in the input data shape, by default False
     """
+
     name = "scalerreshaper"
 
-    def __init__(self, bias: float = 0., scale: float = 1., channels_last: bool = False) -> None:
+    def __init__(
+        self, bias: float = 0.0, scale: float = 1.0, channels_last: bool = False
+    ) -> None:
         """
         Reshaper converts n-dimensional arrays to two-dimensional ones, performing a
         simple reshaping operation F: (n0, n1, ..., nm) -> (n0, prod(n1, ..., nm))
@@ -460,7 +465,9 @@ class ScalerReshaper(Reshaper):
         self.bias = bias
         self.scale = scale
 
-    def prepare_input_data(self, data: Union[np.ndarray, np.recarray] = None, *args, **kwargs) -> np.ndarray:
+    def prepare_input_data(
+        self, data: Union[np.ndarray, np.recarray] = None, *args, **kwargs
+    ) -> np.ndarray:
         """
         Prepare the input data by subtracting the bias and scaling the data.
 
@@ -468,9 +475,9 @@ class ScalerReshaper(Reshaper):
         -----------
         data : np.ndarray or np.recarray
             The input data to be prepared
-        args : 
+        args :
             Additional arguments to be passed to the parent class method
-        kwargs : 
+        kwargs :
             Additional keyword arguments to be passed to the parent class method
 
         Returns:
@@ -488,21 +495,25 @@ class ScalerReshaper(Reshaper):
             If the input data is a structured array, the method 'prepare_input_structured_data' will be called instead.
         """
         if data.dtype.names is None:
-            return super(ScalerReshaper, self).prepare_input_data((data-self.bias)/self.scale, *args, **kwargs)
+            return super(ScalerReshaper, self).prepare_input_data(
+                (data - self.bias) / self.scale, *args, **kwargs
+            )
         else:
             return self.prepare_input_structured_data(data, *args, **kwargs)
 
-    def prepare_output_data(self, data: Union[np.ndarray, np.recarray] = None, *args, **kwargs) -> np.ndarray:
+    def prepare_output_data(
+        self, data: Union[np.ndarray, np.recarray] = None, *args, **kwargs
+    ) -> np.ndarray:
         """
         Prepare the output data by scaling it and adding the bias.
-        
+
         Parameters:
         -----------
         data : np.ndarray or np.recarray
             The output data to be prepared
-        args : 
+        args :
             Additional arguments to be passed to the parent class method
-        kwargs : 
+        kwargs :
             Additional keyword arguments to be passed to the parent class method
 
         Returns:
@@ -520,14 +531,16 @@ class ScalerReshaper(Reshaper):
             If the input data is a structured array, the method 'prepare_output_structured_data' will be called
         """
         if not self._is_recarray:
-            return super(ScalerReshaper, self).prepare_output_data(data*self.scale+self.bias, *args, **kwargs)
+            return super(ScalerReshaper, self).prepare_output_data(
+                data * self.scale + self.bias, *args, **kwargs
+            )
         else:
             return self.prepare_output_structured_data(data)
 
     def _get_structured_bias_scale(self, dtype: np.dtype = None) -> Tuple[dict, dict]:
         """
         Get the bias and scale values for each field of a structured array.
-        
+
         Parameters:
         -----------
         dtype : np.dtype
@@ -545,7 +558,7 @@ class ScalerReshaper(Reshaper):
         >>> reshaper._get_structured_bias_scale(np.dtype([('a', np.float), ('b', np.float)]))
         ({'a': 10, 'b': 10}, {'a': 2, 'b': 2})
 
-        NOTE:   
+        NOTE:
             If the bias and scale attributes are floats, they will be used for all fields.
         """
         bias = self.bias
@@ -557,7 +570,9 @@ class ScalerReshaper(Reshaper):
 
         return bias, scale
 
-    def prepare_input_structured_data(self, data: np.recarray = None, *args, **kwargs) -> np.ndarray:
+    def prepare_input_structured_data(
+        self, data: np.recarray = None, *args, **kwargs
+    ) -> np.ndarray:
         """
         Scale and reshape structured data (np.recarray) before passing it to the next layer.
 
@@ -567,12 +582,12 @@ class ScalerReshaper(Reshaper):
             structured data to be transformed
         *args: Additional arguments passed to the parent class
         *kwargs: Additional keyword arguments passed to the parent class
-        
+
         Returns:
         --------
         output : np.ndarray
             scaled and reshaped structured data
-        
+
         Examples:
         ---------
         >>> data = np.array([(1, 2, 3), (4, 5, 6)], dtype=[("a", int), ("b", int), ("c", int)])
@@ -580,7 +595,7 @@ class ScalerReshaper(Reshaper):
         >>> reshaper.prepare_input_structured_data(data)
             array([[-0.5, 0.33333333, 0.75      ],
                 [ 1.5, 1.66666667, 2.        ]])
-        
+
         NOTE:
             The bias and scale parameters are expected to be provided in the form of dictionaries, where keys are field names and values are the corresponding bias and scale values for those fields.
         """
@@ -588,10 +603,14 @@ class ScalerReshaper(Reshaper):
         data = data.copy()
         names = data.dtype.names
         for name in names:
-            data[name] = (data[name]-bias[name])/scale[name]
-        return super(ScalerReshaper, self).prepare_input_structured_data(data, *args, **kwargs)
+            data[name] = (data[name] - bias[name]) / scale[name]
+        return super(ScalerReshaper, self).prepare_input_structured_data(
+            data, *args, **kwargs
+        )
 
-    def prepare_output_structured_data(self, data: np.ndarray = None, *args, **kwargs) -> np.recarray:
+    def prepare_output_structured_data(
+        self, data: np.ndarray = None, *args, **kwargs
+    ) -> np.recarray:
         """
         Scale and reshape structured data (np.recarray) before passing it to the next layer.
 
@@ -601,12 +620,12 @@ class ScalerReshaper(Reshaper):
             structured data to be transformed
         *args: Additional arguments passed to the parent class
         *kwargs: Additional keyword arguments passed to the parent class
-    
+
         Returns:
         --------
         output : np.recarray
             scaled and reshaped structured data
-        
+
         Examples:
         ---------
         >>> data = np.array([[-0.5, 0.33333333, 0.75      ],
@@ -615,17 +634,18 @@ class ScalerReshaper(Reshaper):
         >>> reshaper.prepare_output_structured_data(data)
         rec.array([(0., 2.,  6.), (6., 8., 12.)],
             dtype=[('a', '<f8'), ('b', '<f8'), ('c', '<f8')])
-            
+
         Notes:
         ------
         - The bias and scale parameters are expected to be provided in the form of dictionaries, where keys are field names and values are the corresponding bias and scale values for those fields.
         """
         bias, scale = self._get_structured_bias_scale(self.dtype)
         data = super(ScalerReshaper, self).prepare_output_structured_data(
-            data, *args, **kwargs)
+            data, *args, **kwargs
+        )
         data = data.copy()
         for name in self.dtype.names:
-            data[name] = data[name]*scale[name]+bias[name]
+            data[name] = data[name] * scale[name] + bias[name]
         return data
 
 
@@ -640,15 +660,19 @@ class MapValid(Reshaper):
     -----------
     name : str
         the name of the reshaper class
-        
+
     WARNING:
         The invalid positions are expected to be static in relation to n0.
     """
+
     name = "map_valid"
-    def __init__(self, config: dict = None, mask=None, channels_last: bool = True) -> None:
+
+    def __init__(
+        self, config: dict = None, mask=None, channels_last: bool = True
+    ) -> None:
         """
         Initialize the MapValid class with the configurations and mask passed as parameters.
-        
+
         Parameters
         ----------
         config : dict, optional
@@ -659,7 +683,7 @@ class MapValid(Reshaper):
             if set to True, move the channel dimension to the last, by default True
         """
         super().__init__()
-        self.default_dtype = 'float64'
+        self.default_dtype = "float64"
 
         if mask == 0 or isinstance(mask, int):
             self.replace_mask_with_large_number = False
@@ -710,7 +734,7 @@ class MapValid(Reshaper):
         array([[1, 2, 3],
                [5, 6, 7],
                [9, 10, 11]])
-        
+
         NOTE:
             - MapValid converts n-dimensional arrays to two-dimensional ones performing a valid values
             mapping operation F: F: data.shape = (n0, n1, ..., nm) -> data'.shape = (n0, n_valids)
@@ -727,11 +751,14 @@ class MapValid(Reshaper):
 
         else:
             raise Exception(
-                "The chosen mask {} does not fit in any supported case".format(self.mask))
+                "The chosen mask {} does not fit in any supported case".format(
+                    self.mask
+                )
+            )
 
         samples_dim = data.shape[0]
 
-        valid_indices = (slice(0, samples_dim), ) + self.valid_indices_
+        valid_indices = (slice(0, samples_dim),) + self.valid_indices_
 
         return data[valid_indices]
 
@@ -767,7 +794,10 @@ class MapValid(Reshaper):
         """
         immutable_shape = data.shape[0]
 
-        final_shape = (immutable_shape, self.n_features, )
+        final_shape = (
+            immutable_shape,
+            self.n_features,
+        )
 
         if self.return_the_same_mask:
             mask = self.mask_
@@ -783,11 +813,9 @@ class MapValid(Reshaper):
 
         reshaped_data[valid_indices] = data
 
-        reshaped_data = super(
-            MapValid, self).prepare_output_data(reshaped_data)
+        reshaped_data = super(MapValid, self).prepare_output_data(reshaped_data)
 
         return reshaped_data
-
 
     def prepare_input_structured_data(self, data: np.recarray = None) -> np.ndarray:
         """
@@ -846,6 +874,7 @@ class MapValid(Reshaper):
             This function is a wrapper function that calls the 'prepare_output_data' function internally.
         """
         return self.prepare_output_data(data)
+
 
 class Sampling(DataPreparer):
     """
@@ -919,15 +948,18 @@ class Sampling(DataPreparer):
         NOTE:
             The indices are generated by calling the 'prepare_input_data' or 'prepare_input_structured_data' functions.
         """
-        assert self.sampled_indices is not None,\
-            "The indices still were not generate." \
+        assert self.sampled_indices is not None, (
+            "The indices still were not generate."
             "Run prepare_input_data or prepare_input_structured_data for getting them."
+        )
         return sorted(self.sampled_indices.tolist())
 
-    def prepare_input_data(self, data: np.ndarray = None, data_interval: list = None) -> np.ndarray:
+    def prepare_input_data(
+        self, data: np.ndarray = None, data_interval: list = None
+    ) -> np.ndarray:
         """
         Prepare input data for sampling.
-        
+
         Parameters:
         -----------
         data : numpy.ndarray, optional
@@ -935,29 +967,28 @@ class Sampling(DataPreparer):
         data_interval : list, optional
             The interval of data that should be selected. Default is None,
             which means all data will be selected.
-            
+
         Returns:
         --------
         output : numpy.ndarray
             The sampled data.
-            
+
         Examples:
         ---------
         >>> data = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
         >>> data_interval = [3, 7]
         >>> input_data = sampler.prepare_input_data(data, data_interval)
-        
+
         NOTE:
-            The `data_interval` parameter must be a list of two integers, specifying the start and end of the interval. 
+            The `data_interval` parameter must be a list of two integers, specifying the start and end of the interval.
         """
         if data_interval is None:
             data_interval = [0, data.shape[0]]
         n_samples = data_interval[1] - data_interval[0]
 
-        self.global_indices = np.arange(
-            start=data_interval[0], stop=data_interval[1])
+        self.global_indices = np.arange(start=data_interval[0], stop=data_interval[1])
 
-        n_choices = int(self.choices_fraction*n_samples)
+        n_choices = int(self.choices_fraction * n_samples)
 
         self.sampled_indices = self.global_indices.copy()
         if self.shuffling:
@@ -965,13 +996,17 @@ class Sampling(DataPreparer):
         else:
             self.sampled_indices = self.sampled_indices
 
-        self.sampled_indices = np.random.choice(
-            self.sampled_indices, n_choices)
+        self.sampled_indices = np.random.choice(self.sampled_indices, n_choices)
 
         return data[self.sampled_indices]
 
-    def prepare_input_structured_data(self, data: h5py.Dataset = None, data_interval: list = None,
-                                      batch_size: int = None, dump_path: str = None) -> np.recarray:
+    def prepare_input_structured_data(
+        self,
+        data: h5py.Dataset = None,
+        data_interval: list = None,
+        batch_size: int = None,
+        dump_path: str = None,
+    ) -> np.recarray:
         """
         Prepares structured data for further processing.
 
@@ -1009,35 +1044,41 @@ class Sampling(DataPreparer):
             data_interval = [0, data.shape[0]]
 
         n_samples = data_interval[1] - data_interval[0]
-        self.global_indices = np.arange(
-            start=data_interval[0], stop=data_interval[1])
+        self.global_indices = np.arange(start=data_interval[0], stop=data_interval[1])
 
-        n_sampled_preserved = int(self.choices_fraction*n_samples)
+        n_sampled_preserved = int(self.choices_fraction * n_samples)
         self.sampled_indices = np.random.choice(
-            self.global_indices, n_sampled_preserved, replace=False)
+            self.global_indices, n_sampled_preserved, replace=False
+        )
 
         if isinstance(data, h5py.Dataset):
 
             if isinstance(batch_size, MemorySizeEval):
                 batch_size = batch_size(
-                    max_batches=n_sampled_preserved, shape=data.shape[1:])
+                    max_batches=n_sampled_preserved, shape=data.shape[1:]
+                )
             else:
                 pass
 
-            assert dump_path, "Using a h5py.Dataset as input data a dump_path must be provided."
+            assert (
+                dump_path
+            ), "Using a h5py.Dataset as input data a dump_path must be provided."
 
-            fp = h5py.File(dump_path, 'w')
-            sampled_data = fp.create_dataset('data', shape=(n_sampled_preserved,) + data.shape[1:],
-                                             dtype=data.dtype)
+            fp = h5py.File(dump_path, "w")
+            sampled_data = fp.create_dataset(
+                "data", shape=(n_sampled_preserved,) + data.shape[1:], dtype=data.dtype
+            )
 
             # Constructing the normalization  using the reference data
             batches = indices_batchdomain_constructor(
-                indices=self.sampled_indices, batch_size=batch_size)
+                indices=self.sampled_indices, batch_size=batch_size
+            )
 
             start_ix = 0
             for batch_id, batch in enumerate(batches):
                 print(
-                    f"Sampling batch {batch_id+1}/{len(batches)} batch_size={len(batch)}")
+                    f"Sampling batch {batch_id+1}/{len(batches)} batch_size={len(batch)}"
+                )
                 finish_ix = start_ix + len(batch)
                 sampled_data[start_ix:finish_ix] = data[sorted(batch)]
                 start_ix = finish_ix
@@ -1100,7 +1141,13 @@ class MovingWindow:
         - The full_output parameter is used to decide if the whole window should be returned or just the last item.
     """
 
-    def __init__(self, history_size: int = None, skip_size: int = 1, horizon_size: int = None, full_output: bool = True) -> None:
+    def __init__(
+        self,
+        history_size: int = None,
+        skip_size: int = 1,
+        horizon_size: int = None,
+        full_output: bool = True,
+    ) -> None:
         """
         Initializes the MovingWindow class
 
@@ -1126,8 +1173,12 @@ class MovingWindow:
             self.process_batch = self.get_last_item
 
         # Verifying if history and horizon sizes was provided
-        assert history_size, f"A value for history_size must be provided, not {history_size}"
-        assert horizon_size, f"A value for horizon_size must be provided, not {horizon_size}"
+        assert (
+            history_size
+        ), f"A value for history_size must be provided, not {history_size}"
+        assert (
+            horizon_size
+        ), f"A value for horizon_size must be provided, not {horizon_size}"
 
     def transform(self, time_series: np.ndarray) -> np.ndarray:
         """
@@ -1161,49 +1212,50 @@ class MovingWindow:
         """
         return batch
 
-
     def get_last_item(self, batch: np.ndarray) -> np.ndarray:
         """
         Get the last item of a batch
-        
+
         Parameters:
         -----------
         batch: np.ndarray
             The input batch data
-        
+
         Returns:
         --------
         np.ndarray
             The last item of the batch data
-            
+
         Examples:
         ---------
         >>> data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
         >>> mw.get_last_item(data)
         array([[7, 8, 9]])
-        
+
         NOTE:
             - This method is used internally by the MovingWindow class
         """
         return batch[-1:]
 
-    def __call__(self, input_data: np.ndarray = None, output_data: np.ndarray = None) -> Tuple[np.ndarray, np.ndarray]:
+    def __call__(
+        self, input_data: np.ndarray = None, output_data: np.ndarray = None
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Apply Moving Window over the input data
-        
+
         Parameters:
         -----------
         input_data : np.ndarray
             2D array (time-series) to be used for constructing the history size
         output_data : np.ndarray
             2D array (time-series) to be used for constructing the horizon size
-            
+
         Returns:
         --------
         Tuple of np.ndarray
-            The tuple contains two arrays with shapes (n_samples, n_history, n_features) and 
+            The tuple contains two arrays with shapes (n_samples, n_history, n_features) and
             (n_samples, n_horizon, n_features)
-            
+
         Examples:
         ---------
         >>> data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12], [13, 14, 15]])
@@ -1221,7 +1273,7 @@ class MovingWindow:
                 [10, 11, 12]],
                [[10, 11, 12],
                 [13, 14, 15]]])
-        
+
         NOTE:
             - It is expected that the input_data and output_data have the same shape
             - This method is used internally by the MovingWindow class
@@ -1241,8 +1293,8 @@ class MovingWindow:
         # training windows
         while center + self.horizon_size <= data_size:
 
-            input_batch = input_data[center - self.history_size:center, :]
-            output_batch = output_data[center:center + self.horizon_size, :]
+            input_batch = input_data[center - self.history_size : center, :]
+            output_batch = output_data[center : center + self.horizon_size, :]
 
             input_batches_list.append(input_batch)
             output_batches_list.append(self.process_batch(batch=output_batch))
@@ -1315,9 +1367,11 @@ class SlidingWindow:
         self.skip_size = skip_size
 
         # Verifying if history and horizon sizes was provided
-        assert history_size, f"A value for history_size must be provided, not {history_size}"
+        assert (
+            history_size
+        ), f"A value for history_size must be provided, not {history_size}"
         assert skip_size, f"A value for horizon_size must be provided, not {skip_size}"
-        
+
     def apply(self, time_series: List[int]) -> List[List[int]]:
         """
         Applies the sliding window to the given time series.
@@ -1344,24 +1398,26 @@ class SlidingWindow:
         for i in range(0, len(time_series) - self.history_size - self.skip_size + 1):
             window = time_series[i : i + self.history_size + self.skip_size]
             windowed_samples.append(window)
-        return windowed_samples 
+        return windowed_samples
 
-    def __call__(self, input_data: np.ndarray = None, output_data: np.ndarray = None) -> tuple[np.ndarray, np.ndarray]:
+    def __call__(
+        self, input_data: np.ndarray = None, output_data: np.ndarray = None
+    ) -> tuple[np.ndarray, np.ndarray]:
         """
-        Applies a sliding window operation on the given time series and returns the windowed samples. 
-        
+        Applies a sliding window operation on the given time series and returns the windowed samples.
+
         Parameters:
         -----------
-        input_data : np.ndarray, optional 
+        input_data : np.ndarray, optional
             2D array (time-series) to be used for constructing the history size
-        output_data :  np.ndarray, optional  
+        output_data :  np.ndarray, optional
             2D array (time-series) to be used for constructing the horizon size
-        
-        Returns: 
+
+        Returns:
         --------
-        input_data, output_data :  
+        input_data, output_data :
             tuple of np.ndarray with shapes (n_samples, n_history, n_features) and (n_samples, n_horizon, n_features)
-    
+
         Examples:
         --------
         >>> data = np.random.rand(10,3)
@@ -1373,7 +1429,7 @@ class SlidingWindow:
         (4, 3, 3)
         >>> output_data.shape
         (4, 2, 3)
-        
+
         NOTE:
             - history_size and horizon_size should be positive integers
             - history_size should be less than the length of input_data
@@ -1394,8 +1450,10 @@ class SlidingWindow:
         # training windows
         while center + self.skip_size <= data_size:
 
-            input_batch = input_data[center - self.history_size:center, :]
-            output_batch = output_data[center - self.history_size + self.skip_size:center+self.skip_size, :]
+            input_batch = input_data[center - self.history_size : center, :]
+            output_batch = output_data[
+                center - self.history_size + self.skip_size : center + self.skip_size, :
+            ]
 
             input_batches_list.append(input_batch)
             output_batches_list.append(output_batch)
@@ -1406,7 +1464,6 @@ class SlidingWindow:
         output_data = np.stack(output_batches_list, 0)
 
         return input_data, output_data
-
 
 
 class IntersectingBatches:
@@ -1439,7 +1496,9 @@ class IntersectingBatches:
         [0.40403346, 0.33907722]])]
     """
 
-    def __init__(self, skip_size: int = 1, batch_size: int = None, full: bool = True) -> None:
+    def __init__(
+        self, skip_size: int = 1, batch_size: int = None, full: bool = True
+    ) -> None:
         """
         Initializes the IntersectingBatches class
 
@@ -1453,7 +1512,9 @@ class IntersectingBatches:
             Whether to include the last batch or not, even if it's not full.
 
         """
-        assert batch_size, f"A value for horizon_size must be provided, not {batch_size}"
+        assert (
+            batch_size
+        ), f"A value for horizon_size must be provided, not {batch_size}"
 
         self.skip_size = skip_size
         self.batch_size = batch_size
@@ -1465,9 +1526,9 @@ class IntersectingBatches:
 
         Parameters:
         -----------
-        dim : int, optional 
+        dim : int, optional
             total dimension
-        
+
         Returns:
         --------
         output : np.ndarray
@@ -1502,17 +1563,17 @@ class IntersectingBatches:
         Returns:
         --------
         Union[list, np.ndarray]
-            A list of batches or a single batch if `full` attribute is set to False. 
-            
+            A list of batches or a single batch if `full` attribute is set to False.
+
         Examples:
         --------
         >>> input_data = np.array([[1,2,3], [4,5,6], [7,8,9], [10,11,12]])
         >>> batches = IntersectingBatches(skip_size=1, batch_size=2)
         >>> batches(input_data)
         [array([[1, 2, 3],
-            [4, 5, 6]]), 
+            [4, 5, 6]]),
         array([[4, 5, 6],
-            [7, 8, 9]]), 
+            [7, 8, 9]]),
         array([[ 7,  8,  9],
             [10, 11, 12]])]
 
@@ -1527,7 +1588,7 @@ class IntersectingBatches:
         # training windows
         while center + self.batch_size <= data_size:
 
-            input_batch = input_data[center:center + self.batch_size]
+            input_batch = input_data[center : center + self.batch_size]
 
             input_batches_list.append(input_batch)
 
@@ -1546,14 +1607,14 @@ class BatchwiseExtrapolation:
 
     Parameters:
     -----------
-    op : callable, optional 
+    op : callable, optional
         A function that takes a single argument, an array-like object, representing the current state of the time-series dataset and returns an array-like object representing the next state of the dataset.
     auxiliary_data : np.ndarray, optional
         Additional data that can be used to force the extrapolation of the time-series dataset.
 
     Attributes:
     -----------
-    time_id : int 
+    time_id : int
         A counter used to keep track of the current state of the time-series dataset.
 
     Examples:
@@ -1578,15 +1639,17 @@ class BatchwiseExtrapolation:
         self.auxiliary_data = auxiliary_data
         self.time_id = 0
 
-    def _simple_extrapolation(self, extrapolation_dataset: np.ndarray, history_size: int = 0) -> np.ndarray:
+    def _simple_extrapolation(
+        self, extrapolation_dataset: np.ndarray, history_size: int = 0
+    ) -> np.ndarray:
         """
         Given the current extrapolation dataset, use the last history_size number of rows to create the next state of the dataset.
 
         Parameters:
         -----------
-        extrapolation_dataset : np.ndarray 
+        extrapolation_dataset : np.ndarray
             The current state of the extrapolation dataset.
-        history_size : int, optional 
+        history_size : int, optional
             The number of rows of the current state of the dataset to use as history to create the next state.
 
         Returns:
@@ -1596,16 +1659,27 @@ class BatchwiseExtrapolation:
         """
         return extrapolation_dataset[None, -history_size:, :]
 
-    def _forcing_extrapolation(self, extrapolation_dataset: np.ndarray, history_size: int = 0) -> np.ndarray:
+    def _forcing_extrapolation(
+        self, extrapolation_dataset: np.ndarray, history_size: int = 0
+    ) -> np.ndarray:
 
-        return np.hstack([extrapolation_dataset[-history_size:, :],
-                          self.auxiliary_data[self.time_id-history_size:self.time_id, :]])[None, :, :]
+        return np.hstack(
+            [
+                extrapolation_dataset[-history_size:, :],
+                self.auxiliary_data[self.time_id - history_size : self.time_id, :],
+            ]
+        )[None, :, :]
 
-    def __call__(self, init_state: np.ndarray = None, history_size: int = None, horizon_size: int = None,
-                 testing_data_size: int = None) -> np.ndarray:
+    def __call__(
+        self,
+        init_state: np.ndarray = None,
+        history_size: int = None,
+        horizon_size: int = None,
+        testing_data_size: int = None,
+    ) -> np.ndarray:
         """
         A function that performs the extrapolation of the time series.
-    
+
         Parameters:
         -----------
         init_state : np.ndarray, optional
@@ -1616,12 +1690,12 @@ class BatchwiseExtrapolation:
             the size of the horizon window used in the extrapolation.
         testing_data_size int, optional
             the size of the testing data set.
-        
+
         Returns:
         --------
-        output : np.ndarray 
+        output : np.ndarray
             the extrapolated dataset of shape (testing_data_size, n_series)
-        
+
         Examples:
         ---------
         #Creating an instance of the class
@@ -1635,7 +1709,7 @@ class BatchwiseExtrapolation:
         >>> output = model(init_state, history_size, horizon_size, testing_data_size)
         >>> print(output.shape)
         #(50,3)
-        
+
         NOTE:
             The number of series in the initial state must be equal to the number of series in the auxiliary data, if it is provided.
         """
@@ -1651,9 +1725,11 @@ class BatchwiseExtrapolation:
 
         if isinstance(self.auxiliary_data, np.ndarray):
 
-            assert self.auxiliary_data.shape[-1] + n_series == init_state.shape[-1], \
-                "Number of series in the initial state must be {}".format(
-                    self.auxiliary_data.shape[-1])
+            assert (
+                self.auxiliary_data.shape[-1] + n_series == init_state.shape[-1]
+            ), "Number of series in the initial state must be {}".format(
+                self.auxiliary_data.shape[-1]
+            )
 
             current_state_constructor = self._forcing_extrapolation
 
@@ -1661,16 +1737,20 @@ class BatchwiseExtrapolation:
 
             current_state_constructor = self._simple_extrapolation
 
-        while extrapolation_dataset.shape[0] - history_size + horizon_size <= testing_data_size:
+        while (
+            extrapolation_dataset.shape[0] - history_size + horizon_size
+            <= testing_data_size
+        ):
 
             extrapolation = self.op(current_state)
             extrapolation_dataset = np.concatenate(
-                [extrapolation_dataset, extrapolation[0]], 0)
-            current_state = current_state_constructor(extrapolation_dataset,
-                                                      history_size=history_size)
+                [extrapolation_dataset, extrapolation[0]], 0
+            )
+            current_state = current_state_constructor(
+                extrapolation_dataset, history_size=history_size
+            )
 
-            log_str = "Extrapolation {}".format(
-                self.time_id + 1 - history_size)
+            log_str = "Extrapolation {}".format(self.time_id + 1 - history_size)
             sys.stdout.write("\r" + log_str)
             sys.stdout.flush()
 
@@ -1682,6 +1762,7 @@ class BatchwiseExtrapolation:
 
 
 # ND Time-series data preparation (MovingWindow, SlidingWindow and BatchExtrapolation)
+
 
 class BatchCopy:
     """
@@ -1707,37 +1788,42 @@ class BatchCopy:
 
         self.channels_last = channels_last
 
-    def _single_copy(self, data: h5py.Dataset = None, data_interval: list = None,
-                     batch_size: int = None, dump_path: str = None,
-                     transformation: callable = lambda data: data) -> h5py.Dataset:
+    def _single_copy(
+        self,
+        data: h5py.Dataset = None,
+        data_interval: list = None,
+        batch_size: int = None,
+        dump_path: str = None,
+        transformation: callable = lambda data: data,
+    ) -> h5py.Dataset:
         """
-        Copy data from a single h5py.Dataset to another h5py.Dataset in batches. 
-        
+        Copy data from a single h5py.Dataset to another h5py.Dataset in batches.
+
         Parameters:
         -----------
         data , h5py.Dataset
             The input h5py.Dataset to be copied.
         data_interval : list
             The interval of the data to be copied.
-        batch_size : int 
+        batch_size : int
             The size of the batch to be copied.
         dump_path : str
             The path where the new h5py.Dataset will be saved.
         transformation : callable
             A function to be applied to the data before saving. Default is identity function.
-        
+
         Returns:
         --------
         h5py.Dataset
             The new h5py.Dataset after the copy process.
-        
+
         Examples:
         ---------
         # Copy data from data_file.h5/data to data_copy.h5/data with a batch size of 1000
         >>> data = h5py.File("data_file.h5", "r")
         >>> batch_copy = BatchCopy()
         >>> dset = batch_copy._single_copy(data=data["data"], data_interval=[0, 100000], batch_size=1000, dump_path="data_copy.h5")
-        
+
         NOTE:
             - The input must be an h5py.Dataset.
         """
@@ -1747,15 +1833,13 @@ class BatchCopy:
         data_shape = (data_interval[1] - data_interval[0],) + data.shape[1:]
 
         data_file = h5py.File(dump_path, "w")
-        dtype = [(var, '<f8') for var in variables_list]
+        dtype = [(var, "<f8") for var in variables_list]
 
-        dset = data_file.create_dataset("data", shape=data_shape,
-                                        dtype=dtype)
+        dset = data_file.create_dataset("data", shape=data_shape, dtype=dtype)
 
         if isinstance(batch_size, MemorySizeEval):
             n_samples = data_interval[1] - data_interval[0]
-            batch_size = batch_size(
-                max_batches=n_samples, shape=data.shape[1:])
+            batch_size = batch_size(max_batches=n_samples, shape=data.shape[1:])
         else:
             pass
 
@@ -1770,22 +1854,23 @@ class BatchCopy:
         for batch_id, (batch, d_batch) in enumerate(zip(batches, dset_batches)):
 
             print(
-                f"Copying batch {batch_id+1}/{len(batches)} batch_size={batch[1]-batch[0]}")
+                f"Copying batch {batch_id+1}/{len(batches)} batch_size={batch[1]-batch[0]}"
+            )
 
             # The variables dimension is the last one
             if self.channels_last:
                 # TODO this is a restrictive way of doing it. It must be more flexible.
                 # .transpose((0, 4, 2, 3, 1))
-                chunk_data = data[slice(
-                    *batch)].view((float, len(data.dtype.names)))
+                chunk_data = data[slice(*batch)].view((float, len(data.dtype.names)))
             # The variables dimension is the second one
             else:
-                chunk_data = data[slice(
-                    *batch)].view((float, len(data.dtype.names)))
+                chunk_data = data[slice(*batch)].view((float, len(data.dtype.names)))
 
-            chunk_data = np.core.records.fromarrays(np.split(chunk_data[...], n_variables, axis=-1),
-                                                    names=variables_names,
-                                                    formats=','.join(len(variables_names) * ['f8']))
+            chunk_data = np.core.records.fromarrays(
+                np.split(chunk_data[...], n_variables, axis=-1),
+                names=variables_names,
+                formats=",".join(len(variables_names) * ["f8"]),
+            )
 
             if len(chunk_data.shape) > len(dset.shape):
                 chunk_data = np.squeeze(chunk_data, axis=-1)
@@ -1796,18 +1881,23 @@ class BatchCopy:
 
         return dset
 
-    def _multiple_copy(self, data: list = None, data_interval: list = None,
-                       batch_size: int = None, dump_path: str = None,
-                       transformation: callable = lambda data: data) -> h5py.Dataset:
+    def _multiple_copy(
+        self,
+        data: list = None,
+        data_interval: list = None,
+        batch_size: int = None,
+        dump_path: str = None,
+        transformation: callable = lambda data: data,
+    ) -> h5py.Dataset:
         """
-        Copy and concatenate multiple h5py.Dataset objects into a single h5py.Dataset object. 
+        Copy and concatenate multiple h5py.Dataset objects into a single h5py.Dataset object.
 
         Parameters:
         -----------
         data : list, optional
             A list of h5py.Dataset objects to be concatenated.
         data_interval : list, optional
-            A list of two integers indicating the start and end index of the data to be concatenated. 
+            A list of two integers indicating the start and end index of the data to be concatenated.
         batch_size : int, optional
             The number of samples to be processed at a time.
         dump_path : str, optional
@@ -1821,22 +1911,21 @@ class BatchCopy:
             The concatenated h5py.Dataset object.
         """
 
-        assert all([isinstance(di, h5py.Dataset)
-                   for di in data]), "All inputs must be h5py.Dataset"
+        assert all(
+            [isinstance(di, h5py.Dataset) for di in data]
+        ), "All inputs must be h5py.Dataset"
 
         variables_list = sum([list(di.dtype.names) for di in data], [])
         data_shape = (data_interval[1] - data_interval[0],) + data[0].shape[1:]
 
         data_file = h5py.File(dump_path, "w")
-        dtype = [(var, '<f8') for var in variables_list]
+        dtype = [(var, "<f8") for var in variables_list]
 
-        dset = data_file.create_dataset("data", shape=data_shape,
-                                        dtype=dtype)
+        dset = data_file.create_dataset("data", shape=data_shape, dtype=dtype)
 
         if isinstance(batch_size, MemorySizeEval):
             n_samples = data_interval[1] - data_interval[0]
-            batch_size = batch_size(
-                max_batches=n_samples, shape=data.shape[1:])
+            batch_size = batch_size(max_batches=n_samples, shape=data.shape[1:])
         else:
             pass
 
@@ -1851,21 +1940,36 @@ class BatchCopy:
         for batch_id, (batch, d_batch) in enumerate(zip(batches, dset_batches)):
 
             print(
-                f"Copying and concatenating the batches {batch_id+1}/{len(batches)} batch_size={batch[1] - batch[0]}")
+                f"Copying and concatenating the batches {batch_id+1}/{len(batches)} batch_size={batch[1] - batch[0]}"
+            )
 
             # The variables dimension is the last one
             if self.channels_last:
                 # TODO this is a restrictive way of doing it. It must be more flexible.
-                chunk_data = np.stack([di[slice(*batch)].view((float, len(di.dtype.names))).transpose((0, 4, 2, 3, 1))
-                                       for di in data], axis=-1)
+                chunk_data = np.stack(
+                    [
+                        di[slice(*batch)]
+                        .view((float, len(di.dtype.names)))
+                        .transpose((0, 4, 2, 3, 1))
+                        for di in data
+                    ],
+                    axis=-1,
+                )
             # The variables dimension is the second one
             else:
                 chunk_data = np.stack(
-                    [di[slice(*batch)].view((float, len(di.dtype.names))) for di in data], axis=-1)
+                    [
+                        di[slice(*batch)].view((float, len(di.dtype.names)))
+                        for di in data
+                    ],
+                    axis=-1,
+                )
 
-            chunk_data = np.core.records.fromarrays(np.split(chunk_data[...], n_variables, axis=-1),
-                                                    names=variables_names,
-                                                    formats=','.join(len(variables_names) * ['f8']))
+            chunk_data = np.core.records.fromarrays(
+                np.split(chunk_data[...], n_variables, axis=-1),
+                names=variables_names,
+                formats=",".join(len(variables_names) * ["f8"]),
+            )
 
             if len(chunk_data.shape) > len(dset.shape):
                 chunk_data = np.squeeze(chunk_data, axis=-1)
@@ -1876,14 +1980,19 @@ class BatchCopy:
 
         return dset
 
-    def copy(self, data: h5py.Dataset = None, data_interval: list = None,
-             batch_size: int = None, dump_path: str = None,
-             transformation: callable = lambda data: data) -> h5py.Dataset:
-        
+    def copy(
+        self,
+        data: h5py.Dataset = None,
+        data_interval: list = None,
+        batch_size: int = None,
+        dump_path: str = None,
+        transformation: callable = lambda data: data,
+    ) -> h5py.Dataset:
+
         """
-        Copies the data from h5py.Dataset to a new h5py.Dataset file. 
+        Copies the data from h5py.Dataset to a new h5py.Dataset file.
         It allows to apply a transformation function to the data.
-        
+
         Parameters:
         -----------
         data : h5py.Dataset
@@ -1896,12 +2005,12 @@ class BatchCopy:
             the path of the file where the data will be copied
         transformation : callable
             a function to be applied to the data before saving it
-            
+
         Returns:
         --------
-        h5py.Dataset 
+        h5py.Dataset
             The copied data
-        
+
         Examples:
         ---------
         >>> data = h5py.File('data.h5', 'r')
@@ -1910,32 +2019,42 @@ class BatchCopy:
         >>> dump_path = 'copied_data.h5'
         >>> transformation = lambda x: x*2
         >>> copied_data = copy(data, data_interval, batch_size, dump_path, transformation)
-        
+
         NOTE:
             if the data is a list of h5py.Dataset, it will call the `_multiple_copy` function.
         """
 
         if isinstance(data, list):
 
-            return self._multiple_copy(data=data, data_interval=data_interval, batch_size=batch_size,
-                                       dump_path=dump_path, transformation=transformation)
+            return self._multiple_copy(
+                data=data,
+                data_interval=data_interval,
+                batch_size=batch_size,
+                dump_path=dump_path,
+                transformation=transformation,
+            )
 
         else:
-            return self._single_copy(data=data, data_interval=data_interval, batch_size=batch_size,
-                                     dump_path=dump_path, transformation=transformation)
+            return self._single_copy(
+                data=data,
+                data_interval=data_interval,
+                batch_size=batch_size,
+                dump_path=dump_path,
+                transformation=transformation,
+            )
 
 
 class MakeTensor:
     """
     This class is used to make torch tensors from numpy arrays or dictionaries.
-    
+
     Parameters:
     -----------
-    input_names : (List[str]) 
+    input_names : (List[str])
         list of input names.
     output_names : (List[str])
         list of output names.
-    
+
     Examples:
     ---------
     # Creating a MakeTensor object with input and output names
@@ -1948,7 +2067,7 @@ class MakeTensor:
     # Converting dictionary to torch tensors
     >>> input_data = {"input_1": np.random.randn(10, 3), "input_2": np.random.randn(10, 4)}
     >>> input_tensors = mt(input_data)
-    
+
     NOTE:
     - input_tensors will be a list of tensors in case of numpy array and dictionary inputs.
     - The input_data should be numpy array with shape (batch_size, features_size) or dictionary with keys from input_names and values with shape (batch_size, features_size) if input_names and output_names are provided.
@@ -1956,17 +2075,20 @@ class MakeTensor:
     - The input_data will be put on the device specified by the device parameter, which defaults to 'cpu'.
     - If input_data is None, it will raise an exception.
     """
+
     def __init__(self, input_names=None, output_names=None):
         self.input_names = input_names
         self.output_names = output_names
 
-    def _make_tensor(self, input_data: np.ndarray = None, device: str = 'cpu') -> List[torch.Tensor]:
+    def _make_tensor(
+        self, input_data: np.ndarray = None, device: str = "cpu"
+    ) -> List[torch.Tensor]:
         """
         Convert input_data to a list of torch tensors.
 
         Parameters:
         -----------
-        input_data (np.ndarray), optional 
+        input_data (np.ndarray), optional
             input data to be converted.
         device : str, optional
             device to use for tensors.
@@ -1983,17 +2105,17 @@ class MakeTensor:
             var.requires_grad = True
             var = var.to(device)
             inputs_list[vv] = var
-            #var = var[..., None]
+            # var = var[..., None]
 
         return inputs_list
 
-    def _make_tensor_dict(self, input_data: dict = None, device: str = 'cpu') -> dict:
+    def _make_tensor_dict(self, input_data: dict = None, device: str = "cpu") -> dict:
         """
         Convert input_data to a dictionary of torch tensors.
 
         Parameters:
         -----------
-        input_data (np.ndarray), optional 
+        input_data (np.ndarray), optional
             input data to be converted.
         device : str, optional
             device to use for tensors.
@@ -2013,9 +2135,11 @@ class MakeTensor:
 
         return inputs_dict
 
-    def __call__(self, input_data: Union[np.ndarray, torch.Tensor,
-                                         Dict[str, np.ndarray]] = None,
-                 device: str = 'cpu') -> List[torch.Tensor]:
+    def __call__(
+        self,
+        input_data: Union[np.ndarray, torch.Tensor, Dict[str, np.ndarray]] = None,
+        device: str = "cpu",
+    ) -> List[torch.Tensor]:
         """
         Make tensors from input_data.
 
@@ -2040,28 +2164,26 @@ class MakeTensor:
 
             input_data = torch.from_numpy(input_data.astype(np.float32))
 
-            inputs_list = self._make_tensor(
-                input_data=input_data, device=device)
+            inputs_list = self._make_tensor(input_data=input_data, device=device)
 
             return inputs_list
 
         if type(input_data) == torch.Tensor:
 
-            inputs_list = self._make_tensor(
-                input_data=input_data, device=device)
+            inputs_list = self._make_tensor(input_data=input_data, device=device)
 
             return inputs_list
 
         elif type(input_data) == dict:
 
-            inputs_list = self._make_tensor_dict(
-                input_data=input_data, device=device)
+            inputs_list = self._make_tensor_dict(input_data=input_data, device=device)
 
             return inputs_list
 
         else:
             raise Exception(
-                f"The type {type(input_data)} for input_data is not supported.")
+                f"The type {type(input_data)} for input_data is not supported."
+            )
 
 
 class GaussianNoise(Dataset):
@@ -2075,7 +2197,7 @@ class GaussianNoise(Dataset):
         The standard deviation of the Gaussian noise distribution. Default is 0.01.
     input_data : Union[np.ndarray, Tensor], optional
         The input data to apply noise to. Default is None.
-        
+
     Examples:
     ---------
     >>> import numpy as np
@@ -2085,7 +2207,9 @@ class GaussianNoise(Dataset):
     (100, 100)
     """
 
-    def __init__(self, stddev: float = 0.01, input_data: Union[np.ndarray, Tensor] = None):
+    def __init__(
+        self, stddev: float = 0.01, input_data: Union[np.ndarray, Tensor] = None
+    ):
 
         super(Dataset, self).__init__()
 
@@ -2106,4 +2230,4 @@ class GaussianNoise(Dataset):
 
     def __call__(self):
 
-        return (1 + self.stddev*torch.randn(*self.data_shape))*self.input_data
+        return (1 + self.stddev * torch.randn(*self.data_shape)) * self.input_data

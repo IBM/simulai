@@ -13,43 +13,45 @@
 #     limitations under the License.
 
 
-import sympy
-from typing import List, Callable, Tuple
-from sympy.parsing.sympy_parser import parse_expr
 import importlib
+from typing import Callable, List, Tuple
+
+import sympy
+from sympy.parsing.sympy_parser import parse_expr
+
 
 class FromSymbol2FLambda:
-
-    def __init__(self, engine:str='numpy', variables:List[str]=None) -> None:
+    def __init__(self, engine: str = "numpy", variables: List[str] = None) -> None:
 
         """
         Initialize a lambda function from a string.
-        
+
         Parameters
         ----------
         engine : str, optional
             The low level engine used, e. g. numpy, torch ... The default value is 'numpy'.
         variables : list of str, optional
             The list of definition variables. The default value is None.
-            
+
         Returns
         -------
         None
         """
 
         self.engine = engine
-        self.aux_engine = 'simulai.math.products'
+        self.aux_engine = "simulai.math.products"
 
         self.engine_module = importlib.import_module(self.engine)
         self.aux_engine_module = importlib.import_module(self.aux_engine)
-        self.tokens_module = importlib.import_module('simulai.tokens')
+        self.tokens_module = importlib.import_module("simulai.tokens")
 
         self.variables = [sympy.Symbol(vv) for vv in variables]
 
-        self.func_sep = '('
+        self.func_sep = "("
 
-
-    def _handle_composite_function(self, func_expr:str=None) -> Tuple[List[str], bool]:
+    def _handle_composite_function(
+        self, func_expr: str = None
+    ) -> Tuple[List[str], bool]:
         """
         Handle composite functions such as g(x) = f_1 o f_2 o ... o f_n(x) = f_1(f_2( ... f_n(x) ... )).
 
@@ -72,10 +74,9 @@ class FromSymbol2FLambda:
 
         return functions, True
 
-
     from typing import Tuple
 
-    def _get_function_name(self, func_expr:str=None) -> Tuple[str, bool]:
+    def _get_function_name(self, func_expr: str = None) -> Tuple[str, bool]:
         """
         Get the input name of a function and return its corresponding standard name.
 
@@ -107,8 +108,6 @@ class FromSymbol2FLambda:
         else:
             raise Exception(f"The expression {func_expr} is not valid.")
 
-
-
     def clean_engines(self) -> None:
         """
         Clean all the pre-defined engines.
@@ -122,8 +121,7 @@ class FromSymbol2FLambda:
         self.aux_engine_module = None
         self.tokens_module = None
 
-
-    def convert(self, expression:str=None) -> Callable:
+    def convert(self, expression: str = None) -> Callable:
         """
         Receive a string mathematical expression and convert it into a callable function.
 
@@ -142,27 +140,37 @@ class FromSymbol2FLambda:
         symbol_expression = parse_expr(expression, evaluate=0)
 
         if is_function is True:
-            symbol_functions = [getattr(self.tokens_module, expression_name, None)
-                                for expression_name in expression_names]
+            symbol_functions = [
+                getattr(self.tokens_module, expression_name, None)
+                for expression_name in expression_names
+            ]
 
-            assert all([ss != None for ss in symbol_functions]), f"The list of functions {expression_names}" \
-                                                                f" does not exist in {self.tokens_module} completely."
+            assert all([ss != None for ss in symbol_functions]), (
+                f"The list of functions {expression_names}"
+                f" does not exist in {self.tokens_module} completely."
+            )
 
             op_map = dict()
             for expression_name in expression_names:
 
                 try:
-                    engine_function = getattr(self.engine_module, expression_name.lower(), None)
+                    engine_function = getattr(
+                        self.engine_module, expression_name.lower(), None
+                    )
                     assert engine_function is not None
                 except:
-                    engine_function = getattr(self.aux_engine_module, expression_name.lower(), None)
+                    engine_function = getattr(
+                        self.aux_engine_module, expression_name.lower(), None
+                    )
                     assert engine_function is not None
 
                 op_map[expression_name] = engine_function
 
-            compiled_expr = sympy.lambdify(self.variables, symbol_expression, modules=[op_map, self.engine])
+            compiled_expr = sympy.lambdify(
+                self.variables, symbol_expression, modules=[op_map, self.engine]
+            )
 
         else:
             compiled_expr = sympy.lambdify(self.variables, symbol_expression)
 
-        return  compiled_expr
+        return compiled_expr

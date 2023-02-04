@@ -10,33 +10,34 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
-import sphinx_theme
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('../'))
+import sphinx_theme
+
+sys.path.insert(0, os.path.abspath("../"))
 
 # -- Project information -----------------------------------------------------
 
-project = 'simulai'
-copyright = '2023, IBM'
-author = 'IBM'
+project = "simulai"
+copyright = "2023, IBM"
+author = "IBM"
 
 # The full version, including alpha/beta/rc tags
-release = '2022'
+release = "2022"
 
 # -- General configuration
 
 extensions = [
-    'sphinx.ext.napoleon',
-    'sphinx.ext.doctest',
-    'sphinx.ext.autodoc',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.autosectionlabel'
+    "sphinx.ext.napoleon",
+    "sphinx.ext.doctest",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.autosectionlabel",
 ]
 
-autodoc_mock_imports = ['mpi4py']
-suppress_warnings = ['autosectionlabel.*']
+autodoc_mock_imports = ["mpi4py"]
+suppress_warnings = ["autosectionlabel.*"]
 
 
 # Napoleon settings
@@ -47,23 +48,23 @@ autosectionlabel_use_sections = False
 
 
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/3/', None),
-    'sphinx': ('https://www.sphinx-doc.org/en/master/', None),
+    "python": ("https://docs.python.org/3/", None),
+    "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
 }
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = [
-    '_build',
-    'Thumbs.db',
-    '.DS_Store',
-    'source/_templates/ISSUES_TEMPLATE.rst',
-    'TODO/*'
+    "_build",
+    "Thumbs.db",
+    ".DS_Store",
+    "source/_templates/ISSUES_TEMPLATE.rst",
+    "TODO/*",
 ]
 
 source_suffix = [".rst", ".md"]
@@ -73,21 +74,18 @@ source_suffix = [".rst", ".md"]
 
 # -- Options for HTML output
 # Stanford Theme
-html_theme = 'stanford_theme'
-html_theme_path = [sphinx_theme.get_html_theme_path('stanford-theme')]
+html_theme = "stanford_theme"
+html_theme_path = [sphinx_theme.get_html_theme_path("stanford-theme")]
 
 # sphinx readthedocs theme
-#html_theme = 'sphinx_rtd_theme'
+# html_theme = 'sphinx_rtd_theme'
 
 
 # Below html_theme_options config depends on the theme.
-html_logo = '../assets/logo.png'
+html_logo = "../assets/logo.png"
 
 
-html_theme_options = {
-    'logo_only': True,
-    'display_version': True
-}
+html_theme_options = {"logo_only": True, "display_version": True}
 
 # -- Options for EPUB output
-epub_show_urls = 'footnote'
+epub_show_urls = "footnote"

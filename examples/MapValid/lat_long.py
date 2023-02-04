@@ -14,24 +14,25 @@
 
 import os
 from argparse import ArgumentParser
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
 from netCDF4 import Dataset
 
 parser = ArgumentParser(description="Reading input arguments")
-parser.add_argument('--data_path', type=str, help="The path tot the datasets.")
+parser.add_argument("--data_path", type=str, help="The path tot the datasets.")
 
 #  Reading input arguments
 args = parser.parse_args()
 
 data_path = args.data_path
 
-root = Dataset(data_path, 'r')
+root = Dataset(data_path, "r")
 
-lat = root['lat'][:]
-long = root['lon'][:]
+lat = root["lat"][:]
+long = root["lon"][:]
 
-Lat, Long = np.meshgrid(lat, long, indexing='ij')
+Lat, Long = np.meshgrid(lat, long, indexing="ij")
 
 grid_filename = os.path.join(os.path.dirname(data_path), "nldas_grid.npz")
 np.savez(grid_filename, Lat=Lat, Long=Long)

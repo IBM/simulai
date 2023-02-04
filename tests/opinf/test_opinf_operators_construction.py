@@ -13,15 +13,16 @@
 #     limitations under the License.
 import sys
 from unittest import TestCase
+
 import numpy as np
 
-from simulai.regression import OpInf
-from simulai.metrics import L2Norm
 from simulai.file import load_pkl
+from simulai.metrics import L2Norm
+from simulai.regression import OpInf
+
 
 # Testing the correctness of the OpInf operators construction
 class TestOperatorsConstruction(TestCase):
-
     def setUp(self) -> None:
         pass
 
@@ -30,7 +31,7 @@ class TestOperatorsConstruction(TestCase):
         n_samples = 10_000
         BATCH_SIZES = [None, 1000]
         n_vars = 5
-        FORCE_LAZY=[False, True]
+        FORCE_LAZY = [False, True]
 
         for force_lazy, batch_size in zip(FORCE_LAZY, BATCH_SIZES):
 
@@ -38,11 +39,15 @@ class TestOperatorsConstruction(TestCase):
             data_output = np.random.rand(n_samples, n_vars)
 
             # Instantiating OpInf
-            model = OpInf(bias_rescale=1, solver='pinv')
+            model = OpInf(bias_rescale=1, solver="pinv")
 
             # Training
-            model.fit(input_data=data_input, target_data=data_output, batch_size=batch_size,
-                      force_lazy_access=force_lazy)
+            model.fit(
+                input_data=data_input,
+                target_data=data_output,
+                batch_size=batch_size,
+                force_lazy_access=force_lazy,
+            )
 
             assert isinstance(model.A_hat, np.ndarray)
             assert isinstance(model.H_hat, np.ndarray)
@@ -57,7 +62,7 @@ class TestOperatorsConstruction(TestCase):
         data_output = np.random.rand(n_samples, n_vars)
 
         # Instantiating OpInf
-        model = OpInf(bias_rescale=1, solver='pinv')
+        model = OpInf(bias_rescale=1, solver="pinv")
 
         # Training
         model.fit(input_data=data_input, target_data=data_output)
@@ -86,11 +91,13 @@ class TestOperatorsConstruction(TestCase):
         for batch_size in batch_sizes:
 
             # Instantiating OpInf
-            model = OpInf(bias_rescale=1, solver='lstsq')
+            model = OpInf(bias_rescale=1, solver="lstsq")
 
             # Training
             model.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
-            model.fit(input_data=data_input, target_data=data_output, batch_size=batch_size)
+            model.fit(
+                input_data=data_input, target_data=data_output, batch_size=batch_size
+            )
 
             assert isinstance(model.A_hat, np.ndarray)
             assert isinstance(model.H_hat, np.ndarray)
@@ -108,15 +115,21 @@ class TestOperatorsConstruction(TestCase):
         l2_norm = L2Norm()
 
         for ii, (d_o, r_matrix) in enumerate(zip(D_o_list, R_matrix_list)):
-            assert np.all(np.isclose(ref_D_o, d_o).astype(int)), "The case with batch_size" \
-                                                                 f" {batch_sizes[ii]} is divergent for the matrix D_o"
+            assert np.all(np.isclose(ref_D_o, d_o).astype(int)), (
+                "The case with batch_size"
+                f" {batch_sizes[ii]} is divergent for the matrix D_o"
+            )
 
-            assert np.all(np.isclose(ref_R_matrix, r_matrix).astype(int)), "The case with batch_size" \
-                                                                           f" {batch_sizes[ii]} is divergent for" \
-                                                                           " the matrix R_matrix."
+            assert np.all(np.isclose(ref_R_matrix, r_matrix).astype(int)), (
+                "The case with batch_size"
+                f" {batch_sizes[ii]} is divergent for"
+                " the matrix R_matrix."
+            )
 
             error_d_o = l2_norm(data=d_o, reference_data=ref_D_o, relative_norm=True)
-            error_r_matrix = l2_norm(data=r_matrix, reference_data=ref_R_matrix, relative_norm=True)
+            error_r_matrix = l2_norm(
+                data=r_matrix, reference_data=ref_R_matrix, relative_norm=True
+            )
 
             maximum_deviation_d_o = np.abs(d_o - ref_D_o).max()
             maximum_deviation_r_matrix = np.abs(r_matrix - ref_R_matrix).max()
@@ -146,25 +159,32 @@ class TestOperatorsConstruction(TestCase):
         D_o_list = list()
         R_matrix_list = list()
 
-        forcing_case = 'linear'
+        forcing_case = "linear"
 
         for batch_size in batch_sizes:
 
             # Instantiating OpInf
-            model = OpInf(bias_rescale=1, solver='lstsq', forcing=forcing_case)
+            model = OpInf(bias_rescale=1, solver="lstsq", forcing=forcing_case)
 
             # Training
             model.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
-            model.fit(input_data=data_input, target_data=data_output, forcing_data=data_forcing,
-                      batch_size=batch_size)
+            model.fit(
+                input_data=data_input,
+                target_data=data_output,
+                forcing_data=data_forcing,
+                batch_size=batch_size,
+            )
 
             # Basic checks
             assert isinstance(model.B_hat, np.ndarray)
             assert model.B_hat.shape == (n_vars, n_vars_forcing)
 
-            if forcing_case == 'nonlinear':
+            if forcing_case == "nonlinear":
 
-                assert model.H_hat.shape == (n_vars, int((n_vars_forcing + n_vars)*(n_vars_forcing + n_vars + 1)/2))
+                assert model.H_hat.shape == (
+                    n_vars,
+                    int((n_vars_forcing + n_vars) * (n_vars_forcing + n_vars + 1) / 2),
+                )
 
             D_o = model.D_o
             R_matrix = model.R_matrix
@@ -179,15 +199,21 @@ class TestOperatorsConstruction(TestCase):
 
         for ii, (d_o, r_matrix) in enumerate(zip(D_o_list, R_matrix_list)):
 
-            assert np.all(np.isclose(ref_D_o, d_o).astype(int)), "The case with batch_size" \
-                                                                 f" {batch_sizes[ii]} is divergent for the matrix D_o"
+            assert np.all(np.isclose(ref_D_o, d_o).astype(int)), (
+                "The case with batch_size"
+                f" {batch_sizes[ii]} is divergent for the matrix D_o"
+            )
 
-            assert np.all(np.isclose(ref_R_matrix, r_matrix).astype(int)), "The case with batch_size" \
-                                                                           f" {batch_sizes[ii]} is divergent for" \
-                                                                           " the matrix R_matrix."
+            assert np.all(np.isclose(ref_R_matrix, r_matrix).astype(int)), (
+                "The case with batch_size"
+                f" {batch_sizes[ii]} is divergent for"
+                " the matrix R_matrix."
+            )
 
             error_d_o = l2_norm(data=d_o, reference_data=ref_D_o, relative_norm=True)
-            error_r_matrix = l2_norm(data=r_matrix, reference_data=ref_R_matrix, relative_norm=True)
+            error_r_matrix = l2_norm(
+                data=r_matrix, reference_data=ref_R_matrix, relative_norm=True
+            )
 
             maximum_deviation_d_o = np.abs(d_o - ref_D_o).max()
             maximum_deviation_r_matrix = np.abs(r_matrix - ref_R_matrix).max()
@@ -217,22 +243,29 @@ class TestOperatorsConstruction(TestCase):
         D_o_list = list()
         R_matrix_list = list()
 
-        forcing_case = 'nonlinear'
+        forcing_case = "nonlinear"
 
         for batch_size in batch_sizes:
 
             # Instantiating OpInf
-            model = OpInf(bias_rescale=1, solver='lstsq', forcing=forcing_case)
+            model = OpInf(bias_rescale=1, solver="lstsq", forcing=forcing_case)
 
             # Training
             model.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
-            model.fit(input_data=data_input, target_data=data_output, forcing_data=data_forcing,
-                      batch_size=batch_size)
+            model.fit(
+                input_data=data_input,
+                target_data=data_output,
+                forcing_data=data_forcing,
+                batch_size=batch_size,
+            )
 
             # Basic checks
             assert isinstance(model.B_hat, np.ndarray)
             assert model.B_hat.shape == (n_vars, n_vars_forcing)
-            assert model.H_hat.shape == (n_vars, int((n_vars_forcing + n_vars) * (n_vars_forcing + n_vars + 1) / 2))
+            assert model.H_hat.shape == (
+                n_vars,
+                int((n_vars_forcing + n_vars) * (n_vars_forcing + n_vars + 1) / 2),
+            )
 
             D_o = model.D_o
             R_matrix = model.R_matrix
@@ -246,15 +279,21 @@ class TestOperatorsConstruction(TestCase):
         l2_norm = L2Norm()
 
         for ii, (d_o, r_matrix) in enumerate(zip(D_o_list, R_matrix_list)):
-            assert np.all(np.isclose(ref_D_o, d_o).astype(int)), "The case with batch_size" \
-                                                                 f" {batch_sizes[ii]} is divergent for the matrix D_o"
+            assert np.all(np.isclose(ref_D_o, d_o).astype(int)), (
+                "The case with batch_size"
+                f" {batch_sizes[ii]} is divergent for the matrix D_o"
+            )
 
-            assert np.all(np.isclose(ref_R_matrix, r_matrix).astype(int)), "The case with batch_size" \
-                                                                           f" {batch_sizes[ii]} is divergent for" \
-                                                                           " the matrix R_matrix."
+            assert np.all(np.isclose(ref_R_matrix, r_matrix).astype(int)), (
+                "The case with batch_size"
+                f" {batch_sizes[ii]} is divergent for"
+                " the matrix R_matrix."
+            )
 
             error_d_o = l2_norm(data=d_o, reference_data=ref_D_o, relative_norm=True)
-            error_r_matrix = l2_norm(data=r_matrix, reference_data=ref_R_matrix, relative_norm=True)
+            error_r_matrix = l2_norm(
+                data=r_matrix, reference_data=ref_R_matrix, relative_norm=True
+            )
 
             maximum_deviation_d_o = np.abs(d_o - ref_D_o).max()
             maximum_deviation_r_matrix = np.abs(r_matrix - ref_R_matrix).max()
@@ -269,12 +308,12 @@ class TestOperatorsConstruction(TestCase):
 
         n_samples = 1000
         n_vars = 50
-        multipliers = np.array([10**(i/20) for i in range(n_vars)])
+        multipliers = np.array([10 ** (i / 20) for i in range(n_vars)])
 
-        data_input = multipliers*np.random.rand(n_samples, n_vars)
-        data_output = multipliers*np.random.rand(n_samples, n_vars)
+        data_input = multipliers * np.random.rand(n_samples, n_vars)
+        data_output = multipliers * np.random.rand(n_samples, n_vars)
 
-        data_input[:,0] = 1
+        data_input[:, 0] = 1
 
         batch_sizes = [50, 100, 1000]
         lambda_linear = 1
@@ -286,11 +325,13 @@ class TestOperatorsConstruction(TestCase):
         for batch_size in batch_sizes:
 
             # Instantiating OpInf
-            model = OpInf(bias_rescale=1, solver='lstsq')
+            model = OpInf(bias_rescale=1, solver="lstsq")
 
             # Training
             model.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
-            model.fit(input_data=data_input, target_data=data_output, batch_size=batch_size)
+            model.fit(
+                input_data=data_input, target_data=data_output, batch_size=batch_size
+            )
 
             D_o = model.D_o
             R_matrix = model.R_matrix
@@ -305,17 +346,21 @@ class TestOperatorsConstruction(TestCase):
 
         for ii, (d_o, r_matrix) in enumerate(zip(D_o_list, R_matrix_list)):
 
-            assert np.all(np.isclose(ref_D_o, d_o).astype(int)), "The case with batch_size" \
-                                                                 f" {batch_sizes[ii]} is divergent for the matrix D_o"
+            assert np.all(np.isclose(ref_D_o, d_o).astype(int)), (
+                "The case with batch_size"
+                f" {batch_sizes[ii]} is divergent for the matrix D_o"
+            )
 
-
-            assert np.all(np.isclose(ref_R_matrix, r_matrix).astype(int)), "The case with batch_size" \
-                                                                            f" {batch_sizes[ii]} is divergent for" \
-                                                                            " the matrix R_matrix."
-
+            assert np.all(np.isclose(ref_R_matrix, r_matrix).astype(int)), (
+                "The case with batch_size"
+                f" {batch_sizes[ii]} is divergent for"
+                " the matrix R_matrix."
+            )
 
             error_d_o = l2_norm(data=d_o, reference_data=ref_D_o, relative_norm=True)
-            error_r_matrix = l2_norm(data=r_matrix, reference_data=ref_R_matrix, relative_norm=True)
+            error_r_matrix = l2_norm(
+                data=r_matrix, reference_data=ref_R_matrix, relative_norm=True
+            )
 
             maximum_deviation_d_o = np.abs(d_o - ref_D_o).max()
             maximum_deviation_r_matrix = np.abs(r_matrix - ref_R_matrix).max()
@@ -330,16 +375,20 @@ class TestOperatorsConstruction(TestCase):
 
         opinf = OpInf()
 
-        coefficients = np.array([[-2.08042604e-16,  4.87816759e-16, -3.07462226e-16],
-                                 [-1.00000011e+01,  2.79999981e+01, -9.10594479e-07],
-                                 [ 1.00000008e+01, -9.99999365e-01,  6.26876120e-07],
-                                 [ 1.20917885e-08, -5.26344927e-08, -2.66666616e+00],
-                                 [ 1.19725785e-08, -1.89298728e-08,  2.63093188e-07],
-                                 [-1.08876107e-08,  4.25828284e-08,  9.99999718e-01],
-                                 [ 3.49844320e-08, -9.99999948e-01,  2.50026946e-08],
-                                 [ 1.72896719e-09, -2.20334382e-08,  7.11072626e-08],
-                                 [-2.71926419e-08, -9.17973564e-09, -1.94086956e-08],
-                                 [-1.16400933e-09,  1.83556992e-09, -2.64827246e-08]])
+        coefficients = np.array(
+            [
+                [-2.08042604e-16, 4.87816759e-16, -3.07462226e-16],
+                [-1.00000011e01, 2.79999981e01, -9.10594479e-07],
+                [1.00000008e01, -9.99999365e-01, 6.26876120e-07],
+                [1.20917885e-08, -5.26344927e-08, -2.66666616e00],
+                [1.19725785e-08, -1.89298728e-08, 2.63093188e-07],
+                [-1.08876107e-08, 4.25828284e-08, 9.99999718e-01],
+                [3.49844320e-08, -9.99999948e-01, 2.50026946e-08],
+                [1.72896719e-09, -2.20334382e-08, 7.11072626e-08],
+                [-2.71926419e-08, -9.17973564e-09, -1.94086956e-08],
+                [-1.16400933e-09, 1.83556992e-09, -2.64827246e-08],
+            ]
+        )
 
         opinf.set_operators(global_matrix=coefficients)
 
@@ -349,8 +398,10 @@ class TestOperatorsConstruction(TestCase):
 
         output_data = opinf.eval(input_data=input_data)
 
-        assert isinstance(output_data, np.ndarray), f"The output of opinf.eval must be a numpy.ndarray," \
-                                                    f" but got {type(output_data)}"
+        assert isinstance(output_data, np.ndarray), (
+            f"The output of opinf.eval must be a numpy.ndarray,"
+            f" but got {type(output_data)}"
+        )
 
     def test_operators_save_and_load(self):
 
@@ -367,28 +418,26 @@ class TestOperatorsConstruction(TestCase):
         lambda_linear = 1
         lambda_quadratic = 1
 
-        model = OpInf(bias_rescale=1, solver='lstsq')
+        model = OpInf(bias_rescale=1, solver="lstsq")
 
         # Training
         model.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
         model.fit(input_data=data_input, target_data=data_output, batch_size=batch_size)
 
-
         input_data = np.random.rand(1_000, n_vars)
 
-        model.save(model_name=f'opinf_{id(model)}', save_path='/tmp')
+        model.save(model_name=f"opinf_{id(model)}", save_path="/tmp")
 
-        opinf_reloaded = load_pkl(f'/tmp/opinf_{id(model)}.pkl')
+        opinf_reloaded = load_pkl(f"/tmp/opinf_{id(model)}.pkl")
         output_data = opinf_reloaded.eval(input_data=input_data)
 
         assert isinstance(opinf_reloaded, OpInf)
         assert isinstance(output_data, np.ndarray)
 
-        model.lean_save(model_name=f'opinf_{id(model)}', save_path='/tmp')
+        model.lean_save(model_name=f"opinf_{id(model)}", save_path="/tmp")
 
-        opinf_reloaded_lean = load_pkl(f'/tmp/opinf_{id(model)}.pkl')
+        opinf_reloaded_lean = load_pkl(f"/tmp/opinf_{id(model)}.pkl")
         output_data = opinf_reloaded_lean.eval(input_data=input_data)
 
         assert isinstance(opinf_reloaded, OpInf)
         assert isinstance(output_data, np.ndarray)
-

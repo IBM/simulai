@@ -13,24 +13,32 @@
 #     limitations under the License.
 
 import os
-import numpy as np
 from unittest import TestCase
+
+import numpy as np
 import torch
+from utils import configure_device
 
 from simulai.file import SPFile
 from simulai.optimization import Optimizer
 
-from utils import configure_device
-
 DEVICE = configure_device()
 
-def generate_data(n_samples:int=None, vector_size:int=None,
-                  n_inputs:int=None, n_outputs:int=None) -> (torch.Tensor, torch.Tensor):
+
+def generate_data(
+    n_samples: int = None,
+    vector_size: int = None,
+    n_inputs: int = None,
+    n_outputs: int = None,
+) -> (torch.Tensor, torch.Tensor):
 
     input_data = np.random.rand(n_samples, n_inputs, vector_size)
     output_data = np.random.rand(n_samples, n_outputs)
 
-    return torch.from_numpy(input_data.astype(np.float32)), torch.from_numpy(output_data.astype(np.float32))
+    return torch.from_numpy(input_data.astype(np.float32)), torch.from_numpy(
+        output_data.astype(np.float32)
+    )
+
 
 # Model template
 def model_1d():
@@ -41,94 +49,136 @@ def model_1d():
     n_inputs = 1
 
     layers = [
-
-        {'in_channels': n_inputs, 'out_channels': 2, 'kernel_size': 3, 'stride': 1, 'padding': 1,
-         'after_conv': {'type': 'maxpool1d', 'kernel_size': 2, 'stride': 2}},
-
-        {'in_channels': 2, 'out_channels': 4, 'kernel_size': 3, 'stride': 1, 'padding': 1,
-         'after_conv': {'type': 'maxpool1d', 'kernel_size': 2, 'stride': 2}},
-
-        {'in_channels': 4, 'out_channels': 8, 'kernel_size': 3, 'stride': 1, 'padding': 1,
-         'after_conv': {'type': 'maxpool1d', 'kernel_size': 2, 'stride': 2}},
-
-        {'in_channels': 8, 'out_channels': 16, 'kernel_size': 3, 'stride': 1, 'padding': 1,
-         'after_conv': {'type': 'maxpool1d', 'kernel_size': 2, 'stride': 2}}
+        {
+            "in_channels": n_inputs,
+            "out_channels": 2,
+            "kernel_size": 3,
+            "stride": 1,
+            "padding": 1,
+            "after_conv": {"type": "maxpool1d", "kernel_size": 2, "stride": 2},
+        },
+        {
+            "in_channels": 2,
+            "out_channels": 4,
+            "kernel_size": 3,
+            "stride": 1,
+            "padding": 1,
+            "after_conv": {"type": "maxpool1d", "kernel_size": 2, "stride": 2},
+        },
+        {
+            "in_channels": 4,
+            "out_channels": 8,
+            "kernel_size": 3,
+            "stride": 1,
+            "padding": 1,
+            "after_conv": {"type": "maxpool1d", "kernel_size": 2, "stride": 2},
+        },
+        {
+            "in_channels": 8,
+            "out_channels": 16,
+            "kernel_size": 3,
+            "stride": 1,
+            "padding": 1,
+            "after_conv": {"type": "maxpool1d", "kernel_size": 2, "stride": 2},
+        },
     ]
 
     # Instantiating network
-    convnet = ConvolutionalNetwork(layers=layers, activations='sigmoid', case='1d', name='net', flatten=True)
+    convnet = ConvolutionalNetwork(
+        layers=layers, activations="sigmoid", case="1d", name="net", flatten=True
+    )
 
     return convnet
 
+
 class TestConvNet1D(TestCase):
+    def setUp(self) -> None:
+        pass
 
-        def setUp(self) -> None:
-            pass
+    def test_convnet_1d_n_parameters(self):
 
-        def test_convnet_1d_n_parameters(self):
+        convnet = model_1d()
 
-            convnet = model_1d()
+        assert type(convnet.n_parameters) == int
 
-            assert type(convnet.n_parameters) == int
+    def test_convnet_1d_eval(self):
 
-        def test_convnet_1d_eval(self):
+        input_data, output_data = generate_data(
+            n_samples=100, vector_size=16, n_inputs=1, n_outputs=16
+        )
 
-            input_data, output_data = generate_data(n_samples=100, vector_size=16, n_inputs=1, n_outputs=16)
+        convnet = model_1d()
 
-            convnet = model_1d()
+        estimated_output_data = convnet.eval(input_data=input_data)
 
-            estimated_output_data = convnet.eval(input_data=input_data)
+        assert estimated_output_data.shape == output_data.shape, (
+            "The output of eval is not correct."
+            f" Expected {output_data.shape},"
+            f" but received {estimated_output_data.shape}."
+        )
 
-            assert estimated_output_data.shape == output_data.shape, "The output of eval is not correct." \
-                                                                     f" Expected {output_data.shape}," \
-                                                                     f" but received {estimated_output_data.shape}."
+    def test_convnet_1d_save_restore(self):
 
-        def test_convnet_1d_save_restore(self):
+        convnet = model_1d()
 
-            convnet = model_1d()
+        input_data, output_data = generate_data(
+            n_samples=100, vector_size=16, n_inputs=1, n_outputs=16
+        )
 
-            input_data, output_data = generate_data(n_samples=100, vector_size=16, n_inputs=1, n_outputs=16)
+        model_name = f"convnet_{str(id(convnet))}"
 
-            model_name = f'convnet_{str(id(convnet))}'
-            
-            # Saving model
-            print("Saving model.")
+        # Saving model
+        print("Saving model.")
 
-            saver = SPFile(compact=False)
-            saver.write(save_dir="/tmp", name=model_name, model=convnet, template=model_1d)
+        saver = SPFile(compact=False)
+        saver.write(save_dir="/tmp", name=model_name, model=convnet, template=model_1d)
 
-            print("Restoring model.")
+        print("Restoring model.")
 
-            convnet_restored = saver.read(model_path=os.path.join("/tmp", model_name))
+        convnet_restored = saver.read(model_path=os.path.join("/tmp", model_name))
 
-            estimated_output_data = convnet_restored.eval(input_data=input_data)
+        estimated_output_data = convnet_restored.eval(input_data=input_data)
 
-            assert estimated_output_data.shape == output_data.shape, "The output of eval is not correct." \
-                                                                     f" Expected {output_data.shape}," \
-                                                                     f" but received {estimated_output_data.shape}."
+        assert estimated_output_data.shape == output_data.shape, (
+            "The output of eval is not correct."
+            f" Expected {output_data.shape},"
+            f" but received {estimated_output_data.shape}."
+        )
 
-        def test_convnet_1d_forward(self):
+    def test_convnet_1d_forward(self):
 
-            n_epochs = 100
+        n_epochs = 100
 
-            lr = 1e-3  # Initial learning rate for the ADAM algorithm
-            optimizer_config = {'lr': lr}
+        lr = 1e-3  # Initial learning rate for the ADAM algorithm
+        optimizer_config = {"lr": lr}
 
-            input_data, output_data = generate_data(n_samples=100, vector_size=16, n_inputs=1, n_outputs=16)
+        input_data, output_data = generate_data(
+            n_samples=100, vector_size=16, n_inputs=1, n_outputs=16
+        )
 
-            convnet = model_1d()
+        convnet = model_1d()
 
-            # Instnatiating optimizer
-            params = {'lambda_1': 0., 'lambda_2': 0.}
-            optimizer = Optimizer('adam', params=optimizer_config)
+        # Instnatiating optimizer
+        params = {"lambda_1": 0.0, "lambda_2": 0.0}
+        optimizer = Optimizer("adam", params=optimizer_config)
 
-            ### Training
-            optimizer.fit(op=convnet, input_data=input_data, target_data=output_data,
-                          n_epochs=n_epochs, loss="rmse", params=params, batch_size=10, device=DEVICE)
+        ### Training
+        optimizer.fit(
+            op=convnet,
+            input_data=input_data,
+            target_data=output_data,
+            n_epochs=n_epochs,
+            loss="rmse",
+            params=params,
+            batch_size=10,
+            device=DEVICE,
+        )
 
-            ### Evaluating
-            estimated_output_data = convnet.eval(input_data=input_data)
+        ### Evaluating
+        estimated_output_data = convnet.eval(input_data=input_data)
 
-            assert estimated_output_data.shape == output_data.shape, "The output of eval is not correct." \
-                                                                     f" Expected {output_data.shape}," \
-                                                                     f" but received {estimated_output_data.shape}."
+        assert estimated_output_data.shape == output_data.shape, (
+            "The output of eval is not correct."
+            f" Expected {output_data.shape},"
+            f" but received {estimated_output_data.shape}."
+        )

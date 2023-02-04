@@ -13,24 +13,25 @@
 #     limitations under the License.
 
 import copy
-import numpy as np
-import matplotlib.pyplot as plt
 import os
 from argparse import ArgumentParser
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 # In order to execute this script, it is necessary to
 # set the environment variable engine as "pytorch" before initializing
 # simulai
-os.environ['engine'] = 'pytorch'
+os.environ["engine"] = "pytorch"
 
+from simulai.file import SPFile
 from simulai.optimization import Optimizer
 from simulai.residuals import SymbolicOperator
-from simulai.file import SPFile
 
 # Reading command line arguments.
 parser = ArgumentParser(description="Reading input parameters")
 
-parser.add_argument('--save_path', type=str, help="Save path", default='/tmp')
+parser.add_argument("--save_path", type=str, help="Save path", default="/tmp")
 args = parser.parse_args()
 
 save_path = args.save_path
@@ -54,7 +55,7 @@ if os.path.isfile("initial_states.npy"):
 else:
     U_s = np.load("initial_states.npy")
 
-branch_input_train = np.tile(U_s[:, None, :], (1, Q, 1)).reshape(N*Q, -1)
+branch_input_train = np.tile(U_s[:, None, :], (1, Q, 1)).reshape(N * Q, -1)
 trunk_input_train = np.tile(U_t[:, None], (N, 1))
 
 branch_input_test = np.tile(initial_state_test[None, :], (Q, 1))
@@ -62,8 +63,8 @@ trunk_input_test = np.sort(U_t[:, None], axis=0)
 
 initial_states = U_s
 
-input_labels = ['t']
-output_labels = ['s1', 's2']
+input_labels = ["t"]
+output_labels = ["s1", "s2"]
 
 n_inputs = len(input_labels)
 n_outputs = len(output_labels)
@@ -73,21 +74,27 @@ lambda_2 = 0.0  # Penalty factor for the L² regularization
 n_epochs = 300_000  # Maximum number of iterations for ADAM
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
+
 def model():
 
     from typing import List, Union
 
-    from simulai.regression import ConvexDenseNetwork, SLFNN
-    from simulai.models import ImprovedDeepONet as DeepONet, MoEPool
+    from simulai.models import ImprovedDeepONet as DeepONet
+    from simulai.models import MoEPool
+    from simulai.regression import SLFNN, ConvexDenseNetwork
     from simulai.templates import NetworkTemplate
 
-
     class ConvexMoEPool(MoEPool):
-
-        def __init__(self, experts_list: List[NetworkTemplate], input_size: int = None,
-                           devices: Union[list, str] = None, hidden_size: int = None) -> None:
-            super(ConvexMoEPool, self).__init__(experts_list=experts_list, input_size=input_size,
-                                                devices=devices)
+        def __init__(
+            self,
+            experts_list: List[NetworkTemplate],
+            input_size: int = None,
+            devices: Union[list, str] = None,
+            hidden_size: int = None,
+        ) -> None:
+            super(ConvexMoEPool, self).__init__(
+                experts_list=experts_list, input_size=input_size, devices=devices
+            )
 
             self.hidden_size = hidden_size
 
@@ -98,20 +105,20 @@ def model():
 
     # Configuration for the fully-connected trunk network
     trunk_config = {
-        'layers_units': 7 * [100],  # Hidden layers
-        'activations': 'tanh',
-        'input_size': n_inputs_t,
-        'output_size': n_latent * n_outputs,
-        'name': 'trunk_net'
+        "layers_units": 7 * [100],  # Hidden layers
+        "activations": "tanh",
+        "input_size": n_inputs_t,
+        "output_size": n_latent * n_outputs,
+        "name": "trunk_net",
     }
 
     # Configuration for the fully-connected branch network
     branch_config = {
-        'layers_units': 7 * [100],  # Hidden layers
-        'activations': 'tanh',
-        'input_size': n_inputs_b,
-        'output_size': n_latent * n_outputs,
-        'name': 'branch_net',
+        "layers_units": 7 * [100],  # Hidden layers
+        "activations": "tanh",
+        "input_size": n_inputs_b,
+        "output_size": n_latent * n_outputs,
+        "name": "branch_net",
     }
 
     # Instantiating and training the surrogate model
@@ -122,65 +129,89 @@ def model():
     branch_net_2 = copy.copy(branch_net_0)
     branch_net_3 = copy.copy(branch_net_0)
 
-    encoder_trunk = SLFNN(input_size=1, output_size=100, activation='tanh')
-    encoder_branch = SLFNN(input_size=2, output_size=100, activation='tanh')
+    encoder_trunk = SLFNN(input_size=1, output_size=100, activation="tanh")
+    encoder_branch = SLFNN(input_size=2, output_size=100, activation="tanh")
 
-    branch_net = ConvexMoEPool(experts_list=[branch_net_0, branch_net_1,
-                                             branch_net_2, branch_net_3],
-                               input_size=2, devices='gpu', hidden_size=100)
+    branch_net = ConvexMoEPool(
+        experts_list=[branch_net_0, branch_net_1, branch_net_2, branch_net_3],
+        input_size=2,
+        devices="gpu",
+        hidden_size=100,
+    )
 
     # It prints a summary of the network features
     trunk_net.summary()
 
-    pendulum_net = DeepONet(trunk_network=trunk_net,
-                            branch_network=branch_net,
-                            encoder_trunk=encoder_trunk,
-                            encoder_branch=encoder_branch,
-                            var_dim=n_outputs,
-                            devices='gpu',
-                            model_id='pendulum_net')
+    pendulum_net = DeepONet(
+        trunk_network=trunk_net,
+        branch_network=branch_net,
+        encoder_trunk=encoder_trunk,
+        encoder_branch=encoder_branch,
+        var_dim=n_outputs,
+        devices="gpu",
+        model_id="pendulum_net",
+    )
 
     return pendulum_net
 
+
 pendulum_net = model()
 
-residual = SymbolicOperator(expressions=[f_s1, f_s2], input_vars=input_labels,
-                            output_vars=output_labels, function=pendulum_net,
-                            inputs_key='input_trunk',
-                            constants={"b": 0.05, "g": 9.81,
-                                       "L": 1, "m": 1},
-                            device='gpu',
-                            engine='torch')
+residual = SymbolicOperator(
+    expressions=[f_s1, f_s2],
+    input_vars=input_labels,
+    output_vars=output_labels,
+    function=pendulum_net,
+    inputs_key="input_trunk",
+    constants={"b": 0.05, "g": 9.81, "L": 1, "m": 1},
+    device="gpu",
+    engine="torch",
+)
 
 # Maximum derivative magnitudes to be used as loss weights
 penalties = [1, 1]
 batch_size = 10_000
 
-optimizer_config = {'lr': lr}
+optimizer_config = {"lr": lr}
 
-input_data = {'input_branch': branch_input_train, 'input_trunk': trunk_input_train}
+input_data = {"input_branch": branch_input_train, "input_trunk": trunk_input_train}
 
-optimizer = Optimizer('adam', params=optimizer_config,
-                      lr_decay_scheduler_params={'name': 'ExponentialLR',
-                                                         'gamma': 0.9,
-                                                         'decay_frequency': 5_000})
+optimizer = Optimizer(
+    "adam",
+    params=optimizer_config,
+    lr_decay_scheduler_params={
+        "name": "ExponentialLR",
+        "gamma": 0.9,
+        "decay_frequency": 5_000,
+    },
+)
 
-params = {'lambda_1': lambda_1,
-          'lambda_2': lambda_2,
-          'residual': residual,
-          'initial_input': {'input_trunk': np.zeros((N, 1)), 'input_branch': initial_states},
-          'initial_state': initial_states,
-          'weights_residual': [1, 1],
-          'weights': penalties}
+params = {
+    "lambda_1": lambda_1,
+    "lambda_2": lambda_2,
+    "residual": residual,
+    "initial_input": {"input_trunk": np.zeros((N, 1)), "input_branch": initial_states},
+    "initial_state": initial_states,
+    "weights_residual": [1, 1],
+    "weights": penalties,
+}
 
-optimizer.fit(op=pendulum_net, input_data=input_data,
-              n_epochs=n_epochs, loss="opirmse",
-              params=params, device='gpu', batch_size=batch_size)
+optimizer.fit(
+    op=pendulum_net,
+    input_data=input_data,
+    n_epochs=n_epochs,
+    loss="opirmse",
+    params=params,
+    device="gpu",
+    batch_size=batch_size,
+)
 
 # Saving model
 print("Saving model.")
 saver = SPFile(compact=False)
-saver.write(save_dir=save_path, name='pendulum_deeponet_moe_improved', model=pendulum_net, template=model)
-
-
-
+saver.write(
+    save_dir=save_path,
+    name="pendulum_deeponet_moe_improved",
+    model=pendulum_net,
+    template=model,
+)

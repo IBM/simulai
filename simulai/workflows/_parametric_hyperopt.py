@@ -14,24 +14,30 @@
 
 import copy
 import os
+
 import numpy as np
 import optuna
 
 try:
     import torch
 except:
-    print('It is necessary to configure it.')
+    print("It is necessary to configure it.")
 
 # Searching up for a set of scalar parameters
 class ParamHyperOpt:
-
-    def __init__(self, params_intervals: dict=None, params_suggestions: dict=None,
-                       name: str=None, direction: str='minimize',
-                       trainer_template=None, objective_function: callable=None,
-                       objective_wrapper=None,
-                       weights_initialization: str=None,
-                       others_params: dict=None,
-                       refresh: bool=False) -> None:
+    def __init__(
+        self,
+        params_intervals: dict = None,
+        params_suggestions: dict = None,
+        name: str = None,
+        direction: str = "minimize",
+        trainer_template=None,
+        objective_function: callable = None,
+        objective_wrapper=None,
+        weights_initialization: str = None,
+        others_params: dict = None,
+        refresh: bool = False,
+    ) -> None:
 
         self.params_intervals = params_intervals
         self.params_suggestions = params_suggestions
@@ -59,10 +65,10 @@ class ParamHyperOpt:
             self.objective_wrapper = self._default_instance_wrapper
 
         if self.trainer_template.raw == False:
-            self.set_type = 'soft'
+            self.set_type = "soft"
             self._optuna_generate_instance = self._optuna_generate_instance_soft
         else:
-            self.set_type = 'hard'
+            self.set_type = "hard"
             self._optuna_generate_instance = self._optuna_generate_instance_hard
 
         self.study = optuna.create_study(study_name=name, direction=direction)
@@ -75,11 +81,13 @@ class ParamHyperOpt:
         # The option refresh clean up all the no more necessary models
         # in the save path keeping just the current best one
         if self.refresh is not False:
-            assert 'path_to_save' in self.others_params.keys(), "If the option refresh is activated" \
-                                                                   "it is necessary to provide a path " \
-                                                                   f"to the saved models in order to {self}" \
-                                                                   f"be able of cleaning up them."
-            self.path_to_save = self.others_params['path_to_save']
+            assert "path_to_save" in self.others_params.keys(), (
+                "If the option refresh is activated"
+                "it is necessary to provide a path "
+                f"to the saved models in order to {self}"
+                f"be able of cleaning up them."
+            )
+            self.path_to_save = self.others_params["path_to_save"]
             self.refresher = self._refresh
 
         else:
@@ -87,9 +95,11 @@ class ParamHyperOpt:
             self.refresher = self._refresh_nothing
 
         # Checking up if the model template has an inner fit method
-        if hasattr(self.trainer_template, 'fit') is False:
+        if hasattr(self.trainer_template, "fit") is False:
 
-            raise Exception(f"The model template {self.trainer_template} has no method fit")
+            raise Exception(
+                f"The model template {self.trainer_template} has no method fit"
+            )
 
         self.there_are_datasets = False
 
@@ -107,52 +117,68 @@ class ParamHyperOpt:
         # List for storing all the already instantiated trials ids
         self.models_ids_list = dict()
 
-    def _set_data(self, data: list=None, name: str=None) -> None:
+    def _set_data(self, data: list = None, name: str = None) -> None:
 
         indata, tardata, auxdata = tuple(data)
 
-        assert indata.shape[0] == tardata.shape[0], f" Dimensions mismatch in {name}." \
-                                                    f" Input has shape {indata.shape}" \
-                                                    f" and target {tardata.shape}"
+        assert indata.shape[0] == tardata.shape[0], (
+            f" Dimensions mismatch in {name}."
+            f" Input has shape {indata.shape}"
+            f" and target {tardata.shape}"
+        )
 
         if auxdata is not None:
-            assert indata.shape[0] <= auxdata.shape[0], f" Dimensions mismatch in {name}." \
-                                                        f" Input has shape {indata.shape}" \
-                                                        f" and auxiliary {auxdata.shape}"
+            assert indata.shape[0] <= auxdata.shape[0], (
+                f" Dimensions mismatch in {name}."
+                f" Input has shape {indata.shape}"
+                f" and auxiliary {auxdata.shape}"
+            )
         else:
             print("Auxiliary data is not being used.")
 
-        setattr(self, 'input_' + name + '_data', indata)
-        setattr(self, 'target_' + name + '_data', tardata)
-        setattr(self, 'auxiliary_' + name + '_data', auxdata) # auxdata can be None
+        setattr(self, "input_" + name + "_data", indata)
+        setattr(self, "target_" + name + "_data", tardata)
+        setattr(self, "auxiliary_" + name + "_data", auxdata)  # auxdata can be None
 
     # Setting up the datasets
-    def set_data(self, input_train_data: np.ndarray=None,
-                       target_train_data: np.ndarray=None,
-                       auxiliary_train_data: np.ndarray=None,
-                       input_validation_data: np.ndarray=None,
-                       target_validation_data: np.ndarray=None,
-                       auxiliary_validation_data: np.ndarray=None,
-                       input_test_data: np.ndarray = None,
-                       target_test_data: np.ndarray = None,
-                       auxiliary_test_data: np.ndarray=None) -> None:
+    def set_data(
+        self,
+        input_train_data: np.ndarray = None,
+        target_train_data: np.ndarray = None,
+        auxiliary_train_data: np.ndarray = None,
+        input_validation_data: np.ndarray = None,
+        target_validation_data: np.ndarray = None,
+        auxiliary_validation_data: np.ndarray = None,
+        input_test_data: np.ndarray = None,
+        target_test_data: np.ndarray = None,
+        auxiliary_test_data: np.ndarray = None,
+    ) -> None:
 
-        self._set_data([input_train_data, target_train_data, auxiliary_train_data], 'train')
-        self._set_data([input_validation_data, target_validation_data, auxiliary_validation_data], 'validation')
-        self._set_data([input_test_data, target_test_data, auxiliary_test_data], 'test')
+        self._set_data(
+            [input_train_data, target_train_data, auxiliary_train_data], "train"
+        )
+        self._set_data(
+            [input_validation_data, target_validation_data, auxiliary_validation_data],
+            "validation",
+        )
+        self._set_data([input_test_data, target_test_data, auxiliary_test_data], "test")
 
         self.there_are_datasets = True
 
     def _optuna_generate_instance_hard(self, trial: optuna.Trial):
 
-        config = {key: getattr(trial, 'suggest_' + value)(key, *self.params_intervals.get(key))
-                  for key, value in self.params_suggestions.items()}
+        config = {
+            key: getattr(trial, "suggest_" + value)(
+                key, *self.params_intervals.get(key)
+            )
+            for key, value in self.params_suggestions.items()
+        }
 
         # Including the others not adjustable parameters
         config.update(self.others_params)
 
         # Storing the trial number in order to send it to the model class
-        config.update({'id': trial.number})
+        config.update({"id": trial.number})
 
         print(f"Creating an instance from {self.trainer_template}")
 
@@ -165,32 +191,40 @@ class ParamHyperOpt:
 
     def _optuna_generate_instance_soft(self, trial: optuna.Trial):
 
-        config = {key: getattr(trial, 'suggest_' + value)(key, *self.params_intervals.get(key))
-                  for key, value in self.params_suggestions.items()}
+        config = {
+            key: getattr(trial, "suggest_" + value)(
+                key, *self.params_intervals.get(key)
+            )
+            for key, value in self.params_suggestions.items()
+        }
 
         # Including the others not adjustable parameters
         config.update(self.others_params)
 
         # Storing the trial number in order to send it to the model class
-        config.update({'id': trial.number})
+        config.update({"id": trial.number})
 
-        print(f"Using and modifying the instance {self.trainer_template} already created.")
+        print(
+            f"Using and modifying the instance {self.trainer_template} already created."
+        )
 
         trainer_instance = copy.copy(self.trainer_template)
         trainer_instance.set_trial(trial_config=config)
         trainer_instance.soft_set()
 
         if self.weights_initialization is not None:
-            print('Restoring pre-initialized weights.')
-            trainer_instance.model.load_state_dict(torch.load(self.weights_initialization))
+            print("Restoring pre-initialized weights.")
+            trainer_instance.model.load_state_dict(
+                torch.load(self.weights_initialization)
+            )
 
         return trainer_instance
 
     # It stacks the required inputs
-    def input_data(self, name: str=None):
+    def input_data(self, name: str = None):
 
-        input_ = getattr(self, 'input_' + name + '_data')
-        auxiliary_ = getattr(self, 'auxiliary_' + name + '_data')
+        input_ = getattr(self, "input_" + name + "_data")
+        auxiliary_ = getattr(self, "auxiliary_" + name + "_data")
 
         if auxiliary_ is not None:
             return np.hstack([input_, auxiliary_])
@@ -203,22 +237,29 @@ class ParamHyperOpt:
     # Serial refresh
     def _refresh(self):
 
-        models_ids_list = {key:value for key, value in self.models_ids_list.items()
-                           if key != self.study.best_trial.number}
+        models_ids_list = {
+            key: value
+            for key, value in self.models_ids_list.items()
+            if key != self.study.best_trial.number
+        }
 
         for number, m_id in models_ids_list.items():
 
             filename = os.path.join(self.path_to_save, m_id)
 
             print(f"Removing {filename}.")
-            os.remove(filename + '.pkl')
+            os.remove(filename + ".pkl")
             self.models_ids_list.pop(number)
 
-    def _default_instance_wrapper(self, trainer_instance=None, objective_function: callable=None):
+    def _default_instance_wrapper(
+        self, trainer_instance=None, objective_function: callable = None
+    ):
 
-        return objective_function(model=trainer_instance,
-                                  input_validation_data=self.input_data(name='validation'),
-                                  target_validation_data=self.target_validation_data)
+        return objective_function(
+            model=trainer_instance,
+            input_validation_data=self.input_data(name="validation"),
+            target_validation_data=self.target_validation_data,
+        )
 
     def _objective_optuna_wrapper(self, trial: optuna.Trial):
 
@@ -226,24 +267,30 @@ class ParamHyperOpt:
 
         trainer_instance = self._optuna_generate_instance(trial)
 
-        trainer_instance.fit(input_train_data=self.input_data(name='train'),
-                             target_train_data=self.target_train_data)
+        trainer_instance.fit(
+            input_train_data=self.input_data(name="train"),
+            target_train_data=self.target_train_data,
+        )
 
-        return self.objective_wrapper(trainer_instance=trainer_instance,
-                                      objective_function=self.objective_function)
+        return self.objective_wrapper(
+            trainer_instance=trainer_instance,
+            objective_function=self.objective_function,
+        )
 
-    def optimize(self, n_trials: int=None):
+    def optimize(self, n_trials: int = None):
 
         assert self.there_are_datasets == True, "The datasets were not informed."
 
-        assert callable(self.objective_function), f"The objective function must be a callable," \
-                                                  f" but received {type(self.objective_function)}"
+        assert callable(self.objective_function), (
+            f"The objective function must be a callable,"
+            f" but received {type(self.objective_function)}"
+        )
 
         self.study.optimize(self._objective_optuna_wrapper, n_trials=n_trials)
 
     def retrain_best_trial(self):
 
-        if not hasattr(self.trainer_template, 'params'):
+        if not hasattr(self.trainer_template, "params"):
             trainer_template = self.trainer_template
         else:
             trainer_template = self.trainer_template.__class__
@@ -252,15 +299,16 @@ class ParamHyperOpt:
 
         # Including the others not adjustable parameters
         best_trial_params.update(self.others_params)
-        best_trial_params['id'] = 'chosen'
+        best_trial_params["id"] = "chosen"
 
         trainer_instance = trainer_template(best_trial_params)
 
         print(f"Retraining using the best trial parameters {best_trial_params}")
         print(f"And the baseline trainer instance {trainer_instance}")
 
-        trainer_instance.fit(input_train_data=self.input_train_data,
-                             target_train_data=self.target_train_data)
+        trainer_instance.fit(
+            input_train_data=self.input_train_data,
+            target_train_data=self.target_train_data,
+        )
 
         return trainer_instance
-

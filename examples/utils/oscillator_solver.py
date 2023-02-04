@@ -13,11 +13,14 @@
 #     limitations under the License.
 
 import sys
+from argparse import ArgumentParser
+
 import numpy as np
+
 from examples.utils.problem_classes import NonlinearOscillator
 from simulai.math.integration import RK4
-from argparse import ArgumentParser
-sys.path.insert(0, '../../simulai/utilities')
+
+sys.path.insert(0, "../../simulai/utilities")
 
 # Testing to solve a nonlinear oscillator problem using
 # a 4th order and a four steps Runge-Kutta
@@ -40,7 +43,9 @@ def oscillator_solver(T, dt, initial_state, extra_params=None):
     elif type(extra_params) == dict:
         problem = NonlinearOscillator(**extra_params)
     else:
-        raise Exception(f"extra_params it is expected to be a dict or None but received {type(extra_params)}.")
+        raise Exception(
+            f"extra_params it is expected to be a dict or None but received {type(extra_params)}."
+        )
 
     solver = RK4(problem)
 
@@ -65,9 +70,12 @@ def oscillator_solver(T, dt, initial_state, extra_params=None):
 
     return variables_matrix, derivatives_matrix
 
+
 # Testing to solve a nonlinear oscillator problem using
 # a 4th order and a four steps Runge-Kutta
-def oscillator_solver_forcing(T, dt, initial_state, forcing=None, p=3, extra_params=None):
+def oscillator_solver_forcing(
+    T, dt, initial_state, forcing=None, p=3, extra_params=None
+):
     """
 
     Parameters
@@ -86,7 +94,9 @@ def oscillator_solver_forcing(T, dt, initial_state, forcing=None, p=3, extra_par
     elif type(extra_params) == dict:
         problem = NonlinearOscillator(forcing=True, p=p, **extra_params)
     else:
-        raise Exception(f"extra_params it is expected to be a dict or None but received {type(extra_params)}.")
+        raise Exception(
+            f"extra_params it is expected to be a dict or None but received {type(extra_params)}."
+        )
 
     solver = RK4(problem)
 
@@ -99,7 +109,9 @@ def oscillator_solver_forcing(T, dt, initial_state, forcing=None, p=3, extra_par
 
     for tt in range(time.shape[0]):
 
-        variables_state, derivatives_state = solver.step_with_forcings(current_state, forcing[tt:tt+1], dt)
+        variables_state, derivatives_state = solver.step_with_forcings(
+            current_state, forcing[tt : tt + 1], dt
+        )
         variables_timesteps.append(variables_state)
         derivatives_timesteps.append(derivatives_state)
         current_state = variables_state
@@ -111,11 +123,12 @@ def oscillator_solver_forcing(T, dt, initial_state, forcing=None, p=3, extra_par
 
     return variables_matrix, derivatives_matrix
 
+
 def main():
     parser = ArgumentParser(description="Reading input arguments")
-    parser.add_argument('--data_path', type=str)
-    parser.add_argument('--time', type=float)
-    parser.add_argument('--dt', type=float)
+    parser.add_argument("--data_path", type=str)
+    parser.add_argument("--time", type=float)
+    parser.add_argument("--dt", type=float)
 
     args = parser.parse_args()
 
@@ -130,5 +143,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-

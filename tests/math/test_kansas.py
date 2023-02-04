@@ -1,8 +1,9 @@
-import numpy as np
 from unittest import TestCase
 
-class TestKansas(TestCase):
+import numpy as np
 
+
+class TestKansas(TestCase):
     def setUp(self) -> None:
         pass
 
@@ -19,6 +20,3 @@ class TestKansas(TestCase):
         centroids = np.random.rand(n_rbfs)
 
         kansas = Kansas(centers=centroids, points=data)
-
-
-

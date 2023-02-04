@@ -20,12 +20,11 @@
 
 import os
 
-engine_var = os.environ.get('engine')
+engine_var = os.environ.get("engine")
 
 if engine_var is not None:
     engine = engine_var
 else:
-    engine = 'pytorch'
+    engine = "pytorch"
 
-__version__ = '1.3'
-
+__version__ = "1.3"

@@ -12,24 +12,25 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
-import matplotlib.pyplot as plt
 import os
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 # In order to execute this script, it is necessary to
 # set the environment variable engine as "pytorch" before initializing
 # simulai
-os.environ['engine'] = "pytorch"
+os.environ["engine"] = "pytorch"
 
 from examples.utils.lorenz_solver import lorenz_solver
-from simulai.optimization import Optimizer
 from simulai.metrics import L2Norm
+from simulai.optimization import Optimizer
 from simulai.regression import RBFNetwork
+
 
 # This is a very basic script for exploring the PDE solving via
 # feedforward fully-connected neural networks
 class TestLorenzTorch:
-
     def __init__(self):
         pass
 
@@ -39,14 +40,20 @@ class TestLorenzTorch:
         T_max = 50
         rho = 28
         beta = 8 / 3
-        beta_str = '8/3'
+        beta_str = "8/3"
         sigma = 10
 
         initial_state = np.array([1, 2, 3])[None, :]
-        lorenz_data, derivative_lorenz_data = lorenz_solver(rho=rho, dt=dt, T=T_max, sigma=sigma,
-                                                            initial_state=initial_state,
-                                                            beta=beta, beta_str=beta_str,
-                                                            data_path='on_memory')
+        lorenz_data, derivative_lorenz_data = lorenz_solver(
+            rho=rho,
+            dt=dt,
+            T=T_max,
+            sigma=sigma,
+            initial_state=initial_state,
+            beta=beta,
+            beta_str=beta_str,
+            data_path="on_memory",
+        )
 
         # The fraction of data used for training the model.
         train_fraction = 0.8
@@ -58,13 +65,13 @@ class TestLorenzTorch:
 
         # Choosing the number of training and testing samples
         n_samples = input_data.shape[0]
-        train_samples = int(train_fraction*n_samples)
+        train_samples = int(train_fraction * n_samples)
         test_samples = n_samples - train_samples
 
-        input_labels = ['x', 'y', 'z']
-        output_labels = ['x_dot', 'y_dot', 'z_dot']
+        input_labels = ["x", "y", "z"]
+        output_labels = ["x_dot", "y_dot", "z_dot"]
 
-        time = np.arange(0, n_samples, 1)*dt
+        time = np.arange(0, n_samples, 1) * dt
 
         # Training dataset
         train_input_data = input_data[:train_samples]
@@ -86,34 +93,42 @@ class TestLorenzTorch:
 
         # Configuration for the fully-connected network
         config = {
-                    'name': 'lorenz_net',
-                    'xmax': T_max,
-                    'xmin': 0,
-                    'Nk': 20,
-                    'output_size': n_outputs
-                  }
+            "name": "lorenz_net",
+            "xmax": T_max,
+            "xmin": 0,
+            "Nk": 20,
+            "output_size": n_outputs,
+        }
 
-        optimizer_config = {'lr': lr}
+        optimizer_config = {"lr": lr}
         maximum_values = (1 / np.linalg.norm(train_input_data, 2, axis=0)).tolist()
-        params = {'lambda_1': lambda_1, 'lambda_2': lambda_2, 'weights': maximum_values}
+        params = {"lambda_1": lambda_1, "lambda_2": lambda_2, "weights": maximum_values}
 
         # Instantiating and training the surrogate model
         lorenz_net = RBFNetwork(**config)
 
-        lorenz_net.forward(input_data=time_train[:,None])
+        lorenz_net.forward(input_data=time_train[:, None])
 
-        lorenz_net.fit(input_data=time_train[:,None], target_data=train_input_data)
+        lorenz_net.fit(input_data=time_train[:, None], target_data=train_input_data)
 
-        optimizer = Optimizer('adam', params=optimizer_config)
+        optimizer = Optimizer("adam", params=optimizer_config)
 
-        optimizer.fit(op=lorenz_net, input_data=time_train[:,None], target_data=train_input_data,
-                                  n_epochs=n_epochs, loss="wrmse", params=params)
+        optimizer.fit(
+            op=lorenz_net,
+            input_data=time_train[:, None],
+            target_data=train_input_data,
+            n_epochs=n_epochs,
+            loss="wrmse",
+            params=params,
+        )
 
-        approximated_data = lorenz_net.eval(input_data=time_train[:,None])
+        approximated_data = lorenz_net.eval(input_data=time_train[:, None])
 
         l2_norm = L2Norm()
 
-        error = 100*l2_norm(data=approximated_data, reference_data=train_input_data, relative_norm=True)
+        error = 100 * l2_norm(
+            data=approximated_data, reference_data=train_input_data, relative_norm=True
+        )
 
         for ii in range(n_inputs):
 
@@ -123,8 +138,3 @@ class TestLorenzTorch:
             plt.show()
 
         print(f"Approximation error for the derivatives: {error} %")
-
-
-
-
-

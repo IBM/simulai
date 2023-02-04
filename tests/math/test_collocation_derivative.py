@@ -12,20 +12,21 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
 from unittest import TestCase
 
-from simulai.metrics import L2Norm
-from simulai.math.progression import gp
-from simulai.math.differentiation import CollocationDerivative
+import numpy as np
 
-''' Testing the effectiveness of the collocation differentiation
+from simulai.math.differentiation import CollocationDerivative
+from simulai.math.progression import gp
+from simulai.metrics import L2Norm
+
+""" Testing the effectiveness of the collocation differentiation
     (using spline interpolation) using manufactured data:
     U = exp(-omega_t*t)*(x**2*cos(y) + x*y)
-'''
+"""
+
 
 class TestCollocationDerivative(TestCase):
-
     def setUp(self) -> None:
 
         self.max_steps = 3
@@ -34,8 +35,8 @@ class TestCollocationDerivative(TestCase):
         X, T, Y = np.meshgrid(x, t, y)
 
         # Generic function U = exp(-lambd*t)*(x**2*cos(y) + x*y)
-        U = X ** 2 * np.cos(omega_t * T * Y) + (T ** 2) * X * Y
-        U_t = -omega_t * Y * np.sin(omega_t * T * Y) * (X ** 2) + 2 * T * X * Y
+        U = X**2 * np.cos(omega_t * T * Y) + (T**2) * X * Y
+        U_t = -omega_t * Y * np.sin(omega_t * T * Y) * (X**2) + 2 * T * X * Y
 
         return U, U_t
 
@@ -45,7 +46,7 @@ class TestCollocationDerivative(TestCase):
         N_series = gp(init=25, factor=2, n=self.max_steps)
         Nt_series = gp(init=25, factor=2, n=self.max_steps)
 
-        omega_t = 10*np.pi
+        omega_t = 10 * np.pi
 
         x_max = 1
         x_min = 0
@@ -62,16 +63,16 @@ class TestCollocationDerivative(TestCase):
             y = np.linspace(y_min, y_max, N)
             t = np.linspace(t_min, t_max, Nt)
 
-            dt_ = (1/10)*(t_max - t_min)/Nt
-            dt = 10*dt_
+            dt_ = (1 / 10) * (t_max - t_min) / Nt
+            dt = 10 * dt_
 
             X, T, Y = np.meshgrid(x, t, y)
 
             # Generic function U = exp(-lambd*t)*(x**2*cos(y) + x*y)
-            U = X**2*np.cos(omega_t*T*Y) + (T**2)*X*Y
-            U_t = -omega_t*Y*np.sin(omega_t*T*Y)*(X**2) + 2*T*X*Y
+            U = X**2 * np.cos(omega_t * T * Y) + (T**2) * X * Y
+            U_t = -omega_t * Y * np.sin(omega_t * T * Y) * (X**2) + 2 * T * X * Y
 
-            config = {'step': dt}
+            config = {"step": dt}
             diff_op = CollocationDerivative(config=config)
 
             U_t_est = diff_op.solve(data=U)
@@ -91,7 +92,7 @@ class TestCollocationDerivative(TestCase):
         N_series = gp(init=25, factor=2, n=self.max_steps)
         Nt_series = gp(init=25, factor=2, n=self.max_steps)
 
-        omega_t = 10*np.pi
+        omega_t = 10 * np.pi
 
         x_max = 1
         x_min = 0
@@ -109,7 +110,7 @@ class TestCollocationDerivative(TestCase):
             x = np.linspace(x_min, x_max, N)
             y = np.linspace(y_min, y_max, N)
             t = np.linspace(t_min, t_max, Nt)
-            t_ = np.linspace(t_min, t_max, multiplier*Nt)
+            t_ = np.linspace(t_min, t_max, multiplier * Nt)
 
             U, U_t = self.generate_field(x, y, t, omega_t)
             U_, U_t_ = self.generate_field(x, y, t_, omega_t)
@@ -130,5 +131,6 @@ class TestCollocationDerivative(TestCase):
 
                 error = l2_norm(data=U_t_est, reference_data=U_t_, relative_norm=True)
 
-                print(f"Evaluation relative error for N={N} and N_t={Nt}: {100*error} %")
-
+                print(
+                    f"Evaluation relative error for N={N} and N_t={Nt}: {100*error} %"
+                )

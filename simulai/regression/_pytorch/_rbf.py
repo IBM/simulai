@@ -13,24 +13,35 @@
 #     limitations under the License.
 
 from typing import Union
+
 import numpy as np
 import torch
-from simulai.math.kansas import Kansas
 from scipy.sparse.csc import csc_matrix
 
-from simulai.templates import NetworkTemplate, as_tensor, as_array
+from simulai.math.kansas import Kansas
+from simulai.templates import NetworkTemplate, as_array, as_tensor
+
 
 # Single-layer RBF network
 class RBFLayer(torch.nn.Module):
-
-    def __init__(self, xmin:Union[float, np.ndarray]=None, xmax:Union[float, np.ndarray]=None,
-                       Nk:int=None, name:str=None, var_dim:int=None,
-                       Mu:torch.Tensor=None, Sigma:Union[float, torch.Tensor]=None,
-                       device:str=None) -> None:
+    def __init__(
+        self,
+        xmin: Union[float, np.ndarray] = None,
+        xmax: Union[float, np.ndarray] = None,
+        Nk: int = None,
+        name: str = None,
+        var_dim: int = None,
+        Mu: torch.Tensor = None,
+        Sigma: Union[float, torch.Tensor] = None,
+        device: str = None,
+    ) -> None:
 
         super(RBFLayer, self).__init__()
 
-        if isinstance(xmax, np.ndarray) == True and isinstance(xmin, np.ndarray) == True:
+        if (
+            isinstance(xmax, np.ndarray) == True
+            and isinstance(xmin, np.ndarray) == True
+        ):
 
             self.xmin = torch.Tensor(xmin).detach()
             self.xmax = torch.Tensor(xmax).detach()
@@ -42,25 +53,30 @@ class RBFLayer(torch.nn.Module):
 
         else:
 
-            raise Exception(f"Both xmin and xmax must be numpy arrays or integers,"
-                            f" but received {xmax} and {xmin}.")
-
+            raise Exception(
+                f"Both xmin and xmax must be numpy arrays or integers,"
+                f" but received {xmax} and {xmin}."
+            )
 
         self.space_dim = len(self.xmax)
 
         self.Nk = Nk
         self.name = name
         self.var_dim = var_dim
-        self.output_size = var_dim*Nk
+        self.output_size = var_dim * Nk
         self.device = device
 
         if Mu == None:
-            self.Mu = (torch.rand((self.Nk))*(self.xmax - self.xmin) + self.xmin).detach()
+            self.Mu = (
+                torch.rand((self.Nk)) * (self.xmax - self.xmin) + self.xmin
+            ).detach()
         else:
-           self.Mu = Mu
+            self.Mu = Mu
 
         if Sigma == None:
-            self.Sigma = (torch.rand((self.Nk))*(self.xmax - self.xmin) + self.xmin).detach()
+            self.Sigma = (
+                torch.rand((self.Nk)) * (self.xmax - self.xmin) + self.xmin
+            ).detach()
         else:
             if isinstance(Sigma, float):
                 self.Sigma = torch.Tensor([Sigma])
@@ -73,20 +89,20 @@ class RBFLayer(torch.nn.Module):
 
         self.Mu = self.Mu.to(self.device)
         self.Sigma = self.Sigma.to(self.device)
-        
-    def set_W(self, W:torch.Tensor=None) -> None:
 
-        setattr(self, 'W', W)
+    def set_W(self, W: torch.Tensor = None) -> None:
+
+        setattr(self, "W", W)
 
     def set_Sigma(self, Sigma: torch.Tensor = None) -> None:
 
-        setattr(self, 'Sigma', Sigma)
+        setattr(self, "Sigma", Sigma)
 
     def set_Mu(self, Mu: torch.Tensor = None) -> None:
 
-        setattr(self, 'Mu', Mu)
+        setattr(self, "Mu", Mu)
 
-    def basis(self, input_data: Union[torch.Tensor, np.ndarray]=None) -> torch.Tensor:
+    def basis(self, input_data: Union[torch.Tensor, np.ndarray] = None) -> torch.Tensor:
 
         exponent = torch.pow(input_data - self.Mu, 2) / self.Sigma
 
@@ -95,7 +111,9 @@ class RBFLayer(torch.nn.Module):
         return rbf_interpolation
 
     @as_tensor
-    def forward(self, input_data: Union[torch.Tensor, np.ndarray] = None) -> torch.Tensor:
+    def forward(
+        self, input_data: Union[torch.Tensor, np.ndarray] = None
+    ) -> torch.Tensor:
 
         return self.basis(input_data=input_data)
 
@@ -104,7 +122,7 @@ class RBFLayer(torch.nn.Module):
         output_tensor = self.forward(input_data=input_data)
 
         # Guaranteeing the dataset location as CPU
-        output_tensor = output_tensor.to('cpu')
+        output_tensor = output_tensor.to("cpu")
 
         return output_tensor.detach().numpy()
 
@@ -112,20 +130,28 @@ class RBFLayer(torch.nn.Module):
 
         print(f"RBF layer with {self.Nk} basis.")
 
-class ModalRBFNetwork(NetworkTemplate):
 
-    def __init__(self, xmin:Union[float, np.ndarray]=None, xmax:Union[float, np.ndarray]=None,
-                       Nk:int=None, name:str=None, var_dim:int=None,
-                       Mu:Union[torch.Tensor, np.ndarray]=None, Sigma:Union[float, torch.Tensor]=None,
-                       coeff_network:NetworkTemplate=None) -> None:
+class ModalRBFNetwork(NetworkTemplate):
+    def __init__(
+        self,
+        xmin: Union[float, np.ndarray] = None,
+        xmax: Union[float, np.ndarray] = None,
+        Nk: int = None,
+        name: str = None,
+        var_dim: int = None,
+        Mu: Union[torch.Tensor, np.ndarray] = None,
+        Sigma: Union[float, torch.Tensor] = None,
+        coeff_network: NetworkTemplate = None,
+    ) -> None:
 
         super(ModalRBFNetwork, self).__init__()
 
         self.Nk = Nk
         self.var_dim = var_dim
 
-        self.rbf_basis = RBFLayer(xmin=xmin, xmax=xmax, Nk=Nk, name=name,
-                                    var_dim=var_dim, Mu=Mu, Sigma=Sigma)
+        self.rbf_basis = RBFLayer(
+            xmin=xmin, xmax=xmax, Nk=Nk, name=name, var_dim=var_dim, Mu=Mu, Sigma=Sigma
+        )
 
         self.coeff_network = coeff_network
 
@@ -136,7 +162,9 @@ class ModalRBFNetwork(NetworkTemplate):
         self.weights = [self.W]
 
     @as_tensor
-    def forward(self, input_data: Union[torch.Tensor, np.ndarray] = None) -> torch.Tensor:
+    def forward(
+        self, input_data: Union[torch.Tensor, np.ndarray] = None
+    ) -> torch.Tensor:
 
         space_input = input_data[:, :-1]
         time_input = input_data[:, -1:]
@@ -147,9 +175,13 @@ class ModalRBFNetwork(NetworkTemplate):
 
         space_component = self.rbf_basis.basis(input_data=space_input)
 
-        space_component_reshaped = torch.reshape(space_component, (-1, self.var_dim, self.Nk))
+        space_component_reshaped = torch.reshape(
+            space_component, (-1, self.var_dim, self.Nk)
+        )
 
-        output = torch.sum(space_component_reshaped * self.W[:, None, :], dim=-1, keepdim=False)
+        output = torch.sum(
+            space_component_reshaped * self.W[:, None, :], dim=-1, keepdim=False
+        )
 
         output = torch.squeeze(output)
 
@@ -159,10 +191,18 @@ class ModalRBFNetwork(NetworkTemplate):
 
         self.coeff_network.summary()
 
-class RBFNetwork(NetworkTemplate):
 
-    def __init__(self, hidden_units:int=None, output_layer:bool=True,
-                       xmin:float=None, xmax:float=None, Nk:int=None, name:str=None, output_size:int=None):
+class RBFNetwork(NetworkTemplate):
+    def __init__(
+        self,
+        hidden_units: int = None,
+        output_layer: bool = True,
+        xmin: float = None,
+        xmax: float = None,
+        Nk: int = None,
+        name: str = None,
+        output_size: int = None,
+    ):
 
         super(RBFNetwork, self).__init__()
 
@@ -187,12 +227,16 @@ class RBFNetwork(NetworkTemplate):
         self.weights = [item.weight for item in self.layers]
 
     @as_tensor
-    def _last_layer(self, input_data: Union[np.ndarray, torch.Tensor] = None) -> torch.Tensor:
+    def _last_layer(
+        self, input_data: Union[np.ndarray, torch.Tensor] = None
+    ) -> torch.Tensor:
 
         return self.output_layer(input_data)
 
     @as_array
-    def _forward(self, input_data: Union[np.ndarray, torch.Tensor] = None) -> csc_matrix:
+    def _forward(
+        self, input_data: Union[np.ndarray, torch.Tensor] = None
+    ) -> csc_matrix:
 
         hidden_state = self.input_layer(input_data)
 
@@ -214,15 +258,21 @@ class RBFNetwork(NetworkTemplate):
         return Dx
 
     @as_tensor
-    def forward(self, input_data:Union[np.ndarray, torch.Tensor]=None) -> torch.Tensor:
+    def forward(
+        self, input_data: Union[np.ndarray, torch.Tensor] = None
+    ) -> torch.Tensor:
 
         G = self._forward(input_data=input_data)
 
         activated_state = np.array(G.todense())
 
-        return  self._last_layer(input_data=activated_state)
+        return self._last_layer(input_data=activated_state)
 
-    def gradient(self, ref_data:Union[np.ndarray, torch.Tensor], input_data: Union[np.ndarray, torch.Tensor] = None) -> torch.Tensor:
+    def gradient(
+        self,
+        ref_data: Union[np.ndarray, torch.Tensor],
+        input_data: Union[np.ndarray, torch.Tensor] = None,
+    ) -> torch.Tensor:
 
         Dx = self._gradient(input_data=input_data)
 
@@ -230,7 +280,11 @@ class RBFNetwork(NetworkTemplate):
 
         return self._last_layer(input_data=activated_state)
 
-    def fit(self,  input_data:Union[np.ndarray, torch.Tensor]=None, target_data:Union[np.ndarray, torch.Tensor]=None):
+    def fit(
+        self,
+        input_data: Union[np.ndarray, torch.Tensor] = None,
+        target_data: Union[np.ndarray, torch.Tensor] = None,
+    ):
 
         G = self._forward(input_data=input_data)
 
@@ -241,6 +295,3 @@ class RBFNetwork(NetworkTemplate):
         G = self._forward(input_data=input_data)
 
         return G @ self.weights
-
-
-

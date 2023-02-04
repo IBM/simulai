@@ -12,26 +12,27 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
-import matplotlib.pyplot as plt
-import sys
 import os
+import sys
 
-os.environ['engine'] = 'pytorch'
+import matplotlib.pyplot as plt
+import numpy as np
+
+os.environ["engine"] = "pytorch"
+
+import logging
 
 from examples.utils.lorenz_solver import lorenz_solver, lorenz_solver_forcing
 from examples.utils.oscillator_solver import oscillator_solver_forcing
-from simulai.regression import OpInf, ExtendedOpInf
-from simulai.math.integration import RK4, LSODA, FunctionWrapper, ClassWrapper
-from simulai.metrics import LyapunovUnits, L2Norm
-
-import logging
+from simulai.math.integration import LSODA, RK4, ClassWrapper, FunctionWrapper
+from simulai.metrics import L2Norm, LyapunovUnits
+from simulai.regression import ExtendedOpInf, OpInf
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class TestOpInfNonlinear:
 
+class TestOpInfNonlinear:
     def __init__(self):
         pass
 
@@ -41,20 +42,26 @@ class TestOpInfNonlinear:
         T_max = 20
         rho = 28
         beta = 8 / 3
-        beta_str = '8/3'
+        beta_str = "8/3"
         sigma = 10
         n_field = 3
-        t = np.arange(0.8*T_max, T_max, dt)
+        t = np.arange(0.8 * T_max, T_max, dt)
 
         initial_state = np.array([1, 0, 0])[None, :]
-        lorenz_data, derivative_lorenz_data = lorenz_solver(rho=rho, dt=dt, T=T_max, sigma=sigma,
-                                                            initial_state=initial_state,
-                                                            beta=beta, beta_str=beta_str,
-                                                            data_path='on_memory')
+        lorenz_data, derivative_lorenz_data = lorenz_solver(
+            rho=rho,
+            dt=dt,
+            T=T_max,
+            sigma=sigma,
+            initial_state=initial_state,
+            beta=beta,
+            beta_str=beta_str,
+            data_path="on_memory",
+        )
 
         lambda_linear = 1e-3
         lambda_quadratic = 1e-3
-        n_steps = int(T_max/dt)
+        n_steps = int(T_max / dt)
         nt = int(0.8 * n_steps)
         nt_test = n_steps - nt
 
@@ -68,15 +75,21 @@ class TestOpInfNonlinear:
         lorenz_op.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
         lorenz_op.fit(input_data=train_field, target_data=train_field_derivative)
 
-        logging.info(f"A_hat: {np.array_str(lorenz_op.A_hat, precision=2, suppress_small=True)}")
-        logging.info(f"H_hat: {np.array_str(lorenz_op.H_hat, precision=2, suppress_small=True)}")
-        logging.info(f"c_hat: {np.array_str(lorenz_op.c_hat, precision=2, suppress_small=True)}")
+        logging.info(
+            f"A_hat: {np.array_str(lorenz_op.A_hat, precision=2, suppress_small=True)}"
+        )
+        logging.info(
+            f"H_hat: {np.array_str(lorenz_op.H_hat, precision=2, suppress_small=True)}"
+        )
+        logging.info(
+            f"c_hat: {np.array_str(lorenz_op.c_hat, precision=2, suppress_small=True)}"
+        )
 
         init_state = train_field[-1:]
 
         estimated_field_derivatives = lorenz_op.eval(input_data=test_field)
 
-        tags = ['x', 'y', 'z']
+        tags = ["x", "y", "z"]
 
         for var in range(n_field):
             plt.title(f"Time-derivative for variable {tags[var]}")
@@ -91,11 +104,11 @@ class TestOpInfNonlinear:
         # Using the derivatives surrogate for time-integrating
         right_operator = FunctionWrapper(lorenz_op.eval, extra_dim=False)
         lorenz_op.construct_K_op()
-        jacobian_estimative = lorenz_op.jacobian(np.array([1,1,1])[None,:])
+        jacobian_estimative = lorenz_op.jacobian(np.array([1, 1, 1])[None, :])
 
         solver = RK4(right_operator)
 
-        time = 0.80*T_max
+        time = 0.80 * T_max
         estimated_variables = list()
         initial_state = init_state
         N_steps = int(T_max / dt)
@@ -116,7 +129,9 @@ class TestOpInfNonlinear:
         estimated_field = np.vstack(estimated_variables)
 
         lyapunov_estimator = LyapunovUnits(lyapunov_unit=0.96, tol=0.10, time_scale=dt)
-        n_units = lyapunov_estimator(data=estimated_field[:], reference_data=test_field, relative_norm=True)
+        n_units = lyapunov_estimator(
+            data=estimated_field[:], reference_data=test_field, relative_norm=True
+        )
         print(f"Number of Lyapunov units extrapolated: {n_units}")
 
         for var in range(n_field):
@@ -135,7 +150,7 @@ class TestOpInfNonlinear:
         T_max = 100
         rho = 28
         beta = 8 / 3
-        beta_str = '8/3'
+        beta_str = "8/3"
         sigma = 10
         n_field = 3
         lambda_linear = 1e-3
@@ -144,10 +159,17 @@ class TestOpInfNonlinear:
 
         initial_state = np.array([1, 0, 0])[None, :]
 
-        lorenz_data, derivative_lorenz_data, time = lorenz_solver(rho=rho, dt=dt, T=T_max, sigma=sigma,
-                                                                  initial_state=initial_state,
-                                                                  beta=beta, beta_str=beta_str,
-                                                                  data_path='on_memory', solver='RK45')
+        lorenz_data, derivative_lorenz_data, time = lorenz_solver(
+            rho=rho,
+            dt=dt,
+            T=T_max,
+            sigma=sigma,
+            initial_state=initial_state,
+            beta=beta,
+            beta_str=beta_str,
+            data_path="on_memory",
+            solver="RK45",
+        )
 
         t = time
         n_steps = time.shape[0]
@@ -161,20 +183,31 @@ class TestOpInfNonlinear:
         test_field = lorenz_data[nt:]  # manufactured nonlinear oscillator data
         test_field_derivatives = derivative_lorenz_data[nt:]
 
-        lorenz_op = OpInf(bias_rescale=1, solver='pinv_close')
+        lorenz_op = OpInf(bias_rescale=1, solver="pinv_close")
         lorenz_op.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
-        lorenz_op.fit(input_data=train_field, target_data=train_field_derivative,
-                      batch_size=1000, force_lazy_access=True, k_svd=9)
+        lorenz_op.fit(
+            input_data=train_field,
+            target_data=train_field_derivative,
+            batch_size=1000,
+            force_lazy_access=True,
+            k_svd=9,
+        )
 
-        logger.info(f"A_hat: {np.array_str(lorenz_op.A_hat, precision=3, suppress_small=True)}")
-        logger.info(f"H_hat: {np.array_str(lorenz_op.H_hat, precision=3, suppress_small=True)}")
-        logger.info(f"c_hat: {np.array_str(lorenz_op.c_hat, precision=3, suppress_small=True)}")
+        logger.info(
+            f"A_hat: {np.array_str(lorenz_op.A_hat, precision=3, suppress_small=True)}"
+        )
+        logger.info(
+            f"H_hat: {np.array_str(lorenz_op.H_hat, precision=3, suppress_small=True)}"
+        )
+        logger.info(
+            f"c_hat: {np.array_str(lorenz_op.c_hat, precision=3, suppress_small=True)}"
+        )
 
         init_state = train_field[-1:]
 
         estimated_field_derivatives = lorenz_op.eval(input_data=test_field)
 
-        tags = ['x', 'y', 'z']
+        tags = ["x", "y", "z"]
 
         for var in range(n_field):
             plt.title(f"Time-derivative for variable {tags[var]}")
@@ -200,7 +233,9 @@ class TestOpInfNonlinear:
         estimated_field = solver.run(initial_state, t_test)
 
         l2_norm = L2Norm()
-        error = 100 * l2_norm(data=estimated_field, reference_data=test_field, relative_norm=True)
+        error = 100 * l2_norm(
+            data=estimated_field, reference_data=test_field, relative_norm=True
+        )
         print(f"Evaluation error: {error} %")
 
         for var in range(n_field):
@@ -231,7 +266,7 @@ class TestOpInfNonlinear:
         T_max = 100
         rho = 28
         beta = 8 / 3
-        beta_str = '8/3'
+        beta_str = "8/3"
         sigma = 10
         n_field = 3
         lambda_linear = 1e-3
@@ -240,10 +275,17 @@ class TestOpInfNonlinear:
 
         initial_state = np.array([1, 0, 0])[None, :]
 
-        lorenz_data, derivative_lorenz_data, time = lorenz_solver(rho=rho, dt=dt, T=T_max, sigma=sigma,
-                                                                  initial_state=initial_state,
-                                                                  beta=beta, beta_str=beta_str,
-                                                                  data_path='on_memory', solver='RK45')
+        lorenz_data, derivative_lorenz_data, time = lorenz_solver(
+            rho=rho,
+            dt=dt,
+            T=T_max,
+            sigma=sigma,
+            initial_state=initial_state,
+            beta=beta,
+            beta_str=beta_str,
+            data_path="on_memory",
+            solver="RK45",
+        )
 
         t = time
         n_steps = time.shape[0]
@@ -257,29 +299,42 @@ class TestOpInfNonlinear:
         test_field = lorenz_data[nt:]  # manufactured nonlinear oscillator data
         test_field_derivatives = derivative_lorenz_data[nt:]
 
-        operator_config = {'bias_rescale':1e-15, 'solver': 'pinv'}
+        operator_config = {"bias_rescale": 1e-15, "solver": "pinv"}
 
-        #lorenz_op = ExtendedOpInf(observables=['x'], operator_config=operator_config)
-        #lorenz_op = ExtendedOpInf(observables=['x', 'sin(4*x)', 'cos(4*x)'], operator_config=operator_config)
-        lorenz_op = ExtendedOpInf(observables=['x', 'x**2', 'tanh(x)'], operator_config=operator_config)
-        #lorenz_op = ExtendedOpInf(observables=['x', 'Kronecker(x)'], operator_config=operator_config)
-        #lorenz_op = ExtendedOpInf(observables=['x', 'Kronecker(x)', 'x**3'], operator_config=operator_config)
-        #lorenz_op = ExtendedOpInf(observables=['x', 'Kronecker(Kronecker(x))'], operator_config=operator_config)
-        #lorenz_op = ExtendedOpInf(observables=['x', 'tanh(sin(Kronecker(x)))'], operator_config=operator_config)
+        # lorenz_op = ExtendedOpInf(observables=['x'], operator_config=operator_config)
+        # lorenz_op = ExtendedOpInf(observables=['x', 'sin(4*x)', 'cos(4*x)'], operator_config=operator_config)
+        lorenz_op = ExtendedOpInf(
+            observables=["x", "x**2", "tanh(x)"], operator_config=operator_config
+        )
+        # lorenz_op = ExtendedOpInf(observables=['x', 'Kronecker(x)'], operator_config=operator_config)
+        # lorenz_op = ExtendedOpInf(observables=['x', 'Kronecker(x)', 'x**3'], operator_config=operator_config)
+        # lorenz_op = ExtendedOpInf(observables=['x', 'Kronecker(Kronecker(x))'], operator_config=operator_config)
+        # lorenz_op = ExtendedOpInf(observables=['x', 'tanh(sin(Kronecker(x)))'], operator_config=operator_config)
 
         lorenz_op.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
-        lorenz_op.fit(input_data=train_field, target_data=train_field_derivative,
-                      batch_size=10000, force_lazy_access=False, k_svd=51)
+        lorenz_op.fit(
+            input_data=train_field,
+            target_data=train_field_derivative,
+            batch_size=10000,
+            force_lazy_access=False,
+            k_svd=51,
+        )
 
-        print(f"A_hat: {np.array_str(lorenz_op.A_hat, precision=2, suppress_small=True)}")
-        print(f"H_hat: {np.array_str(lorenz_op.H_hat, precision=2, suppress_small=True)}")
-        print(f"c_hat: {np.array_str(lorenz_op.c_hat, precision=2, suppress_small=True)}")
+        print(
+            f"A_hat: {np.array_str(lorenz_op.A_hat, precision=2, suppress_small=True)}"
+        )
+        print(
+            f"H_hat: {np.array_str(lorenz_op.H_hat, precision=2, suppress_small=True)}"
+        )
+        print(
+            f"c_hat: {np.array_str(lorenz_op.c_hat, precision=2, suppress_small=True)}"
+        )
 
         init_state = train_field[-1:]
 
         estimated_field_derivatives = lorenz_op.eval(input_data=test_field)
 
-        tags = ['x', 'y', 'z']
+        tags = ["x", "y", "z"]
 
         for var in range(n_field):
             plt.title(f"Time-derivative for variable {tags[var]}")
@@ -292,7 +347,7 @@ class TestOpInfNonlinear:
             plt.show()
 
         lorenz_op.construct_K_op()
-        jacobian_estimative = lorenz_op.jacobian(np.array([1,1,1]))
+        jacobian_estimative = lorenz_op.jacobian(np.array([1, 1, 1]))
 
         # Using the derivatives surrogate for time-integrating
         right_operator = ClassWrapper(lorenz_op)
@@ -304,7 +359,9 @@ class TestOpInfNonlinear:
         estimated_field = solver.run(initial_state, t_test)
 
         l2_norm = L2Norm()
-        error = 100*l2_norm(data=estimated_field, reference_data=test_field, relative_norm=True)
+        error = 100 * l2_norm(
+            data=estimated_field, reference_data=test_field, relative_norm=True
+        )
         print(f"Evaluation error: {error} %")
 
         for var in range(n_field):
@@ -335,7 +392,7 @@ class TestOpInfNonlinear:
         T_max = 100
         rho = 28
         beta = 8 / 3
-        beta_str = '8/3'
+        beta_str = "8/3"
         sigma = 10
         n_field = 3
         lambda_linear = 1e-3
@@ -344,10 +401,17 @@ class TestOpInfNonlinear:
 
         initial_state = np.array([1, 0, 0])[None, :]
 
-        lorenz_data, derivative_lorenz_data, time = lorenz_solver(rho=rho, dt=dt, T=T_max, sigma=sigma,
-                                                                  initial_state=initial_state,
-                                                                  beta=beta, beta_str=beta_str,
-                                                                  data_path='on_memory', solver='RK45')
+        lorenz_data, derivative_lorenz_data, time = lorenz_solver(
+            rho=rho,
+            dt=dt,
+            T=T_max,
+            sigma=sigma,
+            initial_state=initial_state,
+            beta=beta,
+            beta_str=beta_str,
+            data_path="on_memory",
+            solver="RK45",
+        )
 
         t = time
         n_steps = time.shape[0]
@@ -361,23 +425,32 @@ class TestOpInfNonlinear:
         test_field = lorenz_data[nt:]  # manufactured nonlinear oscillator data
         test_field_derivatives = derivative_lorenz_data[nt:]
 
-        operator_config = {'bias_rescale': 1e-15}
+        operator_config = {"bias_rescale": 1e-15}
 
-        lorenz_op = ExtendedOpInf(observables=['x', 'x**2', 'tanh(x)'], intervals=[-1, -1, -1],
-                                    operator_config=operator_config)
+        lorenz_op = ExtendedOpInf(
+            observables=["x", "x**2", "tanh(x)"],
+            intervals=[-1, -1, -1],
+            operator_config=operator_config,
+        )
 
         lorenz_op.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
         lorenz_op.fit(input_data=train_field, target_data=train_field_derivative)
 
-        print(f"A_hat: {np.array_str(lorenz_op.A_hat, precision=2, suppress_small=True)}")
-        print(f"H_hat: {np.array_str(lorenz_op.H_hat, precision=2, suppress_small=True)}")
-        print(f"c_hat: {np.array_str(lorenz_op.c_hat, precision=2, suppress_small=True)}")
+        print(
+            f"A_hat: {np.array_str(lorenz_op.A_hat, precision=2, suppress_small=True)}"
+        )
+        print(
+            f"H_hat: {np.array_str(lorenz_op.H_hat, precision=2, suppress_small=True)}"
+        )
+        print(
+            f"c_hat: {np.array_str(lorenz_op.c_hat, precision=2, suppress_small=True)}"
+        )
 
         init_state = train_field[-1:]
 
         estimated_field_derivatives = lorenz_op.eval(input_data=test_field)
 
-        tags = ['x', 'y', 'z']
+        tags = ["x", "y", "z"]
 
         for var in range(n_field):
             plt.title(f"Time-derivative for variable {tags[var]}")
@@ -402,7 +475,9 @@ class TestOpInfNonlinear:
         estimated_field = solver.run(initial_state, t_test)
 
         l2_norm = L2Norm()
-        error = 100 * l2_norm(data=estimated_field, reference_data=test_field, relative_norm=True)
+        error = 100 * l2_norm(
+            data=estimated_field, reference_data=test_field, relative_norm=True
+        )
         print(f"Evaluation error: {error} %")
 
         for var in range(n_field):
@@ -430,20 +505,26 @@ class TestOpInfNonlinear:
         T_max = 50
         rho = 28
         beta = 8 / 3
-        beta_str = '8/3'
+        beta_str = "8/3"
         sigma = 10
         n_field = 3
         t = np.arange(0.9 * T_max, T_max, dt)
 
         initial_state = np.array([1, 2, 3])[None, :]
-        lorenz_data, derivative_lorenz_data = lorenz_solver(rho=rho, dt=dt, T=T_max, sigma=sigma,
-                                                            initial_state=initial_state,
-                                                            beta=beta, beta_str=beta_str,
-                                                            data_path='on_memory')
+        lorenz_data, derivative_lorenz_data = lorenz_solver(
+            rho=rho,
+            dt=dt,
+            T=T_max,
+            sigma=sigma,
+            initial_state=initial_state,
+            beta=beta,
+            beta_str=beta_str,
+            data_path="on_memory",
+        )
 
         lambda_linear = 10
         lambda_quadratic = 100
-        n_steps = int(T_max/dt)
+        n_steps = int(T_max / dt)
         nt = int(0.9 * n_steps)
         nt_test = n_steps - nt
 
@@ -455,17 +536,25 @@ class TestOpInfNonlinear:
 
         lorenz_op = OpInf(bias_rescale=1e-15)
         lorenz_op.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
-        lorenz_op.fit(input_data=train_field, target_data=train_field_derivative, batch_size=10000)
+        lorenz_op.fit(
+            input_data=train_field, target_data=train_field_derivative, batch_size=10000
+        )
 
-        print(f"A_hat: {np.array_str(lorenz_op.A_hat, precision=2, suppress_small=True)}")
-        print(f"H_hat: {np.array_str(lorenz_op.H_hat, precision=2, suppress_small=True)}")
-        print(f"c_hat: {np.array_str(lorenz_op.c_hat, precision=2, suppress_small=True)}")
+        print(
+            f"A_hat: {np.array_str(lorenz_op.A_hat, precision=2, suppress_small=True)}"
+        )
+        print(
+            f"H_hat: {np.array_str(lorenz_op.H_hat, precision=2, suppress_small=True)}"
+        )
+        print(
+            f"c_hat: {np.array_str(lorenz_op.c_hat, precision=2, suppress_small=True)}"
+        )
 
         init_state = train_field[-1:]
 
         estimated_field_derivatives = lorenz_op.eval(input_data=test_field)
 
-        tags = ['x', 'y', 'z']
+        tags = ["x", "y", "z"]
 
         for var in range(n_field):
             plt.title(f"Time-derivative for variable {tags[var]}")
@@ -483,7 +572,7 @@ class TestOpInfNonlinear:
         T_max = 50
         rho = 28
         beta = 8 / 3
-        beta_str = '8/3'
+        beta_str = "8/3"
         sigma = 10
         A = 2
         t = np.arange(0.9 * T_max, T_max, dt)
@@ -499,11 +588,17 @@ class TestOpInfNonlinear:
         lambda_linear = 10
         lambda_quadratic = 100
 
-        lorenz_data, derivative_lorenz_data = lorenz_solver_forcing(rho=rho, dt=dt, T=T_max, sigma=sigma,
-                                                                    initial_state=initial_state, forcing=forcings,
-                                                                    beta=beta, beta_str=beta_str,
-                                                                    data_path='on_memory')
-
+        lorenz_data, derivative_lorenz_data = lorenz_solver_forcing(
+            rho=rho,
+            dt=dt,
+            T=T_max,
+            sigma=sigma,
+            initial_state=initial_state,
+            forcing=forcings,
+            beta=beta,
+            beta_str=beta_str,
+            data_path="on_memory",
+        )
 
         train_field = lorenz_data[:nt]  # manufactured nonlinear oscillator data
         train_field_derivative = derivative_lorenz_data[:nt]
@@ -513,21 +608,35 @@ class TestOpInfNonlinear:
         test_field_derivatives = derivative_lorenz_data[nt:]
         test_forcings = forcings[nt:]
 
-        lorenz_op = OpInf(forcing='linear', bias_rescale=1e-15)
+        lorenz_op = OpInf(forcing="linear", bias_rescale=1e-15)
         lorenz_op.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
 
-        lorenz_op.fit(input_data=train_field, target_data=train_field_derivative, forcing_data=train_forcings)
+        lorenz_op.fit(
+            input_data=train_field,
+            target_data=train_field_derivative,
+            forcing_data=train_forcings,
+        )
 
-        logger.info(f"A_hat: {np.array_str(lorenz_op.A_hat, precision=2, suppress_small=True)}")
-        logger.info(f"H_hat: {np.array_str(lorenz_op.H_hat, precision=2, suppress_small=True)}")
-        logger.info(f"B_hat: {np.array_str(lorenz_op.B_hat, precision=2, suppress_small=True)}")
-        logger.info(f"c_hat: {np.array_str(lorenz_op.c_hat, precision=2, suppress_small=True)}")
+        logger.info(
+            f"A_hat: {np.array_str(lorenz_op.A_hat, precision=2, suppress_small=True)}"
+        )
+        logger.info(
+            f"H_hat: {np.array_str(lorenz_op.H_hat, precision=2, suppress_small=True)}"
+        )
+        logger.info(
+            f"B_hat: {np.array_str(lorenz_op.B_hat, precision=2, suppress_small=True)}"
+        )
+        logger.info(
+            f"c_hat: {np.array_str(lorenz_op.c_hat, precision=2, suppress_small=True)}"
+        )
 
         init_state = train_field[-1:]
 
-        estimated_field_derivatives = lorenz_op.eval(input_data=test_field, forcing_data=test_forcings)
+        estimated_field_derivatives = lorenz_op.eval(
+            input_data=test_field, forcing_data=test_forcings
+        )
 
-        tags = ['x', 'y', 'z']
+        tags = ["x", "y", "z"]
 
         for var in range(n_field):
             plt.title(f"Time-derivative for variable {tags[var]}")
@@ -552,7 +661,9 @@ class TestOpInfNonlinear:
 
         while time < T_max - dt:
 
-            state, derivative_state = solver.step_with_forcings_separated(initial_state, test_forcings[ii:ii+1], dt)
+            state, derivative_state = solver.step_with_forcings_separated(
+                initial_state, test_forcings[ii : ii + 1], dt
+            )
             estimated_variables.append(state)
             initial_state = state
             sys.stdout.write("\rIteration {}".format(ii))
@@ -578,7 +689,7 @@ class TestOpInfNonlinear:
         T_max = 50
         rho = 28
         beta = 8 / 3
-        beta_str = '8/3'
+        beta_str = "8/3"
         sigma = 10
         A = 0.1
         t = np.arange(0.9 * T_max, T_max, dt)
@@ -594,10 +705,17 @@ class TestOpInfNonlinear:
         lambda_linear = 10
         lambda_quadratic = 100
 
-        lorenz_data, derivative_lorenz_data = lorenz_solver_forcing(rho=rho, dt=dt, T=T_max, sigma=sigma,
-                                                                    initial_state=initial_state, forcing=forcings,
-                                                                    beta=beta, beta_str=beta_str,
-                                                                    data_path='on_memory')
+        lorenz_data, derivative_lorenz_data = lorenz_solver_forcing(
+            rho=rho,
+            dt=dt,
+            T=T_max,
+            sigma=sigma,
+            initial_state=initial_state,
+            forcing=forcings,
+            beta=beta,
+            beta_str=beta_str,
+            data_path="on_memory",
+        )
 
         train_field = lorenz_data[:nt]  # manufactured nonlinear oscillator data
         train_field_derivative = derivative_lorenz_data[:nt]
@@ -607,19 +725,31 @@ class TestOpInfNonlinear:
         test_field_derivatives = derivative_lorenz_data[nt:]
         test_forcings = forcings[nt:]
 
-        lorenz_op = OpInf(forcing='linear', bias_rescale=1e-15)
+        lorenz_op = OpInf(forcing="linear", bias_rescale=1e-15)
         lorenz_op.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
 
-        lorenz_op.fit(input_data=train_field, target_data=train_field_derivative, forcing_data=train_forcings)
+        lorenz_op.fit(
+            input_data=train_field,
+            target_data=train_field_derivative,
+            forcing_data=train_forcings,
+        )
 
-        logger.info(f"A_hat: {np.array_str(lorenz_op.A_hat, precision=2, suppress_small=True)}")
-        logger.info(f"H_hat: {np.array_str(lorenz_op.H_hat, precision=2, suppress_small=True)}")
-        logger.info(f"B_hat: {np.array_str(lorenz_op.B_hat, precision=2, suppress_small=True)}")
-        logger.info(f"c_hat: {np.array_str(lorenz_op.c_hat, precision=2, suppress_small=True)}")
+        logger.info(
+            f"A_hat: {np.array_str(lorenz_op.A_hat, precision=2, suppress_small=True)}"
+        )
+        logger.info(
+            f"H_hat: {np.array_str(lorenz_op.H_hat, precision=2, suppress_small=True)}"
+        )
+        logger.info(
+            f"B_hat: {np.array_str(lorenz_op.B_hat, precision=2, suppress_small=True)}"
+        )
+        logger.info(
+            f"c_hat: {np.array_str(lorenz_op.c_hat, precision=2, suppress_small=True)}"
+        )
 
         init_state = train_field[-1:]
 
-        tags = ['x', 'y', 'z']
+        tags = ["x", "y", "z"]
 
         # Using the derivatives surrogate for time-integrating
         time = 0.90 * T_max
@@ -636,7 +766,9 @@ class TestOpInfNonlinear:
 
         initial_state = init_state[0]
 
-        estimated_field = solver.run_forcing(initial_state, t_test, forcing=test_forcings)
+        estimated_field = solver.run_forcing(
+            initial_state, t_test, forcing=test_forcings
+        )
 
         for var in range(n_field):
             plt.title(f"Variable {tags[var]}")
@@ -647,7 +779,6 @@ class TestOpInfNonlinear:
             plt.legend()
             plt.savefig(f"integrated_var_{var}.png")
             plt.show()
-
 
     def test_basic_opinf_nonlinear_with_linear_forcing(self):
 
@@ -667,8 +798,9 @@ class TestOpInfNonlinear:
         nt = int(0.9 * n_steps)
         nt_test = n_steps - nt
 
-        oscillator_data, derivative_oscillator_data = oscillator_solver_forcing(T, dt, initial_state,
-                                                                                forcing=forcings)
+        oscillator_data, derivative_oscillator_data = oscillator_solver_forcing(
+            T, dt, initial_state, forcing=forcings
+        )
 
         # Choosing observables (simple Koopman operator)
         # g = (x^3, y^3)
@@ -682,13 +814,19 @@ class TestOpInfNonlinear:
         test_field_derivatives = derivative_oscillator_data[nt:]
         test_forcings = forcings[nt:]
 
-        non_op = OpInf(forcing='linear')
+        non_op = OpInf(forcing="linear")
         non_op.set(lambda_linear=lambda_linear, lambda_quadratic=lambda_quadratic)
-        non_op.fit(input_data=train_field, target_data=train_field_derivative, forcing_data=train_forcings)
+        non_op.fit(
+            input_data=train_field,
+            target_data=train_field_derivative,
+            forcing_data=train_forcings,
+        )
 
         init_state = train_field[-1:]
 
-        estimated_field_derivatives = non_op.eval(input_data=test_field, forcing_data=test_forcings)
+        estimated_field_derivatives = non_op.eval(
+            input_data=test_field, forcing_data=test_forcings
+        )
 
         print(f"A_hat: {np.array_str(non_op.A_hat, precision=2, suppress_small=True)}")
         print(f"H_hat: {np.array_str(non_op.H_hat, precision=2, suppress_small=True)}")

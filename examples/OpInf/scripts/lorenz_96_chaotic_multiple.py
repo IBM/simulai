@@ -12,51 +12,57 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-#!/usr/bin/env python
-import warnings
 import os
 import time
+#!/usr/bin/env python
+import warnings
 
 with warnings.catch_warnings():
-    from scipy.integrate import odeint
-    import matplotlib.pyplot as plt
-    from matplotlib.colors import Normalize
-    import numpy as np
     from argparse import ArgumentParser
 
-    from simulai.regression import OpInf
-    from simulai.math.integration import LSODA, ClassWrapper
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from matplotlib.colors import Normalize
+    from scipy.integrate import odeint
+
     from simulai.math.differentiation import CollocationDerivative
+    from simulai.math.integration import LSODA, ClassWrapper
+    from simulai.regression import OpInf
 
 # Special customization for matplotlib
 matplotlib_custom = True
 
 if matplotlib_custom == True:
-    plt.rcParams.update({
-        # 'font.size': 16,
-        'axes.linewidth': 2,
-        # 'axes.titlesize': 20,
-        'axes.edgecolor': 'black',
-        # 'axes.labelsize': 20,
-        'axes.grid': True,
-        'lines.linewidth': 1.5,
-        'lines.markersize': 6,
-        'figure.figsize': (15, 6),
-        # 'xtick.labelsize': 14,
-        # 'ytick.labelsize': 14,
-        'font.family': 'Arial',
-        # 'legend.fontsize': 13,
-        'legend.framealpha': 1,
-        'legend.edgecolor': 'black',
-        'legend.shadow': False,
-        'legend.fancybox': True,
-        'legend.frameon': True})
+    plt.rcParams.update(
+        {
+            # 'font.size': 16,
+            "axes.linewidth": 2,
+            # 'axes.titlesize': 20,
+            "axes.edgecolor": "black",
+            # 'axes.labelsize': 20,
+            "axes.grid": True,
+            "lines.linewidth": 1.5,
+            "lines.markersize": 6,
+            "figure.figsize": (15, 6),
+            # 'xtick.labelsize': 14,
+            # 'ytick.labelsize': 14,
+            "font.family": "Arial",
+            # 'legend.fontsize': 13,
+            "legend.framealpha": 1,
+            "legend.edgecolor": "black",
+            "legend.shadow": False,
+            "legend.fancybox": True,
+            "legend.frameon": True,
+        }
+    )
 else:
     pass
 
 
 def NRMSE(exact, approximated):
-    return np.sqrt(np.mean(np.square(exact - approximated) / exact.std(axis=0) ** 2, axis=1))
+    return np.sqrt(
+        np.mean(np.square(exact - approximated) / exact.std(axis=0) ** 2, axis=1)
+    )
 
 
 def NRSE(exact, approximated):
@@ -66,9 +72,9 @@ def NRSE(exact, approximated):
 # Reading command line arguments.
 parser = ArgumentParser(description="Reading input parameters")
 
-parser.add_argument('--save_path', type=str, help="Save path", default='/tmp')
-parser.add_argument('--F', type=float, help="Forcing value", default=8)
-parser.add_argument('--case', type=int, help="Ans specific case to be used.")
+parser.add_argument("--save_path", type=str, help="Save path", default="/tmp")
+parser.add_argument("--F", type=float, help="Forcing value", default=8)
+parser.add_argument("--case", type=int, help="Ans specific case to be used.")
 
 args = parser.parse_args()
 
@@ -76,7 +82,7 @@ save_path = args.save_path
 F = args.F
 case = args.case
 
-initial_states_file = os.path.join(save_path, 'initial_random.npy')
+initial_states_file = os.path.join(save_path, "initial_random.npy")
 
 tol = 0.5
 
@@ -87,9 +93,9 @@ random_base_case = 15
 n_initial = 100
 
 if F == 8:
-    lambda_1 = 1/1.68
+    lambda_1 = 1 / 1.68
 else:
-    lambda_1 = 1/2.27
+    lambda_1 = 1 / 2.27
 
 
 def Lorenz96(x, t):
@@ -110,7 +116,9 @@ if os.path.isfile(initial_states_file):
 else:
     initial_states_list = list()
     for nn in range(n_initial):
-        x0_nn = x0 + 0.01 * np.random.rand(N)  # Add small perturbation to the first variable
+        x0_nn = x0 + 0.01 * np.random.rand(
+            N
+        )  # Add small perturbation to the first variable
         initial_states_list.append(x0_nn[None, :])
     initial_states = np.vstack(initial_states_list)
 
@@ -144,7 +152,7 @@ test_field = lorenz_data[nt:]  # manufactured nonlinear oscillator data
 test_field_derivatives = derivative_lorenz_data[nt:]
 
 start_time = time.time()
-lorenz_op = OpInf(bias_rescale=1, solver='pinv')
+lorenz_op = OpInf(bias_rescale=1, solver="pinv")
 lorenz_op.fit(input_data=train_field, target_data=train_field_derivative)
 print(f"Run time: {time.time() - start_time} s")
 
@@ -182,7 +190,7 @@ for si in conditions:
 
     init_state = train_field[-1:]
     estimated_field_derivatives = lorenz_op.eval(input_data=test_field)
-    tags = [fr'x_{i}' for i in range(n_field)]
+    tags = [rf"x_{i}" for i in range(n_field)]
 
     # Construcing jacobian tensor (It could be used during the time-integrations, but seemingly it is not).
     lorenz_op.construct_K_op()
@@ -230,7 +238,7 @@ for si in conditions:
         plt.plot(time_ref, test_field[:, vv], label="Ground Truth", color="red")
         plt.title(rf" Variable $X_{str({vv})}$", fontsize=20)
         plt.xlabel(r"$t/T^{\Lambda_1}$", fontsize=16)
-        plt.xlim(0, 25)#10)
+        plt.xlim(0, 25)  # 10)
         plt.xticks(fontsize=14)
         plt.yticks(fontsize=14)
         plt.grid(True)
@@ -241,51 +249,67 @@ for si in conditions:
 
     t_plot = time_ref
     x_plot = np.arange(0, N)
-    aspect = 6#15
+    aspect = 6  # 15
     extent = (x_plot.min(), x_plot.max(), t_plot.min(), t_plot.max())
 
-    color_norm = Normalize(vmin=min(test_field.min(), estimated_field.min()),
-                           vmax=max(test_field.max(), estimated_field.max()))
+    color_norm = Normalize(
+        vmin=min(test_field.min(), estimated_field.min()),
+        vmax=max(test_field.max(), estimated_field.max()),
+    )
 
     plt.figure(0, figsize=(2.8, 4.8))
-    plt.imshow(np.flip(estimated_field, axis=0), extent=extent, aspect=aspect, cmap='seismic',
-               interpolation='bilinear',
-               norm=color_norm)
+    plt.imshow(
+        np.flip(estimated_field, axis=0),
+        extent=extent,
+        aspect=aspect,
+        cmap="seismic",
+        interpolation="bilinear",
+        norm=color_norm,
+    )
     plt.colorbar()
     plt.title("Predicted")
     plt.xlabel("Observable")
     plt.ylabel(r"$t/T^{\Lambda_1}$")
     plt.xticks([0, N - 1])
-    plt.ylim(0, 25)#10)
+    plt.ylim(0, 25)  # 10)
     plt.tight_layout()
     plt.savefig(os.path.join(save_path, f"approximated_2D_plot_{label}.png"))
     plt.close()
 
     plt.figure(1, figsize=(2.8, 4.8))
-    plt.imshow(np.flip(test_field, axis=0), extent=extent, aspect=aspect, cmap='seismic',
-               interpolation='bilinear',
-               norm=color_norm)
+    plt.imshow(
+        np.flip(test_field, axis=0),
+        extent=extent,
+        aspect=aspect,
+        cmap="seismic",
+        interpolation="bilinear",
+        norm=color_norm,
+    )
     plt.colorbar()
     plt.title("Ground Truth")
     plt.xlabel("Observable")
     plt.ylabel(r"$t/T^{\Lambda_1}$")
     plt.xticks([0, N - 1])
-    plt.ylim(0, 25)#10)
+    plt.ylim(0, 25)  # 10)
     plt.tight_layout()
     plt.savefig(os.path.join(save_path, f"exact_2D_plot_{label}.png"))
     plt.close()
 
     plt.figure(2, figsize=(2.8, 4.8))
-    plt.imshow(np.flip(nrse, axis=0), extent=extent, aspect=aspect,
-               interpolation='bilinear',
-               cmap='Oranges')
+    plt.imshow(
+        np.flip(nrse, axis=0),
+        extent=extent,
+        aspect=aspect,
+        interpolation="bilinear",
+        cmap="Oranges",
+    )
 
     plt.colorbar()
     plt.title("NRSE")
     plt.xlabel("Observable")
     plt.ylabel(r"$t/T^{\Lambda_1}$")
     plt.xticks([0, N - 1])
-    plt.ylim(0, 25)#10)
+    plt.ylim(0, 25)  # 10)
     plt.tight_layout()
     plt.savefig(os.path.join(save_path, f"nrse_2D_plot_{label}.png"))
     plt.close()
@@ -295,48 +319,63 @@ for si in conditions:
 
     fig, (ax1, ax2) = plt.subplots(ncols=2)
 
-    ax1.imshow(np.flip(estimated_field, axis=0), extent=extent, aspect=aspect, cmap='seismic',
-               interpolation='bilinear',
-               norm=color_norm)
+    ax1.imshow(
+        np.flip(estimated_field, axis=0),
+        extent=extent,
+        aspect=aspect,
+        cmap="seismic",
+        interpolation="bilinear",
+        norm=color_norm,
+    )
 
     ax1.set_title("Predicted", fontsize=10.5)
     ax1.set_xlabel("Observable")
     ax1.set_ylabel(r"$t/T^{\Lambda_1}$")
     ax1.set_xticks([0, 39])
-    ax1.set(ylim=(0, 25))#10))
+    ax1.set(ylim=(0, 25))  # 10))
 
-    values2 = ax2.imshow(np.flip(test_field, axis=0), extent=extent, aspect=aspect, cmap='seismic',
-                         interpolation='bilinear',
-                         norm=color_norm)
+    values2 = ax2.imshow(
+        np.flip(test_field, axis=0),
+        extent=extent,
+        aspect=aspect,
+        cmap="seismic",
+        interpolation="bilinear",
+        norm=color_norm,
+    )
 
     ax2.set_title("Ground Truth", fontsize=10.5)
     ax2.set_xlabel("Observable")
     ax2.set_xticks([0, 39])
     ax2.set_yticks([])
-    ax2.set(ylim=(0, 25))#10))
+    ax2.set(ylim=(0, 25))  # 10))
 
     cbar1 = fig.colorbar(values2, ax=ax2)
-    fig.subplots_adjust(wspace=-.6, bottom=.1, left=0.2, right=.7)
+    fig.subplots_adjust(wspace=-0.6, bottom=0.1, left=0.2, right=0.7)
 
     for t in cbar1.ax.get_yticklabels():
         t.set_fontsize(9.5)
 
-    plt.savefig(os.path.join(save_path, f"comparison_exact_predicted_2D_plot_{label}.png"))
+    plt.savefig(
+        os.path.join(save_path, f"comparison_exact_predicted_2D_plot_{label}.png")
+    )
     plt.close()
 
     fig1, ax3 = plt.subplots()
-    values3 = ax3.imshow(np.flip(nrse, axis=0), extent=extent, aspect=aspect,
-                         interpolation='bilinear',
-                         cmap="Oranges"
-                         )
+    values3 = ax3.imshow(
+        np.flip(nrse, axis=0),
+        extent=extent,
+        aspect=aspect,
+        interpolation="bilinear",
+        cmap="Oranges",
+    )
     ax3.set_title("NRSE", fontsize=10.5)
     ax3.set_xlabel("Observable")
     ax3.set_xticks([0, 39])
     ax3.set_yticks([])
-    ax3.set(ylim=(0, 25))#10))
+    ax3.set(ylim=(0, 25))  # 10))
 
     cbar2 = fig.colorbar(values3, ax=ax3)
-    fig1.subplots_adjust(wspace=-.6, right=0.5, hspace=0)
+    fig1.subplots_adjust(wspace=-0.6, right=0.5, hspace=0)
 
     for t in cbar2.ax.get_yticklabels():
         t.set_fontsize(9.5)
@@ -362,11 +401,13 @@ key_max = max(vpt_list, key=lambda x: vpt_list[x])
 
 print(f"The index of the best result is: {key_max}")
 
-lines = [f"Mean VPT for F={F}: {mean_value}\n",
-         f"Minimum VPT for F={F}: {min_value}\n",
-         f"Maximum VPT for F={F}: {max_value}\n",
-         f"Standard deviation VPT for F={F}: {std_value}\n",
-         f"The index of the best result is: {key_max}\n"]
+lines = [
+    f"Mean VPT for F={F}: {mean_value}\n",
+    f"Minimum VPT for F={F}: {min_value}\n",
+    f"Maximum VPT for F={F}: {max_value}\n",
+    f"Standard deviation VPT for F={F}: {std_value}\n",
+    f"The index of the best result is: {key_max}\n",
+]
 
 with open(os.path.join(save_path, f"output_F_{F}.log"), "w+") as fp:
     fp.writelines(lines)

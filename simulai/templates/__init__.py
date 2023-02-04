@@ -14,14 +14,15 @@
 
 from simulai import engine
 
-from ._templates import (ReservoirComputing, NetworkInstanceGen,
-                         mlp_autoencoder_auto, cnn_autoencoder_auto, autoencoder_auto)
+from ._templates import (NetworkInstanceGen, ReservoirComputing,
+                         autoencoder_auto, cnn_autoencoder_auto,
+                         mlp_autoencoder_auto)
 
 if engine == "pytorch":
-    from ._pytorch_network import (NetworkTemplate, ConvNetworkTemplate, HyperTrainTemplate,
-                                   as_tensor, as_array, guarantee_device, channels_dim)
+    from ._pytorch_network import (ConvNetworkTemplate, HyperTrainTemplate,
+                                   NetworkTemplate, as_array, as_tensor,
+                                   channels_dim, guarantee_device)
 elif engine == "numpy":
     pass
 else:
     pass
-

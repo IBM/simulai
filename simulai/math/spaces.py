@@ -13,18 +13,18 @@
 #     limitations under the License.
 
 import numpy as np
-from scipy import interpolate
 import sklearn.gaussian_process as gp
+from scipy import interpolate
+
 
 class GaussianRandomFields:
-
-    def __init__(self, x_interval=(0, 1), kernel='RBF',
-                       length_scale=1, N=None, interp='cubic'):
-
+    def __init__(
+        self, x_interval=(0, 1), kernel="RBF", length_scale=1, N=None, interp="cubic"
+    ):
 
         """
         Initialize a Gaussian process object.
-        
+
         Parameters
         ----------
         x_interval: tuple, optional (default=(0, 1))
@@ -37,7 +37,7 @@ class GaussianRandomFields:
             The number of points to sample from the independent variable `x`. If not provided, the number of points will be determined based on the `interp` parameter.
         interp: str, optional (default='cubic')
             The type of interpolation to use when generating points for the independent variable `x`. Must be a string representing a valid interpolation method.
-            
+
         Attributes
         ----------
         x_interval: tuple
@@ -57,7 +57,7 @@ class GaussianRandomFields:
         space: ndarray, shape (N, N)
             The Cholesky decomposition of the covariance matrix.
         """
-        
+
         self.x_interval = x_interval
         self.length_scale = length_scale
         self.N = N
@@ -67,14 +67,14 @@ class GaussianRandomFields:
         self.x = np.linspace(*self.x_interval, self.N)[:, None]
 
         kernels_function = getattr(gp.kernels, kernel, None)
-        assert kernels_function is not None,\
-            f"The kernel {kernel} is not in sklearn.gaussian_process.kernels"
+        assert (
+            kernels_function is not None
+        ), f"The kernel {kernel} is not in sklearn.gaussian_process.kernels"
 
         kernels = kernels_function(length_scale=self.length_scale)
         self.kernels = kernels(self.x)
 
-        self.space = np.linalg.cholesky(self.kernels + self.tol*np.eye(self.N))
-
+        self.space = np.linalg.cholesky(self.kernels + self.tol * np.eye(self.N))
 
     def random_u(self, n_features=None):
         """Generate random latent features using NumPy.
@@ -92,7 +92,6 @@ class GaussianRandomFields:
         u_ = np.random.randn(self.N, n_features)
         return np.dot(self.space, u_).T
 
-
     def generate_u(self, features, sensors):
         """Generate latent features using NumPy and scipy.interpolate.
 
@@ -108,10 +107,11 @@ class GaussianRandomFields:
         u : ndarray, shape (n_features, N)
             Array of latent features.
         """
-        values = map(lambda y: interpolate.interp1d(
-                               np.ravel(self.x), y, kind=self.interp,
-                             copy=False, assume_sorted=True
-                             )(sensors)[:, None], features)
-
+        values = map(
+            lambda y: interpolate.interp1d(
+                np.ravel(self.x), y, kind=self.interp, copy=False, assume_sorted=True
+            )(sensors)[:, None],
+            features,
+        )
 
         return np.hstack(list(values))

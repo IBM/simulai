@@ -19,10 +19,17 @@ from typing import Optional
 import numpy as np
 from scipy.linalg import solve as solve
 
-class ELM:
 
-    def __init__(self, n_i:int=None, h:int=None, n_o:int=None,
-                       activation='tanh', form:str='primal', solver:str='lstsq') -> None:
+class ELM:
+    def __init__(
+        self,
+        n_i: int = None,
+        h: int = None,
+        n_o: int = None,
+        activation="tanh",
+        form: str = "primal",
+        solver: str = "lstsq",
+    ) -> None:
 
         """Extreme Learning Machine
 
@@ -57,19 +64,19 @@ class ELM:
         self.L_operator = None
         self.R_matrix = None
 
-        self._matrix = getattr(self, '_' + self.form + '_matrix')
-        self._right_side = getattr(self, '_' + self.form + '_right_side')
+        self._matrix = getattr(self, "_" + self.form + "_matrix")
+        self._right_side = getattr(self, "_" + self.form + "_right_side")
 
         if self.activation in dir(np):
             self.activation_func = getattr(np, self.activation)
-        elif '_' + self.activation in dir(self):
-            self.activation_func = getattr(self, '_' + self.activation)
+        elif "_" + self.activation in dir(self):
+            self.activation_func = getattr(self, "_" + self.activation)
         else:
             raise Exception(f"It was not possible to find the actvation {activation}.")
 
-    def _sigmoid(self, input_data:np.ndarray = None) -> np.ndarray:
+    def _sigmoid(self, input_data: np.ndarray = None) -> np.ndarray:
 
-        return 1/(1 + np.exp(-input_data))
+        return 1 / (1 + np.exp(-input_data))
 
     def _is_symmetric(self, matrix: np.ndarray = None) -> bool:
 
@@ -83,9 +90,9 @@ class ELM:
 
         return np.array_equal(matrix, matrix.T)
 
-    def f_h(self, input_data:np.ndarray=None) -> np.ndarray:
+    def f_h(self, input_data: np.ndarray = None) -> np.ndarray:
 
-        """ Evaluating hidden state
+        """Evaluating hidden state
         :param input_data: dataset for the input data
         :type input_data: np.ndarray
         :return: Hidden state
@@ -94,7 +101,7 @@ class ELM:
 
         return self.activation_func(input_data @ self.W_i.T + self.b)
 
-    def _primal_matrix(self, H:np.ndarray=None) -> np.ndarray:
+    def _primal_matrix(self, H: np.ndarray = None) -> np.ndarray:
 
         """Primal version of the linear system matrix
         :param H: hidden state matrix
@@ -105,18 +112,20 @@ class ELM:
 
         return H.T @ H
 
-    def _dual_matrix(self, H:np.ndarray=None) -> np.ndarray:
+    def _dual_matrix(self, H: np.ndarray = None) -> np.ndarray:
 
         """Dual version of the linear system matrix
-       :param H: hidden state matrix
-       :type H: np.ndarray
-       :return: dual matrix
-       :rtype: np.ndarray
-       """
+        :param H: hidden state matrix
+        :type H: np.ndarray
+        :return: dual matrix
+        :rtype: np.ndarray
+        """
 
         return H @ H.T
 
-    def _primal_right_side(self, H:np.ndarray=None, target_data:np.ndarray=None) -> np.ndarray:
+    def _primal_right_side(
+        self, H: np.ndarray = None, target_data: np.ndarray = None
+    ) -> np.ndarray:
 
         """Primal version of the right-hand side
         :param H: hidden state matrix
@@ -129,7 +138,9 @@ class ELM:
 
         return H.T @ target_data
 
-    def _dual_right_side(self, H:Optional[np.ndarray]=None, target_data:np.ndarray = None) -> np.ndarray:
+    def _dual_right_side(
+        self, H: Optional[np.ndarray] = None, target_data: np.ndarray = None
+    ) -> np.ndarray:
 
         """Primal version of the right-hand side
         :param target_data: target dataset
@@ -140,9 +151,14 @@ class ELM:
 
         return target_data
 
-    def fit(self, input_data:np.ndarray=None, target_data:np.ndarray=None, lambd:float=0) -> None:
+    def fit(
+        self,
+        input_data: np.ndarray = None,
+        target_data: np.ndarray = None,
+        lambd: float = 0,
+    ) -> None:
 
-        """ Fitting the ELM
+        """Fitting the ELM
         :param input_data: dataset for the input data
         :type input_data: np.ndarray
         :param target_data: dataset for the target data
@@ -155,12 +171,12 @@ class ELM:
         H = self.f_h(input_data=input_data)
         self.n_samples = input_data.shape[0]
 
-        if self.form == 'primal':
+        if self.form == "primal":
             sys_dim = self.h
         else:
             sys_dim = self.n_samples
 
-        if self.solver != 'pinv':
+        if self.solver != "pinv":
 
             if self.L_operator is None and self.R_matrix is None:
 
@@ -172,9 +188,15 @@ class ELM:
 
             if self._is_symmetric(self.L_operator) and self.solver is None:
                 print("L_operator is symmetric.")
-                solution = solve(self.L_operator + lambd*np.eye(sys_dim), self.R_matrix, assume_a="sym")
+                solution = solve(
+                    self.L_operator + lambd * np.eye(sys_dim),
+                    self.R_matrix,
+                    assume_a="sym",
+                )
             else:
-                solution = np.linalg.lstsq(self.L_operator + lambd*np.eye(sys_dim), self.R_matrix, rcond=None)[0]
+                solution = np.linalg.lstsq(
+                    self.L_operator + lambd * np.eye(sys_dim), self.R_matrix, rcond=None
+                )[0]
         else:
 
             H_pinv = np.linalg.pinv(H)
@@ -186,9 +208,9 @@ class ELM:
 
         self.W_o = solution
 
-    def eval(self, input_data:np.ndarray=None) -> np.ndarray:
+    def eval(self, input_data: np.ndarray = None) -> np.ndarray:
 
-        """ Evaluating using ELM
+        """Evaluating using ELM
         :param input_data: dataset for the input data
         :type input_data: np.ndarray
         :return: the output evaluation
@@ -199,21 +221,15 @@ class ELM:
 
         return H @ self.W_o
 
-    def save(self, name:str=None, path:str=None) -> None:
+    def save(self, name: str = None, path: str = None) -> None:
 
         """Complete saving
-       :param path: path to the saving directory
-       :type path: str
-       :param name: name for the model
-       :type name: str
-       :return: nothing
-       """
+        :param path: path to the saving directory
+        :type path: str
+        :param name: name for the model
+        :type name: str
+        :return: nothing
+        """
 
-        with open(os.path.join(path, name + '.pkl'), 'wb') as fp:
+        with open(os.path.join(path, name + ".pkl"), "wb") as fp:
             pickle.dump(self, fp, protocol=4)
-
-
-
-
-
-

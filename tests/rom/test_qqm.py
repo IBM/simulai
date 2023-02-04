@@ -14,22 +14,31 @@
 
 
 from unittest import TestCase
+
 import numpy as np
 
 from simulai.file import load_pkl
 from simulai.rom import QQM
 
-class TestQQM(TestCase):
 
+class TestQQM(TestCase):
     def setUp(self) -> None:
 
         self.t = np.linspace(0, 2 * np.pi, 10000)
 
         # input: s = [t, sin(t), cos(t)]
-        self.s = np.hstack([self.t[:, None], np.sin(self.t)[:, None], np.cos(self.t)[:, None]])
+        self.s = np.hstack(
+            [self.t[:, None], np.sin(self.t)[:, None], np.cos(self.t)[:, None]]
+        )
 
         # output: e = [1, sin(2*t), cos(2*t)]
-        self.e = np.hstack([np.ones(self.t.shape)[:, None], np.sin(2 * self.t)[:, None], np.cos(2 * self.t)[:, None]])
+        self.e = np.hstack(
+            [
+                np.ones(self.t.shape)[:, None],
+                np.sin(2 * self.t)[:, None],
+                np.cos(2 * self.t)[:, None],
+            ]
+        )
 
     def test_qqm_sparsa(self):
 
@@ -46,7 +55,14 @@ class TestQQM(TestCase):
     def test_qqm_sparsa_hard_limiting(self):
 
         # Using the default solver (SpaRSA) with sparsity hard-limiting
-        qqm = QQM(n_inputs=3, lambd=1e-3, sparsity_tol=1e-6, epsilon=1e-2, alpha_0=100, use_mean=True)
+        qqm = QQM(
+            n_inputs=3,
+            lambd=1e-3,
+            sparsity_tol=1e-6,
+            epsilon=1e-2,
+            alpha_0=100,
+            use_mean=True,
+        )
 
         qqm.fit(input_data=self.s, target_data=self.e)
 
@@ -69,8 +85,8 @@ class TestQQM(TestCase):
         # Using the Moore-Penrose generalized inverse
         qqm.fit(input_data=self.s, target_data=self.e, pinv=True)
 
-        qqm.save(save_path='/tmp', model_name='qqm')
+        qqm.save(save_path="/tmp", model_name="qqm")
 
-        qqm_reload = load_pkl('/tmp/qqm.pkl')
+        qqm_reload = load_pkl("/tmp/qqm.pkl")
 
         assert isinstance(qqm_reload.V_bar, np.ndarray)

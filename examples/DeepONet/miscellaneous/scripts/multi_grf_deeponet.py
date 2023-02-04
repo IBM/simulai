@@ -13,45 +13,50 @@
 #     limitations under the License.
 
 import os.path
-
-import numpy as np
-import matplotlib.pyplot as plt
 from argparse import ArgumentParser
 
+import matplotlib.pyplot as plt
+import numpy as np
+
 from simulai.math.integration import RK4
-from simulai.regression import DenseNetwork
-from simulai.models import DeepONet
-from simulai.metrics import L2Norm
 from simulai.math.spaces import GaussianRandomFields
+from simulai.metrics import L2Norm
+from simulai.models import DeepONet
+from simulai.regression import DenseNetwork
+
 
 # Nonlinear ODE system used for generating test data
 class PendulumODE:
-
     def __init__(self):
-        self.k = .25
+        self.k = 0.25
+
     def __call__(self, data):
 
         s1 = data[:, 0]
         s2 = data[:, 1]
         u = data[:, 2]
 
-        return [s2, -self.k*np.sin(s1) + u]
+        return [s2, -self.k * np.sin(s1) + u]
+
 
 # Some forcing terms used
 def sinx_forcing(x):
-    return np.sin(np.pi*x)
+    return np.sin(np.pi * x)
+
 
 def sin2x_forcing(x):
-    return np.sin(2*np.pi*x)
+    return np.sin(2 * np.pi * x)
+
 
 def x_forcing(x):
     return x
+
 
 def solver(x_interval=None, N=None, x=None, dx=None, u=x_forcing):
 
     if x is None and (N is not None and x_interval is not None):
         x = np.linspace(0, 1, N)
-        dx = (x_interval[1] - x_interval[0])/N
+        dx = (x_interval[1] - x_interval[0]) / N
 
     elif isinstance(x, np.ndarray):
         assert dx, "dx must be provided."
@@ -68,30 +73,32 @@ def solver(x_interval=None, N=None, x=None, dx=None, u=x_forcing):
         assert u.shape[0] == x.shape[0]
         forcings = u
     else:
-        raise Exception(f'It is expected a callable or np.ndarray, but received {u}')
+        raise Exception(f"It is expected a callable or np.ndarray, but received {u}")
 
     nonlinear_ODE = PendulumODE()
     integrator = RK4(right_operator=nonlinear_ODE)
-    output_array = integrator(initial_state=initial_state, epochs=N, dt=dx,
-                              forcings=forcings)
+    output_array = integrator(
+        initial_state=initial_state, epochs=N, dt=dx, forcings=forcings
+    )
 
     return np.vstack([initial_state, output_array[:-1]]), forcings, x[:, None]
 
-class ExecDeepONet:
 
+class ExecDeepONet:
     def __init__(self):
 
         self.enable_plots = False
-        self.grf_data_filename = 'grf_data.npz'
-        self.test_grf_data_filename = 'test_grf_data.npz'
-        self.estimated_grf_data_filename = 'estimated_grf_data.npy'
+        self.grf_data_filename = "grf_data.npz"
+        self.test_grf_data_filename = "test_grf_data.npz"
+        self.estimated_grf_data_filename = "estimated_grf_data.npy"
 
     def generate_GRF_data(self, x_interval, N_tot, n_features):
 
         points = np.linspace(*x_interval, N_tot)  # Positions for sampling u data
 
-        generator = GaussianRandomFields(x_interval=(0, 1), kernel='RBF',
-                                         length_scale=.2, N=N_tot, interp='cubic')
+        generator = GaussianRandomFields(
+            x_interval=(0, 1), kernel="RBF", length_scale=0.2, N=N_tot, interp="cubic"
+        )
 
         features = generator.random_u(n_features=n_features)
 
@@ -109,143 +116,17 @@ class ExecDeepONet:
 
         return outputs_data, u_exec, points[:, None]
 
-    def test_deeponet_scalar_grf_with_decoder(self, N_tot=int(1e3), n_features=500,
-                                              m=100, N_samples=20, N_epochs=10000,
-                                              branch_width=200, trunk_width=200,
-                                              path=None):
-
-        x_interval = (0, 1)
-
-        sensors_indices = np.arange(0, N_tot, int(N_tot/m))
-
-        # Generating or restoring data
-        data_file = os.path.join(path, self.grf_data_filename)
-
-        if os.path.isfile(data_file):
-            content = np.load(data_file)
-            data = content['data']
-            u = content['u']
-            x = content['x']
-        else:
-            data, u, x = self.generate_GRF_data(x_interval, N_tot, n_features)
-            np.savez(data_file, data=data, u=u, x=x)
-
-        n_features = data.shape[-1]
-        n_features_train = int(0.9*n_features)
-        n_features_test = n_features - n_features_train
-
-        timesteps_indices = np.random.choice(N_tot, N_samples, replace=False)
-
-        if not 0 in timesteps_indices:
-            timesteps_indices = np.hstack([timesteps_indices, 0])
-            N_samples += 1
-
-        # Training data
-        u_train = u[..., :n_features_train]
-        data_train = data[..., :n_features_train]
-        u_sensors = u_train[sensors_indices].T
-        U_sensors = np.tile(u_sensors, (N_samples, 1))
-
-        x_samples = x[timesteps_indices]
-        V = np.squeeze(np.vstack([item.T for item in np.split(data_train[timesteps_indices], N_samples, axis=0)]))
-        X = np.tile(x_samples, (1, n_features_train)).flatten()[:, None]
-
-        # Testing data
-        u_test = u[:, n_features_train:]
-        data_test = data[:, :, n_features_train:]
-        x_test = x
-
-        test_data_file = os.path.join(path, self.test_grf_data_filename)
-        if not os.path.isfile(test_data_file):
-            np.savez(test_data_file, data=data_test, u=u_test, x=x_test)
-
-        p = 50
-
-        trunk_architecture = 5*[branch_width]
-
-        trunk_setup = {
-            'architecture': trunk_architecture,
-            'dropouts_rates_list': [0, 0, 0],
-            'activation_function': 'relu',
-            'input_dim': 1,
-            'output_dim': p
-        }
-
-        branches_architecture = 4*[trunk_width]
-
-        branches_setup = {
-            'architecture': branches_architecture,
-            'dropouts_rates_list': [0, 0],
-            'activation_function': 'relu',
-            'input_dim': m,
-            'output_dim': p
-        }
-
-        decoder_architecture = 1 * [50]
-
-        decoder_setup = {
-            'architecture': decoder_architecture,
-            'dropouts_rates_list': [0, 0],
-            'activation_function': 'linear',
-            'input_dim': 1,
-            'output_dim': 2
-        }
-
-        trunk_net = DenseNetwork(architecture=trunk_architecture,
-                                 config=trunk_setup,
-                                 concat_output_tensor=True,
-                                 concat_input_tensor=True)
-
-        branch_net = DenseNetwork(architecture=branches_architecture,
-                                  config=branches_setup,
-                                  concat_output_tensor=True,
-                                  concat_input_tensor=True)
-
-        decoder_net = DenseNetwork(architecture=decoder_architecture,
-                                  config=decoder_setup,
-                                  concat_output_tensor=True,
-                                  concat_input_tensor=True)
-
-        optimizers_config = {"Adam": {"maxiter": N_epochs}}
-
-        # DeepONet is a wrapper
-        operator = DeepONet(trunk_network=trunk_net,
-                                branch_network=branch_net,
-                                decoder_network=decoder_net,
-                                optimizers_config=optimizers_config,
-                                var_dim=2,
-                                model_id='nonlinear_ode')
-
-        operator.fit(X, U_sensors, V, shuffle=False)
-
-        V_evaluated_list = list()
-        for feature in range(n_features_test):
-
-            u_sensors = u_test[sensors_indices, feature:feature+1].T
-            U_sensors_test = np.tile(u_sensors, (x_test.shape[0], 1))
-
-            x_samples = x_test
-            V_test = data_test[..., feature]
-            X_test = x_samples
-
-            V_evaluated = operator.eval(trunk_data=X_test, branch_data=U_sensors_test)
-            V_evaluated_list.append(V_evaluated)
-
-            l2_norm = L2Norm()
-            error = l2_norm(data=V_evaluated, reference_data=V_test, relative_norm=True)
-            print(f'Evaluation error {100*error} %')
-
-        estimated_data_file = os.path.join(path, self.estimated_grf_data_filename)
-
-        V_evaluated = np.stack(V_evaluated_list, axis=2)
-        np.save(estimated_data_file, V_evaluated)
-
-        print("Concluded.")
-
-    def test_deeponet_scalar_grf_without_decoder(self, N_tot=int(1e3), n_features=500,
-                                                 m=100, N_samples=20, N_epochs=10000,
-                                                 branch_width=200, trunk_width=200,
-                                                 path=None):
+    def test_deeponet_scalar_grf_with_decoder(
+        self,
+        N_tot=int(1e3),
+        n_features=500,
+        m=100,
+        N_samples=20,
+        N_epochs=10000,
+        branch_width=200,
+        trunk_width=200,
+        path=None,
+    ):
 
         x_interval = (0, 1)
 
@@ -256,9 +137,9 @@ class ExecDeepONet:
 
         if os.path.isfile(data_file):
             content = np.load(data_file)
-            data = content['data']
-            u = content['u']
-            x = content['x']
+            data = content["data"]
+            u = content["u"]
+            x = content["x"]
         else:
             data, u, x = self.generate_GRF_data(x_interval, N_tot, n_features)
             np.savez(data_file, data=data, u=u, x=x)
@@ -280,7 +161,173 @@ class ExecDeepONet:
         U_sensors = np.tile(u_sensors, (N_samples, 1))
 
         x_samples = x[timesteps_indices]
-        V = np.squeeze(np.vstack([item.T for item in np.split(data_train[timesteps_indices], N_samples, axis=0)]))
+        V = np.squeeze(
+            np.vstack(
+                [
+                    item.T
+                    for item in np.split(
+                        data_train[timesteps_indices], N_samples, axis=0
+                    )
+                ]
+            )
+        )
+        X = np.tile(x_samples, (1, n_features_train)).flatten()[:, None]
+
+        # Testing data
+        u_test = u[:, n_features_train:]
+        data_test = data[:, :, n_features_train:]
+        x_test = x
+
+        test_data_file = os.path.join(path, self.test_grf_data_filename)
+        if not os.path.isfile(test_data_file):
+            np.savez(test_data_file, data=data_test, u=u_test, x=x_test)
+
+        p = 50
+
+        trunk_architecture = 5 * [branch_width]
+
+        trunk_setup = {
+            "architecture": trunk_architecture,
+            "dropouts_rates_list": [0, 0, 0],
+            "activation_function": "relu",
+            "input_dim": 1,
+            "output_dim": p,
+        }
+
+        branches_architecture = 4 * [trunk_width]
+
+        branches_setup = {
+            "architecture": branches_architecture,
+            "dropouts_rates_list": [0, 0],
+            "activation_function": "relu",
+            "input_dim": m,
+            "output_dim": p,
+        }
+
+        decoder_architecture = 1 * [50]
+
+        decoder_setup = {
+            "architecture": decoder_architecture,
+            "dropouts_rates_list": [0, 0],
+            "activation_function": "linear",
+            "input_dim": 1,
+            "output_dim": 2,
+        }
+
+        trunk_net = DenseNetwork(
+            architecture=trunk_architecture,
+            config=trunk_setup,
+            concat_output_tensor=True,
+            concat_input_tensor=True,
+        )
+
+        branch_net = DenseNetwork(
+            architecture=branches_architecture,
+            config=branches_setup,
+            concat_output_tensor=True,
+            concat_input_tensor=True,
+        )
+
+        decoder_net = DenseNetwork(
+            architecture=decoder_architecture,
+            config=decoder_setup,
+            concat_output_tensor=True,
+            concat_input_tensor=True,
+        )
+
+        optimizers_config = {"Adam": {"maxiter": N_epochs}}
+
+        # DeepONet is a wrapper
+        operator = DeepONet(
+            trunk_network=trunk_net,
+            branch_network=branch_net,
+            decoder_network=decoder_net,
+            optimizers_config=optimizers_config,
+            var_dim=2,
+            model_id="nonlinear_ode",
+        )
+
+        operator.fit(X, U_sensors, V, shuffle=False)
+
+        V_evaluated_list = list()
+        for feature in range(n_features_test):
+
+            u_sensors = u_test[sensors_indices, feature : feature + 1].T
+            U_sensors_test = np.tile(u_sensors, (x_test.shape[0], 1))
+
+            x_samples = x_test
+            V_test = data_test[..., feature]
+            X_test = x_samples
+
+            V_evaluated = operator.eval(trunk_data=X_test, branch_data=U_sensors_test)
+            V_evaluated_list.append(V_evaluated)
+
+            l2_norm = L2Norm()
+            error = l2_norm(data=V_evaluated, reference_data=V_test, relative_norm=True)
+            print(f"Evaluation error {100*error} %")
+
+        estimated_data_file = os.path.join(path, self.estimated_grf_data_filename)
+
+        V_evaluated = np.stack(V_evaluated_list, axis=2)
+        np.save(estimated_data_file, V_evaluated)
+
+        print("Concluded.")
+
+    def test_deeponet_scalar_grf_without_decoder(
+        self,
+        N_tot=int(1e3),
+        n_features=500,
+        m=100,
+        N_samples=20,
+        N_epochs=10000,
+        branch_width=200,
+        trunk_width=200,
+        path=None,
+    ):
+
+        x_interval = (0, 1)
+
+        sensors_indices = np.arange(0, N_tot, int(N_tot / m))
+
+        # Generating or restoring data
+        data_file = os.path.join(path, self.grf_data_filename)
+
+        if os.path.isfile(data_file):
+            content = np.load(data_file)
+            data = content["data"]
+            u = content["u"]
+            x = content["x"]
+        else:
+            data, u, x = self.generate_GRF_data(x_interval, N_tot, n_features)
+            np.savez(data_file, data=data, u=u, x=x)
+
+        n_features = data.shape[-1]
+        n_features_train = int(0.9 * n_features)
+        n_features_test = n_features - n_features_train
+
+        timesteps_indices = np.random.choice(N_tot, N_samples, replace=False)
+
+        if not 0 in timesteps_indices:
+            timesteps_indices = np.hstack([timesteps_indices, 0])
+            N_samples += 1
+
+        # Training data
+        u_train = u[..., :n_features_train]
+        data_train = data[..., :n_features_train]
+        u_sensors = u_train[sensors_indices].T
+        U_sensors = np.tile(u_sensors, (N_samples, 1))
+
+        x_samples = x[timesteps_indices]
+        V = np.squeeze(
+            np.vstack(
+                [
+                    item.T
+                    for item in np.split(
+                        data_train[timesteps_indices], N_samples, axis=0
+                    )
+                ]
+            )
+        )
         X = np.tile(x_samples, (1, n_features_train)).flatten()[:, None]
 
         # Testing data
@@ -298,49 +345,53 @@ class ExecDeepONet:
         trunk_architecture = 5 * [branch_width]
 
         trunk_setup = {
-            'architecture': trunk_architecture,
-            'dropouts_rates_list': [0, 0, 0],
-            'activation_function': 'relu',
-            'input_dim': 1,
-            'output_dim': n_vars*p
+            "architecture": trunk_architecture,
+            "dropouts_rates_list": [0, 0, 0],
+            "activation_function": "relu",
+            "input_dim": 1,
+            "output_dim": n_vars * p,
         }
 
         branches_architecture = 4 * [trunk_width]
 
         branches_setup = {
-            'architecture': branches_architecture,
-            'dropouts_rates_list': [0, 0],
-            'activation_function': 'relu',
-            'input_dim': m,
-            'output_dim': n_vars*p
+            "architecture": branches_architecture,
+            "dropouts_rates_list": [0, 0],
+            "activation_function": "relu",
+            "input_dim": m,
+            "output_dim": n_vars * p,
         }
 
+        trunk_net = DenseNetwork(
+            architecture=trunk_architecture,
+            config=trunk_setup,
+            concat_output_tensor=True,
+            concat_input_tensor=True,
+        )
 
-        trunk_net = DenseNetwork(architecture=trunk_architecture,
-                                 config=trunk_setup,
-                                 concat_output_tensor=True,
-                                 concat_input_tensor=True)
-
-        branch_net = DenseNetwork(architecture=branches_architecture,
-                                  config=branches_setup,
-                                  concat_output_tensor=True,
-                                  concat_input_tensor=True)
-
+        branch_net = DenseNetwork(
+            architecture=branches_architecture,
+            config=branches_setup,
+            concat_output_tensor=True,
+            concat_input_tensor=True,
+        )
 
         optimizers_config = {"Adam": {"maxiter": N_epochs}}
 
         # DeepONet wrapper
-        operator = DeepONet(trunk_network=trunk_net,
-                                branch_network=branch_net,
-                                optimizers_config=optimizers_config,
-                                var_dim=n_vars,
-                                model_id='nonlinear_ode')
+        operator = DeepONet(
+            trunk_network=trunk_net,
+            branch_network=branch_net,
+            optimizers_config=optimizers_config,
+            var_dim=n_vars,
+            model_id="nonlinear_ode",
+        )
 
         operator.fit(X, U_sensors, V, shuffle=False)
 
         V_evaluated_list = list()
         for feature in range(n_features_test):
-            u_sensors = u_test[sensors_indices, feature:feature + 1].T
+            u_sensors = u_test[sensors_indices, feature : feature + 1].T
             U_sensors_test = np.tile(u_sensors, (x_test.shape[0], 1))
 
             x_samples = x_test
@@ -352,7 +403,7 @@ class ExecDeepONet:
 
             l2_norm = L2Norm()
             error = l2_norm(data=V_evaluated, reference_data=V_test, relative_norm=True)
-            print(f'Evaluation error {100 * error} %')
+            print(f"Evaluation error {100 * error} %")
 
         estimated_data_file = os.path.join(path, self.estimated_grf_data_filename)
 
@@ -367,8 +418,8 @@ class ExecDeepONet:
         estimated_data_file = os.path.join(path, self.estimated_grf_data_filename)
 
         content = np.load(test_data_file)
-        data_exact = content['data']
-        x = content['x']
+        data_exact = content["data"]
+        x = content["x"]
 
         data_estimated = np.load(estimated_data_file)
 
@@ -381,33 +432,34 @@ class ExecDeepONet:
 
             l2_norm = L2Norm()
             error = l2_norm(data=estimated, reference_data=exact, relative_norm=True)
-            print(f'Evaluation error {100 * error} %')
+            print(f"Evaluation error {100 * error} %")
 
-            print(f'Plotting forcing {feature + 1}')
+            print(f"Plotting forcing {feature + 1}")
 
             plt.plot(x, estimated, label="Approximated")
             plt.plot(x, exact, label="Exact")
             plt.grid(True)
-            plt.xlabel(r'$t$')
-            plt.ylabel(f'$u_{feature + 1}$')
+            plt.xlabel(r"$t$")
+            plt.ylabel(f"$u_{feature + 1}$")
             plt.title(f"Comparison for the forcing $u_{feature}$")
             plt.legend()
 
-            plt.savefig(os.path.join(path, f'feature_{feature + 1}.png'))
+            plt.savefig(os.path.join(path, f"feature_{feature + 1}.png"))
 
             plt.close()
+
 
 if __name__ == "__main__":
 
     parser = ArgumentParser(description="Reading input arguments")
 
-    parser.add_argument('--save_path', type=str)
-    parser.add_argument('--N_tot', type=int, default=1000)
-    parser.add_argument('--m', type=int, default=50)
-    parser.add_argument('--n_features', type=int, default=500)
-    parser.add_argument('--N_samples', type=int, default=20)
-    parser.add_argument('--N_epochs', type=int, default=2000)
-    parser.add_argument('--case', type=str, default='exec')
+    parser.add_argument("--save_path", type=str)
+    parser.add_argument("--N_tot", type=int, default=1000)
+    parser.add_argument("--m", type=int, default=50)
+    parser.add_argument("--n_features", type=int, default=500)
+    parser.add_argument("--N_samples", type=int, default=20)
+    parser.add_argument("--N_epochs", type=int, default=2000)
+    parser.add_argument("--case", type=str, default="exec")
 
     args = parser.parse_args()
 
@@ -421,16 +473,25 @@ if __name__ == "__main__":
 
     runner = ExecDeepONet()
 
-    if case =='exec':
-        runner.test_deeponet_scalar_grf_without_decoder(N_tot=N_tot, m=m, n_features=n_features,
-                                                        N_samples=N_samples, N_epochs=N_epochs,
-                                                        path=save_path)
-    elif case == 'exec_decoder':
-        runner.test_deeponet_scalar_grf_with_decoder(N_tot=N_tot, m=m, n_features=n_features,
-                                                     N_samples=N_samples, N_epochs=N_epochs,
-                                                     path=save_path)
+    if case == "exec":
+        runner.test_deeponet_scalar_grf_without_decoder(
+            N_tot=N_tot,
+            m=m,
+            n_features=n_features,
+            N_samples=N_samples,
+            N_epochs=N_epochs,
+            path=save_path,
+        )
+    elif case == "exec_decoder":
+        runner.test_deeponet_scalar_grf_with_decoder(
+            N_tot=N_tot,
+            m=m,
+            n_features=n_features,
+            N_samples=N_samples,
+            N_epochs=N_epochs,
+            path=save_path,
+        )
         runner.plot(path=save_path)
-    elif case == 'plot':
+    elif case == "plot":
 
         runner.plot(path=save_path)
-

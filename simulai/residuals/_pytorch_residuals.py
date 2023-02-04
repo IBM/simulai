@@ -12,27 +12,38 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import fsspec.asyn
-import torch
-import numpy as np
-import sympy
-from sympy.parsing.sympy_parser import parse_expr
-from sympy import sympify
-from torch.autograd import grad
-from torch.autograd.functional import jacobian
 import importlib
 from typing import List, Union
 
-from simulai.tokens import D
+import fsspec.asyn
+import numpy as np
+import sympy
+import torch
+from sympy import sympify
+from sympy.parsing.sympy_parser import parse_expr
+from torch.autograd import grad
+from torch.autograd.functional import jacobian
+
 from simulai.io import MakeTensor
+from simulai.tokens import D
+
 
 # Factory function for constructing the symbolic operator accordingly
 # the numerical engine used
-def SymbolicOperator(expressions: list = None, input_vars: list = None,
-                     output_vars: list = None, function: callable = None, gradient: callable = None,
-                     keys: str = None, inputs_key: str = None, processing:str='serial',
-                     device:str='cpu', engine: str = 'torch',
-                     auxiliary_expressions: list = None, constants:dict=None) -> object:
+def SymbolicOperator(
+    expressions: list = None,
+    input_vars: list = None,
+    output_vars: list = None,
+    function: callable = None,
+    gradient: callable = None,
+    keys: str = None,
+    inputs_key: str = None,
+    processing: str = "serial",
+    device: str = "cpu",
+    engine: str = "torch",
+    auxiliary_expressions: list = None,
+    constants: dict = None,
+) -> object:
     """
     Constructs a tensor operator using symbolic expressions using PyTorch or any other supported engine.
 
@@ -49,29 +60,32 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
         engine (str, optional): The symbolic computation engine to be used. Currently supported engines are 'torch' and 'numpy'. Defaults to 'torch'.
         auxiliary_expressions (list, optional): Additional expressions that are needed to evaluate the tensor operator. Defaults to None.
         constants (dict, optional): Constants that are required during the evaluation of the tensor operator. Defaults to None.
-    
+
     Returns:
         object: An instance of the SymbolicOperatorClass.
     """
-    class SymbolicOperatorClass(torch.nn.Module if engine == 'torch'
-                                else object):
+
+    class SymbolicOperatorClass(torch.nn.Module if engine == "torch" else object):
         """
         The SymbolicOperatorClass is a class that constructs tensor operators using symbolic expressions with PyTorch or other engine. It takes several inputs such as expressions, input_vars, output_vars, function, gradient, keys, inputs_key, constants, processing and device, and based on the specified engine and device, it implements forward pass. The class provides attributes such as function, output, f_expressions, g_expressions, input_names, and output_names and methods such as _forward_dict, _forward_tensor, gradient, _process_expression_serial.
         """
 
-        def __init__(self, expressions:List[Union[sympy.Expr, str]]=None,
-                           input_vars:List[Union[sympy.Symbol, str]]=None,
-                           output_vars:List[Union[sympy.Symbol, str]]=None,
-                           function:callable=None,
-                           gradient:callable=None,
-                           keys:str=None,
-                           inputs_key=None,
-                           constants:dict=None,
-                           processing: str = 'serial',
-                           device:str='cpu',
-                           engine:str='torch') -> None:
+        def __init__(
+            self,
+            expressions: List[Union[sympy.Expr, str]] = None,
+            input_vars: List[Union[sympy.Symbol, str]] = None,
+            output_vars: List[Union[sympy.Symbol, str]] = None,
+            function: callable = None,
+            gradient: callable = None,
+            keys: str = None,
+            inputs_key=None,
+            constants: dict = None,
+            processing: str = "serial",
+            device: str = "cpu",
+            engine: str = "torch",
+        ) -> None:
 
-            if engine == 'torch':
+            if engine == "torch":
                 super(SymbolicOperatorClass, self).__init__()
             else:
                 pass
@@ -80,34 +94,40 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
 
             self.constants = constants
             self.processing = processing
-            self.periodic_bc_protected_key = 'periodic'
+            self.periodic_bc_protected_key = "periodic"
 
-            self.protected_funcs = ['cos', 'sin', 'sqrt']
-            self.protected_operators = ['L', 'Div', 'Identity', 'Kronecker']
+            self.protected_funcs = ["cos", "sin", "sqrt"]
+            self.protected_operators = ["L", "Div", "Identity", "Kronecker"]
 
             self.protected_funcs_subs = self._construct_protected_functions()
             self.protected_operators_subs = self._construct_implict_operators()
 
             # Configuring the device to be used during the fitting process
-            if device == 'gpu':
+            if device == "gpu":
                 if not torch.cuda.is_available():
                     print("Warning: There is no GPU available, using CPU instead.")
-                    device = 'cpu'
+                    device = "cpu"
                 else:
                     device = "cuda"
                     print("Using GPU.")
-            elif device == 'cpu':
+            elif device == "cpu":
                 print("Using CPU.")
             else:
-                raise Exception(f"The device must be cpu or gpu, but received: {device}")
+                raise Exception(
+                    f"The device must be cpu or gpu, but received: {device}"
+                )
 
             self.device = device
 
-            self.expressions = [self._parse_expression(expr=expr)  for expr in expressions]
+            self.expressions = [
+                self._parse_expression(expr=expr) for expr in expressions
+            ]
 
             if isinstance(auxiliary_expressions, dict):
-                self.auxiliary_expressions = {key: self._parse_expression(expr=expr)
-                                              for key, expr in auxiliary_expressions.items()}
+                self.auxiliary_expressions = {
+                    key: self._parse_expression(expr=expr)
+                    for key, expr in auxiliary_expressions.items()
+                }
             else:
                 self.auxiliary_expressions = auxiliary_expressions
 
@@ -135,14 +155,19 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
 
             self.feed_vars = None
 
-
             for name in self.output_names:
                 setattr(self, name, None)
 
             # Defining functions for returning each variable of the regression
             # function
             for index, name in enumerate(self.output_names):
-                setattr(self, name, lambda data: self.function.forward(input_data=data)[..., index][..., None])
+                setattr(
+                    self,
+                    name,
+                    lambda data: self.function.forward(input_data=data)[..., index][
+                        ..., None
+                    ],
+                )
 
             # If no external gradient is provided, use the core gradient evaluator
             if gradient is None:
@@ -166,7 +191,7 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
                     self.g_expressions[key] = g_expr
 
             # Method for executing the expressions evaluation
-            if self.processing == 'serial':
+            if self.processing == "serial":
                 self.process_expression = self._process_expression_serial
             else:
                 raise Exception(f"Processing case {self.processing} not supported.")
@@ -174,34 +199,37 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
         def _construct_protected_functions(self):
             """
             This function creates a dictionary of protected functions from the engine object attribute.
-            
+
             Args:
                 self (object): The instance of the class that calls this function.
-            
+
             Returns:
                 dict: A dictionary of function names and their corresponding function objects.
             """
-            protected_funcs = {func: getattr(self.engine, func) for func in self.protected_funcs}
+            protected_funcs = {
+                func: getattr(self.engine, func) for func in self.protected_funcs
+            }
 
             return protected_funcs
-
 
         def _construct_implict_operators(self):
             """
             This function creates a dictionary of protected operators from the operators engine module.
-            
+
             Args:
                 self (object): The instance of the class that calls this function.
-            
+
             Returns:
                 dict: A dictionary of operator names and their corresponding function objects.
             """
-            operators_engine = importlib.import_module('simulai.tokens')
+            operators_engine = importlib.import_module("simulai.tokens")
 
-            protected_operators = {func: getattr(operators_engine, func) for func in self.protected_operators}
+            protected_operators = {
+                func: getattr(operators_engine, func)
+                for func in self.protected_operators
+            }
 
             return protected_operators
-
 
         def _parse_expression(self, expr=Union[sympy.Expr, str]) -> sympy.Expr:
             """
@@ -224,7 +252,9 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
             """
             if isinstance(expr, str):
                 try:
-                    expr_ = sympify(expr, locals=self.protected_operators_subs, evaluate=False)
+                    expr_ = sympify(
+                        expr, locals=self.protected_operators_subs, evaluate=False
+                    )
 
                     if self.constants is not None:
                         expr_ = expr_.subs(self.constants)
@@ -262,8 +292,7 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
             else:
                 return var
 
-
-        def _forward_tensor(self, input_data:torch.Tensor=None) -> torch.Tensor:
+        def _forward_tensor(self, input_data: torch.Tensor = None) -> torch.Tensor:
             """
             Forward the input tensor through the function.
 
@@ -279,7 +308,7 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
             """
             return self.function.forward(input_data=input_data)
 
-        def _forward_dict(self, input_data:dict=None) -> torch.Tensor:
+        def _forward_dict(self, input_data: dict = None) -> torch.Tensor:
             """
             Forward the input dictionary through the function.
 
@@ -295,7 +324,9 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
             """
             return self.function.forward(**input_data)
 
-        def _process_expression_serial(self, feed_vars:dict=None) -> List[torch.Tensor]:
+        def _process_expression_serial(
+            self, feed_vars: dict = None
+        ) -> List[torch.Tensor]:
             """
             Process the expression list serially using the given feed variables.
 
@@ -311,17 +342,19 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
             """
             return [f(**feed_vars).to(self.device) for f in self.f_expressions]
 
-        def _process_expression_individual(self, index:int=None, feed_vars:dict=None) -> torch.Tensor:
+        def _process_expression_individual(
+            self, index: int = None, feed_vars: dict = None
+        ) -> torch.Tensor:
             """
             Evaluates a single expression specified by index from the f_expressions list with given feed variables.
-            
+
             Parameters
             ----------
             index : int, optional
                 Index of the expression to be evaluated, by default None
             feed_vars : dict, optional
                 Dictionary of feed variables, by default None
-                
+
             Returns
             -------
             torch.Tensor
@@ -329,7 +362,9 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
             """
             return self.f_expressions[index](**feed_vars).to(self.device)
 
-        def __call__(self, inputs_data:Union[np.ndarray, dict]=None) -> List[torch.Tensor]:
+        def __call__(
+            self, inputs_data: Union[np.ndarray, dict] = None
+        ) -> List[torch.Tensor]:
             """
             Evaluate the symbolic expression.
 
@@ -347,36 +382,46 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
             Exception: If inputs_data is not a numpy array or a dictionary, or if the inputs_data is a dictionary and the key
             does not match with the inputs_key attribute.
             """
-            constructor = MakeTensor(input_names=self.input_names,
-                                     output_names=self.output_names)
+            constructor = MakeTensor(
+                input_names=self.input_names, output_names=self.output_names
+            )
 
             inputs_list = constructor(input_data=inputs_data, device=self.device)
 
             output = self.forward(input_data=inputs_list)
 
-            output = output.to(self.device) # TODO Check if it is necessary
+            output = output.to(self.device)  # TODO Check if it is necessary
 
             outputs_list = torch.split(output, 1, dim=-1)
 
-            outputs = {key: value for key, value in
-                       zip(self.output_names, outputs_list)}
+            outputs = {
+                key: value for key, value in zip(self.output_names, outputs_list)
+            }
 
             if type(inputs_list) is list:
-                inputs = {key: value for key, value in
-                          zip(self.input_names, inputs_list)}
+                inputs = {
+                    key: value for key, value in zip(self.input_names, inputs_list)
+                }
 
             elif type(inputs_list) is dict:
 
-                inputs_list = [inputs_list[self.inputs_key]] # TODO It it not generic the enough
+                inputs_list = [
+                    inputs_list[self.inputs_key]
+                ]  # TODO It it not generic the enough
 
-                assert self.inputs_key is not None, "If inputs_list is dict, \
+                assert (
+                    self.inputs_key is not None
+                ), "If inputs_list is dict, \
                                                      it is necessary to provide\
                                                      a key."
-                inputs = {key: value for key, value in
-                          zip(self.input_names, inputs_list)}
+                inputs = {
+                    key: value for key, value in zip(self.input_names, inputs_list)
+                }
             else:
-                raise Exception(f"Format {type(inputs_list)} not supported \
-                                for inputs_list")
+                raise Exception(
+                    f"Format {type(inputs_list)} not supported \
+                                for inputs_list"
+                )
 
             feed_vars = {**outputs, **inputs}
 
@@ -392,15 +437,15 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
             ----------
             key : str
                 the key used to retrieve the expression from the 'g_expressions' attribute
-            inputs_list: list 
+            inputs_list: list
                 either a list of arrays, an np.ndarray, or a dict containing the inputs to the function
-            
+
             Raises:
             -------
             Exception: if the expression does not exist in 'g_expressions'
             Exception: if the input format is not supported
             Exception: if the inputs_list is a dict but the 'inputs_key' attribute is not provided
-            
+
             Returns
             -------
             result (float/torch tensor): the result of evaluating the expression using the inputs.
@@ -414,17 +459,23 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
             # Periodic boundary conditions
             if self.periodic_bc_protected_key in key:
 
-                assert isinstance(inputs_list, list), "When a periodic boundary expression is used," \
-                                                      " the input must be a list of arrays."
+                assert isinstance(inputs_list, list), (
+                    "When a periodic boundary expression is used,"
+                    " the input must be a list of arrays."
+                )
 
                 # Lower bound
-                constructor = MakeTensor(input_names=self.input_names,
-                                         output_names=self.output_names)
+                constructor = MakeTensor(
+                    input_names=self.input_names, output_names=self.output_names
+                )
 
-                tensors_list = constructor(input_data=inputs_list[0], device=self.device)
+                tensors_list = constructor(
+                    input_data=inputs_list[0], device=self.device
+                )
 
-                inputs_L = {key: value for key, value in
-                          zip(self.input_names, tensors_list)}
+                inputs_L = {
+                    key: value for key, value in zip(self.input_names, tensors_list)
+                }
 
                 output = self.function.forward(input_data=tensors_list)
 
@@ -432,19 +483,24 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
 
                 outputs_list = torch.split(output, 1, dim=-1)
 
-                outputs_L = {key: value for key, value in
-                             zip(self.output_names, outputs_list)}
+                outputs_L = {
+                    key: value for key, value in zip(self.output_names, outputs_list)
+                }
 
                 feed_vars_L = {**inputs_L, **outputs_L}
 
                 # Upper bound
-                constructor = MakeTensor(input_names=self.input_names,
-                                         output_names=self.output_names)
+                constructor = MakeTensor(
+                    input_names=self.input_names, output_names=self.output_names
+                )
 
-                tensors_list = constructor(input_data=inputs_list[-1], device=self.device)
+                tensors_list = constructor(
+                    input_data=inputs_list[-1], device=self.device
+                )
 
-                inputs_U = {key: value for key, value in
-                            zip(self.input_names, tensors_list)}
+                inputs_U = {
+                    key: value for key, value in zip(self.input_names, tensors_list)
+                }
 
                 output = self.function.forward(input_data=tensors_list)
 
@@ -452,8 +508,9 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
 
                 outputs_list = torch.split(output, 1, dim=-1)
 
-                outputs_U = {key: value for key, value in
-                             zip(self.output_names, outputs_list)}
+                outputs_U = {
+                    key: value for key, value in zip(self.output_names, outputs_list)
+                }
 
                 feed_vars_U = {**inputs_U, **outputs_U}
 
@@ -467,12 +524,14 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
 
                 outputs_list = torch.split(output, 1, dim=-1)
 
-                outputs = {key: value for key, value in
-                           zip(self.output_names, outputs_list)}
+                outputs = {
+                    key: value for key, value in zip(self.output_names, outputs_list)
+                }
 
                 if type(inputs_list) is list:
-                    inputs = {key: value for key, value in
-                              zip(self.input_names, inputs_list)}
+                    inputs = {
+                        key: value for key, value in zip(self.input_names, inputs_list)
+                    }
 
                 elif type(inputs_list) is np.ndarray:
 
@@ -482,20 +541,29 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
                     for t in tensors_list:
                         t.requires_grad = True
 
-                    inputs = {key: value for key, value in
-                              zip(self.input_names, tensors_list)}
+                    inputs = {
+                        key: value for key, value in zip(self.input_names, tensors_list)
+                    }
 
                 elif type(inputs_list) is dict:
-                    assert self.inputs_key is not None, "If inputs_list is dict, \
+                    assert (
+                        self.inputs_key is not None
+                    ), "If inputs_list is dict, \
                                                          it is necessary to provide\
                                                          a key."
 
-                    inputs = {key: value for key, value in
-                              zip(self.input_names, inputs_list[self.inputs_key])}
+                    inputs = {
+                        key: value
+                        for key, value in zip(
+                            self.input_names, inputs_list[self.inputs_key]
+                        )
+                    }
 
                 else:
-                    raise Exception(f"Format {type(inputs_list)} not supported \
-                                    for inputs_list")
+                    raise Exception(
+                        f"Format {type(inputs_list)} not supported \
+                                    for inputs_list"
+                    )
 
                 feed_vars = {**inputs, **outputs}
 
@@ -525,12 +593,17 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
             >>> gradient(feature, param)
             tensor([1., 1., 1.], grad_fn=<AddBackward0>)
             """
-            grad_ = grad(feature, param, grad_outputs=torch.ones_like(feature),
-                        create_graph=True, allow_unused=True,
-                        retain_graph=True)
+            grad_ = grad(
+                feature,
+                param,
+                grad_outputs=torch.ones_like(feature),
+                create_graph=True,
+                allow_unused=True,
+                retain_graph=True,
+            )
 
             return grad_[0]
-        
+
         def jac(self, inputs):
             """
             Calculates the Jacobian of the forward function of the model with respect to its inputs.
@@ -552,19 +625,22 @@ def SymbolicOperator(expressions: list = None, input_vars: list = None,
             tensor([[1., 1., 1.],
                     [1., 1., 1.]], grad_fn=<MulBackward0>)
             """
+
             def inner(inputs):
                 return self.forward(input_data=inputs)
 
             return jacobian(inner, inputs)
 
-    return SymbolicOperatorClass(expressions=expressions,
-                                 input_vars=input_vars,
-                                 output_vars=output_vars,
-                                 function=function,
-                                 gradient=gradient,
-                                 keys=keys,
-                                 inputs_key=inputs_key,
-                                 constants=constants,
-                                 processing=processing,
-                                 device=device,
-                                 engine=engine)
+    return SymbolicOperatorClass(
+        expressions=expressions,
+        input_vars=input_vars,
+        output_vars=output_vars,
+        function=function,
+        gradient=gradient,
+        keys=keys,
+        inputs_key=inputs_key,
+        constants=constants,
+        processing=processing,
+        device=device,
+        engine=engine,
+    )

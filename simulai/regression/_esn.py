@@ -1,5 +1,20 @@
 # (C) Copyright IBM Corp. 2019, 2020, 2021, 2022.
+import os
+import pickle
+import platform
+import sys
 import warnings
+from inspect import signature
+from multiprocessing import Pool
+from typing import Union
+
+import numpy as np
+import psutil
+import scipy.sparse as sparse
+from scipy import linalg
+from scipy.sparse.linalg import eigs
+
+from simulai.templates import ReservoirComputing
 
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
@@ -13,43 +28,30 @@ import warnings
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
-import scipy.sparse as sparse
-from scipy import linalg
-from scipy.sparse.linalg import eigs
-import pickle
-from inspect import signature
-from multiprocessing import Pool
-import psutil
-import os
-import sys
-from typing import Union
-import warnings
-import platform
 
-from simulai.templates import ReservoirComputing
 
 # It could be used for executing multi-core CPU or even GPU jobs
 # with NumPy arrays
-def tensor_dot(self, engine:str="numba") -> callable:
+def tensor_dot(self, engine: str = "numba") -> callable:
 
     try:
-        from numba import guvectorize, float64
+        from numba import float64, guvectorize
     except:
         raise Exception("Numba is not installed in your system.")
 
-    @guvectorize([(float64[:,:], float64[:,:])], '(n,m)->(n,n)', target='cpu')
-    def _tensor_dot(vector:np.ndarray, out:np.ndarray) -> None:
+    @guvectorize([(float64[:, :], float64[:, :])], "(n,m)->(n,n)", target="cpu")
+    def _tensor_dot(vector: np.ndarray, out: np.ndarray) -> None:
 
         for index in range(vector.shape[1]):
             out += vector[:, index][:, None] @ (vector[:, index][:, None]).transpose()
 
     return _tensor_dot
 
-# Numba loop for shared-memory parallel execution
-def outer_dot(engine:str="numba") -> callable:
 
-    if engine=="numba":
+# Numba loop for shared-memory parallel execution
+def outer_dot(engine: str = "numba") -> callable:
+
+    if engine == "numba":
 
         try:
             from numba import njit
@@ -59,21 +61,24 @@ def outer_dot(engine:str="numba") -> callable:
         print("Using numba engine.")
 
         @njit(parallel=True)
-        def _outer_dot(vector:np.ndarray, out:np.ndarray) -> np.ndarray:
+        def _outer_dot(vector: np.ndarray, out: np.ndarray) -> np.ndarray:
 
             for ii in range(vector.shape[1]):
                 out += np.outer(vector[:, ii], vector[:, ii])
 
             return out
+
     else:
-        def _outer_dot(vector:np.ndarray, out:np.ndarray):
+
+        def _outer_dot(vector: np.ndarray, out: np.ndarray):
 
             pass
 
     return _outer_dot
 
+
 # Combining Numba with multiprocessing
-def multiprocessing_dot(vector:np.ndarray) -> np.ndarray:
+def multiprocessing_dot(vector: np.ndarray) -> np.ndarray:
 
     print("Using multiprocessing engine.")
 
@@ -84,9 +89,11 @@ def multiprocessing_dot(vector:np.ndarray) -> np.ndarray:
 
     return out
 
-'''
+
+"""
     BEGIN Reservoir Computing (RC) and children classes
-'''
+"""
+
 
 class EchoStateNetwork(ReservoirComputing):
 
@@ -94,15 +101,37 @@ class EchoStateNetwork(ReservoirComputing):
     Echo State Network, a subclass of the Reservoir Computing methods
     """
 
-    def __init__(self, reservoir_dim:int=None, sparsity_level: float=None,
-                       radius:float=1.0, number_of_inputs:int=None, sigma:float=1.0,
-                       beta:float=None, kappa:float=None,
-                       leak_rate:float=1, activation:str='tanh', Win_interval:list=[-1, 1], tau:float=None,
-                       Win_init:str='global', transformation:str='T1', solver:str='direct_inversion',
-                       s_reservoir_matrix=None, W_in=None, eta=0, global_matrix_constructor_str='multiprocessing',
-                       A=None, b=None, estimate_linear_transition=False, estimate_bias_transition=False,
-                       n_workers=1, memory_percent=0.5, layerwise_train=None, show_log:bool=False,
-                       input_augmented_reservoir:bool=False, model_id:str=None) -> None:
+    def __init__(
+        self,
+        reservoir_dim: int = None,
+        sparsity_level: float = None,
+        radius: float = 1.0,
+        number_of_inputs: int = None,
+        sigma: float = 1.0,
+        beta: float = None,
+        kappa: float = None,
+        leak_rate: float = 1,
+        activation: str = "tanh",
+        Win_interval: list = [-1, 1],
+        tau: float = None,
+        Win_init: str = "global",
+        transformation: str = "T1",
+        solver: str = "direct_inversion",
+        s_reservoir_matrix=None,
+        W_in=None,
+        eta=0,
+        global_matrix_constructor_str="multiprocessing",
+        A=None,
+        b=None,
+        estimate_linear_transition=False,
+        estimate_bias_transition=False,
+        n_workers=1,
+        memory_percent=0.5,
+        layerwise_train=None,
+        show_log: bool = False,
+        input_augmented_reservoir: bool = False,
+        model_id: str = None,
+    ) -> None:
 
         """
         :param reservoir_dim: dimension of the reservoir matrix
@@ -126,7 +155,7 @@ class EchoStateNetwork(ReservoirComputing):
 
         super().__init__(reservoir_dim=reservoir_dim, sparsity_level=sparsity_level)
 
-        self.sparsity_tolerance = 0.0025 # Default choice
+        self.sparsity_tolerance = 0.0025  # Default choice
 
         self.reservoir_dim = reservoir_dim
 
@@ -175,28 +204,36 @@ class EchoStateNetwork(ReservoirComputing):
             self.global_matrix_constructor = self._construct_global_matrix_direct
         elif self.global_matrix_constructor_str == "numba":
 
-            if platform.system() == 'Darwin':
-                warnings.warn("You are using MacOS. Numba have presented some bugs in this platform.")
-                warnings.warn("You are using MacOS. If you got some issue, test to use multiprocessing instead.")
+            if platform.system() == "Darwin":
+                warnings.warn(
+                    "You are using MacOS. Numba have presented some bugs in this platform."
+                )
+                warnings.warn(
+                    "You are using MacOS. If you got some issue, test to use multiprocessing instead."
+                )
 
             self.global_matrix_constructor = self._construct_global_matrix_numba
         elif self.global_matrix_constructor_str == "multiprocessing":
-            self.global_matrix_constructor = self._construct_global_matrix_multiprocessing
+            self.global_matrix_constructor = (
+                self._construct_global_matrix_multiprocessing
+            )
         else:
-            raise Exception(f"Case {self.global_matrix_constructor_str} not available for creating the"
-                            f"global matrix.")
+            raise Exception(
+                f"Case {self.global_matrix_constructor_str} not available for creating the"
+                f"global matrix."
+            )
 
         # The matrices input-to-reservoir and reservoir can be
         # directly passed to the class instance
         if s_reservoir_matrix is None and W_in is None:
-            print('Initializing ESN matrices ...')
+            print("Initializing ESN matrices ...")
 
             self.s_reservoir_matrix, self.W_in = self._initialize_parameters()
         else:
             self.s_reservoir_matrix = s_reservoir_matrix
             self.W_in = W_in
 
-        self.size_default = np.array([0]).astype('float64').itemsize
+        self.size_default = np.array([0]).astype("float64").itemsize
 
         if show_log == True:
             self.logger = self._show_log
@@ -205,15 +242,17 @@ class EchoStateNetwork(ReservoirComputing):
 
     def _show_log(self, i):
 
-        sys.stdout.write(f'\r state {i}')
+        sys.stdout.write(f"\r state {i}")
         sys.stdout.flush()
 
     def _no_log(self, i):
         pass
 
     @property
-    def trainable_variables(self,):
-        return {'A': self.A, 'b': self.b, 'W_out': self.W_out}
+    def trainable_variables(
+        self,
+    ):
+        return {"A": self.A, "b": self.b, "W_out": self.W_out}
 
     def set_activation(self, activation):
         self.activation = activation
@@ -221,13 +260,17 @@ class EchoStateNetwork(ReservoirComputing):
 
     def _get_activation_function(self, activation):
 
-        method = (getattr(np, activation, None)
-                  or getattr(np.math, activation, None)
-                  or getattr(self, '_' + activation, None))
+        method = (
+            getattr(np, activation, None)
+            or getattr(np.math, activation, None)
+            or getattr(self, "_" + activation, None)
+        )
         if method:
             return method
         else:
-            raise Exception("The activation {} is still not available.".format(activation))
+            raise Exception(
+                "The activation {} is still not available.".format(activation)
+            )
 
     # Linear activation
     def _linear(self, data):
@@ -237,18 +280,18 @@ class EchoStateNetwork(ReservoirComputing):
     # Sigmoid activation
     def _sigmoid(self, data):
 
-        return 1/(1 + np.exp(-data))
+        return 1 / (1 + np.exp(-data))
 
-    '''
+    """
         BEGIN Transformations that can be applied to the hidden state
 
         Note: A shift = 1 is applied (ii + 1) in order to respect the Python
         0-based system.
-    '''
+    """
 
     def set_transformation(self, transformation):
         self.transformation = transformation
-        self._construct_r_til = getattr(self, '_' + transformation)
+        self._construct_r_til = getattr(self, "_" + transformation)
 
     # ByPass transformation
     def _T0(self, r):
@@ -293,9 +336,9 @@ class EchoStateNetwork(ReservoirComputing):
                 pass
         return r_til
 
-    '''
+    """
             END Transformations that can be applied to the hidden state
-    '''
+    """
 
     def set_tau(self, tau):
         self.tau = tau
@@ -303,22 +346,24 @@ class EchoStateNetwork(ReservoirComputing):
 
     def _default_kappa(self, size):
 
-        x = np.arange(size)/size
+        x = np.arange(size) / size
 
         # tau is a positive number in (0, inf] preferably close to 0, e.g., 0.1
         # y[0] == 0 and y is monotonically increasing, i.e, y[k+1] > y[k] and y[-1] < 1
         # we choose tau such that 0.99 ~= y[int(tau*size)]
 
-        y = 1-10**(-2*x/self.tau)
+        y = 1 - 10 ** (-2 * x / self.tau)
         y = np.reshape(y, [1, -1])
         return y
 
     def _update_state(self, previous_state, input_series_state):
 
-        reservoir_input = previous_state[:self.reservoir_dim]
+        reservoir_input = previous_state[: self.reservoir_dim]
         state = (1 - self.leak_rate) * reservoir_input
-        state += self.leak_rate * self.activation_op(self.s_reservoir_matrix.dot(reservoir_input)
-                                                     + np.dot(self.W_in, input_series_state))
+        state += self.leak_rate * self.activation_op(
+            self.s_reservoir_matrix.dot(reservoir_input)
+            + np.dot(self.W_in, input_series_state)
+        )
 
         if self.input_augmented_reservoir:
             state = np.hstack((state, input_series_state))
@@ -344,7 +389,7 @@ class EchoStateNetwork(ReservoirComputing):
         # Sparse uniform random matrix
         sparse_reservoir_matrix = self.create_reservoir()
 
-        sparse_reservoir_matrix += self.eta*sparse.eye(self.reservoir_dim)
+        sparse_reservoir_matrix += self.eta * sparse.eye(self.reservoir_dim)
 
         dense_sparse_reservoir_matrix = sparse_reservoir_matrix.todense()
 
@@ -354,28 +399,37 @@ class EchoStateNetwork(ReservoirComputing):
         if self.reservoir_dim == 0:
             max_eig = 1.0
         else:
-            eigvals = eigs(dense_sparse_reservoir_matrix, k=1, which='LM', return_eigenvectors=False)
+            eigvals = eigs(
+                dense_sparse_reservoir_matrix,
+                k=1,
+                which="LM",
+                return_eigenvectors=False,
+            )
             max_eig = np.max(np.abs(eigvals))
 
         sparse_reservoir_matrix = sparse_reservoir_matrix * (self.radius / max_eig)
 
-        if self.Win_init == 'global':
-            Win = np.random.uniform(*self.Win_interval,
-                                    size=[self.reservoir_dim, self.number_of_inputs])
+        if self.Win_init == "global":
+            Win = np.random.uniform(
+                *self.Win_interval, size=[self.reservoir_dim, self.number_of_inputs]
+            )
 
         # TODO the blockwise option can be slow. Maybe it can be parallelized.
-        elif self.Win_init == 'blockwise':
+        elif self.Win_init == "blockwise":
             n_b = int(self.reservoir_dim / self.number_of_inputs)
             Win = np.zeros((self.reservoir_dim, self.number_of_inputs))
 
             for j in range(self.number_of_inputs):
                 np.random.seed(seed=j)
-                Win[j*n_b: (j+1)*n_b, j] = np.random.uniform(*self.Win_interval,
-                                           size=[1, n_b])[0]
+                Win[j * n_b : (j + 1) * n_b, j] = np.random.uniform(
+                    *self.Win_interval, size=[1, n_b]
+                )[0]
         else:
-            raise Exception(f"The initialization method {self.Win_init} for W_in is not supported.")
+            raise Exception(
+                f"The initialization method {self.Win_init} for W_in is not supported."
+            )
 
-        Win = self.sigma*Win
+        Win = self.sigma * Win
 
         return sparse_reservoir_matrix, np.array(Win)
 
@@ -391,13 +445,15 @@ class EchoStateNetwork(ReservoirComputing):
         self.solver = solver
         if isinstance(solver, str):
             try:
-                self.solver_op = getattr(self, '_' + solver)
+                self.solver_op = getattr(self, "_" + solver)
             except Exception:
                 raise Exception(f"The option {solver} is not implemented")
         else:
-            print(f"The object {solver} provided is not an attribute of {self}.\
+            print(
+                f"The object {solver} provided is not an attribute of {self}.\
                     Let us consider it as a functional wrapper.\
-                    Good luck in using it.")
+                    Good luck in using it."
+            )
 
             if callable(solver):
                 self.solver_op = solver
@@ -449,18 +505,21 @@ class EchoStateNetwork(ReservoirComputing):
 
     def _construct_global_matrix_multiprocessing(self, r_til, idenmat):
 
-        assert self.n_workers is not None, "If you are using multiprocessing," \
-                                           "it is necessary to define n_workers."
+        assert self.n_workers is not None, (
+            "If you are using multiprocessing," "it is necessary to define n_workers."
+        )
 
-        assert self.memory_percent is not None, "If you are using multiprocessing," \
-                                                "it is necessary to define memory_percent."
+        assert self.memory_percent is not None, (
+            "If you are using multiprocessing,"
+            "it is necessary to define memory_percent."
+        )
 
-        single_matrix_size = self.size_default*r_til.shape[0]**2
+        single_matrix_size = self.size_default * r_til.shape[0] ** 2
 
-        available_memory = self.memory_percent*psutil.virtual_memory().available
+        available_memory = self.memory_percent * psutil.virtual_memory().available
 
         # Evaluating the maximum number of partial U matrices to be allocated
-        max_n_workers = int(available_memory/single_matrix_size)
+        max_n_workers = int(available_memory / single_matrix_size)
 
         if max_n_workers >= self.n_workers:
             n_workers = self.n_workers
@@ -480,10 +539,9 @@ class EchoStateNetwork(ReservoirComputing):
         return U
 
     @staticmethod
-    def _prepare_inputs(concat:bool=True):
-
+    def _prepare_inputs(concat: bool = True):
         def _concat(main, aux, index):
-            return np.hstack([main, aux[index:index+1]])
+            return np.hstack([main, aux[index : index + 1]])
 
         def _by_pass(main, aux, index):
             return main
@@ -497,8 +555,15 @@ class EchoStateNetwork(ReservoirComputing):
     def set_parameters(self, parameters):
 
         for key, value in parameters.items():
-            if key in ['radius', 'sigma', 'tau', 'activation', 'transformation', 'solver']:
-                getattr(self, f'set_{key}')(value)
+            if key in [
+                "radius",
+                "sigma",
+                "tau",
+                "activation",
+                "transformation",
+                "solver",
+            ]:
+                getattr(self, f"set_{key}")(value)
             else:
                 setattr(self, key, value)
 
@@ -511,24 +576,41 @@ class EchoStateNetwork(ReservoirComputing):
             # dont estimate linear of bias terms
             pass
         elif self.estimate_bias_transition and not self.estimate_linear_transition:
-            print('Estimating the bias')
+            print("Estimating the bias")
             if self.A is not None:
-                self.b = np.linalg.lstsq(np.ones((target_data.shape[0], 1), dtype=target_data.dtype), target_data-(self.A@data_in).T, rcond=None)[0]
+                self.b = np.linalg.lstsq(
+                    np.ones((target_data.shape[0], 1), dtype=target_data.dtype),
+                    target_data - (self.A @ data_in).T,
+                    rcond=None,
+                )[0]
             else:
-                self.b = np.linalg.lstsq(np.ones((target_data.shape[0], 1), dtype=target_data.dtype), target_data, rcond=None)[0]
-            self.b = np.reshape(self.b, (-1, ))
+                self.b = np.linalg.lstsq(
+                    np.ones((target_data.shape[0], 1), dtype=target_data.dtype),
+                    target_data,
+                    rcond=None,
+                )[0]
+            self.b = np.reshape(self.b, (-1,))
         elif not self.estimate_bias_transition and self.estimate_linear_transition:
-            print('Estimating the linear transition')
+            print("Estimating the linear transition")
             if self.b is not None:
-                self.A = np.linalg.lstsq(input_data, target_data-np.reshape(self.b, (1, -1)), rcond=None)[0].T
+                self.A = np.linalg.lstsq(
+                    input_data, target_data - np.reshape(self.b, (1, -1)), rcond=None
+                )[0].T
             else:
                 self.A = np.linalg.lstsq(input_data, target_data, rcond=None)[0].T
         elif self.estimate_bias_transition and self.estimate_linear_transition:
-            print('Estimating the linear transition and bias')
-            self.A, self.b = np.hsplit(np.linalg.lstsq(np.hstack((input_data, np.ones((target_data.shape[0], 1)))), target_data, rcond=None)[0].T, [input_data.shape[1]])
-            self.b = np.reshape(self.b, (-1, ))
+            print("Estimating the linear transition and bias")
+            self.A, self.b = np.hsplit(
+                np.linalg.lstsq(
+                    np.hstack((input_data, np.ones((target_data.shape[0], 1)))),
+                    target_data,
+                    rcond=None,
+                )[0].T,
+                [input_data.shape[1]],
+            )
+            self.b = np.reshape(self.b, (-1,))
         else:
-            raise RuntimeError('Unreachable line of code')
+            raise RuntimeError("Unreachable line of code")
 
         affine_term = 0
         if self.A is not None:
@@ -541,21 +623,22 @@ class EchoStateNetwork(ReservoirComputing):
 
             data_size = data_in.shape[1]
 
-            print('Evaluating the hidden state ...')
+            print("Evaluating the hidden state ...")
 
             r = self._reservoir_layer(data_in, data_size)
 
             print("\nApplying transformation ...")
 
-            r_til = self._construct_r_til(r[:self.reservoir_dim, ...])
+            r_til = self._construct_r_til(r[: self.reservoir_dim, ...])
             if self.input_augmented_reservoir:
-                r_til = np.vstack((r_til, r[self.reservoir_dim:, ...]))
+                r_til = np.vstack((r_til, r[self.reservoir_dim :, ...]))
 
             # Verifying the adjusting array kappa
             if isinstance(self.kappa, np.ndarray):
                 self.kappa = np.reshape(self.kappa, [1, -1])
-                assert self.kappa.shape[1] == r_til.shape[1],\
-                f"kappa and r-til must have the same samples dimension \
+                assert (
+                    self.kappa.shape[1] == r_til.shape[1]
+                ), f"kappa and r-til must have the same samples dimension \
                 but sizes are {self.kappa.shape[1]} and {r_til.shape[1]}"
             elif self.tau is not None and self.tau > 0:
                 self.kappa = self._default_kappa(r_til.shape[1])
@@ -563,7 +646,7 @@ class EchoStateNetwork(ReservoirComputing):
                 self.kappa = np.ones((1, r_til.shape[1]))
 
             r_til *= self.kappa
-            data_out_ = self.kappa*data_out
+            data_out_ = self.kappa * data_out
 
             idenmat = self.beta * sparse.identity(self.state_dim)
 
@@ -579,7 +662,9 @@ class EchoStateNetwork(ReservoirComputing):
             self.current_state = r[:, -1].copy()
             self.reference_state = r[:, -1].copy()
         else:
-            self.W_out = np.zeros((target_data.shape[1], self.state_dim), dtype=target_data.dtype)
+            self.W_out = np.zeros(
+                (target_data.shape[1], self.state_dim), dtype=target_data.dtype
+            )
             self.current_state = np.zeros((self.state_dim,), dtype=target_data.dtype)
             self.reference_state = np.zeros((self.state_dim,), dtype=target_data.dtype)
 
@@ -597,9 +682,9 @@ class EchoStateNetwork(ReservoirComputing):
 
         r_ = self._update_state(state, data)
 
-        state_ = self._construct_r_til(r_[:self.reservoir_dim, ...])
+        state_ = self._construct_r_til(r_[: self.reservoir_dim, ...])
         if self.input_augmented_reservoir:
-            state_ = np.hstack((state_, r_[self.reservoir_dim:, ...]))
+            state_ = np.hstack((state_, r_[self.reservoir_dim :, ...]))
 
         out = self.W_out @ state_ + affine_term
 
@@ -621,11 +706,13 @@ class EchoStateNetwork(ReservoirComputing):
     def set_reference(self, reference=None):
 
         if reference is None:
-                self.reference_state = self.default_state
+            self.reference_state = self.default_state
         else:
             if isinstance(reference, (int, float)):
                 reference = np.full_like(self.default_state, reference)
-            assert np.array_equal((self.state_dim, ), reference.shape), f'Invalid shape {(self.state_dim, )} != {reference.shape}'
+            assert np.array_equal(
+                (self.state_dim,), reference.shape
+            ), f"Invalid shape {(self.state_dim, )} != {reference.shape}"
             self.reference_state = reference
 
     def reset(self):
@@ -654,9 +741,9 @@ class EchoStateNetwork(ReservoirComputing):
 
             r_ = self._update_state(state, data)
 
-            r_til = self._construct_r_til(r_[:self.reservoir_dim, ...])
+            r_til = self._construct_r_til(r_[: self.reservoir_dim, ...])
             if self.input_augmented_reservoir:
-                r_til = np.hstack((r_til, r_[self.reservoir_dim:, ...]))
+                r_til = np.hstack((r_til, r_[self.reservoir_dim :, ...]))
 
             affine_term = 0
             if self.A is not None:
@@ -668,7 +755,7 @@ class EchoStateNetwork(ReservoirComputing):
             output_data[:, tt] = out
 
             state = r_
-            data =  prepare_data(out, auxiliary_data, tt)
+            data = prepare_data(out, auxiliary_data, tt)
 
         self.current_state = state
 
@@ -676,15 +763,19 @@ class EchoStateNetwork(ReservoirComputing):
 
     def save(self, save_path=None, model_name=None):
 
-        configs = {k: getattr(self, k) for k in signature(self.__init__).parameters.keys()}
+        configs = {
+            k: getattr(self, k) for k in signature(self.__init__).parameters.keys()
+        }
 
-        to_save = {'current_state': self.current_state,
-                   'reference_state': self.reference_state,
-                   'W_out': self.W_out,
-                   'configs': configs}
-        path = os.path.join(save_path, model_name + '.pkl')
+        to_save = {
+            "current_state": self.current_state,
+            "reference_state": self.reference_state,
+            "W_out": self.W_out,
+            "configs": configs,
+        }
+        path = os.path.join(save_path, model_name + ".pkl")
         try:
-            with open(path, 'wb') as fp:
+            with open(path, "wb") as fp:
                 pickle.dump(to_save, fp, protocol=4)
         except Exception as e:
             print(e, e.args)
@@ -692,9 +783,9 @@ class EchoStateNetwork(ReservoirComputing):
     # Saving the entire model
     def save_model(self, save_path=None, model_name=None):
 
-        path = os.path.join(save_path, model_name + '.pkl')
+        path = os.path.join(save_path, model_name + ".pkl")
         try:
-            with open(path, 'wb') as fp:
+            with open(path, "wb") as fp:
                 pickle.dump(self, fp, protocol=4)
         except Exception as e:
             print(e, e.args)
@@ -702,16 +793,17 @@ class EchoStateNetwork(ReservoirComputing):
     @classmethod
     def restore(cls, model_path, model_name):
 
-        path = os.path.join(model_path, model_name + '.pkl')
-        with open(path, 'rb') as fp:
+        path = os.path.join(model_path, model_name + ".pkl")
+        with open(path, "rb") as fp:
             d = pickle.load(fp)
 
-        self = cls(**d['configs'])
-        d.pop('configs')
+        self = cls(**d["configs"])
+        d.pop("configs")
         for k, v in d.items():
             setattr(self, k, v)
 
         return self
+
 
 # Deep version of the Echo State network
 class DeepEchoStateNetwork:
@@ -720,14 +812,39 @@ class DeepEchoStateNetwork:
     Echo State Network, a subclass of the Reservoir Computing methods
     """
 
-    def __init__(self, reservoir_dim=None, sparsity_level=None, n_layers=2,
-                       radius=None, number_of_inputs=None, sigma=None, beta=None, kappa=None,
-                       leak_rate=1, activation='tanh', Win_interval=[-1, 1], tau=None,
-                       Win_init='global', transformation='T1', solver='direct_inversion',
-                       s_reservoir_matrix=None, W_in=None, eta=0, global_matrix_constructor_str='multiprocessing',
-                       A=None, b=None, estimate_linear_transition=False, estimate_bias_transition=False,
-                       n_workers=1, memory_percent=0.5, layerwise_train=None, all_for_input=1, show_log=False,
-                       input_augmented_reservoir=False, model_id=None):
+    def __init__(
+        self,
+        reservoir_dim=None,
+        sparsity_level=None,
+        n_layers=2,
+        radius=None,
+        number_of_inputs=None,
+        sigma=None,
+        beta=None,
+        kappa=None,
+        leak_rate=1,
+        activation="tanh",
+        Win_interval=[-1, 1],
+        tau=None,
+        Win_init="global",
+        transformation="T1",
+        solver="direct_inversion",
+        s_reservoir_matrix=None,
+        W_in=None,
+        eta=0,
+        global_matrix_constructor_str="multiprocessing",
+        A=None,
+        b=None,
+        estimate_linear_transition=False,
+        estimate_bias_transition=False,
+        n_workers=1,
+        memory_percent=0.5,
+        layerwise_train=None,
+        all_for_input=1,
+        show_log=False,
+        input_augmented_reservoir=False,
+        model_id=None,
+    ):
 
         """
         :param reservoir_dim: dimension of the reservoir matrix
@@ -749,7 +866,7 @@ class DeepEchoStateNetwork:
         :param model_id:
         """
 
-        self.sparsity_tolerance = 0.0025 # Default choice
+        self.sparsity_tolerance = 0.0025  # Default choice
         self.n_layers = n_layers
         self.beta = beta
         self.number_of_inputs = number_of_inputs
@@ -801,28 +918,36 @@ class DeepEchoStateNetwork:
             self.global_matrix_constructor = self._construct_global_matrix_direct
         elif self.global_matrix_constructor_str == "numba":
 
-            if platform.system() == 'Darwin':
-                warnings.warn("You are using MacOS. Numba have presented some bugs in this platform.")
-                warnings.warn("You are using MacOS. If you got some issue, test to use multiprocessing instead.")
+            if platform.system() == "Darwin":
+                warnings.warn(
+                    "You are using MacOS. Numba have presented some bugs in this platform."
+                )
+                warnings.warn(
+                    "You are using MacOS. If you got some issue, test to use multiprocessing instead."
+                )
 
             self.global_matrix_constructor = self._construct_global_matrix_numba
         elif self.global_matrix_constructor_str == "multiprocessing":
-            self.global_matrix_constructor = self._construct_global_matrix_multiprocessing
+            self.global_matrix_constructor = (
+                self._construct_global_matrix_multiprocessing
+            )
         else:
-            raise Exception(f"Case {self.global_matrix_constructor_str} not available for creating the"
-                            f"global matrix.")
+            raise Exception(
+                f"Case {self.global_matrix_constructor_str} not available for creating the"
+                f"global matrix."
+            )
 
         # The matrices input-to-reservoir and reservoir can be
         # directly passed to the class instance
         if s_reservoir_matrix is None and W_in is None:
-            print('Initializing ESN matrices ...')
+            print("Initializing ESN matrices ...")
 
             self.s_reservoir_matrix, self.W_in = self._initialize_parameters()
         else:
             self.s_reservoir_matrix = s_reservoir_matrix
             self.W_in = W_in
 
-        self.size_default = np.array([0]).astype('float64').itemsize
+        self.size_default = np.array([0]).astype("float64").itemsize
 
         if show_log == True:
             self.logger = self._show_log
@@ -848,9 +973,11 @@ class DeepEchoStateNetwork:
         if type(var) is list:
             return var
         elif type(var) in (str, float, int):
-            return self.n_layers*[var]
+            return self.n_layers * [var]
         else:
-            raise Exception(f"The variable var can be list, str, int or float but received {type(var)}.")
+            raise Exception(
+                f"The variable var can be list, str, int or float but received {type(var)}."
+            )
 
     @property
     def global_reservoir_dim(self):
@@ -858,15 +985,17 @@ class DeepEchoStateNetwork:
 
     def _show_log(self, i):
 
-        sys.stdout.write(f'\r state {i}')
+        sys.stdout.write(f"\r state {i}")
         sys.stdout.flush()
 
     def _no_log(self, i):
         pass
 
     @property
-    def trainable_variables(self,):
-        return {'A': self.A, 'b': self.b, 'W_out': self.W_out}
+    def trainable_variables(
+        self,
+    ):
+        return {"A": self.A, "b": self.b, "W_out": self.W_out}
 
     def set_activation(self, activation):
         self.activation = activation
@@ -874,13 +1003,17 @@ class DeepEchoStateNetwork:
 
     def _get_activation_function(self, activation):
 
-        method = (getattr(np, activation, None)
-                  or getattr(np.math, activation, None)
-                  or getattr(self, '_' + activation, None))
+        method = (
+            getattr(np, activation, None)
+            or getattr(np.math, activation, None)
+            or getattr(self, "_" + activation, None)
+        )
         if method:
             return method
         else:
-            raise Exception("The activation {} is still not available.".format(activation))
+            raise Exception(
+                "The activation {} is still not available.".format(activation)
+            )
 
     # Linear activation
     def _linear(self, data):
@@ -890,18 +1023,18 @@ class DeepEchoStateNetwork:
     # Sigmoid activation
     def _sigmoid(self, data):
 
-        return 1/(1 + np.exp(-data))
+        return 1 / (1 + np.exp(-data))
 
-    '''
+    """
         BEGIN Transformations that can be applied to the hidden state
 
         Note: A shift = 1 is applied (ii + 1) in order to respect the Python
         0-based system.
-    '''
+    """
 
     def set_transformation(self, transformation):
         self.transformation = transformation
-        self._construct_r_til = getattr(self, '_' + transformation)
+        self._construct_r_til = getattr(self, "_" + transformation)
 
     # ByPass transformation
     def _T0(self, r):
@@ -946,9 +1079,9 @@ class DeepEchoStateNetwork:
                 pass
         return r_til
 
-    '''
+    """
             END Transformations that can be applied to the hidden state
-    '''
+    """
 
     def set_tau(self, tau):
         self.tau = tau
@@ -956,28 +1089,29 @@ class DeepEchoStateNetwork:
 
     def _default_kappa(self, size):
 
-        x = np.arange(size)/size
+        x = np.arange(size) / size
 
         # tau is a positive number in (0, inf] preferably close to 0, e.g., 0.1
         # y[0] == 0 and y is monotonically increasing, i.e, y[k+1] > y[k] and y[-1] < 1
         # we choose tau such that 0.99 ~= y[int(tau*size)]
 
-        y = 1-10**(-2*x/self.tau)
+        y = 1 - 10 ** (-2 * x / self.tau)
         y = np.reshape(y, [1, -1])
         return y
 
     def _update_state(self, previous_state, input_series_state, layer_id=None):
 
-        reservoir_input = previous_state[:self.reservoir_dim[layer_id]]
+        reservoir_input = previous_state[: self.reservoir_dim[layer_id]]
         state = (1 - self.leak_rate[layer_id]) * reservoir_input
-        state += self.leak_rate[layer_id] * self.activation_op(self.s_reservoir_matrix[layer_id].dot(reservoir_input)
-                                                     + np.dot(self.W_in[layer_id], input_series_state))
+        state += self.leak_rate[layer_id] * self.activation_op(
+            self.s_reservoir_matrix[layer_id].dot(reservoir_input)
+            + np.dot(self.W_in[layer_id], input_series_state)
+        )
 
         if self.input_augmented_reservoir:
             state = np.hstack((state, input_series_state))
 
         return state
-
 
     # TODO this stage is considerably expensive. It is necessary to fix it in anyway.
     def _reservoir_layer(self, input_series, data_size):
@@ -991,17 +1125,21 @@ class DeepEchoStateNetwork:
         for ll in range(self.n_layers):
 
             print(f"Applying layer {ll}")
-            r_state = np.zeros((self.state_dim(ll),), dtype=self.s_reservoir_matrix[ll].dtype)
+            r_state = np.zeros(
+                (self.state_dim(ll),), dtype=self.s_reservoir_matrix[ll].dtype
+            )
             r_states = r_states_list[ll]
 
             for i in range(data_size):
 
-                r_states[:, i] = self._update_state(r_state, input_series_[:, i], layer_id=ll)
+                r_states[:, i] = self._update_state(
+                    r_state, input_series_[:, i], layer_id=ll
+                )
                 r_state = r_states[:, i]
 
                 self.logger(i)
 
-            print('\n')
+            print("\n")
             if self.all_for_input:
                 input_series_ = np.vstack([r_states, input_series])
             else:
@@ -1012,10 +1150,16 @@ class DeepEchoStateNetwork:
         # The output states for each layer ll are concatenate into a single global state
         return np.vstack(hidden_states)
 
-    def _reservoir_dim_corrected_sparsity_level(self, sparsity_level=None, reservoir_dim =None):
+    def _reservoir_dim_corrected_sparsity_level(
+        self, sparsity_level=None, reservoir_dim=None
+    ):
 
         # Guaranteeing a minimum sparsity tolerance
-        dim = max(sparsity_level, self.sparsity_tolerance) if reservoir_dim == 0 else reservoir_dim
+        dim = (
+            max(sparsity_level, self.sparsity_tolerance)
+            if reservoir_dim == 0
+            else reservoir_dim
+        )
         effective_sparsity = sparsity_level / dim
         if effective_sparsity < self.sparsity_tolerance:
             return self.sparsity_tolerance
@@ -1024,9 +1168,13 @@ class DeepEchoStateNetwork:
 
     # It creates a sparse and randomly distributed reservoir matrix
     def _create_reservoir(self, sparsity_level=None, reservoir_dim=None):
-        return sparse.rand(reservoir_dim, reservoir_dim,
-                           density=self._reservoir_dim_corrected_sparsity_level(sparsity_level=sparsity_level,
-                                                                                reservoir_dim=reservoir_dim))
+        return sparse.rand(
+            reservoir_dim,
+            reservoir_dim,
+            density=self._reservoir_dim_corrected_sparsity_level(
+                sparsity_level=sparsity_level, reservoir_dim=reservoir_dim
+            ),
+        )
 
     # Each layerwise state is initialized as zero
     def _initialize_r_states(self, data_size):
@@ -1048,9 +1196,11 @@ class DeepEchoStateNetwork:
         number_of_inputs = self.n_inputs_list[layer_id]
         sigma = self.sigma[layer_id]
         # Sparse uniform random matrix
-        sparse_reservoir_matrix = self._create_reservoir(sparsity_level=sparsity_level, reservoir_dim=reservoir_dim)
+        sparse_reservoir_matrix = self._create_reservoir(
+            sparsity_level=sparsity_level, reservoir_dim=reservoir_dim
+        )
 
-        sparse_reservoir_matrix += self.eta*sparse.eye(reservoir_dim)
+        sparse_reservoir_matrix += self.eta * sparse.eye(reservoir_dim)
 
         dense_sparse_reservoir_matrix = sparse_reservoir_matrix.todense()
 
@@ -1060,28 +1210,37 @@ class DeepEchoStateNetwork:
         if reservoir_dim == 0:
             max_eig = 1.0
         else:
-            eigvals = eigs(dense_sparse_reservoir_matrix, k=1, which='LM', return_eigenvectors=False)
+            eigvals = eigs(
+                dense_sparse_reservoir_matrix,
+                k=1,
+                which="LM",
+                return_eigenvectors=False,
+            )
             max_eig = np.max(np.abs(eigvals))
 
         sparse_reservoir_matrix = sparse_reservoir_matrix * (radius / max_eig)
 
-        if self.Win_init == 'global':
-            Win = np.random.uniform(*self.Win_interval,
-                                    size=[reservoir_dim, number_of_inputs])
+        if self.Win_init == "global":
+            Win = np.random.uniform(
+                *self.Win_interval, size=[reservoir_dim, number_of_inputs]
+            )
 
         # TODO the blockwise option can be slow. Maybe it can be parallelized.
-        elif self.Win_init == 'blockwise':
+        elif self.Win_init == "blockwise":
             n_b = int(reservoir_dim / number_of_inputs)
             Win = np.zeros((reservoir_dim, number_of_inputs))
 
             for j in range(self.number_of_inputs):
                 np.random.seed(seed=j)
-                Win[j*n_b: (j+1)*n_b, j] = np.random.uniform(*self.Win_interval,
-                                           size=[1, n_b])[0]
+                Win[j * n_b : (j + 1) * n_b, j] = np.random.uniform(
+                    *self.Win_interval, size=[1, n_b]
+                )[0]
         else:
-            raise Exception(f"The initialization method {self.Win_init} for W_in is not supported.")
+            raise Exception(
+                f"The initialization method {self.Win_init} for W_in is not supported."
+            )
 
-        Win = sigma*Win
+        Win = sigma * Win
 
         return sparse_reservoir_matrix, np.array(Win)
 
@@ -1091,7 +1250,9 @@ class DeepEchoStateNetwork:
         W_in_list = list()
 
         for ll in range(self.n_layers):
-            sparse_reservoir_matrix, W_in = self._initialize_layer_parameters(layer_id=ll)
+            sparse_reservoir_matrix, W_in = self._initialize_layer_parameters(
+                layer_id=ll
+            )
 
             sparse_reservoir_matrix_list.append(sparse_reservoir_matrix)
             W_in_list.append(W_in)
@@ -1110,13 +1271,15 @@ class DeepEchoStateNetwork:
         self.solver = solver
         if isinstance(solver, str):
             try:
-                self.solver_op = getattr(self, '_' + solver)
+                self.solver_op = getattr(self, "_" + solver)
             except Exception:
                 raise Exception(f"The option {solver} is not implemented")
         else:
-            print(f"The object {solver} provided is not an attribute of {self}.\
+            print(
+                f"The object {solver} provided is not an attribute of {self}.\
                     Let us consider it as a functional wrapper.\
-                    Good luck in using it.")
+                    Good luck in using it."
+            )
 
             if callable(solver):
                 self.solver_op = solver
@@ -1168,18 +1331,21 @@ class DeepEchoStateNetwork:
 
     def _construct_global_matrix_multiprocessing(self, r_til, idenmat):
 
-        assert self.n_workers is not None, "If you are using multiprocessing," \
-                                           "it is necessary to define n_workers."
+        assert self.n_workers is not None, (
+            "If you are using multiprocessing," "it is necessary to define n_workers."
+        )
 
-        assert self.memory_percent is not None, "If you are using multiprocessing," \
-                                                "it is necessary to define memory_percent."
+        assert self.memory_percent is not None, (
+            "If you are using multiprocessing,"
+            "it is necessary to define memory_percent."
+        )
 
-        single_matrix_size = self.size_default*r_til.shape[0]**2
+        single_matrix_size = self.size_default * r_til.shape[0] ** 2
 
-        available_memory = self.memory_percent*psutil.virtual_memory().available
+        available_memory = self.memory_percent * psutil.virtual_memory().available
 
         # Evaluating the maximum number of partial U matrices to be allocated
-        max_n_workers = int(available_memory/single_matrix_size)
+        max_n_workers = int(available_memory / single_matrix_size)
 
         if max_n_workers >= self.n_workers:
             n_workers = self.n_workers
@@ -1202,8 +1368,15 @@ class DeepEchoStateNetwork:
     def set_parameters(self, parameters):
 
         for key, value in parameters.items():
-            if key in ['radius', 'sigma', 'tau', 'activation', 'transformation', 'solver']:
-                getattr(self, f'set_{key}')(value)
+            if key in [
+                "radius",
+                "sigma",
+                "tau",
+                "activation",
+                "transformation",
+                "solver",
+            ]:
+                getattr(self, f"set_{key}")(value)
             else:
                 setattr(self, key, value)
 
@@ -1217,27 +1390,41 @@ class DeepEchoStateNetwork:
             # Do not estimate linear of bias terms
             pass
         elif self.estimate_bias_transition and not self.estimate_linear_transition:
-            print('Estimating the bias')
+            print("Estimating the bias")
             if self.A is not None:
-                self.b = np.linalg.lstsq(np.ones((target_data.shape[0], 1), dtype=target_data.dtype),
-                                         target_data-(self.A@data_in).T, rcond=None)[0]
+                self.b = np.linalg.lstsq(
+                    np.ones((target_data.shape[0], 1), dtype=target_data.dtype),
+                    target_data - (self.A @ data_in).T,
+                    rcond=None,
+                )[0]
             else:
-                self.b = np.linalg.lstsq(np.ones((target_data.shape[0], 1), dtype=target_data.dtype),
-                                         target_data, rcond=None)[0]
-            self.b = np.reshape(self.b, (-1, ))
+                self.b = np.linalg.lstsq(
+                    np.ones((target_data.shape[0], 1), dtype=target_data.dtype),
+                    target_data,
+                    rcond=None,
+                )[0]
+            self.b = np.reshape(self.b, (-1,))
         elif not self.estimate_bias_transition and self.estimate_linear_transition:
-            print('Estimating the linear transition')
+            print("Estimating the linear transition")
             if self.b is not None:
-                self.A = np.linalg.lstsq(input_data, target_data-np.reshape(self.b, (1, -1)), rcond=None)[0].T
+                self.A = np.linalg.lstsq(
+                    input_data, target_data - np.reshape(self.b, (1, -1)), rcond=None
+                )[0].T
             else:
                 self.A = np.linalg.lstsq(input_data, target_data, rcond=None)[0].T
         elif self.estimate_bias_transition and self.estimate_linear_transition:
-            print('Estimating the linear transition and bias')
-            self.A, self.b = np.hsplit(np.linalg.lstsq(np.hstack((input_data, np.ones((target_data.shape[0], 1)))),
-                                                       target_data, rcond=None)[0].T, [input_data.shape[1]])
-            self.b = np.reshape(self.b, (-1, ))
+            print("Estimating the linear transition and bias")
+            self.A, self.b = np.hsplit(
+                np.linalg.lstsq(
+                    np.hstack((input_data, np.ones((target_data.shape[0], 1)))),
+                    target_data,
+                    rcond=None,
+                )[0].T,
+                [input_data.shape[1]],
+            )
+            self.b = np.reshape(self.b, (-1,))
         else:
-            raise RuntimeError('Unreachable line of code')
+            raise RuntimeError("Unreachable line of code")
 
         affine_term = 0
         if self.A is not None:
@@ -1250,21 +1437,22 @@ class DeepEchoStateNetwork:
 
             data_size = data_in.shape[1]
 
-            print('Evaluating the hidden state ...')
+            print("Evaluating the hidden state ...")
 
             r = self._reservoir_layer(data_in, data_size)
 
             print("\nApplying transformation ...")
 
-            r_til = self._construct_r_til(r[:self.global_reservoir_dim, ...])
+            r_til = self._construct_r_til(r[: self.global_reservoir_dim, ...])
             if self.input_augmented_reservoir:
-                r_til = np.vstack((r_til, r[self.global_reservoir_dim:, ...]))
+                r_til = np.vstack((r_til, r[self.global_reservoir_dim :, ...]))
 
             # Verifying the adjusting array kappa
             if isinstance(self.kappa, np.ndarray):
                 self.kappa = np.reshape(self.kappa, [1, -1])
-                assert self.kappa.shape[1] == r_til.shape[1],\
-                f"kappa and r-til must have the same samples dimension \
+                assert (
+                    self.kappa.shape[1] == r_til.shape[1]
+                ), f"kappa and r-til must have the same samples dimension \
                 but sizes are {self.kappa.shape[1]} and {r_til.shape[1]}"
             elif self.tau is not None and self.tau > 0:
                 self.kappa = self._default_kappa(r_til.shape[1])
@@ -1272,7 +1460,7 @@ class DeepEchoStateNetwork:
                 self.kappa = np.ones((1, r_til.shape[1]))
 
             r_til *= self.kappa
-            data_out_ = self.kappa*data_out
+            data_out_ = self.kappa * data_out
 
             idenmat = self.beta * sparse.identity(self.global_state_dim)
 
@@ -1288,9 +1476,15 @@ class DeepEchoStateNetwork:
             self.current_state = r[:, -1].copy()
             self.reference_state = r[:, -1].copy()
         else:
-            self.W_out = np.zeros((target_data.shape[1], self.global_state_dim), dtype=target_data.dtype)
-            self.current_state = np.zeros((self.global_state_dim,), dtype=target_data.dtype)
-            self.reference_state = np.zeros((self.global_state_dim,), dtype=target_data.dtype)
+            self.W_out = np.zeros(
+                (target_data.shape[1], self.global_state_dim), dtype=target_data.dtype
+            )
+            self.current_state = np.zeros(
+                (self.global_state_dim,), dtype=target_data.dtype
+            )
+            self.reference_state = np.zeros(
+                (self.global_state_dim,), dtype=target_data.dtype
+            )
 
         print("Fitting concluded.")
 
@@ -1320,9 +1514,9 @@ class DeepEchoStateNetwork:
 
         global_r_ = np.hstack(hidden_states)
 
-        state_ = self._construct_r_til(global_r_[:self.global_reservoir_dim, ...])
+        state_ = self._construct_r_til(global_r_[: self.global_reservoir_dim, ...])
         if self.input_augmented_reservoir:
-            state_ = np.hstack((state_, global_r_[self.global_reservoir_dim:, ...]))
+            state_ = np.hstack((state_, global_r_[self.global_reservoir_dim :, ...]))
 
         out = self.W_out @ state_ + affine_term
 
@@ -1350,11 +1544,13 @@ class DeepEchoStateNetwork:
     def set_reference(self, reference=None):
 
         if reference is None:
-                self.reference_state = self.default_state
+            self.reference_state = self.default_state
         else:
             if isinstance(reference, (int, float)):
                 reference = np.full_like(self.default_state, reference)
-            assert np.array_equal((self.state_dim, ), reference.shape), f'Invalid shape {(self.state_dim, )} != {reference.shape}'
+            assert np.array_equal(
+                (self.state_dim,), reference.shape
+            ), f"Invalid shape {(self.state_dim, )} != {reference.shape}"
             self.reference_state = reference
 
     def reset(self):
@@ -1376,9 +1572,9 @@ class DeepEchoStateNetwork:
 
             r_ = self._update_state(state, data)
 
-            r_til = self._construct_r_til(r_[:self.reservoir_dim, ...])
+            r_til = self._construct_r_til(r_[: self.reservoir_dim, ...])
             if self.input_augmented_reservoir:
-                r_til = np.hstack((r_til, r_[self.reservoir_dim:, ...]))
+                r_til = np.hstack((r_til, r_[self.reservoir_dim :, ...]))
 
             affine_term = 0
             if self.A is not None:
@@ -1398,15 +1594,19 @@ class DeepEchoStateNetwork:
 
     def save(self, save_path=None, model_name=None):
 
-        configs = {k: getattr(self, k) for k in signature(self.__init__).parameters.keys()}
+        configs = {
+            k: getattr(self, k) for k in signature(self.__init__).parameters.keys()
+        }
 
-        to_save = {'current_state': self.current_state,
-                   'reference_state': self.reference_state,
-                   'W_out': self.W_out,
-                   'configs': configs}
-        path = os.path.join(save_path, model_name + '.pkl')
+        to_save = {
+            "current_state": self.current_state,
+            "reference_state": self.reference_state,
+            "W_out": self.W_out,
+            "configs": configs,
+        }
+        path = os.path.join(save_path, model_name + ".pkl")
         try:
-            with open(path, 'wb') as fp:
+            with open(path, "wb") as fp:
                 pickle.dump(to_save, fp, protocol=4)
         except Exception as e:
             print(e, e.args)
@@ -1414,16 +1614,17 @@ class DeepEchoStateNetwork:
     @classmethod
     def restore(cls, model_path, model_name):
 
-        path = os.path.join(model_path, model_name + '.pkl')
-        with open(path, 'rb') as fp:
+        path = os.path.join(model_path, model_name + ".pkl")
+        with open(path, "rb") as fp:
             d = pickle.load(fp)
 
-        self = cls(**d['configs'])
-        d.pop('configs')
+        self = cls(**d["configs"])
+        d.pop("configs")
         for k, v in d.items():
             setattr(self, k, v)
 
         return self
+
 
 # It corresponds to the grouped DeepESN
 class WideEchoStateNetwork:
@@ -1432,14 +1633,38 @@ class WideEchoStateNetwork:
     Echo State Network, a subclass of the Reservoir Computing methods
     """
 
-    def __init__(self, reservoir_dim=None, sparsity_level=None, n_layers=2,
-                       radius=None, number_of_inputs=None, sigma=None, beta=None, kappa=None,
-                       leak_rate=1, activation='tanh', Win_interval=[-1, 1], tau=None,
-                       Win_init='global', transformation='T1', solver='direct_inversion',
-                       s_reservoir_matrix=None, W_in=None, eta=0, global_matrix_constructor_str='multiprocessing',
-                       A=None, b=None, estimate_linear_transition=False, estimate_bias_transition=False,
-                       n_workers=1, memory_percent=0.5, layerwise_train=None, show_log=False,
-                       input_augmented_reservoir=False, model_id=None):
+    def __init__(
+        self,
+        reservoir_dim=None,
+        sparsity_level=None,
+        n_layers=2,
+        radius=None,
+        number_of_inputs=None,
+        sigma=None,
+        beta=None,
+        kappa=None,
+        leak_rate=1,
+        activation="tanh",
+        Win_interval=[-1, 1],
+        tau=None,
+        Win_init="global",
+        transformation="T1",
+        solver="direct_inversion",
+        s_reservoir_matrix=None,
+        W_in=None,
+        eta=0,
+        global_matrix_constructor_str="multiprocessing",
+        A=None,
+        b=None,
+        estimate_linear_transition=False,
+        estimate_bias_transition=False,
+        n_workers=1,
+        memory_percent=0.5,
+        layerwise_train=None,
+        show_log=False,
+        input_augmented_reservoir=False,
+        model_id=None,
+    ):
 
         """
         :param reservoir_dim: dimension of the reservoir matrix
@@ -1461,7 +1686,7 @@ class WideEchoStateNetwork:
         :param model_id:
         """
 
-        self.sparsity_tolerance = 0.0025 # Default choice
+        self.sparsity_tolerance = 0.0025  # Default choice
         self.n_layers = n_layers
 
         self.reservoir_dim = self._make_list(reservoir_dim)
@@ -1512,28 +1737,36 @@ class WideEchoStateNetwork:
             self.global_matrix_constructor = self._construct_global_matrix_direct
         elif self.global_matrix_constructor_str == "numba":
 
-            if platform.system() == 'Darwin':
-                warnings.warn("You are using MacOS. Numba have presented some bugs in this platform.")
-                warnings.warn("You are using MacOS. If you got some issue, test to use multiprocessing instead.")
+            if platform.system() == "Darwin":
+                warnings.warn(
+                    "You are using MacOS. Numba have presented some bugs in this platform."
+                )
+                warnings.warn(
+                    "You are using MacOS. If you got some issue, test to use multiprocessing instead."
+                )
 
             self.global_matrix_constructor = self._construct_global_matrix_numba
         elif self.global_matrix_constructor_str == "multiprocessing":
-            self.global_matrix_constructor = self._construct_global_matrix_multiprocessing
+            self.global_matrix_constructor = (
+                self._construct_global_matrix_multiprocessing
+            )
         else:
-            raise Exception(f"Case {self.global_matrix_constructor_str} not available for creating the"
-                            f"global matrix.")
+            raise Exception(
+                f"Case {self.global_matrix_constructor_str} not available for creating the"
+                f"global matrix."
+            )
 
         # The matrices input-to-reservoir and reservoir can be
         # directly passed to the class instance
         if s_reservoir_matrix is None and W_in is None:
-            print('Initializing ESN matrices ...')
+            print("Initializing ESN matrices ...")
 
             self.s_reservoir_matrix, self.W_in = self._initialize_parameters()
         else:
             self.s_reservoir_matrix = s_reservoir_matrix
             self.W_in = W_in
 
-        self.size_default = np.array([0]).astype('float64').itemsize
+        self.size_default = np.array([0]).astype("float64").itemsize
 
         if show_log == True:
             self.logger = self._show_log
@@ -1542,7 +1775,7 @@ class WideEchoStateNetwork:
 
     def _make_n_inputs_list(self):
 
-        n_inputs_list = self.n_layers*[self.number_of_inputs]
+        n_inputs_list = self.n_layers * [self.number_of_inputs]
 
         return n_inputs_list
 
@@ -1550,9 +1783,11 @@ class WideEchoStateNetwork:
         if type(var) is list:
             return var
         elif type(var) in (str, float, int):
-            return self.n_layers*[var]
+            return self.n_layers * [var]
         else:
-            raise Exception(f"The variable var can be list, str, int or float but received {type(var)}.")
+            raise Exception(
+                f"The variable var can be list, str, int or float but received {type(var)}."
+            )
 
     @property
     def global_reservoir_dim(self):
@@ -1560,15 +1795,17 @@ class WideEchoStateNetwork:
 
     def _show_log(self, i):
 
-        sys.stdout.write(f'\r state {i}')
+        sys.stdout.write(f"\r state {i}")
         sys.stdout.flush()
 
     def _no_log(self, i):
         pass
 
     @property
-    def trainable_variables(self,):
-        return {'A': self.A, 'b': self.b, 'W_out': self.W_out}
+    def trainable_variables(
+        self,
+    ):
+        return {"A": self.A, "b": self.b, "W_out": self.W_out}
 
     def set_activation(self, activation):
         self.activation = activation
@@ -1576,13 +1813,17 @@ class WideEchoStateNetwork:
 
     def _get_activation_function(self, activation):
 
-        method = (getattr(np, activation, None)
-                  or getattr(np.math, activation, None)
-                  or getattr(self, '_' + activation, None))
+        method = (
+            getattr(np, activation, None)
+            or getattr(np.math, activation, None)
+            or getattr(self, "_" + activation, None)
+        )
         if method:
             return method
         else:
-            raise Exception("The activation {} is still not available.".format(activation))
+            raise Exception(
+                "The activation {} is still not available.".format(activation)
+            )
 
     # Linear activation
     def _linear(self, data):
@@ -1592,18 +1833,18 @@ class WideEchoStateNetwork:
     # Sigmoid activation
     def _sigmoid(self, data):
 
-        return 1/(1 + np.exp(-data))
+        return 1 / (1 + np.exp(-data))
 
-    '''
+    """
         BEGIN Transformations that can be applied to the hidden state
 
         Note: A shift = 1 is applied (ii + 1) in order to respect the Python
         0-based system.
-    '''
+    """
 
     def set_transformation(self, transformation):
         self.transformation = transformation
-        self._construct_r_til = getattr(self, '_' + transformation)
+        self._construct_r_til = getattr(self, "_" + transformation)
 
     # ByPass transformation
     def _T0(self, r):
@@ -1648,9 +1889,9 @@ class WideEchoStateNetwork:
                 pass
         return r_til
 
-    '''
+    """
             END Transformations that can be applied to the hidden state
-    '''
+    """
 
     def set_tau(self, tau):
         self.tau = tau
@@ -1658,28 +1899,29 @@ class WideEchoStateNetwork:
 
     def _default_kappa(self, size):
 
-        x = np.arange(size)/size
+        x = np.arange(size) / size
 
         # tau is a positive number in (0, inf] preferably close to 0, e.g., 0.1
         # y[0] == 0 and y is monotonically increasing, i.e, y[k+1] > y[k] and y[-1] < 1
         # we choose tau such that 0.99 ~= y[int(tau*size)]
 
-        y = 1-10**(-2*x/self.tau)
+        y = 1 - 10 ** (-2 * x / self.tau)
         y = np.reshape(y, [1, -1])
         return y
 
     def _update_state(self, previous_state, input_series_state, layer_id=None):
 
-        reservoir_input = previous_state[:self.reservoir_dim[layer_id]]
+        reservoir_input = previous_state[: self.reservoir_dim[layer_id]]
         state = (1 - self.leak_rate[layer_id]) * reservoir_input
-        state += self.leak_rate[layer_id] * self.activation_op(self.s_reservoir_matrix[layer_id].dot(reservoir_input)
-                                                     + np.dot(self.W_in[layer_id], input_series_state))
+        state += self.leak_rate[layer_id] * self.activation_op(
+            self.s_reservoir_matrix[layer_id].dot(reservoir_input)
+            + np.dot(self.W_in[layer_id], input_series_state)
+        )
 
         if self.input_augmented_reservoir:
             state = np.hstack((state, input_series_state))
 
         return state
-
 
     # TODO this stage is considerably expensive. It is necessary to fix it in anyway.
     def _reservoir_layer(self, input_series, data_size):
@@ -1691,12 +1933,16 @@ class WideEchoStateNetwork:
         for ll in range(self.n_layers):
 
             print(f"Applying layer {ll}")
-            r_state = np.zeros((self.state_dim(ll),), dtype=self.s_reservoir_matrix[ll].dtype)
+            r_state = np.zeros(
+                (self.state_dim(ll),), dtype=self.s_reservoir_matrix[ll].dtype
+            )
             r_states = r_states_list[ll]
 
             for i in range(data_size):
 
-                r_states[:, i] = self._update_state(r_state, input_series_[:, i], layer_id=ll)
+                r_states[:, i] = self._update_state(
+                    r_state, input_series_[:, i], layer_id=ll
+                )
                 r_state = r_states[:, i]
 
                 self.logger(i)
@@ -1705,10 +1951,16 @@ class WideEchoStateNetwork:
 
         return np.vstack(hidden_states)
 
-    def _reservoir_dim_corrected_sparsity_level(self, sparsity_level=None, reservoir_dim =None):
+    def _reservoir_dim_corrected_sparsity_level(
+        self, sparsity_level=None, reservoir_dim=None
+    ):
 
         # Guaranteeing a minimum sparsity tolerance
-        dim = max(sparsity_level, self.sparsity_tolerance) if reservoir_dim == 0 else reservoir_dim
+        dim = (
+            max(sparsity_level, self.sparsity_tolerance)
+            if reservoir_dim == 0
+            else reservoir_dim
+        )
         effective_sparsity = sparsity_level / dim
         if effective_sparsity < self.sparsity_tolerance:
             return self.sparsity_tolerance
@@ -1717,9 +1969,13 @@ class WideEchoStateNetwork:
 
     # It creates a sparse and randomly distributed reservoir matrix
     def _create_reservoir(self, sparsity_level=None, reservoir_dim=None):
-        return sparse.rand(reservoir_dim, reservoir_dim,
-                           density=self._reservoir_dim_corrected_sparsity_level(sparsity_level=sparsity_level,
-                                                                                reservoir_dim=reservoir_dim))
+        return sparse.rand(
+            reservoir_dim,
+            reservoir_dim,
+            density=self._reservoir_dim_corrected_sparsity_level(
+                sparsity_level=sparsity_level, reservoir_dim=reservoir_dim
+            ),
+        )
 
     def _initialize_r_states(self, data_size):
 
@@ -1740,9 +1996,11 @@ class WideEchoStateNetwork:
         number_of_inputs = self.n_inputs_list[layer_id]
         sigma = self.sigma[layer_id]
         # Sparse uniform random matrix
-        sparse_reservoir_matrix = self._create_reservoir(sparsity_level=sparsity_level, reservoir_dim=reservoir_dim)
+        sparse_reservoir_matrix = self._create_reservoir(
+            sparsity_level=sparsity_level, reservoir_dim=reservoir_dim
+        )
 
-        sparse_reservoir_matrix += self.eta*sparse.eye(reservoir_dim)
+        sparse_reservoir_matrix += self.eta * sparse.eye(reservoir_dim)
 
         dense_sparse_reservoir_matrix = sparse_reservoir_matrix.todense()
 
@@ -1752,28 +2010,37 @@ class WideEchoStateNetwork:
         if reservoir_dim == 0:
             max_eig = 1.0
         else:
-            eigvals = eigs(dense_sparse_reservoir_matrix, k=1, which='LM', return_eigenvectors=False)
+            eigvals = eigs(
+                dense_sparse_reservoir_matrix,
+                k=1,
+                which="LM",
+                return_eigenvectors=False,
+            )
             max_eig = np.max(np.abs(eigvals))
 
         sparse_reservoir_matrix = sparse_reservoir_matrix * (radius / max_eig)
 
-        if self.Win_init == 'global':
-            Win = np.random.uniform(*self.Win_interval,
-                                    size=[reservoir_dim, number_of_inputs])
+        if self.Win_init == "global":
+            Win = np.random.uniform(
+                *self.Win_interval, size=[reservoir_dim, number_of_inputs]
+            )
 
         # TODO the blockwise option can be slow. Maybe it can be parallelized.
-        elif self.Win_init == 'blockwise':
+        elif self.Win_init == "blockwise":
             n_b = int(reservoir_dim / number_of_inputs)
             Win = np.zeros((reservoir_dim, number_of_inputs))
 
             for j in range(self.number_of_inputs):
                 np.random.seed(seed=j)
-                Win[j*n_b: (j+1)*n_b, j] = np.random.uniform(*self.Win_interval,
-                                           size=[1, n_b])[0]
+                Win[j * n_b : (j + 1) * n_b, j] = np.random.uniform(
+                    *self.Win_interval, size=[1, n_b]
+                )[0]
         else:
-            raise Exception(f"The initialization method {self.Win_init} for W_in is not supported.")
+            raise Exception(
+                f"The initialization method {self.Win_init} for W_in is not supported."
+            )
 
-        Win = sigma*Win
+        Win = sigma * Win
 
         return sparse_reservoir_matrix, np.array(Win)
 
@@ -1783,7 +2050,9 @@ class WideEchoStateNetwork:
         W_in_list = list()
 
         for ll in range(self.n_layers):
-            sparse_reservoir_matrix, W_in = self._initialize_layer_parameters(layer_id=ll)
+            sparse_reservoir_matrix, W_in = self._initialize_layer_parameters(
+                layer_id=ll
+            )
 
             sparse_reservoir_matrix_list.append(sparse_reservoir_matrix)
             W_in_list.append(W_in)
@@ -1802,13 +2071,15 @@ class WideEchoStateNetwork:
         self.solver = solver
         if isinstance(solver, str):
             try:
-                self.solver_op = getattr(self, '_' + solver)
+                self.solver_op = getattr(self, "_" + solver)
             except Exception:
                 raise Exception(f"The option {solver} is not implemented")
         else:
-            print(f"The object {solver} provided is not an attribute of {self}.\
+            print(
+                f"The object {solver} provided is not an attribute of {self}.\
                     Let us consider it as a functional wrapper.\
-                    Good luck in using it.")
+                    Good luck in using it."
+            )
 
             if callable(solver):
                 self.solver_op = solver
@@ -1860,18 +2131,21 @@ class WideEchoStateNetwork:
 
     def _construct_global_matrix_multiprocessing(self, r_til, idenmat):
 
-        assert self.n_workers is not None, "If you are using multiprocessing," \
-                                           "it is necessary to define n_workers."
+        assert self.n_workers is not None, (
+            "If you are using multiprocessing," "it is necessary to define n_workers."
+        )
 
-        assert self.memory_percent is not None, "If you are using multiprocessing," \
-                                                "it is necessary to define memory_percent."
+        assert self.memory_percent is not None, (
+            "If you are using multiprocessing,"
+            "it is necessary to define memory_percent."
+        )
 
-        single_matrix_size = self.size_default*r_til.shape[0]**2
+        single_matrix_size = self.size_default * r_til.shape[0] ** 2
 
-        available_memory = self.memory_percent*psutil.virtual_memory().available
+        available_memory = self.memory_percent * psutil.virtual_memory().available
 
         # Evaluating the maximum number of partial U matrices to be allocated
-        max_n_workers = int(available_memory/single_matrix_size)
+        max_n_workers = int(available_memory / single_matrix_size)
 
         if max_n_workers >= self.n_workers:
             n_workers = self.n_workers
@@ -1894,8 +2168,15 @@ class WideEchoStateNetwork:
     def set_parameters(self, parameters):
 
         for key, value in parameters.items():
-            if key in ['radius', 'sigma', 'tau', 'activation', 'transformation', 'solver']:
-                getattr(self, f'set_{key}')(value)
+            if key in [
+                "radius",
+                "sigma",
+                "tau",
+                "activation",
+                "transformation",
+                "solver",
+            ]:
+                getattr(self, f"set_{key}")(value)
             else:
                 setattr(self, key, value)
 
@@ -1908,27 +2189,41 @@ class WideEchoStateNetwork:
             # dont estimate linear of bias terms
             pass
         elif self.estimate_bias_transition and not self.estimate_linear_transition:
-            print('Estimating the bias')
+            print("Estimating the bias")
             if self.A is not None:
-                self.b = np.linalg.lstsq(np.ones((target_data.shape[0], 1), dtype=target_data.dtype),
-                                         target_data-(self.A@data_in).T, rcond=None)[0]
+                self.b = np.linalg.lstsq(
+                    np.ones((target_data.shape[0], 1), dtype=target_data.dtype),
+                    target_data - (self.A @ data_in).T,
+                    rcond=None,
+                )[0]
             else:
-                self.b = np.linalg.lstsq(np.ones((target_data.shape[0], 1), dtype=target_data.dtype),
-                                         target_data, rcond=None)[0]
-            self.b = np.reshape(self.b, (-1, ))
+                self.b = np.linalg.lstsq(
+                    np.ones((target_data.shape[0], 1), dtype=target_data.dtype),
+                    target_data,
+                    rcond=None,
+                )[0]
+            self.b = np.reshape(self.b, (-1,))
         elif not self.estimate_bias_transition and self.estimate_linear_transition:
-            print('Estimating the linear transition')
+            print("Estimating the linear transition")
             if self.b is not None:
-                self.A = np.linalg.lstsq(input_data, target_data-np.reshape(self.b, (1, -1)), rcond=None)[0].T
+                self.A = np.linalg.lstsq(
+                    input_data, target_data - np.reshape(self.b, (1, -1)), rcond=None
+                )[0].T
             else:
                 self.A = np.linalg.lstsq(input_data, target_data, rcond=None)[0].T
         elif self.estimate_bias_transition and self.estimate_linear_transition:
-            print('Estimating the linear transition and bias')
-            self.A, self.b = np.hsplit(np.linalg.lstsq(np.hstack((input_data, np.ones((target_data.shape[0], 1)))),
-                                                       target_data, rcond=None)[0].T, [input_data.shape[1]])
-            self.b = np.reshape(self.b, (-1, ))
+            print("Estimating the linear transition and bias")
+            self.A, self.b = np.hsplit(
+                np.linalg.lstsq(
+                    np.hstack((input_data, np.ones((target_data.shape[0], 1)))),
+                    target_data,
+                    rcond=None,
+                )[0].T,
+                [input_data.shape[1]],
+            )
+            self.b = np.reshape(self.b, (-1,))
         else:
-            raise RuntimeError('Unreachable line of code')
+            raise RuntimeError("Unreachable line of code")
 
         affine_term = 0
         if self.A is not None:
@@ -1941,21 +2236,22 @@ class WideEchoStateNetwork:
 
             data_size = data_in.shape[1]
 
-            print('Evaluating the hidden state ...')
+            print("Evaluating the hidden state ...")
 
             r = self._reservoir_layer(data_in, data_size)
 
             print("\nApplying transformation ...")
 
-            r_til = self._construct_r_til(r[:self.global_reservoir_dim, ...])
+            r_til = self._construct_r_til(r[: self.global_reservoir_dim, ...])
             if self.input_augmented_reservoir:
-                r_til = np.vstack((r_til, r[self.global_reservoir_dim:, ...]))
+                r_til = np.vstack((r_til, r[self.global_reservoir_dim :, ...]))
 
             # Verifying the adjusting array kappa
             if isinstance(self.kappa, np.ndarray):
                 self.kappa = np.reshape(self.kappa, [1, -1])
-                assert self.kappa.shape[1] == r_til.shape[1],\
-                f"kappa and r-til must have the same samples dimension \
+                assert (
+                    self.kappa.shape[1] == r_til.shape[1]
+                ), f"kappa and r-til must have the same samples dimension \
                 but sizes are {self.kappa.shape[1]} and {r_til.shape[1]}"
             elif self.tau is not None and self.tau > 0:
                 self.kappa = self._default_kappa(r_til.shape[1])
@@ -1963,7 +2259,7 @@ class WideEchoStateNetwork:
                 self.kappa = np.ones((1, r_til.shape[1]))
 
             r_til *= self.kappa
-            data_out_ = self.kappa*data_out
+            data_out_ = self.kappa * data_out
 
             idenmat = self.beta * sparse.identity(self.global_state_dim)
 
@@ -1979,9 +2275,15 @@ class WideEchoStateNetwork:
             self.current_state = r[:, -1].copy()
             self.reference_state = r[:, -1].copy()
         else:
-            self.W_out = np.zeros((target_data.shape[1], self.global_state_dim), dtype=target_data.dtype)
-            self.current_state = np.zeros((self.global_state_dim,), dtype=target_data.dtype)
-            self.reference_state = np.zeros((self.global_state_dim,), dtype=target_data.dtype)
+            self.W_out = np.zeros(
+                (target_data.shape[1], self.global_state_dim), dtype=target_data.dtype
+            )
+            self.current_state = np.zeros(
+                (self.global_state_dim,), dtype=target_data.dtype
+            )
+            self.reference_state = np.zeros(
+                (self.global_state_dim,), dtype=target_data.dtype
+            )
 
         print("Fitting concluded.")
 
@@ -2006,9 +2308,9 @@ class WideEchoStateNetwork:
 
         global_r_ = np.hstack(hidden_states)
 
-        state_ = self._construct_r_til(global_r_[:self.global_reservoir_dim, ...])
+        state_ = self._construct_r_til(global_r_[: self.global_reservoir_dim, ...])
         if self.input_augmented_reservoir:
-            state_ = np.hstack((state_, global_r_[self.global_reservoir_dim:, ...]))
+            state_ = np.hstack((state_, global_r_[self.global_reservoir_dim :, ...]))
 
         out = self.W_out @ state_ + affine_term
 
@@ -2036,11 +2338,13 @@ class WideEchoStateNetwork:
     def set_reference(self, reference=None):
 
         if reference is None:
-                self.reference_state = self.default_state
+            self.reference_state = self.default_state
         else:
             if isinstance(reference, (int, float)):
                 reference = np.full_like(self.default_state, reference)
-            assert np.array_equal((self.state_dim, ), reference.shape), f'Invalid shape {(self.state_dim, )} != {reference.shape}'
+            assert np.array_equal(
+                (self.state_dim,), reference.shape
+            ), f"Invalid shape {(self.state_dim, )} != {reference.shape}"
             self.reference_state = reference
 
     def reset(self):
@@ -2062,9 +2366,9 @@ class WideEchoStateNetwork:
 
             r_ = self._update_state(state, data)
 
-            r_til = self._construct_r_til(r_[:self.reservoir_dim, ...])
+            r_til = self._construct_r_til(r_[: self.reservoir_dim, ...])
             if self.input_augmented_reservoir:
-                r_til = np.hstack((r_til, r_[self.reservoir_dim:, ...]))
+                r_til = np.hstack((r_til, r_[self.reservoir_dim :, ...]))
 
             affine_term = 0
             if self.A is not None:
@@ -2084,15 +2388,19 @@ class WideEchoStateNetwork:
 
     def save(self, save_path=None, model_name=None):
 
-        configs = {k: getattr(self, k) for k in signature(self.__init__).parameters.keys()}
+        configs = {
+            k: getattr(self, k) for k in signature(self.__init__).parameters.keys()
+        }
 
-        to_save = {'current_state': self.current_state,
-                   'reference_state': self.reference_state,
-                   'W_out': self.W_out,
-                   'configs': configs}
-        path = os.path.join(save_path, model_name + '.pkl')
+        to_save = {
+            "current_state": self.current_state,
+            "reference_state": self.reference_state,
+            "W_out": self.W_out,
+            "configs": configs,
+        }
+        path = os.path.join(save_path, model_name + ".pkl")
         try:
-            with open(path, 'wb') as fp:
+            with open(path, "wb") as fp:
                 pickle.dump(to_save, fp, protocol=4)
         except Exception as e:
             print(e, e.args)
@@ -2100,18 +2408,18 @@ class WideEchoStateNetwork:
     @classmethod
     def restore(cls, model_path, model_name):
 
-        path = os.path.join(model_path, model_name + '.pkl')
-        with open(path, 'rb') as fp:
+        path = os.path.join(model_path, model_name + ".pkl")
+        with open(path, "rb") as fp:
             d = pickle.load(fp)
 
-        self = cls(**d['configs'])
-        d.pop('configs')
+        self = cls(**d["configs"])
+        d.pop("configs")
         for k, v in d.items():
             setattr(self, k, v)
 
         return self
 
 
-'''
+"""
     END Reservoir Computing (RC) and children classes
-'''
+"""

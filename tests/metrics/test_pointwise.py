@@ -19,8 +19,8 @@ import torch
 
 from simulai.metrics import PointwiseError
 
-class TestPointwise(TestCase):
 
+class TestPointwise(TestCase):
     def test_pointwise(self):
 
         data = np.random.rand(100, 10)
@@ -44,4 +44,3 @@ class TestPointwise(TestCase):
         evaluation = metric(data=data, reference_data=data_ref)
 
         assert isinstance(evaluation, np.ndarray)
-

@@ -12,20 +12,19 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
+import matplotlib.pyplot as plt
 import numpy as np
 
-import matplotlib.pyplot as plt
-
-errors = np.load('errors.npy')
-derrors = np.load('derrors.npy')[:,0,:]
-eigs = np.load('eigs.npy')
+errors = np.load("errors.npy")
+derrors = np.load("derrors.npy")[:, 0, :]
+eigs = np.load("eigs.npy")
 
 plt.plot(eigs)
 plt.show()
 
-de = errors*derrors
+de = errors * derrors
 
-t = np.arange(0, errors.shape[0])*0.01*1.68*10
+t = np.arange(0, errors.shape[0]) * 0.01 * 1.68 * 10
 
 plt.plot(t, errors)
 plt.show()

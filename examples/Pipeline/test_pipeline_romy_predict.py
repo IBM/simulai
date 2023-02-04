@@ -13,58 +13,61 @@
 #     limitations under the License.
 
 import os
-import numpy as np
 from argparse import ArgumentParser
-import matplotlib.pyplot as plt
 
-from simulai.simulation import Pipeline
+import matplotlib.pyplot as plt
+import numpy as np
+
 from simulai.io import Reshaper
-from simulai.regression import DenseNetwork
-from simulai.rom import POD
 from simulai.math.integration import RK4
 from simulai.metrics import L2Norm
 from simulai.normalization import UnitaryNormalization
+from simulai.regression import DenseNetwork
+from simulai.rom import POD
+from simulai.simulation import Pipeline
+
 
 def time_nonlinear_system(X, Y, T):
     omega_t = 3 * np.pi
 
     # Generic function U = (x**2)*cos(omega_t*t*y) + (t**2)*x*y
-    U = (X ** 2) * np.cos(omega_t * T * Y) + (T ** 2) * X * Y
+    U = (X**2) * np.cos(omega_t * T * Y) + (T**2) * X * Y
     # Time derivative of U
-    U_t = -omega_t * Y * np.sin(omega_t * T * Y) * (X ** 2) + 2 * T * X * Y
+    U_t = -omega_t * Y * np.sin(omega_t * T * Y) * (X**2) + 2 * T * X * Y
 
-    U_nl = -omega_t * Y * np.sin(omega_t * T * Y) * (X ** 2)
+    U_nl = -omega_t * Y * np.sin(omega_t * T * Y) * (X**2)
     U_l = 2 * T * X * Y
 
     u_nl_intg = np.linalg.norm(U_nl.flatten(), 2)
-    u_intg = np.linalg.norm((U_l+U_nl).flatten(), 2)
+    u_intg = np.linalg.norm((U_l + U_nl).flatten(), 2)
 
-    print("Nonlinear contribution ratio to the derivatives: {}".format(u_nl_intg/u_intg))
+    print(
+        "Nonlinear contribution ratio to the derivatives: {}".format(u_nl_intg / u_intg)
+    )
 
     return U, U_t
+
 
 def time_linear_system(X, Y, T):
     lambd = 10
 
     # Generic function U = exp(-lambd*t)*(x**2*cos(y) + x*y)
-    U = np.exp(-lambd * T) * (X ** 2 * np.cos(Y) + X * Y)
+    U = np.exp(-lambd * T) * (X**2 * np.cos(Y) + X * Y)
     # Time derivative of U
     U_t = -lambd * U
 
     return U, U_t
 
-function_switcher = {
-    'linear': time_linear_system,
-    'nonlinear': time_nonlinear_system
-}
+
+function_switcher = {"linear": time_linear_system, "nonlinear": time_nonlinear_system}
 
 # Reading command-line arguments
-parser = ArgumentParser(description='Argument parsers')
+parser = ArgumentParser(description="Argument parsers")
 
-parser.add_argument('--save_path', type=str)
-parser.add_argument('--model_name', type=str)
-parser.add_argument('--problem', type=str)
-parser.add_argument('--case', type=str)
+parser.add_argument("--save_path", type=str)
+parser.add_argument("--model_name", type=str)
+parser.add_argument("--problem", type=str)
+parser.add_argument("--case", type=str)
 
 args = parser.parse_args()
 
@@ -75,7 +78,7 @@ model_name = args.model_name
 problem = args.problem
 case = args.case
 
-save_path = save_path + '/' + model_name + '/'
+save_path = save_path + "/" + model_name + "/"
 if not os.path.isdir(save_path):
     os.mkdir(save_path)
 
@@ -93,30 +96,38 @@ system = function_switcher.get(problem)
 
 U, U_t = system(X, Y, T)
 
-data = np.core.records.fromarrays([U, U_t], names='U, U_t', formats='f8, f8')[:, None]
+data = np.core.records.fromarrays([U, U_t], names="U, U_t", formats="f8, f8")[:, None]
 
 # Data rescaling
 # rescaler = UnitaryNormalization()
 # data = rescaler.rescale(data=data)
 
-dt = 1. / Nt
-dt_ = dt/10
+dt = 1.0 / Nt
+dt_ = dt / 10
 N_epochs = int(dt / dt_) * int(Nt / 2)
 
 n_batches = data.shape[0]
 # Training data
-train_data = data[:int(n_batches / 2), :, :, :]
+train_data = data[: int(n_batches / 2), :, :, :]
 # Testing data
-test_data = data[int(n_batches / 2):, :, :, :]
+test_data = data[int(n_batches / 2) :, :, :, :]
 
 # Preparing multiple data arrays
-input_data = np.core.records.fromarrays([train_data['U']], names='U', formats='f8')[:, None]
+input_data = np.core.records.fromarrays([train_data["U"]], names="U", formats="f8")[
+    :, None
+]
 
-target_data = np.core.records.fromarrays([train_data['U_t']], names='U_t', formats='f8')[:, None]
+target_data = np.core.records.fromarrays(
+    [train_data["U_t"]], names="U_t", formats="f8"
+)[:, None]
 
-test_input_data = np.core.records.fromarrays([test_data['U']], names='U', formats='f8')[:, None]
+test_input_data = np.core.records.fromarrays([test_data["U"]], names="U", formats="f8")[
+    :, None
+]
 
-test_target_data = np.core.records.fromarrays([test_data['U_t']], names='U_t', formats='f8')[:, None]
+test_target_data = np.core.records.fromarrays(
+    [test_data["U_t"]], names="U_t", formats="f8"
+)[:, None]
 
 # The initial state is used to execute a time-integrator
 # as will be seen below
@@ -125,60 +136,56 @@ initial_state = train_data[-1:, :, :, :]
 # Configurations
 # Machine learning model configuration
 # Hidden layers only
-if problem == 'linear':
+if problem == "linear":
     architecture = [50, 50, 50, 50, 50]
 
     # Machine learning configuration model
     model_config = {
-        'dropouts_rates_list': [0, 0, 0, 0, 0],
-        'learning_rate': 1e-05,
-        'l2_reg': 1e-05,
-        'activation_function': 'elu',
-        'loss_function': 'mse',
-        'optimizer': 'adam',
+        "dropouts_rates_list": [0, 0, 0, 0, 0],
+        "learning_rate": 1e-05,
+        "l2_reg": 1e-05,
+        "activation_function": "elu",
+        "loss_function": "mse",
+        "optimizer": "adam",
     }
 
     # Fitting process configuration
     fit_config = {
-        'n_epochs': 50000,  # Just for testing purposes
-        'use_second_order_opt': True  # Default is True
+        "n_epochs": 50000,  # Just for testing purposes
+        "use_second_order_opt": True,  # Default is True
     }
 
     # ROM config (in this case, POD)
-    rom_config = {
-        'n_components': 2
-    }
+    rom_config = {"n_components": 2}
 
-if problem == 'nonlinear':
+if problem == "nonlinear":
     architecture = [100, 100]
 
     # Machine learning configuration model
     model_config = {
-        'dropouts_rates_list': [0, 0],
-        'learning_rate': 1e-05,
-        'l2_reg': 1e-05,
-        'activation_function': 'tanh',
-        'loss_function': 'mse',
-        'optimizer': 'adam',
+        "dropouts_rates_list": [0, 0],
+        "learning_rate": 1e-05,
+        "l2_reg": 1e-05,
+        "activation_function": "tanh",
+        "loss_function": "mse",
+        "optimizer": "adam",
     }
 
     # Fitting process configuration
     fit_config = {
-        'n_epochs': 50000,  # Just for testing purposes
-        'use_second_order_opt': True  # Default is True
+        "n_epochs": 50000,  # Just for testing purposes
+        "use_second_order_opt": True,  # Default is True
     }
 
     # ROM config (in this case, POD)
-    rom_config = {
-        'n_components': 10
-    }
+    rom_config = {"n_components": 10}
 
 # Time-integration configuration
 extra_kwargs = {
-    'initial_state': initial_state,
-    'epochs': N_epochs,
-    'dt': dt_,
-    'resolution': dt
+    "initial_state": initial_state,
+    "epochs": N_epochs,
+    "dt": dt_,
+    "resolution": dt,
 }
 
 
@@ -190,19 +197,25 @@ elif case == "restore":
     model.restore(save_path, model_name)
 
 else:
-    raise Exception("It is necessary to provide the way"
-                    "for obtaining the machine learning model")
+    raise Exception(
+        "It is necessary to provide the way" "for obtaining the machine learning model"
+    )
 
-pipeline = Pipeline([('data_preparer', Reshaper()),
-                     ('rom', POD(config=rom_config)),
-                     ('model', model),
-                     ])
+pipeline = Pipeline(
+    [
+        ("data_preparer", Reshaper()),
+        ("rom", POD(config=rom_config)),
+        ("model", model),
+    ]
+)
 
-pipeline.exec(data=train_data,
-              input_data=input_data,
-              target_data=target_data,
-              reference_data=test_data,
-              fit_kwargs=fit_config)
+pipeline.exec(
+    data=train_data,
+    input_data=input_data,
+    target_data=target_data,
+    reference_data=test_data,
+    fit_kwargs=fit_config,
+)
 
 if case == "fit":
     pipeline.save(save_path=save_path, model_name=model_name)
@@ -212,21 +225,25 @@ estimated_target_data = pipeline.eval(data=test_input_data)
 output = pipeline.predict(post_process_op=RK4, extra_kwargs=extra_kwargs)
 
 l2_norm = L2Norm()
-error_target = l2_norm(data=estimated_target_data,
-                       reference_data=test_target_data['U_t'],
-                       relative_norm=True)
+error_target = l2_norm(
+    data=estimated_target_data,
+    reference_data=test_target_data["U_t"],
+    relative_norm=True,
+)
 
 error_nominal_list = list()
 for ii in range(output.shape[0]):
-    error_nominal = l2_norm(data=output[ii, :, :, :],
-                            reference_data=test_input_data['U'][ii, :, :, :],
-                            relative_norm=True)
+    error_nominal = l2_norm(
+        data=output[ii, :, :, :],
+        reference_data=test_input_data["U"][ii, :, :, :],
+        relative_norm=True,
+    )
 
     error_nominal_list.append(error_nominal)
 
-error_nominal = l2_norm(data=output,
-                        reference_data=test_input_data['U'],
-                        relative_norm=True)
+error_nominal = l2_norm(
+    data=output, reference_data=test_input_data["U"], relative_norm=True
+)
 
 print("Evaluation error: {} %".format(error_target * 100))
 print("Evaluation error: {} %".format(error_nominal * 100))
@@ -240,7 +257,7 @@ plt.colorbar()
 plt.savefig(save_path + "solution_estimated.png")
 plt.close()
 
-plt.imshow(test_data['U'][-1, 0, :, :])
+plt.imshow(test_data["U"][-1, 0, :, :])
 plt.colorbar()
 plt.savefig(save_path + "solution_expected.png")
 plt.close()

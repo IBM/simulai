@@ -14,12 +14,13 @@
 
 import os
 import pickle
+
 import numpy as np
 import sympy as sp
 from sympy import MatrixExpr
 
-class OpInfDeviation:
 
+class OpInfDeviation:
     def __init__(self, A_hat: np.ndarray = None, H_hat: np.ndarray = None) -> None:
 
         """Evaluating the deviation evolution in an OpInf model
@@ -35,8 +36,8 @@ class OpInfDeviation:
 
         self.n = A_hat.shape[0]
 
-        epsilon = sp.MatrixSymbol('epsilon', self.n, 1)
-        u = sp.MatrixSymbol('u', self.n, 1)
+        epsilon = sp.MatrixSymbol("epsilon", self.n, 1)
+        u = sp.MatrixSymbol("u", self.n, 1)
 
         # u*e.T
         ue = sp.MatMul(u, epsilon.T)
@@ -71,11 +72,13 @@ class OpInfDeviation:
         self.jac = self.lambdify(expression=self.jac_expressions)
         self.error = self.lambdify(expression=self.error_expressions)
 
-    def lambdify(self, expression:MatrixExpr=None) -> callable:
+    def lambdify(self, expression: MatrixExpr = None) -> callable:
 
-       return sp.lambdify([self.epsilon, self.u], expression, 'numpy')
+        return sp.lambdify([self.epsilon, self.u], expression, "numpy")
 
-    def eval_jacobian(self, u:np.ndarray=None, epsilon:np.ndarray=None) -> np.ndarray:
+    def eval_jacobian(
+        self, u: np.ndarray = None, epsilon: np.ndarray = None
+    ) -> np.ndarray:
 
         """Evaluating error Jacobian
         :param u: reference solution
@@ -91,7 +94,7 @@ class OpInfDeviation:
 
         return self.jac(epsilon, u)
 
-    def eval_error(self, u:np.ndarray=None, epsilon:np.array=None) -> np.ndarray:
+    def eval_error(self, u: np.ndarray = None, epsilon: np.array = None) -> np.ndarray:
 
         """Evaluating error
         :param u: reference solution
@@ -107,7 +110,7 @@ class OpInfDeviation:
 
         return self.error(epsilon, u)
 
-    def save(self, name:str=None, path:str=None) -> None:
+    def save(self, name: str = None, path: str = None) -> None:
 
         """Complete saving
         :param path: path to the saving directory
@@ -117,10 +120,10 @@ class OpInfDeviation:
         :return: nothing
         """
 
-        blacklist = ['jac', 'error']
+        blacklist = ["jac", "error"]
 
         for item in blacklist:
             delattr(self, item)
 
-        with open(os.path.join(path, name + '.pkl'), 'wb') as fp:
+        with open(os.path.join(path, name + ".pkl"), "wb") as fp:
             pickle.dump(self, fp, protocol=4)

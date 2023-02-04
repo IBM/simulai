@@ -12,19 +12,20 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-from unittest import TestCase
-import numpy as np
 import os
+from unittest import TestCase
+
 import matplotlib.pyplot as plt
+import numpy as np
 
-os.environ['engine'] = 'pytorch'
+os.environ["engine"] = "pytorch"
 
-from simulai.regression import RBFLayer
 from simulai.metrics import L2Norm
+from simulai.regression import RBFLayer
+
 
 # Testing the correctness of the OpInf operators construction
 class TestRBFProjection(TestCase):
-
     def setUp(self) -> None:
         pass
 
@@ -34,22 +35,22 @@ class TestRBFProjection(TestCase):
 
         A = np.random.rand(20, 100)
         B = np.random.rand(100)
-        B = 2*(B - B.min(0))/(B.max(0) - B.min(0)) - 1
+        B = 2 * (B - B.min(0)) / (B.max(0) - B.min(0)) - 1
 
-        omega = 10*np.pi
-        data = np.sin(B*omega*time[:, None]) @ A.T
+        omega = 10 * np.pi
+        data = np.sin(B * omega * time[:, None]) @ A.T
 
         n_latent = 200
         n_outputs = 20
         delta_t = 1
 
         config = {
-            'xmin': 0,
-            'xmax': delta_t,
-            'Nk': n_latent,
-            'var_dim': n_outputs,
-            'Sigma': 0.0001,
-            'name': 'trunk_net'
+            "xmin": 0,
+            "xmax": delta_t,
+            "Nk": n_latent,
+            "var_dim": n_outputs,
+            "Sigma": 0.0001,
+            "name": "trunk_net",
         }
 
         net = RBFLayer(**config)
@@ -60,7 +61,4 @@ class TestRBFProjection(TestCase):
         l2_norm = L2Norm()
 
         error = l2_norm(data=basis @ w, reference_data=data, relative_norm=True)
-        print(f'{100*error} %')
-
-
-
+        print(f"{100*error} %")

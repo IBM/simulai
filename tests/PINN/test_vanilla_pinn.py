@@ -12,15 +12,16 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
-import matplotlib.pyplot as plt
 from unittest import TestCase
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 from simulai.optimization import Optimizer
 from simulai.residuals import SymbolicOperator
 
-class TestAllencahnPINN(TestCase):
 
+class TestAllencahnPINN(TestCase):
     def setUp(self) -> None:
         pass
 
@@ -29,13 +30,13 @@ class TestAllencahnPINN(TestCase):
         # Our PDE
         # Allen-cahn equation
 
-        f = 'D(u, t) - mu*D(D(u, x), x) + alpha*(u**3) + beta*u'
+        f = "D(u, t) - mu*D(D(u, x), x) + alpha*(u**3) + beta*u"
 
-        g_u = 'u'
-        g_ux = 'D(u, x)'
+        g_u = "u"
+        g_ux = "D(u, x)"
 
-        input_labels = ['x', 't']
-        output_labels = ['u']
+        input_labels = ["x", "t"]
+        output_labels = ["u"]
 
         # Some fixed values
         X_DIM = 25
@@ -58,23 +59,34 @@ class TestAllencahnPINN(TestCase):
         dx = (x_L - x_0) / X_DIM
         dt = (t_L - t_0) / T_DIM
 
-        grid = np.mgrid[t_0+dt:t_L+dt:dt, x_0:x_L:dx]
+        grid = np.mgrid[t_0 + dt : t_L + dt : dt, x_0:x_L:dx]
 
-        data = np.hstack([grid[1].flatten()[:, None],
-                          grid[0].flatten()[:, None]])
+        data = np.hstack([grid[1].flatten()[:, None], grid[0].flatten()[:, None]])
 
         data_init = np.linspace(*x_interval, X_DIM)
-        u_init = (data_init**2)*np.cos(np.pi * data_init)[:, None]
+        u_init = (data_init**2) * np.cos(np.pi * data_init)[:, None]
 
         # Boundary grids
-        data_boundary_x0 = np.hstack([x_interval[0] * np.ones((T_DIM, 1)),
-                                      np.linspace(*t_interval, T_DIM)[:, None]])
+        data_boundary_x0 = np.hstack(
+            [
+                x_interval[0] * np.ones((T_DIM, 1)),
+                np.linspace(*t_interval, T_DIM)[:, None],
+            ]
+        )
 
-        data_boundary_xL = np.hstack([x_interval[-1] * np.ones((T_DIM, 1)),
-                                      np.linspace(*t_interval, T_DIM)[:, None]])
+        data_boundary_xL = np.hstack(
+            [
+                x_interval[-1] * np.ones((T_DIM, 1)),
+                np.linspace(*t_interval, T_DIM)[:, None],
+            ]
+        )
 
-        data_boundary_t0 = np.hstack([np.linspace(*x_interval, X_DIM)[:, None],
-                                      t_interval[0] * np.ones((X_DIM, 1))])
+        data_boundary_t0 = np.hstack(
+            [
+                np.linspace(*x_interval, X_DIM)[:, None],
+                t_interval[0] * np.ones((X_DIM, 1)),
+            ]
+        )
 
         n_epochs = 5  # Maximum number of iterations for ADAM
         lr = 1e-3  # Initial learning rate for the ADAM algorithm
@@ -83,56 +95,75 @@ class TestAllencahnPINN(TestCase):
 
             from simulai.regression import DenseNetwork
 
-            input_labels = ['x', 't']
-            output_labels = ['u']
+            input_labels = ["x", "t"]
+            output_labels = ["u"]
 
             n_inputs = len(input_labels)
             n_outputs = len(output_labels)
 
             # Configuration for the fully-connected network
             config = {
-                        'layers_units': [128, 128, 128, 128],
-                        'activations': 'tanh',
-                        'input_size': n_inputs,
-                        'output_size': n_outputs,
-                        'name': 'allen_cahn_net'
-                     }
+                "layers_units": [128, 128, 128, 128],
+                "activations": "tanh",
+                "input_size": n_inputs,
+                "output_size": n_outputs,
+                "name": "allen_cahn_net",
+            }
 
             # Instantiating and training the surrogate model
             net = DenseNetwork(**config)
 
             return net
 
-        optimizer_config = {'lr': lr}
+        optimizer_config = {"lr": lr}
 
         net = model()
 
-        residual = SymbolicOperator(expressions=[f], input_vars=input_labels,
-                                    auxiliary_expressions={'periodic_u': g_u, 'periodic_du': g_ux},
-                                    constants={'mu':1e-4, 'alpha':5, 'beta':-5},
-                                    output_vars=output_labels, function=net,
-                                    engine='torch',
-                                    device='gpu')
+        residual = SymbolicOperator(
+            expressions=[f],
+            input_vars=input_labels,
+            auxiliary_expressions={"periodic_u": g_u, "periodic_du": g_ux},
+            constants={"mu": 1e-4, "alpha": 5, "beta": -5},
+            output_vars=output_labels,
+            function=net,
+            engine="torch",
+            device="gpu",
+        )
 
         # It prints a summary of the network features
         net.summary()
 
-        for optimizer_str in ['adam', 'bbi']:
+        for optimizer_str in ["adam", "bbi"]:
 
-            optimizer = Optimizer(optimizer_str, params=optimizer_config, lr_decay_scheduler_params={'name': 'ExponentialLR',
-                                                                                              'gamma': 0.9,
-                                                                                              'decay_frequency': 5_000},
-                                  shuffle=False,
-                                  summary_writer=True)
+            optimizer = Optimizer(
+                optimizer_str,
+                params=optimizer_config,
+                lr_decay_scheduler_params={
+                    "name": "ExponentialLR",
+                    "gamma": 0.9,
+                    "decay_frequency": 5_000,
+                },
+                shuffle=False,
+                summary_writer=True,
+            )
 
-            params = {'residual': residual,
-                      'initial_input': data_boundary_t0,
-                      'initial_state': u_init,
-                      'boundary_input': {'periodic_u': [data_boundary_xL, data_boundary_x0],
-                                         'periodic_du': [data_boundary_xL, data_boundary_x0]},
-                      'boundary_penalties': [1, 1],
-                      'initial_penalty': 100}
+            params = {
+                "residual": residual,
+                "initial_input": data_boundary_t0,
+                "initial_state": u_init,
+                "boundary_input": {
+                    "periodic_u": [data_boundary_xL, data_boundary_x0],
+                    "periodic_du": [data_boundary_xL, data_boundary_x0],
+                },
+                "boundary_penalties": [1, 1],
+                "initial_penalty": 100,
+            }
 
-            optimizer.fit(op=net, input_data=data,
-                          n_epochs=n_epochs, loss="pirmse", params=params, device='gpu')
-
+            optimizer.fit(
+                op=net,
+                input_data=data,
+                n_epochs=n_epochs,
+                loss="pirmse",
+                params=params,
+                device="gpu",
+            )

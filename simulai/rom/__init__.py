@@ -16,7 +16,7 @@ from simulai import engine
 
 assert engine is not None, "The variable engine was not defined."
 
-from ._rom import ROM, ByPassROM, IByPass, POD, IPOD, DMD, GPOD, QQM, HOSVD
+from ._rom import DMD, GPOD, HOSVD, IPOD, POD, QQM, ROM, ByPassROM, IByPass
 
 if engine == "pytorch":
     pass

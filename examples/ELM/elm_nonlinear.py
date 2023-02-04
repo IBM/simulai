@@ -12,25 +12,25 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 from examples.utils.lorenz_solver import lorenz_solver
-from simulai.regression import ELM
 from simulai.math.integration import LSODA, ClassWrapper
+from simulai.regression import ELM
+
 
 def jacobian(sigma=None, rho=None, beta=None, x=None, y=None, z=None):
 
-    return np.array([[-sigma, sigma, 0],
-                     [rho - z, -1, -x],
-                     [y, x, -beta]])
+    return np.array([[-sigma, sigma, 0], [rho - z, -1, -x], [y, x, -beta]])
+
 
 # Set up
 dt = 0.0025
 T_max = 100
 rho = 28
 beta = 8 / 3
-beta_str = '8/3'
+beta_str = "8/3"
 sigma = 10
 n_field = 3
 lambda_linear = 1e-3
@@ -41,10 +41,17 @@ n_procs = 4
 # Generating datasets
 initial_state = np.array([1, 0, 0])[None, :]
 
-lorenz_data, derivative_lorenz_data, time = lorenz_solver(rho=rho, dt=dt, T=T_max, sigma=sigma,
-                                                          initial_state=initial_state,
-                                                          beta=beta, beta_str=beta_str,
-                                                          data_path='on_memory', solver='RK45')
+lorenz_data, derivative_lorenz_data, time = lorenz_solver(
+    rho=rho,
+    dt=dt,
+    T=T_max,
+    sigma=sigma,
+    initial_state=initial_state,
+    beta=beta,
+    beta_str=beta_str,
+    data_path="on_memory",
+    solver="RK45",
+)
 
 t = time
 n_steps = time.shape[0]
@@ -69,7 +76,7 @@ init_state = train_field[-1:]
 
 estimated_field_derivatives = lorenz_op.eval(input_data=test_field)
 
-tags = ['x', 'y', 'z']
+tags = ["x", "y", "z"]
 
 for var in range(n_field):
     plt.title(f"Time-derivative for variable {tags[var]}")

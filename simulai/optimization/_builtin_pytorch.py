@@ -14,8 +14,8 @@
 
 # Written by Imran Nasim adapted from https://github.com/gbdl/BBI
 
-from torch.optim.optimizer import Optimizer  # , required
 import torch
+from torch.optim.optimizer import Optimizer  # , required
 
 
 class BBI(Optimizer):
@@ -31,13 +31,32 @@ class BBI(Optimizer):
     consEn (bool): if True enforces energy conservation at every step
     n_fixed_bounces (int): number of bounces every T0 iterations (Nb in the paper)
     """
-    def __init__(self, params: dict = None, lr: float = 1e-3, eps1: float = 1e-10, eps2: float = 1e-40,
-                 v0: float = 0, threshold0: int = 1000, threshold: int = 3000, deltaEn: float = 0.0,
-                 consEn: bool = True, n_fixed_bounces: int = 1) -> None:
 
-        defaults = dict(lr=lr, eps1=eps1, eps2=eps2, v0=v0, threshold=threshold,
-                        threshold0=threshold0, deltaEn=deltaEn,
-                        consEn=consEn, n_fixed_bounces=n_fixed_bounces)
+    def __init__(
+        self,
+        params: dict = None,
+        lr: float = 1e-3,
+        eps1: float = 1e-10,
+        eps2: float = 1e-40,
+        v0: float = 0,
+        threshold0: int = 1000,
+        threshold: int = 3000,
+        deltaEn: float = 0.0,
+        consEn: bool = True,
+        n_fixed_bounces: int = 1,
+    ) -> None:
+
+        defaults = dict(
+            lr=lr,
+            eps1=eps1,
+            eps2=eps2,
+            v0=v0,
+            threshold=threshold,
+            threshold0=threshold0,
+            deltaEn=deltaEn,
+            consEn=consEn,
+            n_fixed_bounces=n_fixed_bounces,
+        )
         self.energy = None
         self.min_loss = None
         self.iteration = 0
@@ -54,10 +73,11 @@ class BBI(Optimizer):
         loss = closure()  # .item()
 
         # initialization
-        if (self.iteration == 0):
+        if self.iteration == 0:
             # define a random numbers generator, in order not to use the ambient seed and have random bounces even with the same ambient seed
             self.generator = torch.Generator(
-                device=self.param_groups[0]["params"][0].device)
+                device=self.param_groups[0]["params"][0].device
+            )
             self.generator.manual_seed(self.generator.seed() + 1)
 
             # Initial energy
@@ -73,7 +93,7 @@ class BBI(Optimizer):
 
         for group in self.param_groups:
 
-            V = (loss - group["v0"])
+            V = loss - group["v0"]
             dt = group["lr"]
             eps1 = group["eps1"]
             eps2 = group["eps2"]
@@ -88,25 +108,31 @@ class BBI(Optimizer):
                 # Now I check if loss and pi^2 are consistent with the initial value of the energy
 
                 ps2_pre = torch.tensor(
-                    0.0, device=self.param_groups[0]["params"][0].device)
+                    0.0, device=self.param_groups[0]["params"][0].device
+                )
 
                 for p in group["params"]:
                     param_state = self.state[p]
                     d_p = p.grad.data
                     # Initialize in the direction of the gradient, with magnitude related to deltaE
                     if "momentum_buffer" not in param_state:
-                        buf = param_state["momentum_buffer"] = -(d_p / torch.norm(d_p)) * torch.sqrt(
-                            torch.tensor(((self.init_energy ** 2) / self.initV) - self.initV))
+                        buf = param_state["momentum_buffer"] = -(
+                            d_p / torch.norm(d_p)
+                        ) * torch.sqrt(
+                            torch.tensor(
+                                ((self.init_energy**2) / self.initV) - self.initV
+                            )
+                        )
                     else:
                         buf = param_state["momentum_buffer"]
 
                     # compute the current pi^2 . Pre means that this is the value before the iteration step
                     ps2_pre += torch.dot(buf.view(-1), buf.view(-1))
 
-                if (self.consEn == True):
+                if self.consEn == True:
 
                     # Compare this \pi^2 with what it should have been if the energy was correct
-                    ps2_correct = V * ((EoverV ** 2) - 1.0)
+                    ps2_correct = V * ((EoverV**2) - 1.0)
 
                     # Compute the rescaling factor, only if real
                     if torch.abs(ps2_pre - ps2_correct) < eps1:
@@ -114,8 +140,7 @@ class BBI(Optimizer):
                     elif ps2_correct < 0.0:
                         self.rescaling_pi = 1.0
                     else:
-                        self.rescaling_pi = torch.sqrt(
-                            ((ps2_correct / (ps2_pre))))
+                        self.rescaling_pi = torch.sqrt(((ps2_correct / (ps2_pre))))
 
                 # Perform the optimization step
                 if (self.counter != threshold) and (self.counter0 != threshold0):
@@ -128,15 +153,16 @@ class BBI(Optimizer):
 
                         if "momentum_buffer" not in param_state:
                             buf = param_state["momentum_buffer"] = torch.zeros_like(
-                                p.data)
+                                p.data
+                            )
                         else:
                             buf = param_state["momentum_buffer"]
 
                         # Here the rescaling of momenta to enforce conservation of energy
-                        if (self.consEn == True):
+                        if self.consEn == True:
                             buf.mul_(self.rescaling_pi)
 
-                        buf.add_(- 0.5 * dt * (VoverE + EoverV) * d_p)
+                        buf.add_(-0.5 * dt * (VoverE + EoverV) * d_p)
                         p.data.add_(dt * VoverE * buf)
 
                     # Updates counters
@@ -154,17 +180,23 @@ class BBI(Optimizer):
                     # First we iterate once to compute pi^2, we randomly regenerate the directions, and we compute the new norm squared
 
                     ps20 = torch.tensor(
-                        0.0, device=self.param_groups[0]["params"][0].device)
+                        0.0, device=self.param_groups[0]["params"][0].device
+                    )
                     ps2new = torch.tensor(
-                        0.0, device=self.param_groups[0]["params"][0].device)
+                        0.0, device=self.param_groups[0]["params"][0].device
+                    )
 
                     for p in group["params"]:
                         param_state = self.state[p]
 
                         buf = param_state["momentum_buffer"]
                         ps20 += torch.dot(buf.view(-1), buf.view(-1))
-                        new_buf = param_state["momentum_buffer"] = torch.rand(buf.size(), device=buf.device,
-                                                                              generator=self.generator) - .5
+                        new_buf = param_state["momentum_buffer"] = (
+                            torch.rand(
+                                buf.size(), device=buf.device, generator=self.generator
+                            )
+                            - 0.5
+                        )
                         ps2new += torch.dot(new_buf.view(-1), new_buf.view(-1))
 
                     # Then rescale them
@@ -174,7 +206,7 @@ class BBI(Optimizer):
                         buf.mul_(torch.sqrt(ps20 / ps2new))
 
                     # Update counters
-                    if (self.counter0 == threshold0):
+                    if self.counter0 == threshold0:
                         self.fixed_bounces_performed += 1
                         if self.fixed_bounces_performed < self.n_fixed_bounces:
                             self.counter0 = 0

@@ -12,12 +12,13 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
-from scipy.special import jacobi
 import sys
 
-class GaussLegendre:
+import numpy as np
+from scipy.special import jacobi
 
+
+class GaussLegendre:
     def __init__(self, p_order=None):
         """
         Initializes the Quadrature class.
@@ -42,9 +43,11 @@ class GaussLegendre:
             self.poly_der = self.poly.deriv(1)
             self.poly_roots = sorted(self.poly.roots)
             self.exec = self._exec_homogeneous
-            self.weights = [2 / ((1 - root ** 2) * self.poly_der(root) ** 2)
-                            for root in self.poly_roots]
-            print('')
+            self.weights = [
+                2 / ((1 - root**2) * self.poly_der(root) ** 2)
+                for root in self.poly_roots
+            ]
+            print("")
         elif isinstance(p_order, tuple):
 
             self.poly = tuple()
@@ -60,8 +63,9 @@ class GaussLegendre:
 
                 self.exec = self._execute_adaptative
 
-                weights = [2/((1 - root**2)*poly_der(root)**2)
-                                for root in poly_roots]
+                weights = [
+                    2 / ((1 - root**2) * poly_der(root) ** 2) for root in poly_roots
+                ]
 
                 self.poly += (poly,)
                 self.poly_der += (poly_der,)
@@ -102,7 +106,9 @@ class GaussLegendre:
 
         for key, el in mesh.elements.items():
 
-            sys.stdout.write("\rMapping from the reference to the real mesh element {}".format(key))
+            sys.stdout.write(
+                "\rMapping from the reference to the real mesh element {}".format(key)
+            )
             sys.stdout.flush()
 
             nodes_mapped = mesh.map_to_element(nodes, self.reference_interval, el)
@@ -144,18 +150,28 @@ class GaussLegendre:
 
                 nodes = mesh.internal_boundary_product(self.poly_roots)
 
-                weights = np.array(mesh.internal_boundary_product(self.weights)).prod(axis=1)[:, None]
+                weights = np.array(mesh.internal_boundary_product(self.weights)).prod(
+                    axis=1
+                )[:, None]
 
-                sys.stdout.write("\rMapping from the reference to the real mesh element {} from {}".format(key, boundary))
+                sys.stdout.write(
+                    "\rMapping from the reference to the real mesh element {} from {}".format(
+                        key, boundary
+                    )
+                )
                 sys.stdout.flush()
 
                 if isinstance(self.p_order, tuple):
-                    nodes_mapped = mesh.map_to_boundary_element(nodes, self.reference_interval, el, tag)
+                    nodes_mapped = mesh.map_to_boundary_element(
+                        nodes, self.reference_interval, el, tag
+                    )
                     nodes_list.append(nodes_mapped)
                     weights_list.append(weights)
 
                 else:
-                    nodes_mapped = mesh.map_to_boundary_element(nodes, self.reference_interval, el)
+                    nodes_mapped = mesh.map_to_boundary_element(
+                        nodes, self.reference_interval, el
+                    )
 
                     nodes_list.append(nodes_mapped.T)
                     weights_list.append(weights)

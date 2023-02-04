@@ -26,7 +26,8 @@ class Siren(torch.nn.Module):
         Parameter for the SIREN model.
 
     """
-    name = 'Siren'
+
+    name = "Siren"
 
     def __init__(self, omega_0: float = None, c: float = None) -> None:
         """Initialize SIREN model with given parameters."""
@@ -46,7 +47,7 @@ class Siren(torch.nn.Module):
             A dictionary containing the parameters 'omega_0' and 'c'.
 
         """
-        return {'omega_0': self.omega_0, 'c': self.c}
+        return {"omega_0": self.omega_0, "c": self.c}
 
     def forward(self, input: torch.Tensor) -> torch.Tensor:
         """Perform the forward pass of the SIREN model on the input.
@@ -71,7 +72,8 @@ class sin(torch.nn.Module):
     This module applies the sine function element-wise to the input.
 
     """
-    name = 'sin'
+
+    name = "sin"
 
     def __init__(self) -> None:
         """Initialize the sine activation function."""

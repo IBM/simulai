@@ -12,20 +12,20 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
-from unittest import TestCase
-import random
-import h5py
 import os
+import random
+from unittest import TestCase
 
+import h5py
+import numpy as np
 
 from simulai.io import MapValid
-from simulai.simulation import Pipeline
 from simulai.rom import IByPass
+from simulai.simulation import Pipeline
 from simulai.utilities import make_temp_directory
 
-class TestMapValid(TestCase):
 
+class TestMapValid(TestCase):
     def setUp(self) -> None:
         pass
 
@@ -60,9 +60,11 @@ class TestMapValid(TestCase):
 
         data_ = self.data_gen(size=size, valid_percent=valid_percent, mask=mask)
 
-        data = np.core.records.fromarrays([data_[..., i:i+1] for i in range(data_.shape[-1])],
-                                          names=[f'var_{i}' for i in range(data_.shape[-1])],
-                                          formats=data_.shape[-1]*['f8'])
+        data = np.core.records.fromarrays(
+            [data_[..., i : i + 1] for i in range(data_.shape[-1])],
+            names=[f"var_{i}" for i in range(data_.shape[-1])],
+            formats=data_.shape[-1] * ["f8"],
+        )
 
         return data
 
@@ -75,7 +77,7 @@ class TestMapValid(TestCase):
 
         masks = [np.inf, np.NaN, np.nan, 1e16, 0, -9999999]
 
-        config = {'replace_mask_with_large_number': False}
+        config = {"replace_mask_with_large_number": False}
 
         for mask in masks:
 
@@ -89,8 +91,9 @@ class TestMapValid(TestCase):
             recovered_data = map_valid.prepare_output_data(data=reshaped_data)
 
             not_nan = np.logical_not(np.isnan(recovered_data))
-            assert np.all(data[not_nan] == recovered_data[not_nan]),\
-                "The original and the recovered are not equal"
+            assert np.all(
+                data[not_nan] == recovered_data[not_nan]
+            ), "The original and the recovered are not equal"
 
     def test_mapvalid_structured(self):
 
@@ -105,41 +108,55 @@ class TestMapValid(TestCase):
 
             print(f"Testing using the mask: {mask}")
 
-            data = self.data_gen_structured(size=(Nx, Ny, Nz), valid_percent=0.50, mask=mask)
+            data = self.data_gen_structured(
+                size=(Nx, Ny, Nz), valid_percent=0.50, mask=mask
+            )
             batch_size = 10
 
             with make_temp_directory() as tmp_dir:
-                with h5py.File(os.path.join(tmp_dir, 'test_data.h5'), 'w') as fp:
+                with h5py.File(os.path.join(tmp_dir, "test_data.h5"), "w") as fp:
 
-                    dset = fp.create_dataset('data', shape=data.shape, dtype=data.dtype)
+                    dset = fp.create_dataset("data", shape=data.shape, dtype=data.dtype)
 
                     dset[:] = data
 
-                    mapvalid_config = {'return_the_same_mask': True}
-                    pipeline = Pipeline(stages=[('data_preparer', MapValid(config=mapvalid_config,
-                                                                           mask=mask)),
-                                                ('rom', IByPass())],
-                                        channels_last=True)
+                    mapvalid_config = {"return_the_same_mask": True}
+                    pipeline = Pipeline(
+                        stages=[
+                            (
+                                "data_preparer",
+                                MapValid(config=mapvalid_config, mask=mask),
+                            ),
+                            ("rom", IByPass()),
+                        ],
+                        channels_last=True,
+                    )
 
-                    pipeline.exec(input_data=dset,
-                                  data_interval=[0, dset.shape[0]],
-                                  batch_size=batch_size)
+                    pipeline.exec(
+                        input_data=dset,
+                        data_interval=[0, dset.shape[0]],
+                        batch_size=batch_size,
+                    )
 
-                    projected = pipeline.project_data(data=dset,
-                                                      data_interval=[0, dset.shape[0]],
-                                                      variables_list=dset.dtype.names,
-                                                      batch_size=batch_size)
+                    projected = pipeline.project_data(
+                        data=dset,
+                        data_interval=[0, dset.shape[0]],
+                        variables_list=dset.dtype.names,
+                        batch_size=batch_size,
+                    )
 
-                    recovered_data = pipeline.reconstruct_data(data=projected,
-                                                              data_interval=[0, dset.shape[0]],
-                                                              variables_list=dset.dtype.names,
-                                                              batch_size=batch_size,
-                                                              dump_path=os.path.join(tmp_dir, f"reconstruction.h5")
-                                                              )
+                    recovered_data = pipeline.reconstruct_data(
+                        data=projected,
+                        data_interval=[0, dset.shape[0]],
+                        variables_list=dset.dtype.names,
+                        batch_size=batch_size,
+                        dump_path=os.path.join(tmp_dir, f"reconstruction.h5"),
+                    )
 
                     recdata = recovered_data[:].view(float)
                     data = dset[:].view(float)
 
                     not_nan = np.logical_not(np.isnan(recdata.view(float)))
-                    assert np.all(data[not_nan] == recdata[not_nan]),\
-                        "The original and the recovered are not equal"
+                    assert np.all(
+                        data[not_nan] == recdata[not_nan]
+                    ), "The original and the recovered are not equal"

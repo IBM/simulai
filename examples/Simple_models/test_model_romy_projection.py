@@ -12,20 +12,21 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
 from argparse import ArgumentParser
 
-from simulai.simulation import Pipeline
+import numpy as np
+
 from simulai.io import Reshaper
-from simulai.rom import POD
 from simulai.metrics import L2Norm
+from simulai.rom import POD
+from simulai.simulation import Pipeline
 
 # Reading command-line arguments
-parser = ArgumentParser(description='Argument parsers')
+parser = ArgumentParser(description="Argument parsers")
 
-parser.add_argument('--data_path', type=str)
-parser.add_argument('--save_path', type=str)
-parser.add_argument('--model_name', type=str)
+parser.add_argument("--data_path", type=str)
+parser.add_argument("--save_path", type=str)
+parser.add_argument("--model_name", type=str)
 
 args = parser.parse_args()
 
@@ -52,19 +53,15 @@ n_batches = data.shape[0]
 frac = 0.5
 
 # Training data
-input_data = data[:int(frac*n_batches), :, :, :]
-test_data = data[int(frac*n_batches):, :, :, :]
+input_data = data[: int(frac * n_batches), :, :, :]
+test_data = data[int(frac * n_batches) :, :, :, :]
 
 # Configurations
-rom_config = {
-              'n_components': 25
-             }
+rom_config = {"n_components": 25}
 
 l2_norm = L2Norm()
 
-pipeline = Pipeline([('data_preparer', Reshaper()),
-                     ('rom', POD(config=rom_config))
-                     ])
+pipeline = Pipeline([("data_preparer", Reshaper()), ("rom", POD(config=rom_config))])
 
 pipeline.exec(data=input_data, input_data=input_data)
 
@@ -77,11 +74,12 @@ reconstructed_test = pipeline.reconstruct_data(data=projected_test)
 input_data_numeric = np.hstack([input_data[name] for name in input_data.dtype.names])
 test_data_numeric = np.hstack([test_data[name] for name in test_data.dtype.names])
 
-error = l2_norm(data=reconstructed, reference_data=input_data_numeric, relative_norm=True)
-error_test = l2_norm(data=reconstructed_test, reference_data=test_data_numeric, relative_norm=True)
+error = l2_norm(
+    data=reconstructed, reference_data=input_data_numeric, relative_norm=True
+)
+error_test = l2_norm(
+    data=reconstructed_test, reference_data=test_data_numeric, relative_norm=True
+)
 
-print("Projection error for the training data: {} %".format(100*error))
-print("Projection error for the testing data: {} %".format(100*error_test))
-
-
-
+print("Projection error for the training data: {} %".format(100 * error))
+print("Projection error for the testing data: {} %".format(100 * error_test))

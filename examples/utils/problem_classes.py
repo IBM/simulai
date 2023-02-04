@@ -17,8 +17,15 @@ from scipy import linalg
 
 
 class NonlinearOscillator:
-
-    def __init__(self, forcing : bool =False, p : int =3, alpha1=-0.1, alpha2=-2, beta1=2, beta2=-0.1):
+    def __init__(
+        self,
+        forcing: bool = False,
+        p: int = 3,
+        alpha1=-0.1,
+        alpha2=-2,
+        beta1=2,
+        beta2=-0.1,
+    ):
 
         self.alpha1 = alpha1
         self.alpha2 = alpha2
@@ -32,7 +39,9 @@ class NonlinearOscillator:
         elif forcing is False:
             self.eval = self._eval_without_forcing
         else:
-            raise Exception(f"It is expected forcing to be bool but received {type(forcing)}")
+            raise Exception(
+                f"It is expected forcing to be bool but received {type(forcing)}"
+            )
 
     def _eval_without_forcing(self, state):
 
@@ -41,8 +50,8 @@ class NonlinearOscillator:
         x = state_[0]
         y = state_[1]
 
-        f = self.alpha1 * (x ** self.p) + self.beta1 * (y ** self.p)
-        g = self.alpha2 * (x ** self.p) + self.beta2 * (y ** self.p)
+        f = self.alpha1 * (x**self.p) + self.beta1 * (y**self.p)
+        g = self.alpha2 * (x**self.p) + self.beta2 * (y**self.p)
 
         return f, g
 
@@ -55,8 +64,8 @@ class NonlinearOscillator:
         u = state_[2]
         v = state_[3]
 
-        f = self.alpha1 * (x ** self.p) + self.beta1 * (y ** self.p) + u
-        g = self.alpha2 * (x ** self.p) + self.beta2 * (y ** self.p) + v
+        f = self.alpha1 * (x**self.p) + self.beta1 * (y**self.p) + u
+        g = self.alpha2 * (x**self.p) + self.beta2 * (y**self.p) + v
 
         return f, g
 
@@ -68,8 +77,7 @@ class NonlinearOscillator:
 
 
 class LorenzSystem:
-
-    def __init__(self, rho, sigma, beta, forcing : bool =False, use_t : bool =False):
+    def __init__(self, rho, sigma, beta, forcing: bool = False, use_t: bool = False):
         """
 
         :param rho:
@@ -88,7 +96,9 @@ class LorenzSystem:
         elif forcing is False and use_t is True:
             self.eval = self._eval_without_forcing_t
         else:
-            raise Exception(f"It is expected forcing to be bool but received {type(forcing)}")
+            raise Exception(
+                f"It is expected forcing to be bool but received {type(forcing)}"
+            )
 
     def _eval_without_forcing(self, state, *args):
 
@@ -99,8 +109,8 @@ class LorenzSystem:
         z = state_[2]
 
         f = self.sigma * (y - x)
-        g = x*(self.rho - z) - y
-        h = x*y - self.beta*z
+        g = x * (self.rho - z) - y
+        h = x * y - self.beta * z
 
         return np.array([f, g, h])
 
@@ -113,8 +123,8 @@ class LorenzSystem:
         z = state_[2]
 
         f = self.sigma * (y - x)
-        g = x*(self.rho - z) - y
-        h = x*y - self.beta*z
+        g = x * (self.rho - z) - y
+        h = x * y - self.beta * z
 
         return np.array([f, g, h])
 
@@ -130,8 +140,8 @@ class LorenzSystem:
         w = state_[5]
 
         f = self.sigma * (y - x) + u
-        g = x*(self.rho - z) - y + v
-        h = x*y - self.beta*z + w
+        g = x * (self.rho - z) - y + v
+        h = x * y - self.beta * z + w
 
         return np.array([f, g, h])
 
@@ -151,15 +161,13 @@ class LorenzSystem:
         e2 = e[1]
         e3 = e[2]
 
-        D = np.array([
-                        [-self.sigma, self.sigma, 0],
-                        [-z + self.rho,    -1,   -x],
-                        [y,       x,     -self.beta]
-                     ])
+        D = np.array(
+            [[-self.sigma, self.sigma, 0], [-z + self.rho, -1, -x], [y, x, -self.beta]]
+        )
 
-        J = np.eye(3) + dt*D
+        J = np.eye(3) + dt * D
         w_prev = w
-        w = linalg.orth(J*w_prev)
+        w = linalg.orth(J * w_prev)
 
         de1 = np.log(np.linalg.norm(w[:, 0], 2))
         de2 = np.log(np.linalg.norm(w[:, 1], 2))
@@ -173,4 +181,6 @@ class LorenzSystem:
         w2 = w[:, 1] / np.linalg.norm(w[:, 1], 2)
         w3 = w[:, 2] / np.linalg.norm(w[:, 2], 2)
 
-        return np.array([e1, e2, e3]), np.hstack([w1[:, None], w2[:, None], w3[:, None]])
+        return np.array([e1, e2, e3]), np.hstack(
+            [w1[:, None], w2[:, None], w3[:, None]]
+        )

@@ -12,19 +12,24 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
 from unittest import TestCase
-import torch
 
+import numpy as np
+import torch
 from utils import configure_device
 
 DEVICE = configure_device()
 
 # Model template
-def model(product_type=None, multiply_by_trunk:bool=False, n_outputs:int=4, residual:bool=False):
+def model(
+    product_type=None,
+    multiply_by_trunk: bool = False,
+    n_outputs: int = 4,
+    residual: bool = False,
+):
 
-    from simulai.regression import DenseNetwork
     from simulai.models import FlexibleDeepONet
+    from simulai.regression import DenseNetwork
 
     n_inputs_t = 1
     n_inputs_b = 4
@@ -37,28 +42,28 @@ def model(product_type=None, multiply_by_trunk:bool=False, n_outputs:int=4, resi
 
     # Configuration for the fully-connected trunk network
     trunk_config = {
-        'layers_units': 7 * [100],  # Hidden layers
-        'activations': 'tanh',
-        'input_size': n_inputs_t,
-        'output_size': output_size,
-        'name': 'trunk_net'
+        "layers_units": 7 * [100],  # Hidden layers
+        "activations": "tanh",
+        "input_size": n_inputs_t,
+        "output_size": output_size,
+        "name": "trunk_net",
     }
 
     pre_config = {
-        'layers_units': 2 * [100],  # Hidden layers
-        'activations': 'tanh',
-        'input_size': n_inputs_b,
-        'output_size': 2*n_inputs_t,
-        'name': 'trunk_net'
+        "layers_units": 2 * [100],  # Hidden layers
+        "activations": "tanh",
+        "input_size": n_inputs_b,
+        "output_size": 2 * n_inputs_t,
+        "name": "trunk_net",
     }
 
     # Configuration for the fully-connected branch network
     branch_config = {
-        'layers_units': 7 * [100],  # Hidden layers
-        'activations': 'tanh',
-        'input_size': n_inputs_b,
-        'output_size': n_latent * n_outputs,
-        'name': 'branch_net',
+        "layers_units": 7 * [100],  # Hidden layers
+        "activations": "tanh",
+        "input_size": n_inputs_b,
+        "output_size": n_latent * n_outputs,
+        "name": "branch_net",
     }
 
     # Instantiating and training the surrogate model
@@ -66,24 +71,26 @@ def model(product_type=None, multiply_by_trunk:bool=False, n_outputs:int=4, resi
     pre_net = DenseNetwork(**pre_config)
     branch_net = DenseNetwork(**branch_config)
 
-    net = FlexibleDeepONet(trunk_network=trunk_net,
-                           branch_network=branch_net,
-                           pre_network=pre_net,
-                           var_dim=n_outputs,
-                           multiply_by_trunk=multiply_by_trunk,
-                           product_type=product_type,
-                           residual=residual,
-                           model_id='net')
+    net = FlexibleDeepONet(
+        trunk_network=trunk_net,
+        branch_network=branch_net,
+        pre_network=pre_net,
+        var_dim=n_outputs,
+        multiply_by_trunk=multiply_by_trunk,
+        product_type=product_type,
+        residual=residual,
+        model_id="net",
+    )
 
     return net
 
-class TestImprovedDeeponet(TestCase):
 
+class TestImprovedDeeponet(TestCase):
     def setUp(self) -> None:
         pass
 
     def test_deeponet_forward(self):
-        
+
         net = model()
         net.summary()
 
@@ -96,15 +103,21 @@ class TestImprovedDeeponet(TestCase):
 
         assert output.shape[1] == 4, "The network output is not like expected."
 
-        output = net.eval_subnetwork(name='trunk', trunk_data=data_trunk, branch_data=data_branch)
+        output = net.eval_subnetwork(
+            name="trunk", trunk_data=data_trunk, branch_data=data_branch
+        )
         assert output.shape[1] == 400, "The network output is not like expected."
         assert isinstance(output, np.ndarray)
 
-        output = net.eval_subnetwork(name='branch', trunk_data=data_trunk, branch_data=data_branch)
+        output = net.eval_subnetwork(
+            name="branch", trunk_data=data_trunk, branch_data=data_branch
+        )
         assert output.shape[1] == 400, "The network output is not like expected."
         assert isinstance(output, np.ndarray)
 
-        output = net.eval_subnetwork(name='pre', trunk_data=data_trunk, branch_data=data_branch)
+        output = net.eval_subnetwork(
+            name="pre", trunk_data=data_trunk, branch_data=data_branch
+        )
         assert output.shape[1] == 2, "The network output is not like expected."
         assert isinstance(output, np.ndarray)
 
@@ -112,7 +125,7 @@ class TestImprovedDeeponet(TestCase):
 
         from simulai.optimization import Optimizer
 
-        optimizer_config = {'lr': 1e-3}
+        optimizer_config = {"lr": 1e-3}
 
         data_trunk = torch.rand(1_000, 1)
         data_branch = torch.rand(1_000, 4)
@@ -120,22 +133,33 @@ class TestImprovedDeeponet(TestCase):
 
         n_epochs = 10
         maximum_values = (1 / np.linalg.norm(output_target, 2, axis=0)).tolist()
-        params = {'lambda_1': 0.0, 'lambda_2': 1e-10, 'weights': maximum_values}
+        params = {"lambda_1": 0.0, "lambda_2": 1e-10, "weights": maximum_values}
 
-        input_data = {'input_branch': data_branch, 'input_trunk': data_trunk}
+        input_data = {"input_branch": data_branch, "input_trunk": data_trunk}
 
-        optimizer = Optimizer('adam', params=optimizer_config)
+        optimizer = Optimizer("adam", params=optimizer_config)
 
-        for product_type in [None, 'dense']:
+        for product_type in [None, "dense"]:
 
             for multiply_by_trunk in [True, False]:
 
-                print(f"Multiply by trunk: {multiply_by_trunk}, Product type: {product_type}")
+                print(
+                    f"Multiply by trunk: {multiply_by_trunk}, Product type: {product_type}"
+                )
 
-                net = model(multiply_by_trunk=multiply_by_trunk, product_type=product_type)
+                net = model(
+                    multiply_by_trunk=multiply_by_trunk, product_type=product_type
+                )
 
-                optimizer.fit(op=net, input_data=input_data, target_data=output_target,
-                              n_epochs=n_epochs, loss="wrmse", params=params, device=DEVICE)
+                optimizer.fit(
+                    op=net,
+                    input_data=input_data,
+                    target_data=output_target,
+                    n_epochs=n_epochs,
+                    loss="wrmse",
+                    params=params,
+                    device=DEVICE,
+                )
 
                 output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
 
@@ -146,7 +170,7 @@ class TestImprovedDeeponet(TestCase):
 
         from simulai.optimization import Optimizer
 
-        optimizer_config = {'lr': 1e-3}
+        optimizer_config = {"lr": 1e-3}
 
         data_trunk = torch.rand(1_000, 1)
         data_branch = torch.rand(1_000, 4)
@@ -154,16 +178,23 @@ class TestImprovedDeeponet(TestCase):
 
         n_epochs = 1_00
         maximum_values = (1 / np.linalg.norm(output_target, 2, axis=0)).tolist()
-        params = {'lambda_1': 0.0, 'lambda_2': 1e-10, 'weights': maximum_values}
+        params = {"lambda_1": 0.0, "lambda_2": 1e-10, "weights": maximum_values}
 
-        input_data = {'input_branch': data_branch, 'input_trunk': data_trunk}
+        input_data = {"input_branch": data_branch, "input_trunk": data_trunk}
 
-        optimizer = Optimizer('adam', params=optimizer_config)
+        optimizer = Optimizer("adam", params=optimizer_config)
 
         net = model(n_outputs=1)
 
-        optimizer.fit(op=net, input_data=input_data, target_data=output_target,
-                      n_epochs=n_epochs, loss="wrmse", params=params, device=DEVICE)
+        optimizer.fit(
+            op=net,
+            input_data=input_data,
+            target_data=output_target,
+            n_epochs=n_epochs,
+            loss="wrmse",
+            params=params,
+            device=DEVICE,
+        )
 
         output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
 

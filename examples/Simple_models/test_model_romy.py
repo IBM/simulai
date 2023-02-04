@@ -12,14 +12,16 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
 from argparse import ArgumentParser
+
+import numpy as np
+
 from simulai.math.differentiation import CollocationDerivative
 from simulai.math.integration import RK4
 from simulai.metrics import L2Norm
 from simulai.simulation import Surrogate
 
-'''
+"""
  We intend to use some specific
  dataset U and fit a surrogate model for it
 
@@ -27,14 +29,14 @@ from simulai.simulation import Surrogate
  three entities, namely:  Data (or a Simulation object in a physically-based approach),
                           Dimensionality Reduction Model and
                           Machine-Learning model
-'''
+"""
 
 # Reading command-line arguments
-parser = ArgumentParser(description='Argument parsers')
+parser = ArgumentParser(description="Argument parsers")
 
-parser.add_argument('--data_path', type=str)
-parser.add_argument('--save_path', type=str)
-parser.add_argument('--model_name', type=str)
+parser.add_argument("--data_path", type=str)
+parser.add_argument("--save_path", type=str)
+parser.add_argument("--model_name", type=str)
 
 args = parser.parse_args()
 
@@ -51,15 +53,15 @@ variables_list = list(data.dtype.names)
 
 n_batches = data.shape[0]
 # Training data
-train_data = data[:int(n_batches/2), :, :, :]
+train_data = data[: int(n_batches / 2), :, :, :]
 # Testing data
-test_data = data[int(n_batches/2):, :, :, :]
+test_data = data[int(n_batches / 2) :, :, :, :]
 
 N_t = data.shape[0]
-dt = 1/N_t
-dt_ = dt/10
+dt = 1 / N_t
+dt_ = dt / 10
 
-N_epochs = int((dt/dt_)*N_t/2)
+N_epochs = int((dt / dt_) * N_t / 2)
 
 # The initial state is used to execute a time-integrator
 # as will be seen below
@@ -67,36 +69,36 @@ initial_state = train_data[-1:, :, :, :]
 
 # Machine learning model configuration
 model_config = {
-                'architecture': [50, 50, 50, 50, 50],# Hidden layers only
-                'dropouts_rates_list': [0, 0, 0, 0, 0],
-                'learning_rate': 1e-05,
-                'l2_reg': 1e-05,
-                'activation_function': 'elu',
-                'loss_function': 'mse',
-                'optimizer': 'adam',
-                }
+    "architecture": [50, 50, 50, 50, 50],  # Hidden layers only
+    "dropouts_rates_list": [0, 0, 0, 0, 0],
+    "learning_rate": 1e-05,
+    "l2_reg": 1e-05,
+    "activation_function": "elu",
+    "loss_function": "mse",
+    "optimizer": "adam",
+}
 
 # Fitting process configuration
 fit_config = {
-              'n_epochs': 10000, # Just for testing purposes
-              'use_second_order_opt': True # Default is True
-              }
+    "n_epochs": 10000,  # Just for testing purposes
+    "use_second_order_opt": True,  # Default is True
+}
 
-rom_config = {
-              'n_components': 5
-             }
+rom_config = {"n_components": 5}
 
-data_generator_config = {'step': dt}
+data_generator_config = {"step": dt}
 
 # Instantiating the class Surrogate
-surrogate = Surrogate(input_var_names=variables_list,
-                      data_preparer="reshaper",
-                      rom="pod",
-                      model="dense",
-                      data_generator=CollocationDerivative,
-                      rom_config=rom_config,
-                      model_config=model_config,
-                      data_generator_config=data_generator_config)
+surrogate = Surrogate(
+    input_var_names=variables_list,
+    data_preparer="reshaper",
+    rom="pod",
+    model="dense",
+    data_generator=CollocationDerivative,
+    rom_config=rom_config,
+    model_config=model_config,
+    data_generator_config=data_generator_config,
+)
 
 # Fitting
 surrogate.fit(data=train_data, fit_config=fit_config)
@@ -118,9 +120,9 @@ reconstructed_extrapolation = surrogate.reconstruct_data(extrapolation)
 
 # Providing a metric and executing a test with the trained model
 l2_norm = L2Norm()
-error = surrogate.test(metric=l2_norm, data=test_data, reference_data=reconstructed_extrapolation)
+error = surrogate.test(
+    metric=l2_norm, data=test_data, reference_data=reconstructed_extrapolation
+)
 print("L2 error norm of the extrapolation {}".format(error))
 
 print("Evaluation using the model concluded.")
-
-

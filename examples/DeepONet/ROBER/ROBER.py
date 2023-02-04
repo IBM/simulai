@@ -12,13 +12,13 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from scipy.integrate import odeint
 
-class ROBER:
 
-    def __init__(self, k1:float=None, k2:float=None, k3:float=None) -> None:
+class ROBER:
+    def __init__(self, k1: float = None, k2: float = None, k3: float = None) -> None:
 
         self.k1 = k1
         self.k2 = k2
@@ -30,9 +30,9 @@ class ROBER:
         s2 = state[1]
         s3 = state[2]
 
-        s1_residual = - self.k1*s1 + self.k3*s2*s3
-        s2_residual = self.k1*s1 - self.k2*(s2**2) - self.k3*s2*s3
-        s3_residual = self.k2*(s2**2)
+        s1_residual = -self.k1 * s1 + self.k3 * s2 * s3
+        s2_residual = self.k1 * s1 - self.k2 * (s2**2) - self.k3 * s2 * s3
+        s3_residual = self.k2 * (s2**2)
 
         return np.array([s1_residual, s2_residual, s3_residual])
 
@@ -42,6 +42,7 @@ class ROBER:
         solution = odeint(self.eval, initial_state, t)
 
         return np.vstack(solution)
+
 
 k1 = 0.04
 k2 = 3e7
@@ -60,10 +61,9 @@ solver = ROBER(k1=k1, k2=k2, k3=k3)
 
 solution = solver.run(initial_state, t)
 
-solution = solution*np.array([1, 1e4, 1])
+solution = solution * np.array([1, 1e4, 1])
 
-ground_truth = np.load('evaluation.npy')
+ground_truth = np.load("evaluation.npy")
 
 plt.plot(t, solution)
 plt.show()
-

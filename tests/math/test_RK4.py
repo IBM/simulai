@@ -12,13 +12,14 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
 from unittest import TestCase
+
+import numpy as np
 
 from simulai.math.integration import RK4
 
-class Pendulum:
 
+class Pendulum:
     def __init__(self, k=1, u=None):
 
         self.k = k
@@ -48,20 +49,20 @@ class Pendulum:
 
         return self.call(data)
 
-class TestRK4Integrator(TestCase):
 
+class TestRK4Integrator(TestCase):
     def setUp(self) -> None:
         pass
 
     def forcing(self, x):
         A = 0.5
-        return A*(np.cos(2*x) + np.sin(2*x))
+        return A * (np.cos(2 * x) + np.sin(2 * x))
 
     def test_integration_without_forcings(self):
 
         N = 1000
-        t = np.linspace(0, 10*np.pi, N)
-        dt = (t[1] - t[0])
+        t = np.linspace(0, 10 * np.pi, N)
+        dt = t[1] - t[0]
 
         initial_state = np.array([0, 1])[None, :]
 
@@ -71,22 +72,27 @@ class TestRK4Integrator(TestCase):
 
         print("Extrapolation concluded.")
 
-        assert isinstance(output_array, np.ndarray), "The output of the integration must be a np.ndarray."
+        assert isinstance(
+            output_array, np.ndarray
+        ), "The output of the integration must be a np.ndarray."
 
     def test_integration_with_forcings(self):
 
         N = 1000
-        t = np.linspace(0, 10*np.pi, N)
-        dt = (t[1] - t[0])
+        t = np.linspace(0, 10 * np.pi, N)
+        dt = t[1] - t[0]
 
         initial_state = np.array([0, 1])[None, :]
         forcings = self.forcing(t)[:, None]
 
         pendulum_forcing = Pendulum(k=1, u=True)
         integrator = RK4(right_operator=pendulum_forcing)
-        output_array = integrator(initial_state=initial_state, epochs=N, dt=dt,
-                                  forcings=forcings)
+        output_array = integrator(
+            initial_state=initial_state, epochs=N, dt=dt, forcings=forcings
+        )
 
         print("Extrapolation concluded.")
 
-        assert isinstance(output_array, np.ndarray), "The output of the integration must be a np.ndarray."
+        assert isinstance(
+            output_array, np.ndarray
+        ), "The output of the integration must be a np.ndarray."

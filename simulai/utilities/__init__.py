@@ -12,8 +12,6 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-from ._tmp_dir import make_temp_directory
 from ._makedirs_to_file import makedirs_to_file
+from ._tmp_dir import make_temp_directory
 from .opinf_deviation import OpInfDeviation
-
-

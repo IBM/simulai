@@ -12,78 +12,88 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
+import os
 #!/usr/bin/env python
 import warnings
-import os
+
 with warnings.catch_warnings():
-    
-    from scipy.integrate import odeint
-    import matplotlib.pyplot as plt
-    from matplotlib.colors import Normalize
-    import numpy as np
+
     from argparse import ArgumentParser
 
-    from simulai.regression import OpInf
-    from simulai.math.integration import LSODA, ClassWrapper
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from matplotlib.colors import Normalize
+    from scipy.integrate import odeint
+
     from simulai.math.differentiation import CollocationDerivative
+    from simulai.math.integration import LSODA, ClassWrapper
+    from simulai.regression import OpInf
 
 # Special customization for matplotlib
-matplotlib_custom = False #True
+matplotlib_custom = False  # True
 
 if matplotlib_custom == True:
-    plt.rcParams.update({
-        #'font.size': 16,
-        'axes.linewidth': 2,
-        #'axes.titlesize': 20,
-        'axes.edgecolor': 'black',
-        #'axes.labelsize': 20,
-        'axes.grid': True,
-        'lines.linewidth': 1.5,
-        'lines.markersize': 6,
-        'figure.figsize': (15, 6),
-        #'xtick.labelsize': 14,
-        #'ytick.labelsize': 14,
-        'font.family': 'Arial',
-        #'legend.fontsize': 13,
-        'legend.framealpha': 1,
-        'legend.edgecolor': 'black',
-        'legend.shadow': False,
-        'legend.fancybox': True,
-        'legend.frameon': True})
+    plt.rcParams.update(
+        {
+            #'font.size': 16,
+            "axes.linewidth": 2,
+            #'axes.titlesize': 20,
+            "axes.edgecolor": "black",
+            #'axes.labelsize': 20,
+            "axes.grid": True,
+            "lines.linewidth": 1.5,
+            "lines.markersize": 6,
+            "figure.figsize": (15, 6),
+            #'xtick.labelsize': 14,
+            #'ytick.labelsize': 14,
+            "font.family": "Arial",
+            #'legend.fontsize': 13,
+            "legend.framealpha": 1,
+            "legend.edgecolor": "black",
+            "legend.shadow": False,
+            "legend.fancybox": True,
+            "legend.frameon": True,
+        }
+    )
 else:
     pass
 
+
 def NRMSE(exact, approximated):
-    return np.sqrt(np.mean(np.square(exact - approximated)/exact.std(axis=0)**2, axis=1))
+    return np.sqrt(
+        np.mean(np.square(exact - approximated) / exact.std(axis=0) ** 2, axis=1)
+    )
 
 
 def NRSE(exact, approximated):
-    return np.sqrt(np.square(exact - approximated)/exact.std(axis=0)**2)
+    return np.sqrt(np.square(exact - approximated) / exact.std(axis=0) ** 2)
 
- # Reading command line arguments.
+
+# Reading command line arguments.
 parser = ArgumentParser(description="Reading input parameters")
 
-parser.add_argument('--save_path', type=str, help="Save path", default='/tmp')
-parser.add_argument('--F', type=float, help="Forcing value", default=8)
+parser.add_argument("--save_path", type=str, help="Save path", default="/tmp")
+parser.add_argument("--F", type=float, help="Forcing value", default=8)
 
 args = parser.parse_args()
 
 save_path = args.save_path
 F = args.F
 
-initial_states_file = os.path.join(save_path, 'initial_random.npy')
+initial_states_file = os.path.join(save_path, "initial_random.npy")
 
 tol = 0.5
 
 # These are our constants
-N = 40 # Number of variables
+N = 40  # Number of variables
 
 n_initial = 100
 
-if F==8:
-    lambda_1 = 1/1.68
+if F == 8:
+    lambda_1 = 1 / 1.68
 else:
-    lambda_1 = 1/2.27
+    lambda_1 = 1 / 2.27
+
 
 def Lorenz96(x, t):
 
@@ -95,6 +105,7 @@ def Lorenz96(x, t):
         d[i] = (x[(i + 1) % N] - x[i - 2]) * x[i - 1] - x[i] + F
     return d
 
+
 x0 = F * np.ones(N)  # Initial state (equilibrium)
 
 if os.path.isfile(initial_states_file):
@@ -103,7 +114,9 @@ if os.path.isfile(initial_states_file):
 else:
     initial_states_list = list()
     for nn in range(n_initial):
-        x0_nn = x0 + 0.01*np.random.rand(N)  # Add small perturbation to the first variable
+        x0_nn = x0 + 0.01 * np.random.rand(
+            N
+        )  # Add small perturbation to the first variable
         initial_states_list.append(x0_nn[None, :])
     initial_states = np.vstack(initial_states_list)
 
@@ -120,15 +133,15 @@ for si in range(n_initial):
 
     dt = 0.01
     t = np.arange(0.0, 2000.0, dt)
-    lorenz_data = odeint(Lorenz96, x0, t)[t>=1000]
+    lorenz_data = odeint(Lorenz96, x0, t)[t >= 1000]
 
     diff = CollocationDerivative(config={})
-    derivative_lorenz_data = diff.solve(data=lorenz_data, x=t[t>=1000])
+    derivative_lorenz_data = diff.solve(data=lorenz_data, x=t[t >= 1000])
 
-    n_steps = t[t>=1000].shape[0]
+    n_steps = t[t >= 1000].shape[0]
     nt = int(0.5 * n_steps)
     nt_test = n_steps - nt
-    t_test = t[t>=1000][nt:]
+    t_test = t[t >= 1000][nt:]
     n_field = N
 
     train_field = lorenz_data[:nt]  # manufactured nonlinear oscillator data
@@ -139,12 +152,12 @@ for si in range(n_initial):
 
     label = f"n_{N}_F_{F}_init_{si}"
 
-    lorenz_op = OpInf(bias_rescale=1, solver='pinv')
+    lorenz_op = OpInf(bias_rescale=1, solver="pinv")
     lorenz_op.fit(input_data=train_field, target_data=train_field_derivative)
 
     init_state = train_field[-1:]
     estimated_field_derivatives = lorenz_op.eval(input_data=test_field)
-    tags = [fr'x_{i}' for i in range(n_field)]
+    tags = [rf"x_{i}" for i in range(n_field)]
 
     # Construcing jacobian tensor (It could be used during the time-integrations, but seemingly it is not).
     lorenz_op.construct_K_op()
@@ -162,10 +175,10 @@ for si in range(n_initial):
 
     # Estimating the number of Lyapunov units for the extrapolation.
     nrmse = NRMSE(test_field, estimated_field)
-    nrmse_ = nrmse[nrmse<=tol]
+    nrmse_ = nrmse[nrmse <= tol]
 
-    time_ref = (t_test - t_test[0])/lambda_1
-    t_ref = time_ref[nrmse<=tol]
+    time_ref = (t_test - t_test[0]) / lambda_1
+    t_ref = time_ref[nrmse <= tol]
     VPT = t_ref[-1]
 
     print(f"VPT is {VPT}")
@@ -180,7 +193,7 @@ for si in range(n_initial):
     plt.savefig(os.path.join(save_path, f"nmrse_along_time_{label}.png"))
     plt.close()
 
-    nrmse_list.append(nrmse[:,None])
+    nrmse_list.append(nrmse[:, None])
 
     nrse = NRSE(test_field, estimated_field)
 
@@ -206,13 +219,20 @@ for si in range(n_initial):
     aspect = 15
     extent = (x_plot.min(), x_plot.max(), t_plot.min(), t_plot.max())
 
-    color_norm = Normalize(vmin=min(test_field.min(), estimated_field.min()),
-                           vmax=max(test_field.max(), estimated_field.max()))
+    color_norm = Normalize(
+        vmin=min(test_field.min(), estimated_field.min()),
+        vmax=max(test_field.max(), estimated_field.max()),
+    )
 
     plt.figure(0, figsize=(2.8, 4.8))
-    plt.imshow(np.flip(estimated_field,axis=0), extent=extent, aspect=aspect, cmap='seismic',
-               interpolation='bilinear',
-               norm=color_norm)
+    plt.imshow(
+        np.flip(estimated_field, axis=0),
+        extent=extent,
+        aspect=aspect,
+        cmap="seismic",
+        interpolation="bilinear",
+        norm=color_norm,
+    )
     plt.colorbar()
     plt.title("Predicted")
     plt.xlabel("Observable")
@@ -224,9 +244,14 @@ for si in range(n_initial):
     plt.close()
 
     plt.figure(1, figsize=(2.8, 4.8))
-    plt.imshow(np.flip(test_field, axis=0), extent=extent, aspect=aspect, cmap='seismic',
-               interpolation='bilinear',
-               norm=color_norm)
+    plt.imshow(
+        np.flip(test_field, axis=0),
+        extent=extent,
+        aspect=aspect,
+        cmap="seismic",
+        interpolation="bilinear",
+        norm=color_norm,
+    )
     plt.colorbar()
     plt.title("Ground Truth")
     plt.xlabel("Observable")
@@ -238,9 +263,13 @@ for si in range(n_initial):
     plt.close()
 
     plt.figure(2, figsize=(2.8, 4.8))
-    plt.imshow(np.flip(nrse, axis=0), extent=extent, aspect=aspect,
-               interpolation='bilinear',
-               cmap='Oranges')
+    plt.imshow(
+        np.flip(nrse, axis=0),
+        extent=extent,
+        aspect=aspect,
+        interpolation="bilinear",
+        cmap="Oranges",
+    )
 
     plt.colorbar()
     plt.title("NRSE")
@@ -257,9 +286,14 @@ for si in range(n_initial):
 
     fig, (ax1, ax2) = plt.subplots(ncols=2)
 
-    ax1.imshow(np.flip(estimated_field, axis=0), extent=extent, aspect=aspect, cmap='seismic',
-               interpolation='bilinear',
-               norm=color_norm)
+    ax1.imshow(
+        np.flip(estimated_field, axis=0),
+        extent=extent,
+        aspect=aspect,
+        cmap="seismic",
+        interpolation="bilinear",
+        norm=color_norm,
+    )
 
     ax1.set_title("Predicted", fontsize=10.5)
     ax1.set_xlabel("Observable")
@@ -267,9 +301,14 @@ for si in range(n_initial):
     ax1.set_xticks([0, 39])
     ax1.set(ylim=(0, 10))
 
-    values2 = ax2.imshow(np.flip(test_field, axis=0), extent=extent, aspect=aspect, cmap='seismic',
-                         interpolation='bilinear',
-                         norm=color_norm)
+    values2 = ax2.imshow(
+        np.flip(test_field, axis=0),
+        extent=extent,
+        aspect=aspect,
+        cmap="seismic",
+        interpolation="bilinear",
+        norm=color_norm,
+    )
 
     ax2.set_title("Ground Truth", fontsize=10.5)
     ax2.set_xlabel("Observable")
@@ -278,19 +317,24 @@ for si in range(n_initial):
     ax2.set(ylim=(0, 10))
 
     cbar1 = fig.colorbar(values2, ax=ax2)
-    fig.subplots_adjust(wspace=-0.6, bottom=.1, left=0.2, right=.7)
+    fig.subplots_adjust(wspace=-0.6, bottom=0.1, left=0.2, right=0.7)
 
     for t in cbar1.ax.get_yticklabels():
         t.set_fontsize(9.5)
 
-    plt.savefig(os.path.join(save_path, f"comparison_exact_predicted_2D_plot_{label}.png"))
+    plt.savefig(
+        os.path.join(save_path, f"comparison_exact_predicted_2D_plot_{label}.png")
+    )
     plt.close()
 
     fig1, ax3 = plt.subplots()
-    values3 = ax3.imshow(np.flip(nrse, axis=0), extent=extent, aspect=aspect,
-                         interpolation='bilinear',
-                         cmap="Oranges"
-                         )
+    values3 = ax3.imshow(
+        np.flip(nrse, axis=0),
+        extent=extent,
+        aspect=aspect,
+        interpolation="bilinear",
+        cmap="Oranges",
+    )
     ax3.set_title("NRSE", fontsize=10.5)
     ax3.set_xlabel("Observable")
     ax3.set_xticks([0, 39])
@@ -298,7 +342,7 @@ for si in range(n_initial):
     ax3.set(ylim=(0, 10))
 
     cbar2 = fig.colorbar(values3, ax=ax3)
-    fig1.subplots_adjust(wspace=.1, right=0.5, hspace=0)
+    fig1.subplots_adjust(wspace=0.1, right=0.5, hspace=0)
 
     for t in cbar2.ax.get_yticklabels():
         t.set_fontsize(9.5)
@@ -324,11 +368,13 @@ key_max = max(vpt_list, key=lambda x: vpt_list[x])
 
 print(f"The index of the best result is: {key_max}")
 
-lines = [f"Mean VPT for F={F}: {mean_value}\n",
-         f"Minimum VPT for F={F}: {min_value}\n",
-         f"Maximum VPT for F={F}: {max_value}\n",
-         f"Standard deviation VPT for F={F}: {std_value}\n",
-         f"The index of the best result is: {key_max}\n"]
+lines = [
+    f"Mean VPT for F={F}: {mean_value}\n",
+    f"Minimum VPT for F={F}: {min_value}\n",
+    f"Maximum VPT for F={F}: {max_value}\n",
+    f"Standard deviation VPT for F={F}: {std_value}\n",
+    f"The index of the best result is: {key_max}\n",
+]
 
 with open(os.path.join(save_path, f"output_F_{F}.log"), "w+") as fp:
     fp.writelines(lines)

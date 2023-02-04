@@ -12,27 +12,28 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
-import matplotlib.pyplot as plt
 import os
+
+import matplotlib.pyplot as plt
+import numpy as np
 import sympy
 
 # In order to execute this script, it is necessary to
 # set the environment variable engine as "pytorch" before initializing
 # simulai
-os.environ['engine'] = "pytorch"
+os.environ["engine"] = "pytorch"
 
 from examples.utils.lorenz_solver import lorenz_solver
-from simulai.regression import DenseNetwork
-from simulai.optimization import Optimizer
 from simulai.metrics import L2Norm
-from simulai.tokens import D
+from simulai.optimization import Optimizer
+from simulai.regression import DenseNetwork
 from simulai.residuals import SymbolicOperator
+from simulai.tokens import D
+
 
 # This is a very basic script for exploring the PDE solving via
 # feedforward fully-connected neural networks
 class TestLorenzTorch:
-
     def __init__(self):
         pass
 
@@ -42,23 +43,29 @@ class TestLorenzTorch:
         T_max = 50
         rho = 28
         beta = 8 / 3
-        beta_str = '8/3'
+        beta_str = "8/3"
         sigma = 10
 
         initial_state = np.array([1, 2, 3])[None, :]
-        lorenz_data, derivative_lorenz_data = lorenz_solver(rho=rho, dt=dt, T=T_max, sigma=sigma,
-                                                            initial_state=initial_state,
-                                                            beta=beta, beta_str=beta_str,
-                                                            data_path='/tmp')
+        lorenz_data, derivative_lorenz_data = lorenz_solver(
+            rho=rho,
+            dt=dt,
+            T=T_max,
+            sigma=sigma,
+            initial_state=initial_state,
+            beta=beta,
+            beta_str=beta_str,
+            data_path="/tmp",
+        )
 
-        x = sympy.Symbol('x')
-        y = sympy.Symbol('y')
-        z = sympy.Symbol('z')
-        t = sympy.Symbol('t')
+        x = sympy.Symbol("x")
+        y = sympy.Symbol("y")
+        z = sympy.Symbol("z")
+        t = sympy.Symbol("t")
 
-        f_x = D(x, t) - sigma*(y - x)
-        f_y = D(y, t) - x*(rho - z) + y
-        f_z = D(z, t) - x*y + beta*z
+        f_x = D(x, t) - sigma * (y - x)
+        f_y = D(y, t) - x * (rho - z) + y
+        f_z = D(z, t) - x * y + beta * z
 
         # The fraction of data used for training the model.
         train_fraction = 0.8
@@ -70,13 +77,13 @@ class TestLorenzTorch:
 
         # Choosing the number of training and testing samples
         n_samples = input_data.shape[0]
-        train_samples = int(train_fraction*n_samples)
+        train_samples = int(train_fraction * n_samples)
         test_samples = n_samples - train_samples
 
-        input_labels = ['t']
-        output_labels = ['x', 'y', 'z']
+        input_labels = ["t"]
+        output_labels = ["x", "y", "z"]
 
-        time = np.arange(0, n_samples, 1)*dt
+        time = np.arange(0, n_samples, 1) * dt
 
         # Training dataset
         train_input_data = input_data[:train_samples]
@@ -96,41 +103,52 @@ class TestLorenzTorch:
 
         # Configuration for the fully-connected network
         config = {
-                    'layers_units': [50, 50, 50],
-                    'activations': 'tanh',
-                    'input_size': 1,
-                    'output_size': n_outputs,
-                    'name': 'lorenz_net'
-                  }
+            "layers_units": [50, 50, 50],
+            "activations": "tanh",
+            "input_size": 1,
+            "output_size": n_outputs,
+            "name": "lorenz_net",
+        }
 
-        optimizer_config = {'lr': lr}
+        optimizer_config = {"lr": lr}
 
         # Instantiating and training the surrogate model
         lorenz_net = DenseNetwork(**config)
-        residual = SymbolicOperator(expressions=[f_x, f_y, f_z],
-                                    input_vars=[t],
-                                    output_vars=[x, y, z],
-                                    function=lorenz_net)
+        residual = SymbolicOperator(
+            expressions=[f_x, f_y, f_z],
+            input_vars=[t],
+            output_vars=[x, y, z],
+            function=lorenz_net,
+        )
 
         # It prints a summary of the network features
         lorenz_net.summary()
 
-        optimizer = Optimizer('adam', params=optimizer_config)
+        optimizer = Optimizer("adam", params=optimizer_config)
 
-        params = {'residual': residual,
-                  'initial_input':time_train[:,None],
-                  'initial_state': train_input_data,
-                  'weights': [1e4,1e4,1e4],
-                  'initial_penalty': 1}
+        params = {
+            "residual": residual,
+            "initial_input": time_train[:, None],
+            "initial_state": train_input_data,
+            "weights": [1e4, 1e4, 1e4],
+            "initial_penalty": 1,
+        }
 
-        optimizer.fit(op=lorenz_net, input_data=time_train[1:,None],
-                      n_epochs=n_epochs, loss="pirmse", params=params)
+        optimizer.fit(
+            op=lorenz_net,
+            input_data=time_train[1:, None],
+            n_epochs=n_epochs,
+            loss="pirmse",
+            params=params,
+        )
 
-        approximated_data = lorenz_net.eval(input_data=time_train[:,None])
+        approximated_data = lorenz_net.eval(input_data=time_train[:, None])
 
         l2_norm = L2Norm()
 
-        error = 100*l2_norm(data=approximated_data, reference_data=train_input_data, relative_norm=True)
+        error = 100 * l2_norm(
+            data=approximated_data, reference_data=train_input_data, relative_norm=True
+        )
 
         for ii in range(n_outputs):
 
@@ -140,8 +158,3 @@ class TestLorenzTorch:
             plt.show()
 
         print(f"Approximation error for the derivatives: {error} %")
-
-
-
-
-

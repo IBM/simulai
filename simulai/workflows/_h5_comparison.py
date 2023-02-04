@@ -13,31 +13,43 @@
 #     limitations under the License.
 
 import numpy as np
+
 from simulai.metrics import FeatureWiseErrorNorm
 
 
-def compute_datasets_to_reference_norm(data, reference_data, ords=None, norm_type=None, data_interval=None,
-                                       reference_data_interval=None, names=None,
-                                       batch_size=1):
+def compute_datasets_to_reference_norm(
+    data,
+    reference_data,
+    ords=None,
+    norm_type=None,
+    data_interval=None,
+    reference_data_interval=None,
+    names=None,
+    batch_size=1,
+):
     if ords is None:
         ords = [1, 2, np.inf]
     if norm_type is None:
-        norm_type = ['absolute', 'relative']
+        norm_type = ["absolute", "relative"]
     if names is None:
         names = list(data.dtype.names)
 
-    projection_error = {n: {nt: {str(o): [] for o in ords} for nt in norm_type} for n in names}
+    projection_error = {
+        n: {nt: {str(o): [] for o in ords} for nt in norm_type} for n in names
+    }
 
     for nt in norm_type:
         for o in ords:
-            error = FeatureWiseErrorNorm()(data=data,
-                                           reference_data=reference_data,
-                                           relative_norm=nt == 'relative',
-                                           data_interval=data_interval,
-                                           reference_data_interval=reference_data_interval,
-                                           key=names,
-                                           batch_size=batch_size,
-                                           ord=o)
+            error = FeatureWiseErrorNorm()(
+                data=data,
+                reference_data=reference_data,
+                relative_norm=nt == "relative",
+                data_interval=data_interval,
+                reference_data_interval=reference_data_interval,
+                key=names,
+                batch_size=batch_size,
+                ord=o,
+            )
             for n in names:
                 projection_error[n][nt][str(o)] = np.array(error[n]).tolist()
 

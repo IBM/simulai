@@ -12,19 +12,21 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-from unittest import TestCase
 import random
+from unittest import TestCase
 
 from simulai.batching import batchdomain_constructor
 
-class TestBatching(TestCase):
 
+class TestBatching(TestCase):
     def test_batching_data_interval(self):
 
         data_interval = [0, 100]
         batch_size = 10
 
-        batches = batchdomain_constructor(data_interval=data_interval, batch_size=batch_size)
+        batches = batchdomain_constructor(
+            data_interval=data_interval, batch_size=batch_size
+        )
 
         assert isinstance(batches, list)
 

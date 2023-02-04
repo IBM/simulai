@@ -12,13 +12,14 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
 from unittest import TestCase
+
+import numpy as np
 
 from simulai.math.spaces import GaussianRandomFields
 
-class TestSpaces(TestCase):
 
+class TestSpaces(TestCase):
     def setUp(self) -> None:
         pass
 

@@ -13,12 +13,13 @@
 #     limitations under the License.
 
 from unittest import TestCase
+
 import numpy as np
 
 from simulai.metrics import MinMaxEvaluation
 
-class TestMinMax(TestCase):
 
+class TestMinMax(TestCase):
     def setUp(self) -> None:
 
         pass
@@ -30,4 +31,3 @@ class TestMinMax(TestCase):
         minmax = MinMaxEvaluation()
 
         minmax(dataset=arr, data_interval=[0, arr.shape[0]], batch_size=1_000, axis=3)
-

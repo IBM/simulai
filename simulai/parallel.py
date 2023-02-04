@@ -21,8 +21,10 @@ try:
     from mpi4py import MPI
 except:
     MPI_GLOBAL_AVAILABILITY = False
-    warnings.warn(f'Trying to import MPI in {__file__}.')
-    warnings.warn('mpi4py is not installed. If you want to execute MPI jobs, we recommend you install it.')
+    warnings.warn(f"Trying to import MPI in {__file__}.")
+    warnings.warn(
+        "mpi4py is not installed. If you want to execute MPI jobs, we recommend you install it."
+    )
 
 # Pipeline for executing independent MPI jobs
 class PipelineMPI:
@@ -47,7 +49,13 @@ class PipelineMPI:
         log.
     """
 
-    def __init__(self, exec: callable=None, extra_params:dict=None, collect:bool=None, show_log:bool=True) -> None:
+    def __init__(
+        self,
+        exec: callable = None,
+        extra_params: dict = None,
+        collect: bool = None,
+        show_log: bool = True,
+    ) -> None:
 
         self.exec = exec
         self.show_log = show_log
@@ -62,10 +70,10 @@ class PipelineMPI:
         self.comm = MPI.COMM_WORLD
         self.n_procs = self.comm.Get_size()
 
-        self.status = (self.n_procs - 1)*[False]
+        self.status = (self.n_procs - 1) * [False]
         self.status_dict = dict()
 
-    def _check_kwargs_consistency(self, kwargs: dict=None) -> int:
+    def _check_kwargs_consistency(self, kwargs: dict = None) -> int:
 
         """
         It checks if the kwargs provided for each worker
@@ -85,17 +93,22 @@ class PipelineMPI:
         types = [type(value) for value in kwargs.values()]
         lengths = [len(value) for value in kwargs.values()]
 
-        assert all([t==list for t in types]), f"All the elements in kwargs must be list," \
-                                              f" but received {types}."
+        assert all([t == list for t in types]), (
+            f"All the elements in kwargs must be list," f" but received {types}."
+        )
 
-        assert len(set(lengths)) == 1, f"All the elements in kwargs must be the same length," \
-                                       f" but received {lengths}"
+        assert len(set(lengths)) == 1, (
+            f"All the elements in kwargs must be the same length,"
+            f" but received {lengths}"
+        )
 
         print("kwargs is alright.")
 
         return lengths[0]
 
-    def _split_kwargs(self, kwargs:dict, rank:int, size:int, total_size:int) -> Tuple[dict, int]:
+    def _split_kwargs(
+        self, kwargs: dict, rank: int, size: int, total_size: int
+    ) -> Tuple[dict, int]:
 
         """
         It allows the workload be executed serially in each worker node
@@ -132,16 +145,26 @@ class PipelineMPI:
 
         # If rank is less than remainder, calculate kwargs_batch using batch size + 1
         if rank < remainder:
-            kwargs_batch = {key: value[rank*(batch_size+1):(rank+1)*(batch_size+1)] for key, value in kwargs.items()}
-            return kwargs_batch, batch_size+1
+            kwargs_batch = {
+                key: value[rank * (batch_size + 1) : (rank + 1) * (batch_size + 1)]
+                for key, value in kwargs.items()
+            }
+            return kwargs_batch, batch_size + 1
         # If rank is not less than remainder, calculate kwargs_batch using batch size
         else:
-         kwargs_batch = {key: value[remainder*(batch_size+1) + (rank-remainder)*batch_size:(rank-remainder+1)*batch_size] for key, value in kwargs.items()}
+            kwargs_batch = {
+                key: value[
+                    remainder * (batch_size + 1)
+                    + (rank - remainder)
+                    * batch_size : (rank - remainder + 1)
+                    * batch_size
+                ]
+                for key, value in kwargs.items()
+            }
 
         return kwargs_batch, batch_size
 
-
-    def _attribute_dict_output(self, dicts:list=None) -> None:
+    def _attribute_dict_output(self, dicts: list = None) -> None:
 
         root = dict()
         for e in dicts:
@@ -151,14 +174,14 @@ class PipelineMPI:
             self.status_dict[key] = value
 
     @staticmethod
-    def inner_type(obj: list=None):
+    def inner_type(obj: list = None):
 
         types_list = [type(o) for o in obj]
         assert len(set(types_list)) == 1, "Composed types are not supported."
 
         return types_list[0]
 
-    def _exec_wrapper(self, kwargs:dict, total_size:int) -> None:
+    def _exec_wrapper(self, kwargs: dict, total_size: int) -> None:
 
         """
         A wrapper method around exec to facilitate the
@@ -185,10 +208,14 @@ class PipelineMPI:
         if rank != 0:
 
             print(f"Executing rank {rank}.")
-            kwargs_batch, batch_size = self._split_kwargs(kwargs, rank , size_, total_size)
+            kwargs_batch, batch_size = self._split_kwargs(
+                kwargs, rank, size_, total_size
+            )
 
-            kwargs_batch_list = [{key:value[j] for key, value in kwargs_batch.items()}
-                                               for j in range(batch_size)]
+            kwargs_batch_list = [
+                {key: value[j] for key, value in kwargs_batch.items()}
+                for j in range(batch_size)
+            ]
 
             out = list()
             for i in kwargs_batch_list:
@@ -237,7 +264,7 @@ class PipelineMPI:
 
         return all(self.status)
 
-    def run(self, kwargs:dict=None) -> None:
+    def run(self, kwargs: dict = None) -> None:
 
         """
         It runs the MPI job
@@ -267,4 +294,3 @@ class PipelineMPI:
         self._exec_wrapper(kwargs, total_size)
 
         comm.barrier()
-

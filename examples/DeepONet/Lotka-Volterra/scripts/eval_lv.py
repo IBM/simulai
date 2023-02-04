@@ -13,15 +13,16 @@
 #     limitations under the License.
 
 from argparse import ArgumentParser
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
 
 from simulai.file import SPFile
 
 # Reading command line arguments.
 parser = ArgumentParser(description="Reading input parameters")
 
-parser.add_argument('--save_path', type=str, help="Save path", default='/tmp')
+parser.add_argument("--save_path", type=str, help="Save path", default="/tmp")
 args = parser.parse_args()
 
 save_path = args.save_path
@@ -36,19 +37,21 @@ saver = SPFile(compact=False)
 lotka_volterra_net = saver.read(model_path=save_path)
 
 branch_input_test = np.tile(initial_state_test[None, :], (Q, 1))
-trunk_input_test = np.linspace(0,1,Q)[:,None]
+trunk_input_test = np.linspace(0, 1, Q)[:, None]
 
 eval_list = list()
 
 for i in range(0, n_times):
     branch_input_test = np.tile(initial_state_test[None, :], (Q, 1))
 
-    approximated_data = lotka_volterra_net.eval(trunk_data=trunk_input_test, branch_data=branch_input_test)
+    approximated_data = lotka_volterra_net.eval(
+        trunk_data=trunk_input_test, branch_data=branch_input_test
+    )
     initial_state_test = approximated_data[-1]
 
     eval_list.append(approximated_data)
 
-evaluation = np.vstack(eval_list)*np.array([1,1])
+evaluation = np.vstack(eval_list) * np.array([1, 1])
 time = np.linspace(0, n_times, evaluation.shape[0])
 
 np.save("evaluation.npy", evaluation)

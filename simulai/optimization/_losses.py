@@ -13,17 +13,18 @@
 #     limitations under the License.
 
 import sys
-from typing import Union, Tuple, List
-import torch
-import numpy as np
 import warnings
+from typing import List, Tuple, Union
+
+import numpy as np
+import torch
 
 from simulai.io import IntersectingBatches
-from simulai.models import DeepONet, AutoencoderKoopman, AutoencoderVariational
+from simulai.models import AutoencoderKoopman, AutoencoderVariational, DeepONet
 from simulai.residuals import SymbolicOperator
 
-class LossBasics:
 
+class LossBasics:
     def __init__(self):
 
         """
@@ -33,7 +34,9 @@ class LossBasics:
 
     # Choosing the kind of multiplication to be done for each
     # type of lambda penalties and regularization terms
-    def _exec_multiplication_in_regularization(self, lambda_type: type, term_type: type) -> callable:
+    def _exec_multiplication_in_regularization(
+        self, lambda_type: type, term_type: type
+    ) -> callable:
 
         """
         It executes the multiplications involved in the construction of the L*-penalty terms
@@ -47,7 +50,7 @@ class LossBasics:
 
         """
 
-        if (lambda_type, term_type) in [(float, torch.Tensor) , (float, float)]:
+        if (lambda_type, term_type) in [(float, torch.Tensor), (float, float)]:
 
             def multiplication(lambd, term):
                 return lambd * term
@@ -64,19 +67,21 @@ class LossBasics:
         elif (lambda_type, term_type) == (float, tuple):
 
             def multiplication(lambd, term):
-                lambd_ = len(term)*(lambd,)
+                lambd_ = len(term) * (lambd,)
                 return sum([ll * tt for ll, tt in zip(lambd_, term)])
 
             return multiplication
 
         else:
-            raise Exception("lambda_weight and term must be both float or both"
-                            f" tuple but received {(lambda_type, term_type)}")
+            raise Exception(
+                "lambda_weight and term must be both float or both"
+                f" tuple but received {(lambda_type, term_type)}"
+            )
+
 
 # Classic RMSE Loss with regularization for PyTorch
 class RMSELoss(LossBasics):
-
-    def __init__(self, operator:torch.nn.Module=None) -> None:
+    def __init__(self, operator: torch.nn.Module = None) -> None:
 
         """
         Vanilla mean-squared error loss function
@@ -88,10 +93,14 @@ class RMSELoss(LossBasics):
         super().__init__()
 
         self.operator = operator
-        self.loss_states = {'loss': list()}
+        self.loss_states = {"loss": list()}
 
-    def _data_loss(self, output_tilde:torch.Tensor=None, norm_value:torch.Tensor=None,
-                         target_data_tensor:torch.Tensor=None) -> torch.Tensor:
+    def _data_loss(
+        self,
+        output_tilde: torch.Tensor = None,
+        norm_value: torch.Tensor = None,
+        target_data_tensor: torch.Tensor = None,
+    ) -> torch.Tensor:
 
         """
 
@@ -109,14 +118,24 @@ class RMSELoss(LossBasics):
         """
 
         if norm_value is not None:
-            data_loss = torch.mean(torch.square((output_tilde - target_data_tensor) / norm_value))
+            data_loss = torch.mean(
+                torch.square((output_tilde - target_data_tensor) / norm_value)
+            )
         else:
             data_loss = torch.mean(torch.square((output_tilde - target_data_tensor)))
 
         return data_loss
 
-    def __call__(self, input_data:Union[dict, torch.Tensor]=None, target_data:torch.Tensor=None, call_back:str='',
-                       norm_value:list=None, lambda_1:float=0.0, device:str="cpu", lambda_2:float=0.0) -> callable:
+    def __call__(
+        self,
+        input_data: Union[dict, torch.Tensor] = None,
+        target_data: torch.Tensor = None,
+        call_back: str = "",
+        norm_value: list = None,
+        lambda_1: float = 0.0,
+        device: str = "cpu",
+        lambda_2: float = 0.0,
+    ) -> callable:
 
         """
         Main function for generating complete loss function workflow
@@ -140,19 +159,23 @@ class RMSELoss(LossBasics):
 
         """
 
-        l1_reg_multiplication = self._exec_multiplication_in_regularization(lambda_type=type(lambda_1),
-                                                                            term_type=type(self.operator.weights_l1))
+        l1_reg_multiplication = self._exec_multiplication_in_regularization(
+            lambda_type=type(lambda_1), term_type=type(self.operator.weights_l1)
+        )
 
-        l2_reg_multiplication = self._exec_multiplication_in_regularization(lambda_type=type(lambda_2),
-                                                                            term_type=type(self.operator.weights_l2))
+        l2_reg_multiplication = self._exec_multiplication_in_regularization(
+            lambda_type=type(lambda_2), term_type=type(self.operator.weights_l2)
+        )
 
         def closure():
 
             output_tilde = self.operator.forward(**input_data)
 
-            data_loss = self._data_loss(output_tilde=output_tilde,
-                                        norm_value=norm_value,
-                                        target_data_tensor=target_data)
+            data_loss = self._data_loss(
+                output_tilde=output_tilde,
+                norm_value=norm_value,
+                target_data_tensor=target_data,
+            )
 
             # L² and L¹ regularization term
             weights_l2 = self.operator.weights_l2
@@ -170,7 +193,7 @@ class RMSELoss(LossBasics):
             # Back-propagation
             loss.backward()
 
-            self.loss_states['loss'].append(float(loss.detach().data))
+            self.loss_states["loss"].append(float(loss.detach().data))
 
             sys.stdout.write(("\rloss: {} {}").format(loss, call_back))
             sys.stdout.flush()
@@ -179,9 +202,9 @@ class RMSELoss(LossBasics):
 
         return closure
 
+
 # Weighted RMSE Loss with regularization for PyTorch
 class WRMSELoss(LossBasics):
-
     def __init__(self, operator=None):
 
         """
@@ -206,10 +229,15 @@ class WRMSELoss(LossBasics):
         self.min_causality_weight = self.tol
         self.mean_causality_weight = 0
 
-        self.loss_states = {'loss': list()}
+        self.loss_states = {"loss": list()}
 
-    def _data_loss(self, output_tilde:torch.Tensor=None, weights:list=None,
-                         target_data_tensor:torch.Tensor=None, axis:int=-1) -> list:
+    def _data_loss(
+        self,
+        output_tilde: torch.Tensor = None,
+        weights: list = None,
+        target_data_tensor: torch.Tensor = None,
+        axis: int = -1,
+    ) -> list:
 
         """
 
@@ -229,13 +257,22 @@ class WRMSELoss(LossBasics):
         output_split = torch.split(output_tilde, self.split_dim, dim=axis)
         target_split = torch.split(target_data_tensor, self.split_dim, dim=axis)
 
-        data_losses = [weights[i] * self.loss_evaluator(out_split - tgt_split)/self.norm_evaluator(tgt_split)
-                       for i, (out_split, tgt_split) in enumerate(zip(output_split, target_split))]
+        data_losses = [
+            weights[i]
+            * self.loss_evaluator(out_split - tgt_split)
+            / self.norm_evaluator(tgt_split)
+            for i, (out_split, tgt_split) in enumerate(zip(output_split, target_split))
+        ]
 
         return data_losses
 
-    def _data_loss_causality_preserving(self, output_tilde: torch.Tensor = None, weights: list = None,
-                                              target_data_tensor: torch.Tensor = None, axis: int = -1) -> list:
+    def _data_loss_causality_preserving(
+        self,
+        output_tilde: torch.Tensor = None,
+        weights: list = None,
+        target_data_tensor: torch.Tensor = None,
+        axis: int = -1,
+    ) -> list:
 
         """
 
@@ -260,12 +297,22 @@ class WRMSELoss(LossBasics):
         output_split = torch.split(output_tilde, self.split_dim, dim=axis)
         target_split = torch.split(target_data_tensor, self.split_dim, dim=axis)
 
-        data_losses = [weights[i] * self.loss_evaluator(out_split - tgt_split) / self.norm_evaluator(tgt_split)
-                       for i, (out_split, tgt_split) in enumerate(zip(output_split, target_split))]
+        data_losses = [
+            weights[i]
+            * self.loss_evaluator(out_split - tgt_split)
+            / self.norm_evaluator(tgt_split)
+            for i, (out_split, tgt_split) in enumerate(zip(output_split, target_split))
+        ]
 
         return data_losses
-    def _no_data_loss_wrapper(self, output_tilde:torch.Tensor=None, weights:list=None,
-                                    target_data_tensor:torch.Tensor=None, axis:int=-1) -> torch.Tensor:
+
+    def _no_data_loss_wrapper(
+        self,
+        output_tilde: torch.Tensor = None,
+        weights: list = None,
+        target_data_tensor: torch.Tensor = None,
+        axis: int = -1,
+    ) -> torch.Tensor:
 
         """
 
@@ -284,11 +331,20 @@ class WRMSELoss(LossBasics):
 
         """
 
-        return self.data_loss(output_tilde=output_tilde, weights=weights,
-                              target_data_tensor=target_data_tensor, axis=axis)
+        return self.data_loss(
+            output_tilde=output_tilde,
+            weights=weights,
+            target_data_tensor=target_data_tensor,
+            axis=axis,
+        )
 
-    def _causality_preserving_data_loss_wrapper(self, output_tilde:torch.Tensor=None, weights:list=None,
-                                                      target_data_tensor:torch.Tensor=None, axis:int=-1) -> list:
+    def _causality_preserving_data_loss_wrapper(
+        self,
+        output_tilde: torch.Tensor = None,
+        weights: list = None,
+        target_data_tensor: torch.Tensor = None,
+        axis: int = -1,
+    ) -> list:
 
         """
 
@@ -309,10 +365,16 @@ class WRMSELoss(LossBasics):
 
         warnings.warn("This implementation is still equal to the vanilla one.")
 
-        return self.data_loss(output_tilde=output_tilde, weights=weights,
-                              target_data_tensor=target_data_tensor, axis=axis)
+        return self.data_loss(
+            output_tilde=output_tilde,
+            weights=weights,
+            target_data_tensor=target_data_tensor,
+            axis=axis,
+        )
 
-    def _evaluate_causality_weights(self, loss_tensor: torch.Tensor = None) -> torch.Tensor:
+    def _evaluate_causality_weights(
+        self, loss_tensor: torch.Tensor = None
+    ) -> torch.Tensor:
 
         """
 
@@ -328,11 +390,22 @@ class WRMSELoss(LossBasics):
 
         return torch.ones(loss_tensor.shape[0])
 
-    def __call__(self, input_data:Union[dict, torch.Tensor]=None, target_data:torch.Tensor=None, call_back:str='',
-                       lambda_1:float=0.0, lambda_2:float=0.0, axis:int=-1, relative:bool=False,
-                       grid_shape: Tuple[int] = None, causality_preserving: bool = False,
-                       causality_parameter: float=None,
-                       device:str="cpu", weights:list=None, use_mean:bool=True) -> callable:
+    def __call__(
+        self,
+        input_data: Union[dict, torch.Tensor] = None,
+        target_data: torch.Tensor = None,
+        call_back: str = "",
+        lambda_1: float = 0.0,
+        lambda_2: float = 0.0,
+        axis: int = -1,
+        relative: bool = False,
+        grid_shape: Tuple[int] = None,
+        causality_preserving: bool = False,
+        causality_parameter: float = None,
+        device: str = "cpu",
+        weights: list = None,
+        use_mean: bool = True,
+    ) -> callable:
 
         """
 
@@ -372,11 +445,13 @@ class WRMSELoss(LossBasics):
         else:
             self.data_loss = self._data_loss_causality_preserving
 
-        l1_reg_multiplication = self._exec_multiplication_in_regularization(lambda_type=type(lambda_1),
-                                                                            term_type=type(self.operator.weights_l1))
+        l1_reg_multiplication = self._exec_multiplication_in_regularization(
+            lambda_type=type(lambda_1), term_type=type(self.operator.weights_l1)
+        )
 
-        l2_reg_multiplication = self._exec_multiplication_in_regularization(lambda_type=type(lambda_2),
-                                                                            term_type=type(self.operator.weights_l2))
+        l2_reg_multiplication = self._exec_multiplication_in_regularization(
+            lambda_type=type(lambda_2), term_type=type(self.operator.weights_l2)
+        )
 
         # Using mean evaluation or not
         if use_mean == True:
@@ -394,11 +469,15 @@ class WRMSELoss(LossBasics):
             self.norm_evaluator = lambda ref: 1
 
         if causality_preserving:
-            assert isinstance(self.grid_shape, tuple), "If the causality preserving approach is being used," \
-                                                       " it is necessary to provide an original grid shape."
+            assert isinstance(self.grid_shape, tuple), (
+                "If the causality preserving approach is being used,"
+                " it is necessary to provide an original grid shape."
+            )
 
-            assert isinstance(self.causality_parameter, float), "If the causality preserving approach is being used," \
-                                                                " it is necessary to provide an causality exponent."
+            assert isinstance(self.causality_parameter, float), (
+                "If the causality preserving approach is being used,"
+                " it is necessary to provide an causality exponent."
+            )
 
             self.data_loss_wrapper = self._causality_preserving_data_loss_wrapper
 
@@ -409,10 +488,12 @@ class WRMSELoss(LossBasics):
 
             output_tilde = self.operator.forward(**input_data)
 
-            data_losses = self.data_loss_wrapper(output_tilde=output_tilde,
-                                                 weights=weights,
-                                                 target_data_tensor=target_data,
-                                                 axis=axis)
+            data_losses = self.data_loss_wrapper(
+                output_tilde=output_tilde,
+                weights=weights,
+                target_data_tensor=target_data,
+                axis=axis,
+            )
 
             # L² and L¹ regularization term
             weights_l2 = self.operator.weights_l2
@@ -429,17 +510,17 @@ class WRMSELoss(LossBasics):
             # Back-propagation
             loss.backward()
 
-            self.loss_states['loss'].append(float(loss.detach().data))
+            self.loss_states["loss"].append(float(loss.detach().data))
 
             sys.stdout.write(("\rloss: {} {}").format(loss, call_back))
             sys.stdout.flush()
 
         return closure
 
-#RMSE Loss for equation-based residuals
-class PIRMSELoss(LossBasics):
 
-    def __init__(self, operator:torch.nn.Module=None) -> None:
+# RMSE Loss for equation-based residuals
+class PIRMSELoss(LossBasics):
+    def __init__(self, operator: torch.nn.Module = None) -> None:
 
         """
         Physics-Informed mean-squared error loss function
@@ -462,9 +543,11 @@ class PIRMSELoss(LossBasics):
         self.min_causality_weight = self.tol
         self.mean_causality_weight = 0
 
-        self.loss_states = {'pde': list(), 'init': list(), 'bound': list()}
+        self.loss_states = {"pde": list(), "init": list(), "bound": list()}
 
-    def _convert(self, input_data:Union[dict, np.ndarray]=None, device:str=None) -> Union[dict, torch.Tensor]:
+    def _convert(
+        self, input_data: Union[dict, np.ndarray] = None, device: str = None
+    ) -> Union[dict, torch.Tensor]:
 
         """
 
@@ -481,12 +564,15 @@ class PIRMSELoss(LossBasics):
 
         if type(input_data) == dict:
 
-            return {key:torch.from_numpy(item.astype(np.float32)).to(device) for key, item in input_data.items()}
+            return {
+                key: torch.from_numpy(item.astype(np.float32)).to(device)
+                for key, item in input_data.items()
+            }
 
         else:
             return torch.from_numpy(input_data.astype(np.float32)).to(device)
 
-    def _to_tensor(self, *args, device:str="cpu") -> List[torch.Tensor]:
+    def _to_tensor(self, *args, device: str = "cpu") -> List[torch.Tensor]:
 
         """
 
@@ -502,7 +588,9 @@ class PIRMSELoss(LossBasics):
         """
         return [self._convert(input_data=arg, device=device) for arg in args]
 
-    def _data_loss(self, output_tilde:torch.Tensor=None, target_data_tensor:torch.Tensor=None) -> torch.Tensor:
+    def _data_loss(
+        self, output_tilde: torch.Tensor = None, target_data_tensor: torch.Tensor = None
+    ) -> torch.Tensor:
 
         """
 
@@ -520,12 +608,16 @@ class PIRMSELoss(LossBasics):
         output_split = torch.split(output_tilde, self.split_dim, dim=-1)
         target_split = torch.split(target_data_tensor, self.split_dim, dim=-1)
 
-        data_losses = [self.loss_evaluator(out_split - tgt_split)/self.norm_evaluator(tgt_split)
-                       for i, (out_split, tgt_split) in enumerate(zip(output_split, target_split))]
+        data_losses = [
+            self.loss_evaluator(out_split - tgt_split) / self.norm_evaluator(tgt_split)
+            for i, (out_split, tgt_split) in enumerate(zip(output_split, target_split))
+        ]
 
         return sum(data_losses)
 
-    def _residual_loss(self, residual_approximation:List[torch.Tensor]=None, weights:list=None) -> List[torch.Tensor]:
+    def _residual_loss(
+        self, residual_approximation: List[torch.Tensor] = None, weights: list = None
+    ) -> List[torch.Tensor]:
 
         """
 
@@ -540,12 +632,16 @@ class PIRMSELoss(LossBasics):
         :rtype: torch.Tensor
 
         """
-        residual_loss = [weight*self.loss_evaluator(res)
-                         for weight, res in zip(weights, residual_approximation)]
+        residual_loss = [
+            weight * self.loss_evaluator(res)
+            for weight, res in zip(weights, residual_approximation)
+        ]
 
         return residual_loss
 
-    def _no_boundary_penalisation(self, boundary_input:dict=None, residual:object=None) -> List[torch.Tensor]:
+    def _no_boundary_penalisation(
+        self, boundary_input: dict = None, residual: object = None
+    ) -> List[torch.Tensor]:
 
         """
 
@@ -553,9 +649,11 @@ class PIRMSELoss(LossBasics):
 
         """
 
-        return [torch.Tensor([0.]) for k in boundary_input.keys()]
+        return [torch.Tensor([0.0]) for k in boundary_input.keys()]
 
-    def _boundary_penalisation(self, boundary_input:dict=None, residual:SymbolicOperator=None) -> List[torch.Tensor]:
+    def _boundary_penalisation(
+        self, boundary_input: dict = None, residual: SymbolicOperator = None
+    ) -> List[torch.Tensor]:
 
         """
 
@@ -569,212 +667,26 @@ class PIRMSELoss(LossBasics):
         :rtype: list
 
         """
-        return [residual.eval_expression(k, boundary_input[k]) for k in boundary_input.keys()]
-
-    def _no_residual_wrapper(self, input_data:torch.Tensor=None) -> torch.Tensor:
-
-        return self.residual(input_data)
-
-    def _causality_preserving_residual_wrapper(self, input_data: torch.Tensor = None) -> list:
-
-        warnings.warn("This implementation is still equal to the vanilla one.")
-
-        return self.residual(input_data)
-
-    def _evaluate_causality_weights(self, loss_tensor:torch.Tensor=None) -> torch.Tensor:
-
-        warnings.warn("This implementation is still equal to the vanilla one.")
-
-        return torch.ones(loss_tensor.shape[0])
-
-    @property
-    def causality_weights_interval(self):
-
-        warnings.warn("This implementation is still equal to the vanilla one.")
-
-        return self.min_causality_weight, self.mean_causality_weight
-
-    def __call__(self, input_data:Union[dict, torch.Tensor]=None, target_data:Union[dict, torch.Tensor]=None,
-                       call_back:str='',
-                       residual:callable=None,
-                       initial_input:Union[dict, torch.Tensor]=None, initial_state:Union[dict, torch.Tensor]=None,
-                       boundary_input:list=None, boundary_penalties:list=None,
-                       initial_penalty:float=1, axis:int=-1, relative:bool=False,
-                       lambda_1:float=0.0, lambda_2:float=0.0, weights=None, device:str="cpu",
-                       causality_preserving:bool=False,
-                       grid_shape:Tuple[int]=None,
-                       causality_parameter:float=None,
-                       use_mean:bool=True) -> callable:
-
-        self.residual = residual
-        self.grid_shape = grid_shape
-        self.causality_parameter = causality_parameter
-
-        if residual.g_expressions:
-            boundary = self._boundary_penalisation
-        else:
-            boundary = self._no_boundary_penalisation
-
-        if weights is None:
-            weights = len(residual.output_names)*[1]
-
-        if causality_preserving:
-            assert isinstance(self.grid_shape, tuple), "If the causality preserving approach is being used," \
-                                                       " it is necessary to provide an original grid shape."
-
-            assert isinstance(self.causality_parameter, float), "If the causality preserving approach is being used," \
-                                                                " it is necessary to provide an causality exponent."
-
-            self.residual_wrapper = self._causality_preserving_residual_wrapper
-
-        else:
-            self.residual_wrapper = self._no_residual_wrapper
-
-        l1_reg_multiplication = self._exec_multiplication_in_regularization(lambda_type=type(lambda_1),
-                                                                            term_type=type(self.operator.weights_l1))
-
-        l2_reg_multiplication = self._exec_multiplication_in_regularization(lambda_type=type(lambda_2),
-                                                                            term_type=type(self.operator.weights_l2))
-        if type(input_data) is dict:
-            try:
-                input_data = input_data['input_data']
-            except:
-                pass
-
-        initial_input, initial_state = self._to_tensor(initial_input, initial_state, device=device)
-
-        if use_mean == True:
-            self.loss_evaluator = lambda res: torch.mean(torch.square((res)))
-        else:
-            self.loss_evaluator = lambda res: torch.sum(torch.square((res)))
-
-        # Relative norm or not
-        if relative == True:
-            if use_mean == True:
-                self.norm_evaluator = lambda ref: torch.mean(torch.square((ref)))
-            else:
-                self.norm_evaluator = lambda ref: torch.sum(torch.square((ref)))
-        else:
-            self.norm_evaluator = lambda ref: 1
-
-        def closure():
-
-            residual_approximation = self.residual_wrapper(input_data)
-
-            boundary_approximation = boundary(boundary_input=boundary_input,
-                                              residual=residual)
-
-            initial_output_tilde = self.operator(input_data=initial_input)
-
-            residual_loss = self._residual_loss(residual_approximation=residual_approximation, weights=weights)
-
-            boundary_loss = self._residual_loss(residual_approximation=boundary_approximation,
-                                                weights=boundary_penalties)
-
-            initial_data_loss = self._data_loss(output_tilde=initial_output_tilde, target_data_tensor=initial_state)
-
-            # L² and L¹ regularization term
-            weights_l2 = self.operator.weights_l2
-            weights_l1 = self.operator.weights_l1
-
-            # beta *||W||_2 + alpha * ||W||_1
-            l2_reg = l2_reg_multiplication(lambda_2, weights_l2)
-            l1_reg = l1_reg_multiplication(lambda_1, weights_l1)
-
-            # The complete loss function
-            pde = sum(residual_loss)
-            init = initial_data_loss
-            bound = sum(boundary_loss)
-
-            loss = pde + initial_penalty*init + bound + l2_reg + l1_reg
-
-            # Back-propagation
-            loss.backward()
-
-            call_back = f", causality_weights: {self.causality_weights_interval}"
-
-            self.loss_states['pde'].append(float(pde.detach().data))
-            self.loss_states['init'].append(float(init.detach().data))
-            self.loss_states['bound'].append(float(bound.detach().data))
-
-            sys.stdout.write(("\rpde: {}, init: {}, bound: {} {}").format(pde, init, bound, call_back))
-            sys.stdout.flush()
-
-            _current_loss = loss
-
-            return _current_loss
-
-        return closure
-
-#Customized RMSE Loss for equation residuals in PyTorch dedicated to DeepONets
-class OPIRMSELoss(LossBasics):
-
-    def __init__(self, operator:DeepONet=None) -> None:
-
-        super().__init__()
-
-        self.split_dim = 1
-        self.operator = operator
-        self.loss_evaluator = None
-        self.residual = None
-        self.tol = 1e-25
-
-        self.axis_loss_evaluator = lambda res: torch.mean(torch.square((res)), dim=1)
-
-        self.min_causality_weight = self.tol
-        self.mean_causality_weight = 0
-
-        self.loss_states = {'pde': list(), 'init': list(), 'bound': list()}
-
-    def _convert(self, input_data:Union[dict, np.ndarray]=None, device:str=None) -> Union[dict, torch.Tensor]:
-
-        if type(input_data) == dict:
-
-            return {key:torch.from_numpy(item.astype(np.float32)).to(device) for key, item in input_data.items()}
-
-        else:
-            return torch.from_numpy(input_data.astype(np.float32)).to(device)
-
-    def _to_tensor(self, *args, device="cpu"):
-
-        return [self._convert(input_data=arg, device=device) for arg in args]
-
-    def _data_loss(self, output_tilde=None, weights=None, target_data_tensor=None):
-
-        output_split = torch.split(output_tilde, self.split_dim, dim=-1)
-        target_split = torch.split(target_data_tensor, self.split_dim, dim=-1)
-
-        data_losses = [weights[i] * self.loss_evaluator(out_split - tgt_split)/self.norm_evaluator(tgt_split)
-                       for i, (out_split, tgt_split) in enumerate(zip(output_split, target_split))]
-
-        return sum(data_losses)
-
-    def _residual_loss(self, residual_approximation=None, weights=None):
-
-        residual_loss = [weight*self.loss_evaluator(res)
-                         for weight, res in zip(weights, residual_approximation)]
-
-        return residual_loss
-
-    def _no_boundary_penalisation(self, boundary_input: dict = None, residual: object = None) -> torch.Tensor:
-
-        return [torch.Tensor([0.])]
-
-    def _boundary_penalisation(self, boundary_input: dict = None, residual: SymbolicOperator = None) -> torch.Tensor:
-
-        return [residual.eval_expression(k, boundary_input[k]) for k in boundary_input.keys()]
+        return [
+            residual.eval_expression(k, boundary_input[k])
+            for k in boundary_input.keys()
+        ]
 
     def _no_residual_wrapper(self, input_data: torch.Tensor = None) -> torch.Tensor:
 
         return self.residual(input_data)
 
-    def _causality_preserving_residual_wrapper(self, input_data: torch.Tensor = None) -> list:
+    def _causality_preserving_residual_wrapper(
+        self, input_data: torch.Tensor = None
+    ) -> list:
 
         warnings.warn("This implementation is still equal to the vanilla one.")
 
         return self.residual(input_data)
 
-    def _evaluate_causality_weights(self, loss_tensor: torch.Tensor = None) -> torch.Tensor:
+    def _evaluate_causality_weights(
+        self, loss_tensor: torch.Tensor = None
+    ) -> torch.Tensor:
 
         warnings.warn("This implementation is still equal to the vanilla one.")
 
@@ -787,56 +699,73 @@ class OPIRMSELoss(LossBasics):
 
         return self.min_causality_weight, self.mean_causality_weight
 
-    def __call__(self, input_data:Union[dict, torch.Tensor]=None, target_data:Union[dict, torch.Tensor]=None,
-                       call_back:str='',
-                       residual:callable=None,
-                       initial_input:Union[dict, torch.Tensor]=None, initial_state:Union[dict, torch.Tensor]=None,
-                       boundary_input: list = None, boundary_penalties: list = None,
-                       initial_penalty:float=1, axis:int=-1, relative:bool=False,
-                       lambda_1:float=0.0, lambda_2:float=0.0, weights=None, weights_residual=None, device:str="cpu",
-                       causality_preserving: bool = False,
-                       grid_shape: Tuple[int] = None,
-                       causality_parameter: float = None,
-                       use_mean:bool=True) -> callable:
+    def __call__(
+        self,
+        input_data: Union[dict, torch.Tensor] = None,
+        target_data: Union[dict, torch.Tensor] = None,
+        call_back: str = "",
+        residual: callable = None,
+        initial_input: Union[dict, torch.Tensor] = None,
+        initial_state: Union[dict, torch.Tensor] = None,
+        boundary_input: list = None,
+        boundary_penalties: list = None,
+        initial_penalty: float = 1,
+        axis: int = -1,
+        relative: bool = False,
+        lambda_1: float = 0.0,
+        lambda_2: float = 0.0,
+        weights=None,
+        device: str = "cpu",
+        causality_preserving: bool = False,
+        grid_shape: Tuple[int] = None,
+        causality_parameter: float = None,
+        use_mean: bool = True,
+    ) -> callable:
 
         self.residual = residual
         self.grid_shape = grid_shape
         self.causality_parameter = causality_parameter
 
-        if weights is None:
-            weights = len(residual.output_names)*[1]
-
-        if weights_residual is None:
-            weights_residual = len(residual.output_names) * [1]
-
         if residual.g_expressions:
             boundary = self._boundary_penalisation
         else:
             boundary = self._no_boundary_penalisation
-            boundary_penalties = [0]
 
         if weights is None:
-            weights = len(residual.output_names)*[1]
+            weights = len(residual.output_names) * [1]
 
         if causality_preserving:
-            assert isinstance(self.grid_shape, tuple), "If the causality preserving approach is being used," \
-                                                       " it is necessary to provide an original grid shape."
+            assert isinstance(self.grid_shape, tuple), (
+                "If the causality preserving approach is being used,"
+                " it is necessary to provide an original grid shape."
+            )
 
-            assert isinstance(self.causality_parameter, float), "If the causality preserving approach is being used," \
-                                                                " it is necessary to provide an causality exponent."
+            assert isinstance(self.causality_parameter, float), (
+                "If the causality preserving approach is being used,"
+                " it is necessary to provide an causality exponent."
+            )
 
             self.residual_wrapper = self._causality_preserving_residual_wrapper
 
         else:
             self.residual_wrapper = self._no_residual_wrapper
 
-        l1_reg_multiplication = self._exec_multiplication_in_regularization(lambda_type=type(lambda_1),
-                                                                            term_type=type(self.operator.weights_l1))
+        l1_reg_multiplication = self._exec_multiplication_in_regularization(
+            lambda_type=type(lambda_1), term_type=type(self.operator.weights_l1)
+        )
 
-        l2_reg_multiplication = self._exec_multiplication_in_regularization(lambda_type=type(lambda_2),
-                                                                            term_type=type(self.operator.weights_l2))
+        l2_reg_multiplication = self._exec_multiplication_in_regularization(
+            lambda_type=type(lambda_2), term_type=type(self.operator.weights_l2)
+        )
+        if type(input_data) is dict:
+            try:
+                input_data = input_data["input_data"]
+            except:
+                pass
 
-        initial_input, initial_state = self._to_tensor(initial_input, initial_state, device=device)
+        initial_input, initial_state = self._to_tensor(
+            initial_input, initial_state, device=device
+        )
 
         if use_mean == True:
             self.loss_evaluator = lambda res: torch.mean(torch.square((res)))
@@ -856,18 +785,24 @@ class OPIRMSELoss(LossBasics):
 
             residual_approximation = self.residual_wrapper(input_data)
 
-            boundary_approximation = boundary(boundary_input=boundary_input,
-                                              residual=residual)
+            boundary_approximation = boundary(
+                boundary_input=boundary_input, residual=residual
+            )
 
-            initial_output_tilde = self.operator(**initial_input)
+            initial_output_tilde = self.operator(input_data=initial_input)
 
-            residual_loss = self._residual_loss(residual_approximation=residual_approximation, weights=weights_residual)
+            residual_loss = self._residual_loss(
+                residual_approximation=residual_approximation, weights=weights
+            )
 
-            boundary_loss = self._residual_loss(residual_approximation=boundary_approximation,
-                                                weights=boundary_penalties)
+            boundary_loss = self._residual_loss(
+                residual_approximation=boundary_approximation,
+                weights=boundary_penalties,
+            )
 
-            initial_data_loss = self._data_loss(output_tilde=initial_output_tilde, weights=weights,
-                                                target_data_tensor=initial_state)
+            initial_data_loss = self._data_loss(
+                output_tilde=initial_output_tilde, target_data_tensor=initial_state
+            )
 
             # L² and L¹ regularization term
             weights_l2 = self.operator.weights_l2
@@ -889,19 +824,273 @@ class OPIRMSELoss(LossBasics):
 
             call_back = f", causality_weights: {self.causality_weights_interval}"
 
-            self.loss_states['pde'].append(float(loss.detach().data))
-            self.loss_states['init'].append(float(init.detach().data))
-            self.loss_states['bound'].append(float(bound.detach().data))
+            self.loss_states["pde"].append(float(pde.detach().data))
+            self.loss_states["init"].append(float(init.detach().data))
+            self.loss_states["bound"].append(float(bound.detach().data))
 
-            sys.stdout.write(("\rpde: {}, init: {}, bound: {} {}").format(pde, init, bound, call_back))
+            sys.stdout.write(
+                ("\rpde: {}, init: {}, bound: {} {}").format(
+                    pde, init, bound, call_back
+                )
+            )
+            sys.stdout.flush()
+
+            _current_loss = loss
+
+            return _current_loss
+
+        return closure
+
+
+# Customized RMSE Loss for equation residuals in PyTorch dedicated to DeepONets
+class OPIRMSELoss(LossBasics):
+    def __init__(self, operator: DeepONet = None) -> None:
+
+        super().__init__()
+
+        self.split_dim = 1
+        self.operator = operator
+        self.loss_evaluator = None
+        self.residual = None
+        self.tol = 1e-25
+
+        self.axis_loss_evaluator = lambda res: torch.mean(torch.square((res)), dim=1)
+
+        self.min_causality_weight = self.tol
+        self.mean_causality_weight = 0
+
+        self.loss_states = {"pde": list(), "init": list(), "bound": list()}
+
+    def _convert(
+        self, input_data: Union[dict, np.ndarray] = None, device: str = None
+    ) -> Union[dict, torch.Tensor]:
+
+        if type(input_data) == dict:
+
+            return {
+                key: torch.from_numpy(item.astype(np.float32)).to(device)
+                for key, item in input_data.items()
+            }
+
+        else:
+            return torch.from_numpy(input_data.astype(np.float32)).to(device)
+
+    def _to_tensor(self, *args, device="cpu"):
+
+        return [self._convert(input_data=arg, device=device) for arg in args]
+
+    def _data_loss(self, output_tilde=None, weights=None, target_data_tensor=None):
+
+        output_split = torch.split(output_tilde, self.split_dim, dim=-1)
+        target_split = torch.split(target_data_tensor, self.split_dim, dim=-1)
+
+        data_losses = [
+            weights[i]
+            * self.loss_evaluator(out_split - tgt_split)
+            / self.norm_evaluator(tgt_split)
+            for i, (out_split, tgt_split) in enumerate(zip(output_split, target_split))
+        ]
+
+        return sum(data_losses)
+
+    def _residual_loss(self, residual_approximation=None, weights=None):
+
+        residual_loss = [
+            weight * self.loss_evaluator(res)
+            for weight, res in zip(weights, residual_approximation)
+        ]
+
+        return residual_loss
+
+    def _no_boundary_penalisation(
+        self, boundary_input: dict = None, residual: object = None
+    ) -> torch.Tensor:
+
+        return [torch.Tensor([0.0])]
+
+    def _boundary_penalisation(
+        self, boundary_input: dict = None, residual: SymbolicOperator = None
+    ) -> torch.Tensor:
+
+        return [
+            residual.eval_expression(k, boundary_input[k])
+            for k in boundary_input.keys()
+        ]
+
+    def _no_residual_wrapper(self, input_data: torch.Tensor = None) -> torch.Tensor:
+
+        return self.residual(input_data)
+
+    def _causality_preserving_residual_wrapper(
+        self, input_data: torch.Tensor = None
+    ) -> list:
+
+        warnings.warn("This implementation is still equal to the vanilla one.")
+
+        return self.residual(input_data)
+
+    def _evaluate_causality_weights(
+        self, loss_tensor: torch.Tensor = None
+    ) -> torch.Tensor:
+
+        warnings.warn("This implementation is still equal to the vanilla one.")
+
+        return torch.ones(loss_tensor.shape[0])
+
+    @property
+    def causality_weights_interval(self):
+
+        warnings.warn("This implementation is still equal to the vanilla one.")
+
+        return self.min_causality_weight, self.mean_causality_weight
+
+    def __call__(
+        self,
+        input_data: Union[dict, torch.Tensor] = None,
+        target_data: Union[dict, torch.Tensor] = None,
+        call_back: str = "",
+        residual: callable = None,
+        initial_input: Union[dict, torch.Tensor] = None,
+        initial_state: Union[dict, torch.Tensor] = None,
+        boundary_input: list = None,
+        boundary_penalties: list = None,
+        initial_penalty: float = 1,
+        axis: int = -1,
+        relative: bool = False,
+        lambda_1: float = 0.0,
+        lambda_2: float = 0.0,
+        weights=None,
+        weights_residual=None,
+        device: str = "cpu",
+        causality_preserving: bool = False,
+        grid_shape: Tuple[int] = None,
+        causality_parameter: float = None,
+        use_mean: bool = True,
+    ) -> callable:
+
+        self.residual = residual
+        self.grid_shape = grid_shape
+        self.causality_parameter = causality_parameter
+
+        if weights is None:
+            weights = len(residual.output_names) * [1]
+
+        if weights_residual is None:
+            weights_residual = len(residual.output_names) * [1]
+
+        if residual.g_expressions:
+            boundary = self._boundary_penalisation
+        else:
+            boundary = self._no_boundary_penalisation
+            boundary_penalties = [0]
+
+        if weights is None:
+            weights = len(residual.output_names) * [1]
+
+        if causality_preserving:
+            assert isinstance(self.grid_shape, tuple), (
+                "If the causality preserving approach is being used,"
+                " it is necessary to provide an original grid shape."
+            )
+
+            assert isinstance(self.causality_parameter, float), (
+                "If the causality preserving approach is being used,"
+                " it is necessary to provide an causality exponent."
+            )
+
+            self.residual_wrapper = self._causality_preserving_residual_wrapper
+
+        else:
+            self.residual_wrapper = self._no_residual_wrapper
+
+        l1_reg_multiplication = self._exec_multiplication_in_regularization(
+            lambda_type=type(lambda_1), term_type=type(self.operator.weights_l1)
+        )
+
+        l2_reg_multiplication = self._exec_multiplication_in_regularization(
+            lambda_type=type(lambda_2), term_type=type(self.operator.weights_l2)
+        )
+
+        initial_input, initial_state = self._to_tensor(
+            initial_input, initial_state, device=device
+        )
+
+        if use_mean == True:
+            self.loss_evaluator = lambda res: torch.mean(torch.square((res)))
+        else:
+            self.loss_evaluator = lambda res: torch.sum(torch.square((res)))
+
+        # Relative norm or not
+        if relative == True:
+            if use_mean == True:
+                self.norm_evaluator = lambda ref: torch.mean(torch.square((ref)))
+            else:
+                self.norm_evaluator = lambda ref: torch.sum(torch.square((ref)))
+        else:
+            self.norm_evaluator = lambda ref: 1
+
+        def closure():
+
+            residual_approximation = self.residual_wrapper(input_data)
+
+            boundary_approximation = boundary(
+                boundary_input=boundary_input, residual=residual
+            )
+
+            initial_output_tilde = self.operator(**initial_input)
+
+            residual_loss = self._residual_loss(
+                residual_approximation=residual_approximation, weights=weights_residual
+            )
+
+            boundary_loss = self._residual_loss(
+                residual_approximation=boundary_approximation,
+                weights=boundary_penalties,
+            )
+
+            initial_data_loss = self._data_loss(
+                output_tilde=initial_output_tilde,
+                weights=weights,
+                target_data_tensor=initial_state,
+            )
+
+            # L² and L¹ regularization term
+            weights_l2 = self.operator.weights_l2
+            weights_l1 = self.operator.weights_l1
+
+            # beta *||W||_2 + alpha * ||W||_1
+            l2_reg = l2_reg_multiplication(lambda_2, weights_l2)
+            l1_reg = l1_reg_multiplication(lambda_1, weights_l1)
+
+            # The complete loss function
+            pde = sum(residual_loss)
+            init = initial_data_loss
+            bound = sum(boundary_loss)
+
+            loss = pde + initial_penalty * init + bound + l2_reg + l1_reg
+
+            # Back-propagation
+            loss.backward()
+
+            call_back = f", causality_weights: {self.causality_weights_interval}"
+
+            self.loss_states["pde"].append(float(loss.detach().data))
+            self.loss_states["init"].append(float(init.detach().data))
+            self.loss_states["bound"].append(float(bound.detach().data))
+
+            sys.stdout.write(
+                ("\rpde: {}, init: {}, bound: {} {}").format(
+                    pde, init, bound, call_back
+                )
+            )
             sys.stdout.flush()
 
         return closure
 
-#Customized RMSE Loss for equation residuals in PyTorch dedicated to Koopman Autoencoders
-class KAERMSELoss(LossBasics):
 
-    def __init__(self, operator:AutoencoderKoopman=None) -> None:
+# Customized RMSE Loss for equation residuals in PyTorch dedicated to Koopman Autoencoders
+class KAERMSELoss(LossBasics):
+    def __init__(self, operator: AutoencoderKoopman = None) -> None:
 
         super().__init__()
 
@@ -912,11 +1101,16 @@ class KAERMSELoss(LossBasics):
         self.batchers = dict()
         self.shifted_indices = dict()
 
-    def _convert(self, input_data:Union[dict, np.ndarray]=None, device:str=None) -> Union[dict, torch.Tensor]:
+    def _convert(
+        self, input_data: Union[dict, np.ndarray] = None, device: str = None
+    ) -> Union[dict, torch.Tensor]:
 
         if type(input_data) == dict:
 
-            return {key:torch.from_numpy(item.astype(np.float32)).to(device) for key, item in input_data.items()}
+            return {
+                key: torch.from_numpy(item.astype(np.float32)).to(device)
+                for key, item in input_data.items()
+            }
 
         else:
             return torch.from_numpy(input_data.astype(np.float32)).to(device)
@@ -927,35 +1121,55 @@ class KAERMSELoss(LossBasics):
 
     def _data_loss(self, output_tilde=None, target_data_tensor=None):
 
-        return self.loss_evaluator(output_tilde - target_data_tensor)/self.norm_evaluator(target_data_tensor)
+        return self.loss_evaluator(
+            output_tilde - target_data_tensor
+        ) / self.norm_evaluator(target_data_tensor)
 
-    def __call__(self, input_data:Union[dict, torch.Tensor]=None, target_data:Union[dict, torch.Tensor]=None,
-                       call_back:str='',
-                       initial_penalty:float=1, axis:int=-1, relative:bool=False,
-                       lambda_1:float=0.0, lambda_2:float=0.0, m:int=1, S_p:float=None, T:float=4,
-                       alpha_1:float=1.0, alpha_2:float=1.0, alpha_3:float=1.0,
-                       device:str="cpu", use_mean:bool=True) -> callable:
+    def __call__(
+        self,
+        input_data: Union[dict, torch.Tensor] = None,
+        target_data: Union[dict, torch.Tensor] = None,
+        call_back: str = "",
+        initial_penalty: float = 1,
+        axis: int = -1,
+        relative: bool = False,
+        lambda_1: float = 0.0,
+        lambda_2: float = 0.0,
+        m: int = 1,
+        S_p: float = None,
+        T: float = 4,
+        alpha_1: float = 1.0,
+        alpha_2: float = 1.0,
+        alpha_3: float = 1.0,
+        device: str = "cpu",
+        use_mean: bool = True,
+    ) -> callable:
 
-        self.indices = [1, 2, m, m+1]
+        self.indices = [1, 2, m, m + 1]
 
         for n in self.indices:
 
-            self.batchers[n] = IntersectingBatches(skip_size=1, batch_size=n, full=False)
+            self.batchers[n] = IntersectingBatches(
+                skip_size=1, batch_size=n, full=False
+            )
 
-            indices, shifted_indices = self.batchers[n].get_indices(dim=target_data.shape[0])
+            indices, shifted_indices = self.batchers[n].get_indices(
+                dim=target_data.shape[0]
+            )
             self.shifted_indices[n] = [indices, shifted_indices]
 
-        l1_reg_multiplication = self._exec_multiplication_in_regularization(lambda_type=type(lambda_1),
-                                                                            term_type=type(self.operator.weights_l1))
+        l1_reg_multiplication = self._exec_multiplication_in_regularization(
+            lambda_type=type(lambda_1), term_type=type(self.operator.weights_l1)
+        )
 
-        l2_reg_multiplication = self._exec_multiplication_in_regularization(lambda_type=type(lambda_2),
-                                                                            term_type=type(self.operator.weights_l2))
-
+        l2_reg_multiplication = self._exec_multiplication_in_regularization(
+            lambda_type=type(lambda_2), term_type=type(self.operator.weights_l2)
+        )
 
         shifted_target_data_1 = target_data[self.shifted_indices[1][1]]
         shifted_target_data_2 = target_data[self.shifted_indices[2][1]]
         shifted_target_data_m = target_data[self.shifted_indices[m][1]]
-        shifted_target_data_m_1 = target_data[self.shifted_indices[m+1][1]]
+        shifted_target_data_m_1 = target_data[self.shifted_indices[m + 1][1]]
 
         if use_mean == True:
             self.loss_evaluator = lambda res: torch.mean(torch.square((res)))
@@ -986,42 +1200,77 @@ class KAERMSELoss(LossBasics):
             latent_space_m = latent_space_[self.shifted_indices[m][0]]
             shifted_latent_space_m = latent_space_[self.shifted_indices[m][1]]
 
-            latent_space_m_1 = latent_space_[self.shifted_indices[m+1][0]]
-            shifted_latent_space_m_1 = latent_space_[self.shifted_indices[m+1][1]]
+            latent_space_m_1 = latent_space_[self.shifted_indices[m + 1][0]]
+            shifted_latent_space_m_1 = latent_space_[self.shifted_indices[m + 1][1]]
 
             # Time-extrapolating in the latent space
-            latent_space_1_tilde = self.operator.latent_forward_m(input_data=latent_space_1, m=1)
-            latent_space_2_tilde = self.operator.latent_forward_m(input_data=latent_space_2, m=2)
-            latent_space_m_tilde = self.operator.latent_forward_m(input_data=latent_space_m, m=m)
-            latent_space_m_1_tilde = self.operator.latent_forward_m(input_data=latent_space_m_1, m=m+1)
+            latent_space_1_tilde = self.operator.latent_forward_m(
+                input_data=latent_space_1, m=1
+            )
+            latent_space_2_tilde = self.operator.latent_forward_m(
+                input_data=latent_space_2, m=2
+            )
+            latent_space_m_tilde = self.operator.latent_forward_m(
+                input_data=latent_space_m, m=m
+            )
+            latent_space_m_1_tilde = self.operator.latent_forward_m(
+                input_data=latent_space_m_1, m=m + 1
+            )
 
             # Reconstruction loss for multiple shifts
-            output_tilde_1 = self.operator.reconstruction(input_data=latent_space_1_tilde)
-            output_tilde_2 = self.operator.reconstruction(input_data=latent_space_2_tilde)
-            output_tilde_m = self.operator.reconstruction(input_data=latent_space_m_tilde)
-            output_tilde_m_1 = self.operator.reconstruction(input_data=latent_space_m_1_tilde)
+            output_tilde_1 = self.operator.reconstruction(
+                input_data=latent_space_1_tilde
+            )
+            output_tilde_2 = self.operator.reconstruction(
+                input_data=latent_space_2_tilde
+            )
+            output_tilde_m = self.operator.reconstruction(
+                input_data=latent_space_m_tilde
+            )
+            output_tilde_m_1 = self.operator.reconstruction(
+                input_data=latent_space_m_1_tilde
+            )
 
             # Reconstruction loss
-            loss_rec = self._data_loss(output_tilde=output_tilde, target_data_tensor=target_data)
+            loss_rec = self._data_loss(
+                output_tilde=output_tilde, target_data_tensor=target_data
+            )
 
             # Prediction losses in full space
-            data_loss_1 = self._data_loss(output_tilde=output_tilde_1, target_data_tensor=shifted_target_data_1)
-            data_loss_2 = self._data_loss(output_tilde=output_tilde_2, target_data_tensor=shifted_target_data_2)
-            data_loss_m = self._data_loss(output_tilde=output_tilde_m, target_data_tensor=shifted_target_data_m)
-            data_loss_m_1 = self._data_loss(output_tilde=output_tilde_m_1, target_data_tensor=shifted_target_data_m_1)
+            data_loss_1 = self._data_loss(
+                output_tilde=output_tilde_1, target_data_tensor=shifted_target_data_1
+            )
+            data_loss_2 = self._data_loss(
+                output_tilde=output_tilde_2, target_data_tensor=shifted_target_data_2
+            )
+            data_loss_m = self._data_loss(
+                output_tilde=output_tilde_m, target_data_tensor=shifted_target_data_m
+            )
+            data_loss_m_1 = self._data_loss(
+                output_tilde=output_tilde_m_1,
+                target_data_tensor=shifted_target_data_m_1,
+            )
 
             # Linearisation losses for the latent space
-            linearisation_loss_1 = self._data_loss(output_tilde=latent_space_1_tilde,
-                                                   target_data_tensor=shifted_latent_space_1)
+            linearisation_loss_1 = self._data_loss(
+                output_tilde=latent_space_1_tilde,
+                target_data_tensor=shifted_latent_space_1,
+            )
 
-            linearisation_loss_2 = self._data_loss(output_tilde=latent_space_2_tilde,
-                                                   target_data_tensor=shifted_latent_space_2)
+            linearisation_loss_2 = self._data_loss(
+                output_tilde=latent_space_2_tilde,
+                target_data_tensor=shifted_latent_space_2,
+            )
 
-            linearisation_loss_m = self._data_loss(output_tilde=latent_space_m_tilde,
-                                                   target_data_tensor=shifted_latent_space_m)
+            linearisation_loss_m = self._data_loss(
+                output_tilde=latent_space_m_tilde,
+                target_data_tensor=shifted_latent_space_m,
+            )
 
-            linearisation_loss_m_1 = self._data_loss(output_tilde=latent_space_m_1_tilde,
-                                                     target_data_tensor=shifted_latent_space_m_1)
+            linearisation_loss_m_1 = self._data_loss(
+                output_tilde=latent_space_m_1_tilde,
+                target_data_tensor=shifted_latent_space_m_1,
+            )
 
             # L² and L¹ regularization term
             weights_l2 = self.operator.weights_l2
@@ -1033,9 +1282,19 @@ class KAERMSELoss(LossBasics):
 
             # Loss =  alpha_1*(loss_rec + loss_pred) + alpha_2*(loss_lin) + beta *||W||_2 + alpha * ||W||_1
             loss_pred = data_loss_1 + data_loss_2 + data_loss_m + data_loss_m_1
-            loss_lin = linearisation_loss_1 + linearisation_loss_2 + linearisation_loss_m + linearisation_loss_m_1
+            loss_lin = (
+                linearisation_loss_1
+                + linearisation_loss_2
+                + linearisation_loss_m
+                + linearisation_loss_m_1
+            )
 
-            loss = alpha_1*(loss_rec + loss_pred/T) + alpha_3*loss_lin/T + l2_reg + l1_reg
+            loss = (
+                alpha_1 * (loss_rec + loss_pred / T)
+                + alpha_3 * loss_lin / T
+                + l2_reg
+                + l1_reg
+            )
 
             # Back-propagation
             loss.backward()
@@ -1045,10 +1304,10 @@ class KAERMSELoss(LossBasics):
 
         return closure
 
-#Customized RMSE Loss for equation residuals in PyTorch dedicated to Koopman Autoencoders
-class VAERMSELoss(LossBasics):
 
-    def __init__(self, operator:AutoencoderVariational=None) -> None:
+# Customized RMSE Loss for equation residuals in PyTorch dedicated to Koopman Autoencoders
+class VAERMSELoss(LossBasics):
+    def __init__(self, operator: AutoencoderVariational = None) -> None:
 
         super().__init__()
 
@@ -1056,13 +1315,18 @@ class VAERMSELoss(LossBasics):
         self.operator = operator
         self.loss_evaluator = None
         self.beta = 1
-        self.loss_states = {'loss': list(), 'kl_loss':list()}
+        self.loss_states = {"loss": list(), "kl_loss": list()}
 
-    def _convert(self, input_data:Union[dict, np.ndarray]=None, device:str=None) -> Union[dict, torch.Tensor]:
+    def _convert(
+        self, input_data: Union[dict, np.ndarray] = None, device: str = None
+    ) -> Union[dict, torch.Tensor]:
 
         if type(input_data) == dict:
 
-            return {key:torch.from_numpy(item.astype(np.float32)).to(device) for key, item in input_data.items()}
+            return {
+                key: torch.from_numpy(item.astype(np.float32)).to(device)
+                for key, item in input_data.items()
+            }
 
         else:
             return torch.from_numpy(input_data.astype(np.float32)).to(device)
@@ -1073,25 +1337,39 @@ class VAERMSELoss(LossBasics):
 
     def _data_loss(self, output_tilde=None, target_data_tensor=None):
 
-        return self.loss_evaluator(output_tilde - target_data_tensor)/self.norm_evaluator(target_data_tensor)
+        return self.loss_evaluator(
+            output_tilde - target_data_tensor
+        ) / self.norm_evaluator(target_data_tensor)
 
     def _kl_loss(self):
 
         z_mean, z_log_var = self.operator.mu, self.operator.log_v
-        kl_loss = - (self.beta/2) * torch.mean(1. + z_log_var - z_mean ** 2. - torch.exp(z_log_var))
+        kl_loss = -(self.beta / 2) * torch.mean(
+            1.0 + z_log_var - z_mean**2.0 - torch.exp(z_log_var)
+        )
 
         return kl_loss
 
-    def __call__(self, input_data:Union[dict, torch.Tensor]=None, target_data:Union[dict, torch.Tensor]=None,
-                       call_back:str='', relative:bool=False,
-                       lambda_1:float=0.0, lambda_2:float=0.0,
-                       device:str="cpu", use_mean:bool=True, beta:float=1) -> callable:
+    def __call__(
+        self,
+        input_data: Union[dict, torch.Tensor] = None,
+        target_data: Union[dict, torch.Tensor] = None,
+        call_back: str = "",
+        relative: bool = False,
+        lambda_1: float = 0.0,
+        lambda_2: float = 0.0,
+        device: str = "cpu",
+        use_mean: bool = True,
+        beta: float = 1,
+    ) -> callable:
 
-        l1_reg_multiplication = self._exec_multiplication_in_regularization(lambda_type=type(lambda_1),
-                                                                            term_type=type(self.operator.weights_l1))
+        l1_reg_multiplication = self._exec_multiplication_in_regularization(
+            lambda_type=type(lambda_1), term_type=type(self.operator.weights_l1)
+        )
 
-        l2_reg_multiplication = self._exec_multiplication_in_regularization(lambda_type=type(lambda_2),
-                                                                            term_type=type(self.operator.weights_l2))
+        l2_reg_multiplication = self._exec_multiplication_in_regularization(
+            lambda_type=type(lambda_2), term_type=type(self.operator.weights_l2)
+        )
 
         self.beta = beta
 
@@ -1113,7 +1391,9 @@ class VAERMSELoss(LossBasics):
 
             output_tilde = self.operator.reconstruction_forward(**input_data)
 
-            data_loss = self._data_loss(output_tilde=output_tilde, target_data_tensor=target_data)
+            data_loss = self._data_loss(
+                output_tilde=output_tilde, target_data_tensor=target_data
+            )
 
             # L² and L¹ regularization term
             weights_l2 = self.operator.weights_l2
@@ -1125,15 +1405,17 @@ class VAERMSELoss(LossBasics):
 
             # Loss = ||residual||_2 + lambda_2 * ||W||_1
             kl_loss = self._kl_loss()
-            loss = data_loss + kl_loss +  l2_reg + l1_reg
+            loss = data_loss + kl_loss + l2_reg + l1_reg
 
             # Back-propagation
             loss.backward()
 
-            loss_str = ("\rresidual loss: {}, kl_loss:{}").format(loss, kl_loss, call_back)
+            loss_str = ("\rresidual loss: {}, kl_loss:{}").format(
+                loss, kl_loss, call_back
+            )
 
-            self.loss_states['loss'].append(float(loss.detach().data))
-            self.loss_states['kl_loss'].append(float(kl_loss.detach().data))
+            self.loss_states["loss"].append(float(loss.detach().data))
+            self.loss_states["kl_loss"].append(float(kl_loss.detach().data))
 
             sys.stdout.write(loss_str)
             sys.stdout.flush()

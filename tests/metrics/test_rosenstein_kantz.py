@@ -18,8 +18,8 @@ import numpy as np
 
 from simulai.metrics import RosensteinKantz
 
-class TestPointwise(TestCase):
 
+class TestPointwise(TestCase):
     def test_pointwise(self):
 
         data = np.random.rand(100, 10)
@@ -29,4 +29,3 @@ class TestPointwise(TestCase):
         tau = rosenstein_kantz(data=data)
 
         assert isinstance(tau, float)
-

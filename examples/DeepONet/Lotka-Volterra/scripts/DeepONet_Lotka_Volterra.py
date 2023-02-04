@@ -18,19 +18,21 @@
 # In[1]:
 
 
-import os, sys
+import os
+import sys
+
+import matplotlib.pyplot as plt
 import numpy as np
 import torch
-import matplotlib.pyplot as plt
-from simulai.regression import DenseNetwork
+
 from simulai.models import DeepONet
 from simulai.optimization import Optimizer
-
+from simulai.regression import DenseNetwork
 
 # In[2]:
 
 
-data_path = os.environ['DATASET_PATH']
+data_path = os.environ["DATASET_PATH"]
 data_path
 
 
@@ -43,9 +45,9 @@ datasets = np.load(data_path)
 # In[4]:
 
 
-input_dataset_raw = datasets['input_dataset']
-output_dataset_raw = datasets['output_dataset']
-time_raw = datasets['time']
+input_dataset_raw = datasets["input_dataset"]
+output_dataset_raw = datasets["output_dataset"]
+time_raw = datasets["time"]
 
 
 # In[5]:
@@ -85,27 +87,31 @@ time = time_[time_indices]
 # In[8]:
 
 
-output_dataset_train = output_dataset_raw[:,:, :n_cases]
-output_dataset_test = output_dataset_raw[:,:,n_cases:]
+output_dataset_train = output_dataset_raw[:, :, :n_cases]
+output_dataset_test = output_dataset_raw[:, :, n_cases:]
 
 input_dataset_train = input_dataset_raw[:, :n_cases]
-input_dataset_test = input_dataset_raw[:,n_cases:]
+input_dataset_test = input_dataset_raw[:, n_cases:]
 
 
 # In[9]:
 
 
 output_dataset_time_sampled = output_dataset_train[time_indices, ...]
-input_dataset_sensor_sampled = input_dataset_train[sensors_indices, ...][:,None,:]
+input_dataset_sensor_sampled = input_dataset_train[sensors_indices, ...][:, None, :]
 
 
 # In[10]:
 
 
-output_target = output_dataset_time_sampled.transpose(2, 0, 1).reshape(n_cases*n_time_samples, -1)
+output_target = output_dataset_time_sampled.transpose(2, 0, 1).reshape(
+    n_cases * n_time_samples, -1
+)
 output_target_tensor = torch.from_numpy(output_target.astype(np.float32))
-input_branch = np.tile(input_dataset_sensor_sampled.transpose(2, 1, 0), (1, n_time_samples, 1)).reshape(n_cases*n_time_samples, -1)
-input_trunk = np.tile(time[:,None], (n_cases, 1))
+input_branch = np.tile(
+    input_dataset_sensor_sampled.transpose(2, 1, 0), (1, n_time_samples, 1)
+).reshape(n_cases * n_time_samples, -1)
+input_trunk = np.tile(time[:, None], (n_cases, 1))
 
 
 # In[11]:
@@ -121,21 +127,21 @@ print(input_trunk.shape)
 
 # Configuration for the fully-connected network
 config_trunk = {
-                'layers_units': trunk_layers_units,  # Hidden layers
-                'activations': activation,
-                'input_size': n_inputs,
-                'output_size': latent_dim,
-                'name': 'trunk_net'
-               }
+    "layers_units": trunk_layers_units,  # Hidden layers
+    "activations": activation,
+    "input_size": n_inputs,
+    "output_size": latent_dim,
+    "name": "trunk_net",
+}
 
- # Configuration for the fully-connected network
+# Configuration for the fully-connected network
 config_branch = {
-                'layers_units': branch_layers_units,  # Hidden layers
-                'activations': activation,
-                'input_size': n_sensors,
-                'output_size': latent_dim,
-                'name': 'branch_net'
-                }
+    "layers_units": branch_layers_units,  # Hidden layers
+    "activations": activation,
+    "input_size": n_sensors,
+    "output_size": latent_dim,
+    "name": "branch_net",
+}
 
 # Instantiating and training the surrogate model
 trunk_net = DenseNetwork(**config_trunk)
@@ -146,26 +152,37 @@ branch_net = DenseNetwork(**config_branch)
 trunk_net.summary()
 branch_net.summary()
 
-optimizer_config = {'lr': lr}
+optimizer_config = {"lr": lr}
 
 # Maximum derivative magnitudes to be used as loss weights
-maximum_values = (1/np.linalg.norm(output_target, 2, axis=0)).tolist()
+maximum_values = (1 / np.linalg.norm(output_target, 2, axis=0)).tolist()
 
-params = {'lambda_1': lambda_1, 'lambda_2': lambda_2, 'weights': maximum_values}
+params = {"lambda_1": lambda_1, "lambda_2": lambda_2, "weights": maximum_values}
 
-input_data = {'input_branch': input_branch, 'input_trunk': input_trunk}
+input_data = {"input_branch": input_branch, "input_trunk": input_trunk}
 
-# The DeepONet receives the two instances in order to construct 
+# The DeepONet receives the two instances in order to construct
 # the trunk and the branch components
-op_net = DeepONet(trunk_network=trunk_net, branch_network=branch_net, var_dim=2, model_id="LotkaVolterra")
+op_net = DeepONet(
+    trunk_network=trunk_net,
+    branch_network=branch_net,
+    var_dim=2,
+    model_id="LotkaVolterra",
+)
 
 
 # In[13]:
 
 
-optimizer = Optimizer('adam', params=optimizer_config)
-optimizer.fit(op_net, input_data=input_data, target_data=output_target,
-                      n_epochs=n_epochs, loss="wrmse", params=params)
+optimizer = Optimizer("adam", params=optimizer_config)
+optimizer.fit(
+    op_net,
+    input_data=input_data,
+    target_data=output_target,
+    n_epochs=n_epochs,
+    loss="wrmse",
+    params=params,
+)
 
 
 # In[30]:
@@ -173,7 +190,7 @@ optimizer.fit(op_net, input_data=input_data, target_data=output_target,
 
 n_tests_choices = 100
 test_indices = np.random.choice(n_cases_test, n_tests_choices)
-time_test = np.linspace(0, time_interval[-1], 2000)[:,None]
+time_test = np.linspace(0, time_interval[-1], 2000)[:, None]
 
 for index in test_indices[::10]:
 
@@ -182,11 +199,10 @@ for index in test_indices[::10]:
     input_test = np.tile(input_test_, (2000, 1))
     evaluation = op_net.eval(trunk_data=time_test, branch_data=input_test)
 
-    plt.plot(time_raw, target_test[:,0], label="Exact")
-    plt.plot(time_test, evaluation[:,0], label="Approximated")
+    plt.plot(time_raw, target_test[:, 0], label="Exact")
+    plt.plot(time_test, evaluation[:, 0], label="Approximated")
     plt.savefig(f"evaluation_case_{index}.png")
 
     plt.legend()
     plt.xlim(0, 120)
     plt.show()
-

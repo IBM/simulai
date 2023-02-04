@@ -12,30 +12,32 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
+from argparse import ArgumentParser
+
 import numpy as np
 
-from simulai.metrics import L2Norm
 from simulai.file import SPFile
-
-from argparse import ArgumentParser
+from simulai.metrics import L2Norm
 
 # Reading command line arguments.
 parser = ArgumentParser(description="Reading input parameters")
 
-parser.add_argument('--data_path', type=str, help="Path to the dataset.")
+parser.add_argument("--data_path", type=str, help="Path to the dataset.")
 
 args = parser.parse_args()
 
 data_path = args.data_path
 
-manufactured=True
+manufactured = True
 n_train = 20_000
 
 # Data preparing
 if manufactured == True:
 
     def u(t, x, L: float = None, t_max: float = None) -> np.ndarray:
-        return np.sin(4 * np.pi * t * np.cos(5 * np.pi * (t / t_max))* (x / L - 1 / 2) ** 2) * np.cos(5 * np.pi * (t / t_max - 1 / 2) ** 2)
+        return np.sin(
+            4 * np.pi * t * np.cos(5 * np.pi * (t / t_max)) * (x / L - 1 / 2) ** 2
+        ) * np.cos(5 * np.pi * (t / t_max - 1 / 2) ** 2)
 
     t_max = 10
     L = 5
@@ -48,18 +50,18 @@ if manufactured == True:
     x = np.linspace(*x_interval, K)
     t = np.linspace(*time_interval, N)
 
-    T, X = np.meshgrid(t, x, indexing='ij')
+    T, X = np.meshgrid(t, x, indexing="ij")
     output_data = u(T, X, L=L, t_max=t_max)
 
     positions = np.stack([X[::100].flatten(), T[::100].flatten()], axis=1)
-    positions = 2*positions/np.array([L, t_max]) - 1
+    positions = 2 * positions / np.array([L, t_max]) - 1
 
 n_t, n_x = output_data.shape
 
 x_i = np.random.randint(0, n_x, size=(n_train, 1))
 t_i = np.random.randint(0, n_t, size=(n_train, 1))
 
-input_train = 2*np.hstack([x[x_i], t[t_i]])/np.array([L, t_max]) - 1
+input_train = 2 * np.hstack([x[x_i], t[t_i]]) / np.array([L, t_max]) - 1
 output_train = output_data[t_i, x_i]
 
 # Testing to reload from disk
@@ -72,7 +74,9 @@ approximated_data = approximated_data.reshape(-1, K)
 
 l2_norm = L2Norm()
 
-projection_error = 100*l2_norm(data=approximated_data, reference_data=output_data[::100], relative_norm=True)
+projection_error = 100 * l2_norm(
+    data=approximated_data, reference_data=output_data[::100], relative_norm=True
+)
 
 print(f"Projection error: {projection_error} %")
 

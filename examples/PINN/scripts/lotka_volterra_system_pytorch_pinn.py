@@ -12,24 +12,25 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
-import matplotlib.pyplot as plt
 import os
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 # In order to execute this script, it is necessary to
 # set the environment variable engine as "pytorch" before initializing
 # simulai
-os.environ['engine'] = "pytorch"
+os.environ["engine"] = "pytorch"
 
-from simulai.regression import DenseNetwork, RBFNetwork
-from simulai.optimization import Optimizer
-from simulai.residuals import SymbolicOperator
 from examples.utils.lotka_volterra_solver import LotkaVolterra
+from simulai.optimization import Optimizer
+from simulai.regression import DenseNetwork, RBFNetwork
+from simulai.residuals import SymbolicOperator
+
 
 # This is a very basic script for exploring the PDE solving via
 # feedforward fully-connected neural networks
 class TestLorenzTorch:
-
     def __init__(self):
         pass
 
@@ -46,7 +47,9 @@ class TestLorenzTorch:
         gamma = 0.4
         delta = 0.1
 
-        lotka_volterra_solver = LotkaVolterra(alpha=alpha, beta=beta, gamma=gamma, delta=delta)
+        lotka_volterra_solver = LotkaVolterra(
+            alpha=alpha, beta=beta, gamma=gamma, delta=delta
+        )
 
         initial_state = np.array([20, 5])
 
@@ -63,8 +66,8 @@ class TestLorenzTorch:
         f_x = "D(x, t) - (  alpha * x   - betha * x * y)"
         f_y = "D(y, t) - (delta * x * y - gammma * y   )"
 
-        input_labels = ['t']
-        output_labels = ['x', 'y']
+        input_labels = ["t"]
+        output_labels = ["x", "y"]
 
         n_inputs = len(input_labels)
         n_outputs = len(output_labels)
@@ -74,44 +77,53 @@ class TestLorenzTorch:
 
         # Configuration for the fully-connected network
         config = {
-                    'layers_units': [100, 100],
-                    'activations': 'elu',
-                    'input_size': n_inputs,
-                    'output_size': n_outputs,
-                    'name': 'net'
-                  }
+            "layers_units": [100, 100],
+            "activations": "elu",
+            "input_size": n_inputs,
+            "output_size": n_outputs,
+            "name": "net",
+        }
 
-        optimizer_config = {'lr': lr}
+        optimizer_config = {"lr": lr}
 
         # Instantiating and training the surrogate model
         net = DenseNetwork(**config)
 
-        residual = SymbolicOperator(expressions=[f_x, f_y], input_vars=input_labels,
-                                    output_vars=output_labels, function=net,
-                                    constants={"alpha": alpha, "betha": beta,
-                                               "gammma": gamma, "delta": delta},
-                                    engine='torch')
+        residual = SymbolicOperator(
+            expressions=[f_x, f_y],
+            input_vars=input_labels,
+            output_vars=output_labels,
+            function=net,
+            constants={"alpha": alpha, "betha": beta, "gammma": gamma, "delta": delta},
+            engine="torch",
+        )
 
         # It prints a summary of the network features
         net.summary()
 
-        optimizer = Optimizer('adam', params=optimizer_config)
+        optimizer = Optimizer("adam", params=optimizer_config)
 
-        params = {'residual': residual,
-                  'initial_input':t_sampled,
-                  'initial_state': lotka_volterra_sampled,
-                  'weights': [1, 1],
-                  'initial_penalty': 10}
+        params = {
+            "residual": residual,
+            "initial_input": t_sampled,
+            "initial_state": lotka_volterra_sampled,
+            "weights": [1, 1],
+            "initial_penalty": 10,
+        }
 
-        optimizer.fit(op=net, input_data=time_train,
-                      n_epochs=n_epochs, loss="pirmse", params=params)
+        optimizer.fit(
+            op=net,
+            input_data=time_train,
+            n_epochs=n_epochs,
+            loss="pirmse",
+            params=params,
+        )
 
         # Evaluation in training dataset
         approximated_data = net.eval(input_data=time_eval)
 
-
         for ii in range(n_outputs):
-            plt.plot(time_eval, approximated_data[:,ii], label="Approximated")
+            plt.plot(time_eval, approximated_data[:, ii], label="Approximated")
             plt.xlabel("t")
             plt.ylabel(f"{output_labels[ii]}")
             plt.legend()
@@ -130,7 +142,9 @@ class TestLorenzTorch:
         gamma = 0.4
         delta = 0.1
 
-        lotka_volterra_solver = LotkaVolterra(alpha=alpha, beta=beta, gamma=gamma, delta=delta)
+        lotka_volterra_solver = LotkaVolterra(
+            alpha=alpha, beta=beta, gamma=gamma, delta=delta
+        )
 
         initial_state = np.array([20, 5])
 
@@ -147,8 +161,8 @@ class TestLorenzTorch:
         f_x = "D(x, t) - (  alpha * x   - betha * x * y)"
         f_y = "D(y, t) - (delta * x * y - gammma * y   )"
 
-        input_labels = ['t']
-        output_labels = ['x', 'y']
+        input_labels = ["t"]
+        output_labels = ["x", "y"]
 
         n_inputs = len(input_labels)
         n_outputs = len(output_labels)
@@ -158,46 +172,55 @@ class TestLorenzTorch:
 
         # Configuration for the fully-connected network
         config = {
-                    'name': 'lorenz_net',
-                    'xmax': T_max,
-                    'xmin': 0,
-                    'Nk': 20,
-                    'output_size': n_outputs
-                }
+            "name": "lorenz_net",
+            "xmax": T_max,
+            "xmin": 0,
+            "Nk": 20,
+            "output_size": n_outputs,
+        }
 
-        optimizer_config = {'lr': lr}
+        optimizer_config = {"lr": lr}
 
         # Instantiating and training the surrogate model
         net = RBFNetwork(**config)
 
-        residual = SymbolicOperator(expressions=[f_x, f_y], input_vars=input_labels,
-                                    output_vars=output_labels, function=net, gradient=net.gradient,
-                                    constants={"alpha": alpha, "betha": beta,
-                                               "gammma": gamma, "delta": delta},
-                                    engine='torch')
+        residual = SymbolicOperator(
+            expressions=[f_x, f_y],
+            input_vars=input_labels,
+            output_vars=output_labels,
+            function=net,
+            gradient=net.gradient,
+            constants={"alpha": alpha, "betha": beta, "gammma": gamma, "delta": delta},
+            engine="torch",
+        )
 
         # It prints a summary of the network features
         net.summary()
 
-        optimizer = Optimizer('adam', params=optimizer_config)
+        optimizer = Optimizer("adam", params=optimizer_config)
 
-        params = {'residual': residual,
-                  'initial_input':t_sampled,
-                  'initial_state': lotka_volterra_sampled,
-                  'weights': [1, 1],
-                  'initial_penalty': 10}
+        params = {
+            "residual": residual,
+            "initial_input": t_sampled,
+            "initial_state": lotka_volterra_sampled,
+            "weights": [1, 1],
+            "initial_penalty": 10,
+        }
 
-        optimizer.fit(op=net, input_data=time_train,
-                      n_epochs=n_epochs, loss="pirmse", params=params)
+        optimizer.fit(
+            op=net,
+            input_data=time_train,
+            n_epochs=n_epochs,
+            loss="pirmse",
+            params=params,
+        )
 
         # Evaluation in training dataset
         approximated_data = net.eval(input_data=time_eval)
 
-
         for ii in range(n_outputs):
-            plt.plot(time_eval, approximated_data[:,ii], label="Approximated")
+            plt.plot(time_eval, approximated_data[:, ii], label="Approximated")
             plt.xlabel("t")
             plt.ylabel(f"{output_labels[ii]}")
             plt.legend()
             plt.show()
-

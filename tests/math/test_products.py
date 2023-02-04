@@ -12,13 +12,14 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
 from unittest import TestCase
+
+import numpy as np
 
 from simulai.math.products import kronecker
 
-class TestProducts(TestCase):
 
+class TestProducts(TestCase):
     def setUp(self) -> None:
         pass
 
@@ -35,5 +36,4 @@ class TestProducts(TestCase):
             n_extended = a_.shape[1]
 
             assert len(a_.shape) == 2
-            assert n_extended == (n)*(n + 1)/2
-
+            assert n_extended == (n) * (n + 1) / 2

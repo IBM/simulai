@@ -14,12 +14,12 @@
 
 from simulai import engine
 
-# No back-propagation mechanisms
-from ._esn import EchoStateNetwork, DeepEchoStateNetwork, WideEchoStateNetwork
-from ._elm import ELM
 from ._affine import AffineMapping
-from ._opinf import OpInf
+from ._elm import ELM
+# No back-propagation mechanisms
+from ._esn import DeepEchoStateNetwork, EchoStateNetwork, WideEchoStateNetwork
 from ._extended_opinf import ExtendedOpInf
+from ._opinf import OpInf
 from ._pinv import CompressedPinv
 
 # Back-propagation mechanisms
@@ -27,12 +27,13 @@ assert engine is not None, "The variable engine was not defined."
 
 if engine == "pytorch":
 
-    from ._pytorch._dense import DenseNetwork, ResDenseNetwork, ConvexDenseNetwork, Linear, SLFNN, ShallowNetwork
-    from ._pytorch._opinf import OpInfNetwork
-    from ._pytorch._koopman import KoopmanNetwork, AutoEncoderKoopman
-    from ._pytorch._rbf import RBFLayer, RBFNetwork, ModalRBFNetwork
-    from ._pytorch._numpy import LinearNumpy
     from ._pytorch._conv import ConvolutionalNetwork, ResConvolutionalNetwork
+    from ._pytorch._dense import (SLFNN, ConvexDenseNetwork, DenseNetwork,
+                                  Linear, ResDenseNetwork, ShallowNetwork)
+    from ._pytorch._koopman import AutoEncoderKoopman, KoopmanNetwork
+    from ._pytorch._numpy import LinearNumpy
+    from ._pytorch._opinf import OpInfNetwork
+    from ._pytorch._rbf import ModalRBFNetwork, RBFLayer, RBFNetwork
 
 elif engine == "numpy":
 

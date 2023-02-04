@@ -12,26 +12,32 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
-import pickle
 import os
-import matplotlib.pyplot as plt
+import pickle
 from argparse import ArgumentParser
 
-from simulai.rom import POD
+import matplotlib.pyplot as plt
+import numpy as np
+
 from simulai.math.differentiation import CollocationDerivative
-from simulai.rom import QQM
-from simulai.metrics import L2Norm 
+from simulai.metrics import L2Norm
+from simulai.rom import POD, QQM
 
 # MAIN
 # Reading command line arguments.
 parser = ArgumentParser(description="Reading input parameters")
-parser.add_argument('--data_path', help="Path to the u npy file.", type=str)
-parser.add_argument('--norm', help="Using normalization. (False or True)", type=bool, default=True)
-parser.add_argument('--train_fraction', help="Train fraction", type=float, default=0.90)
-parser.add_argument('--n_components', help="Number of components", type=int, default=100)
-parser.add_argument('--mean_component', help="Use mean component or not", type=bool, default=True)
-parser.add_argument('--dt', help="Time discretization step.", type=float, default=5e-2)
+parser.add_argument("--data_path", help="Path to the u npy file.", type=str)
+parser.add_argument(
+    "--norm", help="Using normalization. (False or True)", type=bool, default=True
+)
+parser.add_argument("--train_fraction", help="Train fraction", type=float, default=0.90)
+parser.add_argument(
+    "--n_components", help="Number of components", type=int, default=100
+)
+parser.add_argument(
+    "--mean_component", help="Use mean component or not", type=bool, default=True
+)
+parser.add_argument("--dt", help="Time discretization step.", type=float, default=5e-2)
 
 args = parser.parse_args()
 
@@ -55,16 +61,16 @@ discard = int(T_discard / dt)
 # Getting up the upper directory of data_path
 save_path = os.path.dirname(data_path)
 
-if data_path.split('.')[-1] == "npy":
+if data_path.split(".")[-1] == "npy":
 
     data = np.load(data_path)[discard::10]
 
-elif data_path.split('.')[-1] == "h5":
+elif data_path.split(".")[-1] == "h5":
 
     import h5py
 
-    key = 'XCO2'
-    fp = h5py.File(data_path, 'r')
+    key = "XCO2"
+    fp = h5py.File(data_path, "r")
     data = fp.get(key)[:]
     data = data.reshape((-1, np.prod(data.shape[1:])))
 
@@ -109,11 +115,15 @@ reconstructed = pca.reconstruct(projected_data=projected)
 
 diff = reconstructed - data_test_norm
 
-error = 100 * np.linalg.norm(diff.flatten(), 2) / np.linalg.norm(data_test_norm.flatten(), 2)
+error = (
+    100
+    * np.linalg.norm(diff.flatten(), 2)
+    / np.linalg.norm(data_test_norm.flatten(), 2)
+)
 
 print(f"Projection error: {error} %\n")
 
-diff = CollocationDerivative(config={'step': dt})
+diff = CollocationDerivative(config={"step": dt})
 
 times = np.arange(0, data.shape[0]) * dt
 
@@ -136,7 +146,9 @@ print(closure.shape)
 l2_norm = L2Norm()
 reconstructed = pca.reconstruct(projected_data=projected) + closure
 
-print(100*l2_norm(data=reconstructed, reference_data=data_test_norm, relative_norm=True))
+print(
+    100 * l2_norm(data=reconstructed, reference_data=data_test_norm, relative_norm=True)
+)
 
 np.save("reconstructed.npy", reconstructed)
 np.save("original.npy", data_test_norm)
@@ -145,10 +157,3 @@ projected = pca.project(data=data)
 qqm_projected = rom.project(data=projected)
 
 np.savez("qqm_projected.npz", projected=projected, qqm_projected=qqm_projected)
-
-
-
-
-
-
-

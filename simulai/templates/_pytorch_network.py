@@ -14,16 +14,17 @@
 
 import copy
 import os
-from typing import Union, List
-import torch
+from typing import List, Union
+
 import numpy as np
+import torch
 from torch.nn.parameter import Parameter
 
 import simulai.activations as simulact
 
+
 # Template for a generic neural network
 class NetworkTemplate(torch.nn.Module):
-
     def __init__(self) -> None:
 
         super(NetworkTemplate, self).__init__()
@@ -39,7 +40,6 @@ class NetworkTemplate(torch.nn.Module):
         self.activations = None
         self.initializations = None
 
-
     @property
     def weights_l2(self) -> torch.Tensor:
         return sum([torch.norm(weight, p=2) for weight in self.weights])
@@ -50,24 +50,24 @@ class NetworkTemplate(torch.nn.Module):
 
     @property
     def n_parameters(self):
-        if hasattr(self, 'weights'):
+        if hasattr(self, "weights"):
             return int(sum([np.product(i.shape) for i in self.weights]))
         else:
             raise Exception(f"Class {self} has no attribute self.weights.")
-            
-    def _set_device(self, devices:Union[str, list]='cpu') -> str:
+
+    def _set_device(self, devices: Union[str, list] = "cpu") -> str:
 
         device = None
         if type(devices) == list():
             raise Exception("In construction.")
         elif type(str):
-            if devices == 'gpu':
+            if devices == "gpu":
                 if torch.cuda.is_available():
-                    device = 'cuda'
+                    device = "cuda"
                 else:
-                    device = 'cpu'
+                    device = "cpu"
             else:
-                device = 'cpu'
+                device = "cpu"
 
         return device
 
@@ -78,7 +78,7 @@ class NetworkTemplate(torch.nn.Module):
 
         for key, value in search_dict.items():
 
-            if hasattr(value, 'share_to_host'):
+            if hasattr(value, "share_to_host"):
 
                 share_to_host = value.share_to_host
 
@@ -87,7 +87,9 @@ class NetworkTemplate(torch.nn.Module):
                     setattr(self, k, v)
 
     # Getting up activation if it exists
-    def _get_operation(self, operation: str = None, is_activation:bool=True) -> callable:
+    def _get_operation(
+        self, operation: str = None, is_activation: bool = True
+    ) -> callable:
 
         mod_items = dir(self.engine)
         mod_items_lower = [item.lower() for item in mod_items]
@@ -102,12 +104,12 @@ class NetworkTemplate(torch.nn.Module):
             else:
                 return operation_class
         else:
-            try :
+            try:
 
                 for engine in self.suplementary_engines:
                     res_ = getattr(engine, operation, None)
 
-                    if hasattr(res_, '__mro__'):
+                    if hasattr(res_, "__mro__"):
                         if torch.nn.Module in res_.__mro__:
                             res = res_
                             print(f"Module {operation} found in {engine}.")
@@ -118,9 +120,13 @@ class NetworkTemplate(torch.nn.Module):
                         print(f"Module {operation} not found in {engine}.")
 
             except AssertionError:
-                raise Exception(f"There is no correspondent to {operation} in {self.engine}")
+                raise Exception(
+                    f"There is no correspondent to {operation} in {self.engine}"
+                )
 
-    def _setup_activations(self, activation:Union[str, list]=None, n_layers:int=None) -> (list, Union[str, list]):
+    def _setup_activations(
+        self, activation: Union[str, list] = None, n_layers: int = None
+    ) -> (list, Union[str, list]):
 
         if n_layers == None:
             assert self.n_layers, "n_layers is not defined."
@@ -132,13 +138,15 @@ class NetworkTemplate(torch.nn.Module):
 
             activation_op = self._get_operation(operation=activation)
 
-            return ((n_layers - 1) * [activation_op] +
-                    [self._get_operation(operation=self.default_last_activation)],
-                    (n_layers - 1) * [activation] +
-                    [self.default_last_activation])
+            return (
+                (n_layers - 1) * [activation_op]
+                + [self._get_operation(operation=self.default_last_activation)],
+                (n_layers - 1) * [activation] + [self.default_last_activation],
+            )
 
-        elif isinstance(activation, list) and all([isinstance(el, str)
-                                                   for el in activation]):
+        elif isinstance(activation, list) and all(
+            [isinstance(el, str) for el in activation]
+        ):
 
             activations_list = list()
             for activation_name in activation:
@@ -150,41 +158,53 @@ class NetworkTemplate(torch.nn.Module):
 
         elif isinstance(activation, torch.nn.Module):
 
-            return ((n_layers - 1) * [activation] +
-                    [self._get_operation(operation=self.default_last_activation)],
-                    (n_layers - 1) * [activation.name] +
-                    [self.default_last_activation])
+            return (
+                (n_layers - 1) * [activation]
+                + [self._get_operation(operation=self.default_last_activation)],
+                (n_layers - 1) * [activation.name] + [self.default_last_activation],
+            )
 
         else:
-            raise Exception("The activation argument must be str"
-                            f"or list(str), not {type(activation)}")
+            raise Exception(
+                "The activation argument must be str"
+                f"or list(str), not {type(activation)}"
+            )
 
     # Instantiating all the linear layers.
-    def _setup_hidden_layers(self, last_bias:bool=True) -> List[torch.nn.Module]:
+    def _setup_hidden_layers(self, last_bias: bool = True) -> List[torch.nn.Module]:
 
         layers = list()
-        input_layer = self._setup_layer(self.input_size, self.layers_units[0],
-                                        initialization=self.initializations[0], first_layer=True)
+        input_layer = self._setup_layer(
+            self.input_size,
+            self.layers_units[0],
+            initialization=self.initializations[0],
+            first_layer=True,
+        )
 
         layers.append(input_layer)
-        self.add_module(self.name + '_' + 'input', input_layer)
+        self.add_module(self.name + "_" + "input", input_layer)
         self.weights.append(input_layer.weight)
 
         for li, layer_units in enumerate(self.layers_units[:-1]):
-            layer_op = self._setup_layer(layer_units, self.layers_units[li + 1],
-                                         initialization=self.initializations[li + 1])
+            layer_op = self._setup_layer(
+                layer_units,
+                self.layers_units[li + 1],
+                initialization=self.initializations[li + 1],
+            )
 
             layers.append(layer_op)
-            self.add_module(self.name + '_' + str(li), layer_op)
+            self.add_module(self.name + "_" + str(li), layer_op)
             self.weights.append(layer_op.weight)
 
-        output_layer = self._setup_layer(self.layers_units[-1],
-                                         self.output_size,
-                                         initialization=self.initializations[-1],
-                                         bias=last_bias)
+        output_layer = self._setup_layer(
+            self.layers_units[-1],
+            self.output_size,
+            initialization=self.initializations[-1],
+            bias=last_bias,
+        )
 
         layers.append(output_layer)
-        self.add_module(self.name + '_' + str(li + 1), output_layer)
+        self.add_module(self.name + "_" + str(li + 1), output_layer)
         self.weights.append(output_layer.weight)
 
         return layers
@@ -193,9 +213,10 @@ class NetworkTemplate(torch.nn.Module):
     # employing SciPy optimizers.
     def _numpy_layers(self) -> List[np.ndarray]:
 
-        numpy_layers = [[layer.weight.detach().numpy(),
-                         layer.bias.detach().numpy()]
-                        for layer in self.layers]
+        numpy_layers = [
+            [layer.weight.detach().numpy(), layer.bias.detach().numpy()]
+            for layer in self.layers
+        ]
 
         return numpy_layers
 
@@ -203,9 +224,13 @@ class NetworkTemplate(torch.nn.Module):
     # employing SciPy optimizers in which gradients are required.
     def _numpy_grad_layers(self) -> List[np.ndarray]:
 
-        numpy_layers = [[layer.weight.grad.detach().numpy(),
-                         layer.bias.grad.detach().numpy()[None, :]]
-                        for layer in self.layers]
+        numpy_layers = [
+            [
+                layer.weight.grad.detach().numpy(),
+                layer.bias.grad.detach().numpy()[None, :],
+            ]
+            for layer in self.layers
+        ]
 
         return numpy_layers
 
@@ -220,8 +245,7 @@ class NetworkTemplate(torch.nn.Module):
         all_dof = 0
         for ii, shape in enumerate(self.shapes):
             n_dof = np.prod(shape)
-            idx = np.reshape(np.arange(all_dof, all_dof + n_dof,
-                                       dtype=np.int32), shape)
+            idx = np.reshape(np.arange(all_dof, all_dof + n_dof, dtype=np.int32), shape)
             stitch_indices.append(idx)
             all_dof += n_dof
             partitions += [ii] * n_dof
@@ -233,37 +257,41 @@ class NetworkTemplate(torch.nn.Module):
 
         layers = self._numpy_layers()
 
-        return np.hstack([item.flatten() for item in
-                          sum(layers, [])])
+        return np.hstack([item.flatten() for item in sum(layers, [])])
 
     # It returns all the gradients of the model parameters in a single array.
     def get_gradients(self) -> np.ndarray:
 
         grads = self._numpy_grad_layers()
 
-        return np.hstack([item.flatten() for item in
-                          sum(grads, [])])
+        return np.hstack([item.flatten() for item in sum(grads, [])])
 
     # Setting up values for the model parameters.
     def set_parameters(self, parameters=None) -> None:
 
         for ll, layer in enumerate(self.layers_map):
-            self.layers[ll].weight = Parameter(data=torch.from_numpy(parameters[
-                                                                         self.stitch_idx[layer[0]]
-                                                                     ].astype(np.float32)), requires_grad=True)
+            self.layers[ll].weight = Parameter(
+                data=torch.from_numpy(
+                    parameters[self.stitch_idx[layer[0]]].astype(np.float32)
+                ),
+                requires_grad=True,
+            )
 
-            self.layers[ll].bias = Parameter(data=torch.from_numpy(parameters[
-                                                                       self.stitch_idx[layer[1]]
-                                                                   ].astype(np.float32)), requires_grad=True)
+            self.layers[ll].bias = Parameter(
+                data=torch.from_numpy(
+                    parameters[self.stitch_idx[layer[1]]].astype(np.float32)
+                ),
+                requires_grad=True,
+            )
 
         # Making evaluation using the trained fully-connected network
 
-    def eval(self, input_data:Union[np.ndarray, torch.Tensor]=None) -> np.ndarray:
+    def eval(self, input_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
 
         output_tensor = self.forward(input_data=input_data)
 
         # Guaranteeing the dataset location as CPU
-        output_tensor = output_tensor.to('cpu')
+        output_tensor = output_tensor.to("cpu")
 
         return output_tensor.detach().numpy()
 
@@ -271,20 +299,21 @@ class NetworkTemplate(torch.nn.Module):
     def summary(self) -> None:
 
         import pprint
+
         pprinter = pprint.PrettyPrinter(indent=2)
 
         print("Summary of the network properties:")
 
         print("Linear operations layers:\n")
         pprinter.pprint(self.layers)
-        print('\n')
+        print("\n")
         print("Activations layers:\n")
         pprinter.pprint(self.activations_str)
-        print('\n')
+        print("\n")
         print("Initializations at each layer:\n")
         pprinter.pprint(self.initializations)
 
-    def save(self, save_dir:str=None, name:str=None, device:str=None) -> None:
+    def save(self, save_dir: str = None, name: str = None, device: str = None) -> None:
 
         # Moving all the tensors to the destiny device if necessary
         if device is not None:
@@ -296,24 +325,30 @@ class NetworkTemplate(torch.nn.Module):
             pass
 
         try:
-            torch.save(self.state_dict(), os.path.join(save_dir, name + '.pth'))
+            torch.save(self.state_dict(), os.path.join(save_dir, name + ".pth"))
         except Exception:
             print(f"It was not possible to save {self}")
 
-    def load(self, save_dir:str=None, name:str=None, device:str=None) -> None:
+    def load(self, save_dir: str = None, name: str = None, device: str = None) -> None:
 
         try:
             if device != None:
-                self.load_state_dict(torch.load(os.path.join(save_dir, name + '.pth'),
-                                                map_location = torch.device(device)))
+                self.load_state_dict(
+                    torch.load(
+                        os.path.join(save_dir, name + ".pth"),
+                        map_location=torch.device(device),
+                    )
+                )
             else:
-                self.load_state_dict(torch.load(os.path.join(save_dir, name + '.pth')))
+                self.load_state_dict(torch.load(os.path.join(save_dir, name + ".pth")))
         except Exception:
-            print(f"It was not possible to load from {os.path.join(save_dir, name + '.pth')}")
+            print(
+                f"It was not possible to load from {os.path.join(save_dir, name + '.pth')}"
+            )
+
 
 # Decorators
 def as_tensor(method):
-
     def inside(self, input_data=None, **kwargs):
 
         if isinstance(input_data, torch.Tensor):
@@ -338,8 +373,8 @@ def as_tensor(method):
 
     return inside
 
-def as_array(method):
 
+def as_array(method):
     def inside(self, input_data=None):
 
         if isinstance(input_data, np.ndarray):
@@ -360,23 +395,32 @@ def as_array(method):
 
         else:
 
-            raise Exception("The input data must be numpy.ndarray or"
-                            "torch.tensor.")
+            raise Exception("The input data must be numpy.ndarray or" "torch.tensor.")
 
     return inside
 
-def guarantee_device(method):
 
+def guarantee_device(method):
     def inside(self, **kwargs) -> callable:
 
-        kwargs_ = {key:torch.from_numpy(value.astype(np.float32)).to(self.device) for key, value in kwargs.items()
-                   if isinstance(value, np.ndarray) == True}
+        kwargs_ = {
+            key: torch.from_numpy(value.astype(np.float32)).to(self.device)
+            for key, value in kwargs.items()
+            if isinstance(value, np.ndarray) == True
+        }
 
-        kwargs_.update({key:value for key, value in kwargs.items() if  isinstance(value, np.ndarray) == False})
+        kwargs_.update(
+            {
+                key: value
+                for key, value in kwargs.items()
+                if isinstance(value, np.ndarray) == False
+            }
+        )
 
         return method(self, **kwargs_)
 
     return inside
+
 
 def channels_dim(method):
     def inside(self, input_data=None):
@@ -388,9 +432,9 @@ def channels_dim(method):
 
     return inside
 
-class ConvNetworkTemplate(NetworkTemplate):
 
-    def __init__(self, name:str=None, flatten:bool=None) -> None:
+class ConvNetworkTemplate(NetworkTemplate):
+    def __init__(self, name: str = None, flatten: bool = None) -> None:
 
         super(ConvNetworkTemplate, self).__init__()
 
@@ -419,22 +463,24 @@ class ConvNetworkTemplate(NetworkTemplate):
 
         self.case = None
 
-        self.interpolation_prefix = {'1d':'', '2d': 'bi', '3d': 'tri'}
+        self.interpolation_prefix = {"1d": "", "2d": "bi", "3d": "tri"}
 
         self.output_shape = None
 
-    def _no_flatten(self, input_data:torch.Tensor=None) -> torch.Tensor:
+    def _no_flatten(self, input_data: torch.Tensor = None) -> torch.Tensor:
 
         return input_data
 
-    def _flatten(self, input_data:torch.Tensor=None) -> torch.Tensor:
+    def _flatten(self, input_data: torch.Tensor = None) -> torch.Tensor:
 
         n_samples, n_channels = input_data.shape[:2]
         collapsible_dimensions = np.prod(input_data.shape[2:])
 
-        return torch.reshape(input_data, (n_samples, n_channels*collapsible_dimensions))
+        return torch.reshape(
+            input_data, (n_samples, n_channels * collapsible_dimensions)
+        )
 
-    def _setup_layers(self, layers_config:dict=None) -> (list, list, list):
+    def _setup_layers(self, layers_config: dict = None) -> (list, list, list):
 
         before_conv_layers = list()
         conv_layers = list()
@@ -444,24 +490,34 @@ class ConvNetworkTemplate(NetworkTemplate):
         # Configuring each layer
         for ll, layer_config in enumerate(layers_config):
 
-            assert isinstance(layer_config, dict), "Each entry of the layers list must be a dictionary," \
-                                                  f" but received {type(layer_config)}."
+            assert isinstance(layer_config, dict), (
+                "Each entry of the layers list must be a dictionary,"
+                f" but received {type(layer_config)}."
+            )
 
-            assert all([i in layer_config for i in self.args]), f"The arguments {self.args} must be defined."
+            assert all(
+                [i in layer_config for i in self.args]
+            ), f"The arguments {self.args} must be defined."
 
             # If a post-conv operation is defined, instantiate it
             if self.before_conv_tag in layer_config:
 
-                assert type(layer_config[self.before_conv_tag]) == dict, f"If the argument {self.before_conv_tag}" \
-                                                                         f" is present, it must be dict," \
-                                                                         f" but received {type(self.before_conv_tag)}"
+                assert type(layer_config[self.before_conv_tag]) == dict, (
+                    f"If the argument {self.before_conv_tag}"
+                    f" is present, it must be dict,"
+                    f" but received {type(self.before_conv_tag)}"
+                )
 
                 before_conv_layer_config = layer_config.pop(self.before_conv_tag)
 
-                type_ = before_conv_layer_config.pop('type')
-                after_conv_layer_ll_template = self._get_operation(operation=type_, is_activation=False)
+                type_ = before_conv_layer_config.pop("type")
+                after_conv_layer_ll_template = self._get_operation(
+                    operation=type_, is_activation=False
+                )
 
-                before_conv_layer_ll = after_conv_layer_ll_template(**before_conv_layer_config)
+                before_conv_layer_ll = after_conv_layer_ll_template(
+                    **before_conv_layer_config
+                )
 
             # By contrast, it must be an identity operation
             else:
@@ -470,16 +526,22 @@ class ConvNetworkTemplate(NetworkTemplate):
             # If a post-conv operation is defined, instantiate it
             if self.after_conv_tag in layer_config:
 
-                assert type(layer_config[self.after_conv_tag]) == dict, f"If the argument {self.after_conv_tag}" \
-                                                                        f" is present, it must be dict," \
-                                                                        f" but received {type(self.after_conv_tag)}"
+                assert type(layer_config[self.after_conv_tag]) == dict, (
+                    f"If the argument {self.after_conv_tag}"
+                    f" is present, it must be dict,"
+                    f" but received {type(self.after_conv_tag)}"
+                )
 
                 after_conv_layer_config = layer_config.pop(self.after_conv_tag)
 
-                type_ = after_conv_layer_config.pop('type')
-                after_conv_layer_ll_template = self._get_operation(operation=type_, is_activation=False)
+                type_ = after_conv_layer_config.pop("type")
+                after_conv_layer_ll_template = self._get_operation(
+                    operation=type_, is_activation=False
+                )
 
-                after_conv_layer_ll = after_conv_layer_ll_template(**after_conv_layer_config)
+                after_conv_layer_ll = after_conv_layer_ll_template(
+                    **after_conv_layer_config
+                )
 
             # By contrast, it must be an identity operation
             else:
@@ -495,22 +557,28 @@ class ConvNetworkTemplate(NetworkTemplate):
             after_conv_layers.append(after_conv_layer_ll)
 
             # Setting up the individual modules to the global one
-            self.add_module(self.name + '_before_conv_' + str(ll), before_conv_layer_ll)
-            self.add_module(self.name + '_' + str(ll), conv_layer_ll)
-            self.add_module(self.name + '_after_conv_' + str(ll), after_conv_layer_ll)
+            self.add_module(self.name + "_before_conv_" + str(ll), before_conv_layer_ll)
+            self.add_module(self.name + "_" + str(ll), conv_layer_ll)
+            self.add_module(self.name + "_after_conv_" + str(ll), after_conv_layer_ll)
 
             weights.append(conv_layer_ll.weight)
 
         return before_conv_layers, conv_layers, after_conv_layers, weights
 
-    def _corrrect_first_dim(self, shapes:list=None) -> list:
+    def _corrrect_first_dim(self, shapes: list = None) -> list:
 
         shapes[0] = None
 
         return shapes
 
     # Merging the layers into a reasonable sequence
-    def _merge(self, before_conv: list = None, conv: list = None, act: list = None, after_conv: list = None) -> list:
+    def _merge(
+        self,
+        before_conv: list = None,
+        conv: list = None,
+        act: list = None,
+        after_conv: list = None,
+    ) -> list:
 
         merged_list = list()
 
@@ -524,10 +592,13 @@ class ConvNetworkTemplate(NetworkTemplate):
         return merged_list
 
     # It prints an overview of the network architecture
-    def summary(self, input_data : Union[torch.Tensor, np.ndarray] = None,
-                input_shape : list = None,
-                device : str = 'cpu',
-                display : bool = True) -> None:
+    def summary(
+        self,
+        input_data: Union[torch.Tensor, np.ndarray] = None,
+        input_shape: list = None,
+        device: str = "cpu",
+        display: bool = True,
+    ) -> None:
 
         import pprint
         from collections import OrderedDict
@@ -536,8 +607,9 @@ class ConvNetworkTemplate(NetworkTemplate):
         # overview of the network architecture
         if type(input_data) == type(None):
 
-            assert type(input_shape) == list, "If no input data is provided, it is necessary" \
-                                             " to have input_shape."
+            assert type(input_shape) == list, (
+                "If no input data is provided, it is necessary" " to have input_shape."
+            )
 
             input_shape[0] = 1
 
@@ -548,7 +620,7 @@ class ConvNetworkTemplate(NetworkTemplate):
 
         if isinstance(input_data, np.ndarray):
 
-            input_data = torch.from_numpy(input_data.astype('float32')).to(device)
+            input_data = torch.from_numpy(input_data.astype("float32")).to(device)
 
         else:
             pass
@@ -564,40 +636,52 @@ class ConvNetworkTemplate(NetworkTemplate):
             if hasattr(self.after_conv_layers[layer_id], "_get_name"):
 
                 input_shape = self._corrrect_first_dim(list(input_tensor_.shape))
-                output_shape = self._corrrect_first_dim(list(output_tensor_before_conv.shape))
+                output_shape = self._corrrect_first_dim(
+                    list(output_tensor_before_conv.shape)
+                )
 
-                shapes_dict[f"{self.before_conv_layers[layer_id]._get_name()}_{layer_id}"] = {"Input shape": input_shape,
-                                                                                             "Output shape": output_shape}
+                shapes_dict[
+                    f"{self.before_conv_layers[layer_id]._get_name()}_{layer_id}"
+                ] = {"Input shape": input_shape, "Output shape": output_shape}
 
             # Applying  convolution operations
             output_tensor_conv = self.conv_layers[layer_id](output_tensor_before_conv)
 
-            input_shape = self._corrrect_first_dim(list(output_tensor_before_conv.shape))
+            input_shape = self._corrrect_first_dim(
+                list(output_tensor_before_conv.shape)
+            )
             output_shape = self._corrrect_first_dim(list(output_tensor_conv.shape))
 
-            shapes_dict[f"{self.conv_layers[layer_id]._get_name()}_{layer_id}"] = {"Input shape": input_shape,
-                                                                                   "Output shape": output_shape }
+            shapes_dict[f"{self.conv_layers[layer_id]._get_name()}_{layer_id}"] = {
+                "Input shape": input_shape,
+                "Output shape": output_shape,
+            }
 
             shapes_dict[f"Activation_{layer_id}"] = self.activations[layer_id]
 
-            output_tensor_after_conv = self.after_conv_layers[layer_id](output_tensor_conv)
+            output_tensor_after_conv = self.after_conv_layers[layer_id](
+                output_tensor_conv
+            )
 
             # Applying operations before convolution
             if hasattr(self.after_conv_layers[layer_id], "_get_name"):
 
                 input_shape = self._corrrect_first_dim(list(output_tensor_conv.shape))
-                output_shape = self._corrrect_first_dim(list(output_tensor_after_conv.shape))
+                output_shape = self._corrrect_first_dim(
+                    list(output_tensor_after_conv.shape)
+                )
 
-                shapes_dict[f"{self.after_conv_layers[layer_id]._get_name()}_{layer_id}"] = {"Input shape": input_shape,
-                                                                                             "Output shape": output_shape}
+                shapes_dict[
+                    f"{self.after_conv_layers[layer_id]._get_name()}_{layer_id}"
+                ] = {"Input shape": input_shape, "Output shape": output_shape}
 
             input_tensor_ = output_tensor_after_conv
 
         if display == True:
             pprint.pprint(shapes_dict, indent=2)
 
-        output_size = list(shapes_dict.values())[-1]['Output shape']
-        self.input_size = list(shapes_dict.values())[0]['Input shape']
+        output_size = list(shapes_dict.values())[-1]["Output shape"]
+        self.input_size = list(shapes_dict.values())[0]["Input shape"]
 
         # When the network output is reshaped, it is necessary to correct the value of self.output_size
         if self.flatten == True:
@@ -607,10 +691,10 @@ class ConvNetworkTemplate(NetworkTemplate):
             self.output_shape = tuple(output_size)
             self.output_size = output_size
 
+
 # Template used for defining a hyperparameter training.
 class HyperTrainTemplate:
-
-    def __init__(self, trial_config: dict = None, set_type='hard'):
+    def __init__(self, trial_config: dict = None, set_type="hard"):
         self.trial_config = trial_config
 
         # The duality model/optimizer
@@ -629,7 +713,7 @@ class HyperTrainTemplate:
 
     def set_trial(self, trial_config=None):
         self.trial_config = trial_config
-        set_method = getattr(self, self.set_type + '_set')
+        set_method = getattr(self, self.set_type + "_set")
         set_method()
 
     def soft_set(self):

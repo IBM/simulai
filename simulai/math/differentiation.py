@@ -12,13 +12,12 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-from typing import Optional
-from typing import Tuple
+from typing import Optional, Tuple
+
 import numpy as np
 from scipy.interpolate import InterpolatedUnivariateSpline as ius
 from scipy.sparse import lil_matrix
 from scipy.sparse.linalg import spsolve
-
 
 """differentiation.py
 
@@ -29,32 +28,36 @@ from scipy.sparse.linalg import spsolve
 # This is like an identifier
 class Derivative(object):
     """Parent class for the derivative operations
-       It is used for identification purposes
+    It is used for identification purposes
     """
+
     def __init__(self):
         pass
+
 
 # This is like an identifier
 class TimeDerivative(Derivative):
     """Numerical time derivative based on centered differences."""
+
     def __init__(self):
         super().__init__()
 
-    def __call__(self, u:np.ndarray=None, delta:float=1) -> np.ndarray:
+    def __call__(self, u: np.ndarray = None, delta: float = 1) -> np.ndarray:
         return np.gradient(u, delta)
+
 
 # This is like an identifier
 class SpaceDerivative(Derivative):
     def __init__(self):
         super().__init__()
 
-class LeleDerivative:
 
-    def __init__(self, N:int=1, h:float=1) -> None:
+class LeleDerivative:
+    def __init__(self, N: int = 1, h: float = 1) -> None:
 
         """
         Initialize the 10th-order derivative algorithm purposed by Lele.
-        
+
         Parameters
         ----------
         N : int, optional
@@ -80,7 +83,7 @@ class LeleDerivative:
             LeftMatrix[j, j - 2] = delta_2
             LeftMatrix[j, j + 2] = delta_2
 
-            LeftMatrix[j, j] = 1.
+            LeftMatrix[j, j] = 1.0
 
         self.LeftMatrix = LeftMatrix[2:-2, 2:-2]
 
@@ -105,16 +108,16 @@ class LeleDerivative:
 
         self.RightMatrix = RightMatrix[3:-3, 3:-3]
 
-    def solve(self, f:np.ndarray) -> np.ndarray:
+    def solve(self, f: np.ndarray) -> np.ndarray:
 
         """
         Perform Lele differentiation.
-        
+
         Parameters
         ----------
         f : np.ndarray
             The variable values to be differentiated.
-            
+
         Returns
         -------
         np.ndarray
@@ -126,18 +129,18 @@ class LeleDerivative:
         print("Performing Lele Derivation.")
         return spsolve(self.LeftMatrix, b)
 
-    def delta_1(self, j:int, N:int) -> float:
+    def delta_1(self, j: int, N: int) -> float:
 
         """
         Calculate the term delta_1 from the Lele's expression.
-        
+
         Parameters
         ----------
         j : int
             The node index.
         N : int
             The total number of nodes.
-            
+
         Returns
         -------
         float
@@ -147,26 +150,26 @@ class LeleDerivative:
         if j == 0 or j == N - 1:
             return 2
         elif j == 1 or j == N - 2:
-            return 1. / 4
+            return 1.0 / 4
         elif j == 2 or j == N - 3:
             return 4.7435 / 10.67175
         elif j == 3 or j == N - 4:
             return 4.63271875 / 9.38146875
         else:
-            return 1. / 2
+            return 1.0 / 2
 
-    def delta_2(self, j:int, N:int) -> float:
+    def delta_2(self, j: int, N: int) -> float:
 
         """
         Calculate the term delta_2 from the Lele's expression.
-        
+
         Parameters
         ----------
         j : int
             The node index.
         N : int
             The total number of nodes.
-            
+
         Returns
         -------
         float
@@ -182,13 +185,13 @@ class LeleDerivative:
         elif j == 3 or j == N - 4:
             return 0.451390625 / 9.38146875
         else:
-            return 1. / 20
+            return 1.0 / 20
 
-    def delta_3(self, j:int, N:int, h:float) -> float:
+    def delta_3(self, j: int, N: int, h: float) -> float:
 
         """
         Calculate the term delta_3 from the Lele's expression.
-        
+
         Parameters
         ----------
         j : int
@@ -197,13 +200,13 @@ class LeleDerivative:
             The total number of nodes.
         h : float
             The mesh discretization size.
-            
+
         Returns
         -------
         float
             The evaluation of delta_3.
         """
-        
+
         if j == 0 or j == N - 1:
             return 0
         elif j == 1 or j == N - 2:
@@ -213,13 +216,13 @@ class LeleDerivative:
         elif j == 3 or j == N - 4:
             return 6 * (0.015 / 9.38146875) / (6 * h)
         else:
-            return 1. / 100 * (1 / (6 * h))
+            return 1.0 / 100 * (1 / (6 * h))
 
-    def delta_4(self, j:int, N:int, h:float) -> float:
+    def delta_4(self, j: int, N: int, h: float) -> float:
 
         """
         Term delta_4 from the Lele's expression
-        
+
         Parameters
         ----------
         j : int
@@ -228,7 +231,7 @@ class LeleDerivative:
             The total number of nodes.
         h : float
             The mesh discretization size.
-            
+
         Returns
         -------
         float
@@ -236,9 +239,9 @@ class LeleDerivative:
         """
 
         if j == 0:
-            return 1. / (2 * h)
+            return 1.0 / (2 * h)
         if j == N - 1:
-            return -1. / (2 * h)
+            return -1.0 / (2 * h)
         elif j == 1 or j == N - 2:
             return 0
         elif j == 2 or j == N - 3:
@@ -246,13 +249,13 @@ class LeleDerivative:
         elif j == 3 or j == N - 4:
             return 4 * (1.53 / 9.38146875) / (4 * h)
         else:
-            return (101. / 105) * (1. / (4 * h))
+            return (101.0 / 105) * (1.0 / (4 * h))
 
-    def delta_5(self, j:int, N:int, h:float) -> float:
+    def delta_5(self, j: int, N: int, h: float) -> float:
 
         """
         Term delta_5 from the Lele's expression
-        
+
         Parameters
         ----------
         j : int
@@ -261,7 +264,7 @@ class LeleDerivative:
             The total number of nodes.
         h : float
             The mesh discretization size.
-            
+
         Returns
         -------
         float
@@ -269,23 +272,22 @@ class LeleDerivative:
         """
 
         if j == 0:
-            return 2. / h
+            return 2.0 / h
         elif j == N - 1:
-            return -2. / h
+            return -2.0 / h
         elif j == 1 or j == N - 2:
-            return 3. / 2 * (1. / (2 * h))
+            return 3.0 / 2 * (1.0 / (2 * h))
         elif j == 2 or j == N - 3:
             return 2 * (7.905 / 10.67175) / (2 * h)
         elif j == 3 or j == N - 4:
             return 2 * (6.66984375 / 9.38146875) / (2 * h)
         else:
-            return 17. / 12 * (1. / (2 * h))
+            return 17.0 / 12 * (1.0 / (2 * h))
 
-
-    def delta_0(self, j:int, N:int, h:float) -> float:
+    def delta_0(self, j: int, N: int, h: float) -> float:
         """
         Compute the term delta_0 from the Lele's expression.
-        
+
         Parameters
         ----------
         j : int
@@ -294,12 +296,12 @@ class LeleDerivative:
             Total number of nodes.
         h : float
             Mesh discretization size.
-        
+
         Returns
         -------
         float
             The evaluation of delta_0.
-        
+
         Examples
         --------
         >>> delta_0(0, 10, 0.1)
@@ -316,35 +318,35 @@ class LeleDerivative:
         else:
             return 0
 
-class CenteredDerivative:
 
+class CenteredDerivative:
     def __init__(self, config: dict = None) -> None:
         """
         Initializes the object for performing second-order centered differentiation.
-        
+
         Parameters
         ----------
         config : dict, optional
             Configuration dictionary. If not provided, default value is None.
-        
+
         Returns
         -------
         None
         """
-        self.step = config['step']
+        self.step = config["step"]
         assert self.step, "A value for the differentiation step must be provided."
 
     def solve(self, data: np.ndarray = None, axis: int = 0) -> np.ndarray:
         """
         Computes the centered derivative of the input data.
-        
+
         Parameters
         ----------
         data : np.ndarray, optional
             The values to be differentiated. If not provided, default value is None.
         axis : int, optional
             The axis along which the derivative is taken. Default is 0.
-    
+
         Returns
         -------
         np.ndarray
@@ -353,16 +355,15 @@ class CenteredDerivative:
         print("Performing Second-Order Centered Derivation.")
         return np.gradient(data, self.step, axis=axis)
 
-
     def __call__(self, data: np.ndarray = None) -> np.ndarray:
         """
         Wrapper function for executing self.solve.
-        
+
         Parameters
         ----------
         data : np.ndarray, optional
             The values to be differentiated. If not provided, default value is None.
-    
+
         Returns
         -------
         np.ndarray
@@ -373,7 +374,6 @@ class CenteredDerivative:
 
 # It interpolates the derivatives using splines and derive it
 class CollocationDerivative:
-
     def __init__(self, config: dict = None, k: int = 3) -> None:
         """Initialize a derivative calculator using spline interpolation.
 
@@ -388,8 +388,8 @@ class CollocationDerivative:
         self.t = None
         self.k = k
 
-        if 'step' in config.keys():
-            self.step = config['step']
+        if "step" in config.keys():
+            self.step = config["step"]
 
         self.original_shape = None
 
@@ -403,7 +403,7 @@ class CollocationDerivative:
         ----------
             data (np.ndarray): The input data to be reshaped.
 
-        Returns: 
+        Returns:
         ----------
             The input data (np.ndarray), reshaped as a one-dimensional array if necessary.
         """
@@ -452,13 +452,15 @@ class CollocationDerivative:
             # Differentiate interpolated data
             differentiated_interpolation = interpolation.derivative()
             # Append differentiated data to list
-            intp_list.append(differentiated_interpolation(self.t)[:,None])
+            intp_list.append(differentiated_interpolation(self.t)[:, None])
 
         intp_arr = np.hstack(intp_list)
 
         return intp_arr.reshape(self.original_shape)
-    
-    def interpolate_and_solve(self, data: np.ndarray = None, x_grid: np.ndarray = None, x: np.ndarray = None) -> Tuple[np.ndarray, np.ndarray]:
+
+    def interpolate_and_solve(
+        self, data: np.ndarray = None, x_grid: np.ndarray = None, x: np.ndarray = None
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Perform interpolation and differentiation using a non-linear method.
 
@@ -477,7 +479,9 @@ class CollocationDerivative:
             AssertionError: If the length of the data array is greater than the length of the x array.
         """
         if data.shape[0] > x.shape[0]:
-            raise AssertionError("In order to perform interpolation, it is necessary dim(x) > dim(data).")
+            raise AssertionError(
+                "In order to perform interpolation, it is necessary dim(x) > dim(data)."
+            )
 
         print("Performing Interpolation and Collocation Derivation.")
 
@@ -500,21 +504,24 @@ class CollocationDerivative:
         differentiated_data_array = np.hstack(differentiated_data_list)
 
         if self.original_shape is not None:
-            return interpolated_data_array.reshape((-1,) + self.original_shape[1:]), \
-                differentiated_data_array.reshape((-1,) + self.original_shape[1:])
+            return interpolated_data_array.reshape(
+                (-1,) + self.original_shape[1:]
+            ), differentiated_data_array.reshape((-1,) + self.original_shape[1:])
         else:
-            return interpolated_data_array.reshape(self.original_shape), differentiated_data_array.reshape(self.original_shape)
+            return interpolated_data_array.reshape(
+                self.original_shape
+            ), differentiated_data_array.reshape(self.original_shape)
 
-    def __call__(self, data:np.ndarray=None) -> np.ndarray:
+    def __call__(self, data: np.ndarray = None) -> np.ndarray:
 
         """
         Wrapper for executing self.solve.
-        
+
         Parameters
         ----------
         data : np.ndarray, optional
             The values to be differentiated. The default value is None.
-            
+
         Returns
         -------
         np.ndarray

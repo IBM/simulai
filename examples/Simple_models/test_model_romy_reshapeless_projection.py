@@ -12,27 +12,27 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import numpy as np
-import matplotlib.pyplot as plt
-
 from argparse import ArgumentParser
 
-from simulai.simulation import Pipeline
+import matplotlib.pyplot as plt
+import numpy as np
+
 from simulai.io import Reshaper
-from simulai.rom import POD
+from simulai.math.differentiation import CollocationDerivative
+from simulai.math.integration import RK4
 from simulai.metrics import L2Norm
 from simulai.normalization import UnitaryNormalization
-from simulai.math.differentiation import CollocationDerivative
 from simulai.regression import DenseNetwork
-from simulai.math.integration import RK4
+from simulai.rom import POD
+from simulai.simulation import Pipeline
 
 # Reading command-line arguments
-parser = ArgumentParser(description='Argument parsers')
+parser = ArgumentParser(description="Argument parsers")
 
-parser.add_argument('--data_path', type=str)
-parser.add_argument('--save_path', type=str)
-parser.add_argument('--model_name', type=str)
-parser.add_argument('--case', type=str)
+parser.add_argument("--data_path", type=str)
+parser.add_argument("--save_path", type=str)
+parser.add_argument("--model_name", type=str)
+parser.add_argument("--case", type=str)
 
 args = parser.parse_args()
 
@@ -51,8 +51,8 @@ data = np.load(data_path)
 
 data = data.transpose((0, 2, 1))
 rescaler = UnitaryNormalization()
-data_dict = rescaler.rescale(map_dict={'data': data})
-data = data_dict['data']
+data_dict = rescaler.rescale(map_dict={"data": data})
+data = data_dict["data"]
 
 # Problem variables names
 variables_list = list(data.dtype.names)
@@ -64,18 +64,16 @@ n_batches = data.shape[0]
 frac = 0.9
 
 # Training data
-input_data = data[:int(frac*n_batches), :, :]
-test_data = data[int(frac*n_batches):, :, :]
+input_data = data[: int(frac * n_batches), :, :]
+test_data = data[int(frac * n_batches) :, :, :]
 
 dt = 1
 dt_ = dt
 T_max = test_data.shape[0]
-N_epochs = int(dt/dt_)*T_max
+N_epochs = int(dt / dt_) * T_max
 
 # Configurations
-rom_config = {
-              'n_components': 2
-             }
+rom_config = {"n_components": 2}
 
 # Machine learning configuration model
 initial_state = input_data[-1, :, :]
@@ -83,26 +81,26 @@ initial_state = input_data[-1, :, :]
 architecture = [100, 100, 100]
 
 model_config = {
-    'dropouts_rates_list': [0, 0, 0],
-    'learning_rate': 1e-05,
-    'l2_reg': 1e-05,
-    'activation_function': 'tanh',
-    'loss_function': 'mse',
-    'optimizer': 'adam',
+    "dropouts_rates_list": [0, 0, 0],
+    "learning_rate": 1e-05,
+    "l2_reg": 1e-05,
+    "activation_function": "tanh",
+    "loss_function": "mse",
+    "optimizer": "adam",
 }
 
 # Fitting process configuration
 fit_config = {
-    'n_epochs': 40000,  # Just for testing purposes
-    'use_second_order_opt': True  # Default is True
+    "n_epochs": 40000,  # Just for testing purposes
+    "use_second_order_opt": True,  # Default is True
 }
 
 # Time-integration configuration
 extra_kwargs = {
-    'initial_state': initial_state,
-    'epochs': N_epochs,
-    'dt': dt_,
-    'resolution': dt
+    "initial_state": initial_state,
+    "epochs": N_epochs,
+    "dt": dt_,
+    "resolution": dt,
 }
 
 # Condition for defining the kind of execution.
@@ -114,27 +112,33 @@ elif case == "restore":
     model.restore(save_path, model_name)
 
 else:
-    raise Exception("It is necessary to provide the way"
-                    "for obtaining the machine learning model")
+    raise Exception(
+        "It is necessary to provide the way" "for obtaining the machine learning model"
+    )
 
 # Derivative operator
-diff_config = {'step': dt}
+diff_config = {"step": dt}
 diff_op = CollocationDerivative(config=diff_config)
 
 l2_norm = L2Norm()
 
 # Pipeline instantiation
-pipeline = Pipeline(stages=[('data_preparer', Reshaper()),
-                            ('rom', POD(config=rom_config)),
-                            ('model', model)
-                           ])
+pipeline = Pipeline(
+    stages=[
+        ("data_preparer", Reshaper()),
+        ("rom", POD(config=rom_config)),
+        ("model", model),
+    ]
+)
 
 # It executes the sequence defined in the list stages
-pipeline.exec(data=input_data,
-              input_data=input_data,
-              reference_data=test_data,
-              data_generator=diff_op,
-              fit_kwargs=fit_config)
+pipeline.exec(
+    data=input_data,
+    input_data=input_data,
+    reference_data=test_data,
+    data_generator=diff_op,
+    fit_kwargs=fit_config,
+)
 
 if case == "fit":
     pipeline.save(save_path=save_path, model_name=model_name)
@@ -148,19 +152,23 @@ reconstructed_test = pipeline.reconstruct_data(data=projected_test)
 input_data_numeric = np.hstack([input_data[name] for name in input_data.dtype.names])
 test_data_numeric = np.hstack([test_data[name] for name in test_data.dtype.names])
 
-error = l2_norm(data=reconstructed, reference_data=input_data_numeric, relative_norm=True)
-error_test = l2_norm(data=reconstructed_test, reference_data=test_data_numeric, relative_norm=True)
+error = l2_norm(
+    data=reconstructed, reference_data=input_data_numeric, relative_norm=True
+)
+error_test = l2_norm(
+    data=reconstructed_test, reference_data=test_data_numeric, relative_norm=True
+)
 
-print("Projection error for the training data: {} %".format(100*error))
-print("Projection error for the testing data: {} %".format(100*error_test))
+print("Projection error for the training data: {} %".format(100 * error))
+print("Projection error for the testing data: {} %".format(100 * error_test))
 
 output = pipeline.predict(post_process_op=RK4, extra_kwargs=extra_kwargs)
 
-error_nominal = l2_norm(data=output,
-                        reference_data=test_data_numeric,
-                        relative_norm=True)
+error_nominal = l2_norm(
+    data=output, reference_data=test_data_numeric, relative_norm=True
+)
 
-print("Extrapolation error: {} % ".format(100*error_nominal))
+print("Extrapolation error: {} % ".format(100 * error_nominal))
 
 # Post-processing the outputs for visualization purposes
 grid_shape = (15, 25, 24)

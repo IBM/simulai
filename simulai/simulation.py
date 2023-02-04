@@ -12,20 +12,22 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import warnings
-import numpy as np
 import copy
-import os
 import inspect
+import os
 import pickle
+import warnings
 from collections import OrderedDict
+
 import h5py
+import numpy as np
 
 import simulai
+from simulai.abstract import BaseFramework
+from simulai.batching import batchdomain_constructor
 from simulai.io import DataPreparer
 from simulai.rom import ROM
-from simulai.batching import batchdomain_constructor
-from simulai.abstract import BaseFramework
+
 
 # Prototype of the class Pipeline
 class Pipeline(BaseFramework):
@@ -35,7 +37,7 @@ class Pipeline(BaseFramework):
 
     """
 
-    def __init__(self, stages:list=list(), channels_last:bool=False) -> None:
+    def __init__(self, stages: list = list(), channels_last: bool = False) -> None:
         """
 
         :param stages:
@@ -49,19 +51,19 @@ class Pipeline(BaseFramework):
         self.stages = OrderedDict(stages)
 
         self.triage_dict = {
-            'data_preparer': 'prepare_input_data',
-            'rom': 'fit',
-            'model': 'fit',
-            'integration': '__call__',
-            'normalization': 'rescale'
+            "data_preparer": "prepare_input_data",
+            "rom": "fit",
+            "model": "fit",
+            "integration": "__call__",
+            "normalization": "rescale",
         }
 
         self.wrappers_dict = {
-            'data_preparer': self._data_preparer_wrapper,
-            'rom': self._rom_wrapper,
-            'model': self._model_wrapper,
-            'normalization': self._normalization_wrapper,
-            'integration': self._integration_wrapper
+            "data_preparer": self._data_preparer_wrapper,
+            "rom": self._rom_wrapper,
+            "model": self._model_wrapper,
+            "normalization": self._normalization_wrapper,
+            "integration": self._integration_wrapper,
         }
 
         # Some global directives:
@@ -74,14 +76,16 @@ class Pipeline(BaseFramework):
         self.there_is_reference = False
         self.is_batchwise = False
 
-        if 'data_preparer' in pipeline_layers:
+        if "data_preparer" in pipeline_layers:
             self.there_is_data_preparer = True
-        if 'rom' in pipeline_layers:
+        if "rom" in pipeline_layers:
             self.there_is_rom = True
-        if 'model' in pipeline_layers:
+        if "model" in pipeline_layers:
             self.there_is_model = True
 
-        self.execution_pipeline, self.pipeline_algorithms = self._classify_op(self.stages)
+        self.execution_pipeline, self.pipeline_algorithms = self._classify_op(
+            self.stages
+        )
 
         # Multiple global attributes are initialized as empty objects and filled at
         # execution time
@@ -111,8 +115,9 @@ class Pipeline(BaseFramework):
 
     @input_data.setter
     def input_data(self, v):
-        assert (isinstance(v, np.ndarray) or isinstance(v, h5py.Dataset)),\
-            "Error! input_data is not a numpy.ndarray: {}".format(type(v))
+        assert isinstance(v, np.ndarray) or isinstance(
+            v, h5py.Dataset
+        ), "Error! input_data is not a numpy.ndarray: {}".format(type(v))
 
         self._input_data = v
 
@@ -147,7 +152,9 @@ class Pipeline(BaseFramework):
         """
 
         execution_pipeline = OrderedDict()
-        pipeline_algorithms = {key: {'op': list(), 'wrapper': None} for key in self.triage_dict}
+        pipeline_algorithms = {
+            key: {"op": list(), "wrapper": None} for key in self.triage_dict
+        }
 
         for node, op in op_dict.items():
 
@@ -156,8 +163,8 @@ class Pipeline(BaseFramework):
 
             execution_pipeline[op] = execution_method
 
-            pipeline_algorithms[op.purpose]['op'] = execution_method
-            pipeline_algorithms[op.purpose]['wrapper'] = wrapper_method
+            pipeline_algorithms[op.purpose]["op"] = execution_method
+            pipeline_algorithms[op.purpose]["wrapper"] = wrapper_method
 
         return execution_pipeline, pipeline_algorithms
 
@@ -174,12 +181,12 @@ class Pipeline(BaseFramework):
         for var in var_names_list:
             variables_list.append(data[var])
 
-        variables_str = ','.join(var_names_list)
-        formats_str = ','.join(len(var_names_list)*['f8'])
+        variables_str = ",".join(var_names_list)
+        formats_str = ",".join(len(var_names_list) * ["f8"])
 
-        recovered_data = np.core.records.fromarrays(variables_list,
-                                                    names=variables_str,
-                                                    formats=formats_str)
+        recovered_data = np.core.records.fromarrays(
+            variables_list, names=variables_str, formats=formats_str
+        )
 
         return recovered_data
 
@@ -202,19 +209,24 @@ class Pipeline(BaseFramework):
 
         elif isinstance(data_preparer, list):
             data_preparers = data_preparer
-            assert all([isinstance(data_preparer, DataPreparer) for data_preparer in data_preparer])
+            assert all(
+                [
+                    isinstance(data_preparer, DataPreparer)
+                    for data_preparer in data_preparer
+                ]
+            )
         else:
             raise Exception("Error! data_preparer is not an instance of data_preparer")
 
         self.data_preparer = data_preparers
 
-        data = getattr(self, 'input_data')
+        data = getattr(self, "input_data")
 
         for data_preparer in self.data_preparer:
 
             self.input_data = data_preparer.prepare_input_data(data)
             if isinstance(self.target_data, np.ndarray):
-                target_data = getattr(self, 'target_data')
+                target_data = getattr(self, "target_data")
                 self.target_data = data_preparer.prepare_input_data(target_data)
             else:
                 pass
@@ -226,14 +238,20 @@ class Pipeline(BaseFramework):
             def wrapper(data):
                 evaluation = operator(data)
 
-                output_dict = self.normalization.apply_descaling(map_dict={'target': evaluation})
-                evaluation = output_dict['target']
+                output_dict = self.normalization.apply_descaling(
+                    map_dict={"target": evaluation}
+                )
+                evaluation = output_dict["target"]
 
-                output_dict = self.normalization.apply_rescaling(map_dict={'input': evaluation})
-                evaluation = output_dict['input']
+                output_dict = self.normalization.apply_rescaling(
+                    map_dict={"input": evaluation}
+                )
+                evaluation = output_dict["input"]
 
                 return evaluation
+
         else:
+
             def wrapper(data):
                 return operator(data)
 
@@ -242,12 +260,14 @@ class Pipeline(BaseFramework):
     def _model_wrapper(self, model):
 
         if model.is_this_model_rough:
-            model.fit(input_data=self.input_data,
-                      target_data=self.target_data,
-                      **self.fit_kwargs)
+            model.fit(
+                input_data=self.input_data,
+                target_data=self.target_data,
+                **self.fit_kwargs,
+            )
 
         else:
-                pass
+            pass
 
         self.model = model
 
@@ -255,7 +275,7 @@ class Pipeline(BaseFramework):
     def _get_kwargs(op):
 
         kwargs = inspect.getfullargspec(op).args
-        kwargs.remove('self')
+        kwargs.remove("self")
 
         return kwargs
 
@@ -302,13 +322,14 @@ class Pipeline(BaseFramework):
         # dimensionality reduction
 
         if self.is_batchwise:
-            assert rom.kind == "batchwise", "The ROM chosen is not proper " \
-                                            "to batchwise executions"
+            assert rom.kind == "batchwise", (
+                "The ROM chosen is not proper " "to batchwise executions"
+            )
         else:
             pass
 
-        input_data = getattr(self, 'input_data')
-        target_data = getattr(self, 'target_data')
+        input_data = getattr(self, "input_data")
+        target_data = getattr(self, "target_data")
 
         input_data = self._construct_data_array(input_data, self.input_vars_list)
 
@@ -318,7 +339,9 @@ class Pipeline(BaseFramework):
         if self.there_is_model:
             reduced_input_data = rom.project(data=input_data)
             if isinstance(target_data, np.ndarray):
-                target_data = self._construct_data_array(target_data, self.target_vars_list)
+                target_data = self._construct_data_array(
+                    target_data, self.target_vars_list
+                )
                 # Apply the dimensionality reduction to the target data object when that exists
                 reduced_target_data = rom.project(data=target_data)
 
@@ -330,36 +353,39 @@ class Pipeline(BaseFramework):
         else:
             pass
 
-
     def _normalization_wrapper(self, normalization_op):
 
         map_dict = dict()
         if isinstance(self.input_data, np.ndarray):
-            map_dict.update({'input': self.input_data})
+            map_dict.update({"input": self.input_data})
         else:
             pass
 
         if isinstance(self.target_data, np.ndarray):
-            map_dict.update({'target': self.target_data})
+            map_dict.update({"target": self.target_data})
         else:
             pass
 
         transformed_array_dict = normalization_op.rescale(map_dict=map_dict)
 
         if isinstance(self.input_data, np.ndarray):
-            self.input_data = transformed_array_dict['input']
+            self.input_data = transformed_array_dict["input"]
         else:
             pass
 
         if isinstance(self.target_data, np.ndarray):
-            self.target_data = transformed_array_dict['target']
+            self.target_data = transformed_array_dict["target"]
         else:
             pass
 
-
-    def _batchwise_projection(self, data=None, variables_list=None,
-                              data_interval=None, batch_size=None,
-                              batch_indices=None):
+    def _batchwise_projection(
+        self,
+        data=None,
+        variables_list=None,
+        data_interval=None,
+        batch_size=None,
+        batch_indices=None,
+    ):
 
         if data_interval is not None:
             n_samples = data_interval[1] - data_interval[0]
@@ -370,25 +396,34 @@ class Pipeline(BaseFramework):
             slicer = self._slice_by_set
 
         else:
-            raise Exception("There is a contradiction. Or data_interval or batch_indices must be provided.")
+            raise Exception(
+                "There is a contradiction. Or data_interval or batch_indices must be provided."
+            )
 
         if isinstance(batch_size, simulai.metrics.MemorySizeEval):
-            batch_size = batch_size(max_batches=n_samples, shape=data.shape) # TODO data.shape[1:]
+            batch_size = batch_size(
+                max_batches=n_samples, shape=data.shape
+            )  # TODO data.shape[1:]
 
         elif batch_size == -1:
             batch_size = n_samples
         else:
             pass
 
-        batches = batchdomain_constructor(data_interval=data_interval, batch_size=batch_size,
-                                          batch_indices=batch_indices)
+        batches = batchdomain_constructor(
+            data_interval=data_interval,
+            batch_size=batch_size,
+            batch_indices=batch_indices,
+        )
 
         batches_list = list()
         for batch_id, batch in enumerate(batches):
 
             chunk_array = data[slicer(batch)]
 
-            print(f"Projecting for the batch {batch_id+1}/{len(batches)} batch_size={chunk_array.shape[0]}")
+            print(
+                f"Projecting for the batch {batch_id+1}/{len(batches)} batch_size={chunk_array.shape[0]}"
+            )
 
             if self.data_preparer:
                 data_ = self.data_preparer.prepare_input_data(chunk_array)
@@ -402,15 +437,25 @@ class Pipeline(BaseFramework):
         return np.vstack(batches_list)
 
     # Reconstructing using chunks of data in order to save memory
-    def _batchwise_reconstruction(self, data=None, variables_list=None,
-                                  data_interval=None, batch_size=None, batch_indices=None,
-                                  dump_path=None):
+    def _batchwise_reconstruction(
+        self,
+        data=None,
+        variables_list=None,
+        data_interval=None,
+        batch_size=None,
+        batch_indices=None,
+        dump_path=None,
+    ):
 
-        assert dump_path, "It is necessary to provide a path to save the reconstruction" \
-                          "output to a HDF5 file."
+        assert dump_path, (
+            "It is necessary to provide a path to save the reconstruction"
+            "output to a HDF5 file."
+        )
 
         if os.path.exists(dump_path):
-            warnings.warn(f'Reconstruction dump_path={dump_path} exists. It will be overwritten')
+            warnings.warn(
+                f"Reconstruction dump_path={dump_path} exists. It will be overwritten"
+            )
 
         data_file = h5py.File(dump_path, "w")
 
@@ -423,12 +468,16 @@ class Pipeline(BaseFramework):
             slicer = self._slice_by_set
 
         else:
-            raise Exception("There is a contradiction. Or data_interval or batch_indices must be provided.")
+            raise Exception(
+                "There is a contradiction. Or data_interval or batch_indices must be provided."
+            )
 
         # In case of using a memory limiter, it is necessary to evaluate the batch_size
         # using it
         if isinstance(batch_size, simulai.metrics.MemorySizeEval):
-            batch_size = batch_size(max_batches=samples_dim, shape=(self.data_preparer.n_features, ))
+            batch_size = batch_size(
+                max_batches=samples_dim, shape=(self.data_preparer.n_features,)
+            )
 
         elif batch_size == -1:
             batch_size = samples_dim
@@ -436,20 +485,25 @@ class Pipeline(BaseFramework):
             pass
 
         # Constructing the chunks intervals
-        batches = batchdomain_constructor(data_interval=data_interval, batch_size=batch_size,
-                                          batch_indices=batch_indices)
+        batches = batchdomain_constructor(
+            data_interval=data_interval,
+            batch_size=batch_size,
+            batch_indices=batch_indices,
+        )
 
         # If the data structure is a structured numpy array a list of variables is provided
         data_shape = (samples_dim,) + self.data_preparer.collapsible_shapes
 
-        dset = data_file.create_dataset("reconstructed_data", shape=data_shape,
-                                         dtype=self.data_preparer.dtype)
+        dset = data_file.create_dataset(
+            "reconstructed_data", shape=data_shape, dtype=self.data_preparer.dtype
+        )
 
         # Batchwise reconstruction loop
         for batch_id, batch in enumerate(batches):
             chunk_array = data[slicer(batch)]
-            print(f"Reconstruction for the batch {batch_id+1}/{len(batches)} batch_size={chunk_array.shape[0]}")
-
+            print(
+                f"Reconstruction for the batch {batch_id+1}/{len(batches)} batch_size={chunk_array.shape[0]}"
+            )
 
             data_numeric = self.rom.reconstruct(chunk_array)
             output_data_ = self.data_preparer.prepare_output_data(data_numeric)
@@ -457,8 +511,14 @@ class Pipeline(BaseFramework):
 
         return dset
 
-    def project_data(self, data=None, variables_list=None,
-                     data_interval=None, batch_size=1, batch_indices=None):
+    def project_data(
+        self,
+        data=None,
+        variables_list=None,
+        data_interval=None,
+        batch_size=1,
+        batch_indices=None,
+    ):
         """
 
         :param data:
@@ -484,20 +544,31 @@ class Pipeline(BaseFramework):
 
         elif isinstance(data, h5py.Dataset):
 
-            assert data_interval, "In using a h5py Dataset it is necessary" \
-                                  "to provide a data interval"
+            assert data_interval, (
+                "In using a h5py Dataset it is necessary" "to provide a data interval"
+            )
 
-            return self._batchwise_projection(data=data, variables_list=variables_list,
-                                              data_interval=data_interval,
-                                              batch_size=batch_size,
-                                              batch_indices=batch_indices)
+            return self._batchwise_projection(
+                data=data,
+                variables_list=variables_list,
+                data_interval=data_interval,
+                batch_size=batch_size,
+                batch_indices=batch_indices,
+            )
 
         else:
-            raise Exception("Data format not supported. It must be np.ndarray"
-                            "or h5py.Dataset.")
+            raise Exception(
+                "Data format not supported. It must be np.ndarray" "or h5py.Dataset."
+            )
 
-    def reconstruct_data(self, data=None, variables_list=None,
-                         data_interval=None, batch_size=1, dump_path=None):
+    def reconstruct_data(
+        self,
+        data=None,
+        variables_list=None,
+        data_interval=None,
+        batch_size=1,
+        dump_path=None,
+    ):
 
         if isinstance(data, np.ndarray) and not data_interval:
 
@@ -511,14 +582,18 @@ class Pipeline(BaseFramework):
 
             print("Applying the batch-wise reconstruction strategy.")
 
-            return self._batchwise_reconstruction(data=data, variables_list=variables_list,
-                                                  data_interval=data_interval,
-                                                  batch_size=batch_size,
-                                                  dump_path=dump_path)
+            return self._batchwise_reconstruction(
+                data=data,
+                variables_list=variables_list,
+                data_interval=data_interval,
+                batch_size=batch_size,
+                dump_path=dump_path,
+            )
 
         else:
-            raise Exception("Data format not supported. It must be np.ndarray"
-                            "or h5py.Dataset.")
+            raise Exception(
+                "Data format not supported. It must be np.ndarray" "or h5py.Dataset."
+            )
 
     def pipeline_loop(self, input_data, target_data, reference_data, extra_kwargs):
 
@@ -532,16 +607,23 @@ class Pipeline(BaseFramework):
         for op, method_name in self.execution_pipeline.items():
             # op can be a class instance or a class itself
 
-            wrapper_method = self.pipeline_algorithms[op.purpose]['wrapper']
+            wrapper_method = self.pipeline_algorithms[op.purpose]["wrapper"]
             wrapper_method(op)
 
             setattr(self, op.purpose, op)
 
             print(f"Executed operation {op.name.upper()}.")
 
-    def batchwise_pipeline_loop(self, input_data, target_data, reference_data,
-                                      extra_kwargs, data_interval=None, batch_size=None,
-                                      batch_indices=None):
+    def batchwise_pipeline_loop(
+        self,
+        input_data,
+        target_data,
+        reference_data,
+        extra_kwargs,
+        data_interval=None,
+        batch_size=None,
+        batch_indices=None,
+    ):
 
         self.input_data = input_data
         self.target_data = target_data
@@ -549,26 +631,33 @@ class Pipeline(BaseFramework):
         self.extra_kwargs = extra_kwargs
 
         if self.there_is_target:
-            error_message = "The input and target dimensions are not compatible" \
-                            "with {} and {} samples". \
-                             format(self.input_data.shape, self.target_data)
+            error_message = (
+                "The input and target dimensions are not compatible"
+                "with {} and {} samples".format(self.input_data.shape, self.target_data)
+            )
 
             assert self.input_data.shape == self.target_data, error_message
         else:
             pass
 
         # Checking up if a list of batches was provided or if it is necessary to construct it
-        assert (data_interval is not None or batch_indices is not None),\
-            "There is a contradiction. Or data_interval or batch_indices must be provided."
+        assert (
+            data_interval is not None or batch_indices is not None
+        ), "There is a contradiction. Or data_interval or batch_indices must be provided."
 
-        batches = batchdomain_constructor(data_interval=data_interval, batch_size=batch_size,
-                                          batch_indices=batch_indices)
+        batches = batchdomain_constructor(
+            data_interval=data_interval,
+            batch_size=batch_size,
+            batch_indices=batch_indices,
+        )
 
         for batch_id, batch in enumerate(batches):
 
             self.input_data = input_data[self.slicer(batch)]
 
-            print(f"Executing the mini-batch {batch_id+1}/{len(batches)} batch_size={self.input_data.shape[0]}")
+            print(
+                f"Executing the mini-batch {batch_id+1}/{len(batches)} batch_size={self.input_data.shape[0]}"
+            )
 
             if self.there_is_target:
                 self.target_data = target_data[self.slicer(batch)]
@@ -587,16 +676,25 @@ class Pipeline(BaseFramework):
             for op, method_name in self.execution_pipeline.items():
                 # op can be a class instance or a class itself
 
-                wrapper_method = self.pipeline_algorithms[op.purpose]['wrapper']
+                wrapper_method = self.pipeline_algorithms[op.purpose]["wrapper"]
                 wrapper_method(op)
 
                 setattr(self, op.purpose, op)
 
                 print("Executed operation.")
 
-    def exec(self, input_data=None, target_data=None, reference_data=None,
-                   data_generator=None, extra_kwargs=None, fit_kwargs=None,
-                   data_interval=None, batch_size=None, batch_indices=None):
+    def exec(
+        self,
+        input_data=None,
+        target_data=None,
+        reference_data=None,
+        data_generator=None,
+        extra_kwargs=None,
+        fit_kwargs=None,
+        data_interval=None,
+        batch_size=None,
+        batch_indices=None,
+    ):
 
         """
 
@@ -637,11 +735,15 @@ class Pipeline(BaseFramework):
                 n_samples = len(batch_indices)
                 self.slicer = self._slice_by_set
             else:
-                raise Exception("There is a contradiction. Or data_interval or batch_indices must be provided.")
+                raise Exception(
+                    "There is a contradiction. Or data_interval or batch_indices must be provided."
+                )
 
             if isinstance(batch_size, simulai.metrics.MemorySizeEval):
 
-                batch_size = batch_size(max_batches=n_samples, shape=input_data.shape) # TODO input_data.shape[1:]
+                batch_size = batch_size(
+                    max_batches=n_samples, shape=input_data.shape
+                )  # TODO input_data.shape[1:]
 
             elif batch_size == -1:
 
@@ -654,8 +756,9 @@ class Pipeline(BaseFramework):
             else:
                 pass
 
-            assert batch_size, "The argument batch_size must be" \
-                               "provided when using HDF5 as input"
+            assert batch_size, (
+                "The argument batch_size must be" "provided when using HDF5 as input"
+            )
 
             data_format.append("hdf5")
 
@@ -674,10 +777,13 @@ class Pipeline(BaseFramework):
 
             elif isinstance(target_data, h5py.Dataset):
 
-                assert batch_size, "The argument batch_size must be" \
-                                   "provided when using HDF5 as input"
-                self.target_vars_list = ['var_' + str(ii)
-                                         for ii in range(target_data.shape[1])]
+                assert batch_size, (
+                    "The argument batch_size must be"
+                    "provided when using HDF5 as input"
+                )
+                self.target_vars_list = [
+                    "var_" + str(ii) for ii in range(target_data.shape[1])
+                ]
                 data_format.append("numpy")
             else:
                 assert data_generator
@@ -708,9 +814,15 @@ class Pipeline(BaseFramework):
 
             print("Executing a batchwise pipeline.")
             self.is_batchwise = True
-            self.batchwise_pipeline_loop(input_data, target_data, reference_data,
-                                         extra_kwargs, data_interval=data_interval,
-                                         batch_size=batch_size, batch_indices=batch_indices)
+            self.batchwise_pipeline_loop(
+                input_data,
+                target_data,
+                reference_data,
+                extra_kwargs,
+                data_interval=data_interval,
+                batch_size=batch_size,
+                batch_indices=batch_indices,
+            )
 
         else:
             raise Exception("The data format was not understood")
@@ -723,16 +835,18 @@ class Pipeline(BaseFramework):
             data_ = data
 
         if self.normalization:
-            output_dict = self.normalization.apply_rescaling(map_dict={'input': data_})
-            data_ = output_dict['input']
+            output_dict = self.normalization.apply_rescaling(map_dict={"input": data_})
+            data_ = output_dict["input"]
         else:
             pass
 
         evaluation_ = self.model.eval(data_)
 
         if self.normalization:
-            output_dict = self.normalization.apply_descaling(map_dict={'target': evaluation_})
-            evaluation_ = output_dict['target']
+            output_dict = self.normalization.apply_descaling(
+                map_dict={"target": evaluation_}
+            )
+            evaluation_ = output_dict["target"]
         else:
             pass
 
@@ -743,23 +857,28 @@ class Pipeline(BaseFramework):
 
         return evaluation
 
-    def predict(self, post_process_op=None, extra_kwargs=None, with_reconstruction=True):
+    def predict(
+        self, post_process_op=None, extra_kwargs=None, with_reconstruction=True
+    ):
 
         # It checks if the post_process_op is instantiated or not
 
-        initial_state = extra_kwargs['initial_state']
+        initial_state = extra_kwargs["initial_state"]
         extra_kwargs_copy = copy.copy(extra_kwargs)
 
         if self.rom:
-            extra_kwargs_copy['initial_state'] = self.project_data(initial_state,
-                                                                   self.input_vars_list)
+            extra_kwargs_copy["initial_state"] = self.project_data(
+                initial_state, self.input_vars_list
+            )
         else:
             pass
 
         if self.normalization:
-            initial_state = extra_kwargs_copy['initial_state']
-            output_dict = self.normalization.apply_rescaling(map_dict={'input': initial_state})
-            extra_kwargs_copy['initial_state'] = output_dict['input']
+            initial_state = extra_kwargs_copy["initial_state"]
+            output_dict = self.normalization.apply_rescaling(
+                map_dict={"input": initial_state}
+            )
+            extra_kwargs_copy["initial_state"] = output_dict["input"]
 
         else:
             pass
@@ -769,8 +888,8 @@ class Pipeline(BaseFramework):
         output = op_instance(**extra_kwargs_copy)
 
         if self.normalization:
-            output_dict = self.normalization.apply_descaling(map_dict={'input': output})
-            output = output_dict['input']
+            output_dict = self.normalization.apply_descaling(map_dict={"input": output})
+            output = output_dict["input"]
         else:
             pass
 
@@ -783,23 +902,21 @@ class Pipeline(BaseFramework):
 
     def _save(self, save_path=None, model_name=None):
 
-        fp = open(os.path.join(save_path, model_name), 'wb')
+        fp = open(os.path.join(save_path, model_name), "wb")
 
         try:
             print(f"Trying to save {self} to a file.")
             pickle.dump(self, fp, protocol=4)
 
         except Exception as e:
-            print('START ---- Exception message')
+            print("START ---- Exception message")
             print(e, e.args)
-            print('END ---- Exception message')
-            print(f"Object {self} is not pickable."
-                  f" Trying to save with another way")
+            print("END ---- Exception message")
+            print(f"Object {self} is not pickable." f" Trying to save with another way")
 
     def save(self, save_path=None, model_name=None):
         try:
-            self._save(save_path=save_path,
-                       model_name=model_name)
+            self._save(save_path=save_path, model_name=model_name)
         except Exception:
 
             assert self.model is not None, f"model is not an attribute of {self.model}"
@@ -813,14 +930,3 @@ class Pipeline(BaseFramework):
         error = metric(data, self.output)
 
         return error
-
-
-
-
-
-
-
-
-
-
-

@@ -18,32 +18,31 @@
 # In[1]:
 
 
-import numpy as np
 import random
-import matplotlib.pyplot as plt
-from scipy.integrate import odeint
 
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.integrate import odeint
 
 # In[2]:
 
 
 class PreyGaussianDisturb:
-    
     def __init__(self, A=None, sigma=None, mu=None, T_max=None):
-        
+
         self.sigma = sigma
         self.mu = mu
         self.T_max = T_max
         self.A = A
 
     def basis(self, t=None):
-        
-          output = self.A*np.exp(-(t - self.mu)**2/self.sigma**2)
-    
-          return output
-    
+
+        output = self.A * np.exp(-((t - self.mu) ** 2) / self.sigma**2)
+
+        return output
+
     def __call__(self, t=None):
-        
+
         return self.basis(t=t)
 
 
@@ -55,7 +54,7 @@ n_functions = 1000
 sigmas = [1, 5, 10]
 A = np.linspace(10, 20, n_functions)
 np.random.shuffle(A)
-mus = np.linspace(10, T_max-10, n_functions)
+mus = np.linspace(10, T_max - 10, n_functions)
 
 for ff in range(n_functions):
 
@@ -79,9 +78,10 @@ for func in functions[::10]:
 
 
 class LotkaVolterra:
-    
-    def __init__(self, alpha=None, beta=None, gamma=None, delta=None, forcing=None, lambd=None):
-        
+    def __init__(
+        self, alpha=None, beta=None, gamma=None, delta=None, forcing=None, lambd=None
+    ):
+
         self.alpha = alpha
         self.beta = beta
         self.gamma = gamma
@@ -92,19 +92,21 @@ class LotkaVolterra:
             self.forcing = lambda t: 0
 
         self.lambd = lambd
-        
-    def eval(self, state:np.ndarray=None, t:float=None) -> np.ndarray:
-        
+
+    def eval(self, state: np.ndarray = None, t: float = None) -> np.ndarray:
+
         x = state[0]
         y = state[1]
-        
-        x_residual = self.alpha*x - self.beta*x*y + self.forcing(t)*np.sqrt(self.lambd)
-        y_residual = self.delta*x*y - self.gamma*y 
-        
+
+        x_residual = (
+            self.alpha * x - self.beta * x * y + self.forcing(t) * np.sqrt(self.lambd)
+        )
+        y_residual = self.delta * x * y - self.gamma * y
+
         return np.array([x_residual, y_residual])
-    
+
     def run(self, initial_state, t):
-        
+
         solution = odeint(self.eval, initial_state, t)
 
         return np.vstack(solution), self.forcing(t)
@@ -118,7 +120,7 @@ beta = 0.4
 gamma = 0.4
 delta = 0.1
 dt = 0.01
-lambd= dt
+lambd = dt
 
 t = np.arange(0, T_max, dt)
 initial_state = np.array([20, 5])
@@ -130,8 +132,10 @@ for ff, function in enumerate(functions):
 
     print(f"Solving system using input function {ff}")
 
-    #solver = LotkaVolterra(alpha=alpha, beta=beta, gamma=gamma, delta=delta, forcing=function, lambd=lambd)
-    solver = LotkaVolterra(alpha=alpha, beta=beta, gamma=gamma, delta=delta, lambd=lambd)
+    # solver = LotkaVolterra(alpha=alpha, beta=beta, gamma=gamma, delta=delta, forcing=function, lambd=lambd)
+    solver = LotkaVolterra(
+        alpha=alpha, beta=beta, gamma=gamma, delta=delta, lambd=lambd
+    )
 
     solution, forcing = solver.run(initial_state, t)
 
@@ -154,16 +158,19 @@ output_dataset_array = np.stack(output_dataset, axis=-1)
 # In[9]:
 
 
-np.savez("Lotka_Volterra_dataset.npz", 
-         input_dataset=input_dataset_array,
-         output_dataset=output_dataset_array, time=t)
+np.savez(
+    "Lotka_Volterra_dataset.npz",
+    input_dataset=input_dataset_array,
+    output_dataset=output_dataset_array,
+    time=t,
+)
 
 
 # In[15]:
 
 
 for ff in range(0, n_functions, 100):
-    plt.plot(t,input_dataset_array[:, ff])
+    plt.plot(t, input_dataset_array[:, ff])
 plt.show()
 
 
@@ -171,7 +178,7 @@ plt.show()
 
 
 for ff in range(0, n_functions, 100):
-    plt.plot(t,output_dataset_array[:,0,ff])
+    plt.plot(t, output_dataset_array[:, 0, ff])
 plt.show()
 
 
@@ -179,6 +186,5 @@ plt.show()
 
 
 for ff in range(0, n_functions, 100):
-    plt.plot(t,output_dataset_array[:,1,ff])
+    plt.plot(t, output_dataset_array[:, 1, ff])
 plt.show()
-

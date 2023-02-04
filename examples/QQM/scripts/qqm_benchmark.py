@@ -16,13 +16,15 @@ import numpy as np
 
 from simulai.rom import QQM
 
-t = np.linspace(0, 2*np.pi, 10000)
+t = np.linspace(0, 2 * np.pi, 10000)
 
 # input: s = [t, sin(t), cos(t)]
 s = np.hstack([t[:, None], np.sin(t)[:, None], np.cos(t)[:, None]])
 
 # output: e = [1, sin(2*t), cos(2*t)]
-e = np.hstack([np.ones(t.shape)[:, None], np.sin(2*t)[:, None], np.cos(2*t)[:, None]])
+e = np.hstack(
+    [np.ones(t.shape)[:, None], np.sin(2 * t)[:, None], np.cos(2 * t)[:, None]]
+)
 
 # Trying to find a projection matrix V_bar : e = [s X s] * V_bar
 # Ideally: V_bar = [0  0  0]
@@ -48,7 +50,7 @@ Ideally: V_bar = [0  0  0]
 print(INFO)
 
 # Using the default solver (SpaRSA)
-qqm = QQM(n_inputs=3, lambd=1e-3,  alpha_0=100, use_mean=True)
+qqm = QQM(n_inputs=3, lambd=1e-3, alpha_0=100, use_mean=True)
 
 # Using the default solver (SpaRSA) without sparsity hard-limiting
 qqm.fit(input_data=s, target_data=e)
@@ -56,8 +58,8 @@ qqm.fit(input_data=s, target_data=e)
 print("\n Vanilla SpaRSA")
 print(qqm.V_bar)
 
-#Using the default solver (SpaRSA) with sparsity hard-limiting
-qqm = QQM(n_inputs=3, lambd=1e-3, sparsity_tol=1e-6,  alpha_0=100, use_mean=True)
+# Using the default solver (SpaRSA) with sparsity hard-limiting
+qqm = QQM(n_inputs=3, lambd=1e-3, sparsity_tol=1e-6, alpha_0=100, use_mean=True)
 
 qqm.fit(input_data=s, target_data=e)
 

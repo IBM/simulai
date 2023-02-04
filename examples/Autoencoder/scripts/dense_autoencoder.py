@@ -15,12 +15,16 @@
 import numpy as np
 import torch
 
-from simulai.optimization import Optimizer
-from simulai.metrics import L2Norm
 from simulai.file import SPFile
+from simulai.metrics import L2Norm
+from simulai.optimization import Optimizer
+
 
 def u(t, x, L: float = None, t_max: float = None) -> np.ndarray:
-    return np.sin(4 * np.pi * t * (x / L - 1 / 2) ** 2) * np.cos(5 * np.pi * (t / t_max - 1 / 2) ** 2)
+    return np.sin(4 * np.pi * t * (x / L - 1 / 2) ** 2) * np.cos(
+        5 * np.pi * (t / t_max - 1 / 2) ** 2
+    )
+
 
 t_max = 10
 L = 5
@@ -29,13 +33,13 @@ N = 10_000
 
 x = np.linspace(0, L, K)
 t = np.linspace(0, t_max, N)
-T, X = np.meshgrid(t, x, indexing='ij')
+T, X = np.meshgrid(t, x, indexing="ij")
 
 # Model template
 def model():
 
-    from simulai.regression import DenseNetwork
     from simulai.models import AutoencoderMLP
+    from simulai.regression import DenseNetwork
 
     K = 512
     N = 10_000
@@ -45,24 +49,24 @@ def model():
 
     # Configuration for the fully-connected branch network
     encoder_config = {
-                    'layers_units': [256, 128, 64],  # Hidden layers
-                    'activations': 'tanh',
-                    'input_size': n_inputs,
-                    'output_size': n_latent,
-                    'name': 'encoder_net',
-                    }
+        "layers_units": [256, 128, 64],  # Hidden layers
+        "activations": "tanh",
+        "input_size": n_inputs,
+        "output_size": n_latent,
+        "name": "encoder_net",
+    }
 
     # Instantiating and training the surrogate model
     encoder_net = DenseNetwork(**encoder_config)
 
     # Configuration for the fully-connected branch network
     decoder_config = {
-                    'layers_units': [64, 128, 256],  # Hidden layers
-                    'activations': 'tanh',
-                    'input_size': n_latent,
-                    'output_size': n_inputs,
-                    'name': 'decoder_net',
-                    }
+        "layers_units": [64, 128, 256],  # Hidden layers
+        "activations": "tanh",
+        "input_size": n_latent,
+        "output_size": n_inputs,
+        "name": "decoder_net",
+    }
 
     # Instantiating and training the surrogate model
     decoder_net = DenseNetwork(**decoder_config)
@@ -71,40 +75,50 @@ def model():
 
     return autoencoder
 
+
 autoencoder = model()
 data = u(T, X, L=L, t_max=t_max)
 
-data_tensor = torch.from_numpy(data.astype('float32'))
+data_tensor = torch.from_numpy(data.astype("float32"))
 
 autoencoder.summary()
 
-lr=1e-3
+lr = 1e-3
 n_epochs = 100
 
-optimizer_config = {'lr': lr}
-params = {'lambda_1': 0., 'lambda_2': 1e-4}
+optimizer_config = {"lr": lr}
+params = {"lambda_1": 0.0, "lambda_2": 1e-4}
 
-optimizer = Optimizer('adam', params=optimizer_config)
+optimizer = Optimizer("adam", params=optimizer_config)
 
 data_train = data
 data_test = data
 
-optimizer.fit(op=autoencoder, input_data=data_train, target_data=data_train,
-              n_epochs=n_epochs, loss="rmse", params=params, batch_size=5_00)
+optimizer.fit(
+    op=autoencoder,
+    input_data=data_train,
+    target_data=data_train,
+    n_epochs=n_epochs,
+    loss="rmse",
+    params=params,
+    batch_size=5_00,
+)
 
 # First evaluation
 approximated_data = autoencoder.eval(input_data=data_test)
 
 l2_norm = L2Norm()
 
-projection_error = 100*l2_norm(data=approximated_data, reference_data=data_test, relative_norm=True)
+projection_error = 100 * l2_norm(
+    data=approximated_data, reference_data=data_test, relative_norm=True
+)
 
 print(f"Projection error: {projection_error} %")
 
-autoencoder.save(save_dir='/tmp', name='autoencoder_mlp')
+autoencoder.save(save_dir="/tmp", name="autoencoder_mlp")
 
 saver = SPFile(compact=False)
-saver.write(save_dir='/tmp', name='autoencoder_mlp', model=autoencoder, template=model)
+saver.write(save_dir="/tmp", name="autoencoder_mlp", model=autoencoder, template=model)
 
 print("Restoring from disk.")
 
@@ -114,7 +128,8 @@ approximated_data = autoencoder_reload.eval(input_data=data_test)
 
 l2_norm = L2Norm()
 
-projection_error = 100*l2_norm(data=approximated_data, reference_data=data_test, relative_norm=True)
+projection_error = 100 * l2_norm(
+    data=approximated_data, reference_data=data_test, relative_norm=True
+)
 
 print(f"Projection error: {projection_error} %")
-

@@ -17,8 +17,12 @@ import numpy as np
 from simulai.file import SPFile
 from simulai.metrics import L2Norm
 
+
 def u(t, x, L: float = None, t_max: float = None) -> np.ndarray:
-    return np.sin(4 * np.pi * t * (x / L - 1 / 2) ** 2) * np.cos(5 * np.pi * (t / t_max - 1 / 2) ** 2)
+    return np.sin(4 * np.pi * t * (x / L - 1 / 2) ** 2) * np.cos(
+        5 * np.pi * (t / t_max - 1 / 2) ** 2
+    )
+
 
 t_max = 10
 L = 5
@@ -27,7 +31,7 @@ N = 10_000
 
 x = np.linspace(0, L, K)
 t = np.linspace(0, t_max, N)
-T, X = np.meshgrid(t, x, indexing='ij')
+T, X = np.meshgrid(t, x, indexing="ij")
 
 data_test = u(T, X, L=L, t_max=t_max)
 
@@ -39,6 +43,8 @@ approximated_data = autoencoder_reload.eval(input_data=data_test)
 
 l2_norm = L2Norm()
 
-projection_error = 100*l2_norm(data=approximated_data, reference_data=data_test, relative_norm=True)
+projection_error = 100 * l2_norm(
+    data=approximated_data, reference_data=data_test, relative_norm=True
+)
 
 print(f"Projection error: {projection_error} %")

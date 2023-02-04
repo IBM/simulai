@@ -1,10 +1,11 @@
 from unittest import TestCase
+
 import torch
 
 from simulai.metrics import MahalanobisDistance
 
-class TestMahalanobis(TestCase):
 
+class TestMahalanobis(TestCase):
     def test_mahalanobis(self):
 
         data = torch.randn(100, 10)
