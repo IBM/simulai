@@ -9,3 +9,5 @@ simulai.residuals._pytorch_residuals module
 
 .. autoclass:: SymbolicOperatorClass
    :members:
+   :undoc-members:
+   :show-inheritance:
