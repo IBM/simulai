@@ -33,7 +33,13 @@ Python version requirements: 3.8 <= python <= 3.10
 Using pip
 ---------
 
+For installing the most recent stable version from PyPI:
+
     $ pip install simulai-toolkit
+
+For installing from the latest commit sent to GitHub (just for testing and developing purposes):
+
+    $ pip install -U git+https://github.com/IBM/simulai@main
 
 Contributing code to SimulAI
 ============================

@@ -37,6 +37,11 @@ Implement Features
 Look through the GitHub issues for features. Anything tagged with "enhancement"
 and "help wanted" is open to whoever wants to implement it.
 
+Create new examples
+~~~~~~~~~~~~~~~~~~~
+
+You can create new examples executed in notebooks and include them under `examples`. 
+
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
