@@ -40,6 +40,8 @@ class NetworkTemplate(torch.nn.Module):
         self.activations = None
         self.initializations = None
 
+        self.shapes_dict = None
+
     @property
     def weights_l2(self) -> torch.Tensor:
         return sum([torch.norm(weight, p=2) for weight in self.weights])
@@ -313,6 +315,8 @@ class NetworkTemplate(torch.nn.Module):
         print("Initializations at each layer:\n")
         pprinter.pprint(self.initializations)
 
+        self.shapes_dict = {'layers' : self.layers}
+
     def save(self, save_dir: str = None, name: str = None, device: str = None) -> None:
 
         # Moving all the tensors to the destiny device if necessary
@@ -466,6 +470,8 @@ class ConvNetworkTemplate(NetworkTemplate):
         self.interpolation_prefix = {"1d": "", "2d": "bi", "3d": "tri"}
 
         self.output_shape = None
+
+        self.shapes_dict = None
 
     def _no_flatten(self, input_data: torch.Tensor = None) -> torch.Tensor:
 
@@ -679,6 +685,8 @@ class ConvNetworkTemplate(NetworkTemplate):
 
         if display == True:
             pprint.pprint(shapes_dict, indent=2)
+
+        self.shapes_dict = shapes_dict
 
         output_size = list(shapes_dict.values())[-1]["Output shape"]
         self.input_size = list(shapes_dict.values())[0]["Input shape"]

@@ -88,6 +88,8 @@ class AutoencoderMLP(NetworkTemplate):
 
         self.last_encoder_channels = None
 
+        self.shapes_dict = dict()
+
     def summary(self) -> None:
         """
 
@@ -265,6 +267,8 @@ class AutoencoderCNN(NetworkTemplate):
 
         self.encoder_activation = self._get_operation(operation=encoder_activation)
 
+        self.shapes_dict = dict()
+
     def summary(
         self,
         input_data: Union[np.ndarray, torch.Tensor] = None,
@@ -320,6 +324,12 @@ class AutoencoderCNN(NetworkTemplate):
         bottleneck_output = bottleneck_output.reshape((-1, *before_flatten_dimension))
 
         self.decoder.summary(input_data=bottleneck_output, device=self.device)
+
+        # Saving the content of the subnetworks to the overall architecture dictionary
+        self.shapes_dict.update({'encoder' : self.encoder.shapes_dict})
+        self.shapes_dict.update({'bottleneck_encoder': self.bottleneck_encoder.shapes_dict})
+        self.shapes_dict.update({'bottleneck_decoder': self.bottleneck_decoder.shapes_dict})
+        self.shapes_dict.update({'decoder': self.decoder.shapes_dict})
 
     @as_tensor
     def projection(self, input_data: Union[np.ndarray, torch.Tensor]) -> torch.Tensor:
@@ -573,6 +583,8 @@ class AutoencoderKoopman(NetworkTemplate):
 
         self.encoder_activation = self._get_operation(operation=encoder_activation)
 
+        self.shapes_dict = dict()
+
     def summary(
         self,
         input_data: Union[np.ndarray, torch.Tensor] = None,
@@ -621,6 +633,12 @@ class AutoencoderKoopman(NetworkTemplate):
         bottleneck_output = bottleneck_output.reshape((-1, *before_flatten_dimension))
 
         self.decoder.summary(input_data=bottleneck_output, device=self.device)
+
+        # Saving the content of the subnetworks to the overall architecture dictionary
+        self.shapes_dict.update({'encoder': self.encoder.shapes_dict})
+        self.shapes_dict.update({'bottleneck_encoder': self.bottleneck_encoder.shapes_dict})
+        self.shapes_dict.update({'bottleneck_decoder': self.bottleneck_decoder.shapes_dict})
+        self.shapes_dict.update({'decoder': self.decoder.shapes_dict})
 
     @as_tensor
     def _projection_with_bottleneck(
@@ -880,6 +898,8 @@ class AutoencoderVariational(NetworkTemplate):
 
         self.encoder_activation = self._get_operation(operation=encoder_activation)
 
+        self.shapes_dict = dict()
+
     def summary(
         self,
         input_data: Union[np.ndarray, torch.Tensor] = None,
@@ -925,6 +945,12 @@ class AutoencoderVariational(NetworkTemplate):
         bottleneck_output = bottleneck_output.reshape((-1, *before_flatten_dimension))
 
         self.decoder.summary(input_data=bottleneck_output, device=self.device)
+
+        # Saving the content of the subnetworks to the overall architecture dictionary
+        self.shapes_dict.update({'encoder': self.encoder.shapes_dict})
+        self.shapes_dict.update({'bottleneck_encoder': self.bottleneck_encoder.shapes_dict})
+        self.shapes_dict.update({'bottleneck_decoder': self.bottleneck_decoder.shapes_dict})
+        self.shapes_dict.update({'decoder': self.decoder.shapes_dict})
 
     @as_tensor
     def _projection_with_bottleneck(
