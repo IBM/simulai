@@ -53,6 +53,7 @@ class AutoencoderMLP(NetworkTemplate):
         output_dim: Optional[int] = None,
         latent_dim: Optional[int] = None,
         activation: Optional[Union[list, str]] = None,
+        shallow: Optional[bool] = False,
         devices: Union[str, list] = "cpu",
     ) -> None:
 
@@ -71,6 +72,7 @@ class AutoencoderMLP(NetworkTemplate):
                 latent_dim=latent_dim,
                 output_dim=output_dim,
                 activation=activation,
+                shallow=shallow,
             )
 
         # Determining the kind of device to be used for allocating the
@@ -207,6 +209,7 @@ class AutoencoderCNN(NetworkTemplate):
         activation: Optional[Union[list, str]] = None,
         channels: Optional[int] = None,
         case: Optional[str] = None,
+        shallow: Optional[bool] = False,
         devices: Union[str, list] = "cpu",
     ) -> None:
 
@@ -245,6 +248,7 @@ class AutoencoderCNN(NetworkTemplate):
                 activation=activation,
                 channels=channels,
                 case=case,
+                shallow=shallow,
             )
 
         self.encoder = encoder.to(self.device)
@@ -491,6 +495,7 @@ class AutoencoderKoopman(NetworkTemplate):
         channels: Optional[int] = None,
         case: Optional[str] = None,
         architecture: Optional[str] = None,
+        shallow: Optional[bool] = False,
         encoder_activation: str = "relu",
         devices: Union[str, list] = "cpu",
     ) -> None:
@@ -526,6 +531,7 @@ class AutoencoderKoopman(NetworkTemplate):
                 channels=channels,
                 architecture=architecture,
                 case=case,
+                shallow=shallow,
             )
 
         self.encoder = encoder.to(self.device)
@@ -804,6 +810,7 @@ class AutoencoderVariational(NetworkTemplate):
         channels: Optional[int] = None,
         case: Optional[str] = None,
         architecture: Optional[str] = None,
+        shallow: Optional[bool] = False,
         scale: float = 1e-3,
         devices: Union[str, list] = "cpu",
     ) -> None:
@@ -839,6 +846,7 @@ class AutoencoderVariational(NetworkTemplate):
                 channels=channels,
                 architecture=architecture,
                 case=case,
+                shallow=shallow,
             )
 
         self.encoder = encoder.to(self.device)

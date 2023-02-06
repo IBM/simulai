@@ -57,17 +57,21 @@ class ReservoirComputing(Regression):
             density=self._reservoir_dim_corrected_sparsity_level,
         )
 
-
 class NetworkInstanceGen:
 
     """
     It generates instances of networks considering default choices
     """
 
-    def __init__(self, architecture: str, dim: str = None) -> None:
+    def __init__(self, architecture: str, dim: str = None, shallow : bool = False) -> None:
+
+        self.shallow = shallow
 
         if architecture == "dense":
-            self.architecture = "DenseNetwork"
+            if shallow == False:
+                self.architecture = "DenseNetwork"
+            else:
+                self.architecture = "SLFNN"
         elif architecture == "cnn":
             self.architecture = "ConvolutionalNetwork"
         else:
@@ -124,34 +128,45 @@ class NetworkInstanceGen:
         assert type(output_dim) == int
         assert type(activation) == str
 
-        # Creating the list of units
-        ref = input_dim
-        result = input_dim
-        units_list = list()
+        if self.shallow == True:
 
-        if input_dim > output_dim:
-
-            while (ref % self.divisor < ref) and (result > self.divisor * output_dim):
-
-                result, remainder = divmod(ref, self.divisor)
-                ref = result
-                units_list.append(result)
+            config_dict = {
+                'input_size': input_dim,
+                'output_size': output_dim,
+                'activation': 'identity',
+                'name': name
+            }
 
         else:
 
-            while result < int(output_dim / (self.multiplier)):
+            # Creating the list of units
+            ref = input_dim
+            result = input_dim
+            units_list = list()
 
-                result *= self.multiplier
+            if input_dim > output_dim:
 
-                units_list.append(result)
+                while (ref % self.divisor < ref) and (result > self.divisor * output_dim):
 
-        config_dict = {
-            "layers_units": units_list,
-            "activations": activation,
-            "input_size": input_dim,
-            "output_size": output_dim,
-            "name": name,
-        }
+                    result, remainder = divmod(ref, self.divisor)
+                    ref = result
+                    units_list.append(result)
+
+            else:
+
+                while result < int(output_dim / (self.multiplier)):
+
+                    result *= self.multiplier
+
+                    units_list.append(result)
+
+            config_dict = {
+                "layers_units": units_list,
+                "activations": activation,
+                "input_size": input_dim,
+                "output_size": output_dim,
+                "name": name,
+            }
 
         return config_dict
 
@@ -370,6 +385,7 @@ def mlp_autoencoder_auto(
     latent_dim: int = None,
     output_dim: Optional[int] = None,
     activation: str = None,
+    shallow : bool = False,
 ) -> Tuple[NetworkTemplate, ...]:
 
     from simulai.templates import NetworkInstanceGen
@@ -393,7 +409,7 @@ def mlp_autoencoder_auto(
         type(activation) == str
     ), "It is necessary to provide a value for the activation"
 
-    autogen = NetworkInstanceGen(architecture="dense")
+    autogen = NetworkInstanceGen(architecture="dense", shallow=shallow)
 
     encoder = autogen(input_dim=input_dim, output_dim=latent_dim, activation=activation)
     decoder = autogen(
@@ -411,6 +427,7 @@ def cnn_autoencoder_auto(
     activation: str = None,
     channels: int = None,
     case: str = None,
+    shallow : bool = False
 ) -> Tuple[NetworkTemplate, ...]:
 
     from simulai.templates import NetworkInstanceGen
@@ -442,7 +459,7 @@ def cnn_autoencoder_auto(
     last_channels = output_dim[1]
 
     autogen_cnn = NetworkInstanceGen(architecture="cnn", dim=case)
-    autogen_dense = NetworkInstanceGen(architecture="dense")
+    autogen_dense = NetworkInstanceGen(architecture="dense", shallow=shallow)
 
     encoder = autogen_cnn(
         input_dim=input_dim, activation=activation, channels=channels, flatten=False
@@ -480,6 +497,7 @@ def autoencoder_auto(
     activation: str = None,
     channels: int = None,
     architecture: str = None,
+    shallow : bool = False,
     case: str = None,
 ) -> Tuple[Union[NetworkTemplate, None], ...]:
 
@@ -490,6 +508,7 @@ def autoencoder_auto(
             latent_dim=latent_dim,
             output_dim=output_dim,
             activation=activation,
+            shallow=shallow
         )
 
         return encoder, decoder, None, None
@@ -503,6 +522,7 @@ def autoencoder_auto(
             activation=activation,
             channels=channels,
             case=case,
+            shallow=shallow
         )
 
         return encoder, decoder, bottleneck_encoder, bottleneck_decoder
