@@ -386,6 +386,7 @@ def mlp_autoencoder_auto(
     output_dim: Optional[int] = None,
     activation: str = None,
     shallow : bool = False,
+    name : str = None,
 ) -> Tuple[NetworkTemplate, ...]:
 
     from simulai.templates import NetworkInstanceGen
@@ -411,9 +412,9 @@ def mlp_autoencoder_auto(
 
     autogen = NetworkInstanceGen(architecture="dense", shallow=shallow)
 
-    encoder = autogen(input_dim=input_dim, output_dim=latent_dim, activation=activation)
+    encoder = autogen(input_dim=input_dim, output_dim=latent_dim, activation=activation, name='encoder_' + name)
     decoder = autogen(
-        input_dim=latent_dim, output_dim=output_dim, activation=activation
+        input_dim=latent_dim, output_dim=output_dim, activation=activation, name='decoder_' + name
     )
 
     return encoder, decoder
@@ -427,7 +428,8 @@ def cnn_autoencoder_auto(
     activation: str = None,
     channels: int = None,
     case: str = None,
-    shallow : bool = False
+    shallow : bool = False,
+    name: str = None,
 ) -> Tuple[NetworkTemplate, ...]:
 
     from simulai.templates import NetworkInstanceGen
@@ -462,7 +464,7 @@ def cnn_autoencoder_auto(
     autogen_dense = NetworkInstanceGen(architecture="dense", shallow=shallow)
 
     encoder = autogen_cnn(
-        input_dim=input_dim, activation=activation, channels=channels, flatten=False
+        input_dim=input_dim, activation=activation, channels=channels, flatten=False, name='cnn_encoder_'+name,
     )
 
     encoder.summary(input_shape=list(input_dim), display=False)
@@ -471,11 +473,11 @@ def cnn_autoencoder_auto(
     dense_input_size = int(np.prod(encoder.output_size[1:]))
 
     bottleneck_encoder = autogen_dense(
-        input_dim=dense_input_size, output_dim=latent_dim, activation=activation
+        input_dim=dense_input_size, output_dim=latent_dim, activation=activation, name='dense_encoder_' + name,
     )
 
     bottleneck_decoder = autogen_dense(
-        input_dim=latent_dim, output_dim=dense_input_size, activation=activation
+        input_dim=latent_dim, output_dim=dense_input_size, activation=activation, name='dense_decoder_' + name,
     )
 
     decoder = autogen_cnn(
@@ -485,6 +487,7 @@ def cnn_autoencoder_auto(
         channels=last_channels,
         flatten=False,
         reduce_dimensionality=False,
+        name='cnn_decoder_'+name,
     )
 
     return encoder, decoder, bottleneck_encoder, bottleneck_decoder
@@ -499,6 +502,7 @@ def autoencoder_auto(
     architecture: str = None,
     shallow : bool = False,
     case: str = None,
+    name: str = None,
 ) -> Tuple[Union[NetworkTemplate, None], ...]:
 
     if architecture == "dense":
@@ -508,7 +512,8 @@ def autoencoder_auto(
             latent_dim=latent_dim,
             output_dim=output_dim,
             activation=activation,
-            shallow=shallow
+            shallow=shallow,
+            name=name,
         )
 
         return encoder, decoder, None, None
@@ -522,7 +527,8 @@ def autoencoder_auto(
             activation=activation,
             channels=channels,
             case=case,
-            shallow=shallow
+            shallow=shallow,
+            name=name,
         )
 
         return encoder, decoder, bottleneck_encoder, bottleneck_decoder

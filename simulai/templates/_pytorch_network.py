@@ -25,10 +25,14 @@ import simulai.activations as simulact
 
 # Template for a generic neural network
 class NetworkTemplate(torch.nn.Module):
-    def __init__(self) -> None:
+    def __init__(self, name: str = None) -> None:
 
         super(NetworkTemplate, self).__init__()
 
+        if name == None:
+            name = str(id(self))
+
+        self.name = name
         self.engine = torch.nn
         self.suplementary_engines = [torch, simulact]
 

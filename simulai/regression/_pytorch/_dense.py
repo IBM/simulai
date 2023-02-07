@@ -37,7 +37,7 @@ class Linear(NetworkTemplate):
         name: str = None,
     ) -> None:
 
-        super(Linear, self).__init__()
+        super(Linear, self).__init__(name=name)
 
         self.input_size = input_size
         self.output_size = output_size

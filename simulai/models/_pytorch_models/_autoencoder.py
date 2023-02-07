@@ -18,7 +18,7 @@ import numpy as np
 import torch
 
 from simulai.regression import ConvolutionalNetwork, DenseNetwork, Linear
-from simulai.templates import NetworkTemplate, as_tensor
+from simulai.templates import NetworkTemplate, as_tensor, mlp_autoencoder_auto, cnn_autoencoder_auto, autoencoder_auto
 
 ########################################
 ### Some usual AutoEncoder architectures
@@ -55,17 +55,16 @@ class AutoencoderMLP(NetworkTemplate):
         activation: Optional[Union[list, str]] = None,
         shallow: Optional[bool] = False,
         devices: Union[str, list] = "cpu",
+        name: str = None,
     ) -> None:
 
-        super(AutoencoderMLP, self).__init__()
+        super(AutoencoderMLP, self).__init__(name=name)
 
         self.weights = list()
 
         # This option is used when no network is provided
         # and it uses default choices for the architectures
         if encoder == None and decoder == None:
-
-            from simulai.templates import mlp_autoencoder_auto
 
             encoder, decoder = mlp_autoencoder_auto(
                 input_dim=input_dim,
@@ -211,9 +210,10 @@ class AutoencoderCNN(NetworkTemplate):
         case: Optional[str] = None,
         shallow: Optional[bool] = False,
         devices: Union[str, list] = "cpu",
+        name: str = None,
     ) -> None:
 
-        super(AutoencoderCNN, self).__init__()
+        super(AutoencoderCNN, self).__init__(name=name)
 
         self.weights = list()
 
@@ -232,7 +232,6 @@ class AutoencoderCNN(NetworkTemplate):
             ]
         ):
 
-            from simulai.templates import cnn_autoencoder_auto
 
             self.input_dim = input_dim
 
@@ -498,9 +497,10 @@ class AutoencoderKoopman(NetworkTemplate):
         shallow: Optional[bool] = False,
         encoder_activation: str = "relu",
         devices: Union[str, list] = "cpu",
+        name: str = None
     ) -> None:
 
-        super(AutoencoderKoopman, self).__init__()
+        super(AutoencoderKoopman, self).__init__(name=name)
 
         self.weights = list()
 
@@ -519,7 +519,6 @@ class AutoencoderKoopman(NetworkTemplate):
             ]
         ):
 
-            from simulai.templates import autoencoder_auto
 
             self.input_dim = input_dim
 
@@ -813,9 +812,10 @@ class AutoencoderVariational(NetworkTemplate):
         shallow: Optional[bool] = False,
         scale: float = 1e-3,
         devices: Union[str, list] = "cpu",
+        name: str = None,
     ) -> None:
 
-        super(AutoencoderVariational, self).__init__()
+        super(AutoencoderVariational, self).__init__(name=name)
 
         self.weights = list()
 
@@ -834,7 +834,6 @@ class AutoencoderVariational(NetworkTemplate):
             ]
         ):
 
-            from simulai.templates import autoencoder_auto
 
             self.input_dim = input_dim
 
@@ -847,6 +846,7 @@ class AutoencoderVariational(NetworkTemplate):
                 architecture=architecture,
                 case=case,
                 shallow=shallow,
+                name=self.name,
             )
 
         self.encoder = encoder.to(self.device)
