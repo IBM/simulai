@@ -335,12 +335,14 @@ class NetworkTemplate(torch.nn.Module):
 
     def load(self, save_dir: str = None, name: str = None, device: str = None) -> None:
 
+        print(f"Trying to load for {device}")
+
         try:
             if device != None:
                 self.load_state_dict(
                     torch.load(
                         os.path.join(save_dir, name + ".pth"),
-                        map_location=torch.device(device),
+                        map_location=torch.device(device)
                     )
                 )
             else:
