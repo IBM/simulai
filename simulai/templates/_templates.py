@@ -412,6 +412,9 @@ def mlp_autoencoder_auto(
 
     autogen = NetworkInstanceGen(architecture="dense", shallow=shallow)
 
+    if name == None:
+        name = str(id(autogen))
+
     encoder = autogen(input_dim=input_dim, output_dim=latent_dim, activation=activation, name='encoder_' + name)
     decoder = autogen(
         input_dim=latent_dim, output_dim=output_dim, activation=activation, name='decoder_' + name
@@ -462,6 +465,9 @@ def cnn_autoencoder_auto(
 
     autogen_cnn = NetworkInstanceGen(architecture="cnn", dim=case)
     autogen_dense = NetworkInstanceGen(architecture="dense", shallow=shallow)
+
+    if name == None:
+        name = str(id(autogen_cnn))
 
     encoder = autogen_cnn(
         input_dim=input_dim, activation=activation, channels=channels, flatten=False, name='cnn_encoder_'+name,
