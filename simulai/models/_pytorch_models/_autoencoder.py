@@ -18,7 +18,8 @@ import numpy as np
 import torch
 
 from simulai.regression import ConvolutionalNetwork, DenseNetwork, Linear
-from simulai.templates import NetworkTemplate, as_tensor, mlp_autoencoder_auto, cnn_autoencoder_auto, autoencoder_auto
+from simulai.templates import (NetworkTemplate, as_tensor, autoencoder_auto,
+                               cnn_autoencoder_auto, mlp_autoencoder_auto)
 
 ########################################
 ### Some usual AutoEncoder architectures
@@ -232,7 +233,6 @@ class AutoencoderCNN(NetworkTemplate):
             ]
         ):
 
-
             self.input_dim = input_dim
 
             (
@@ -329,10 +329,14 @@ class AutoencoderCNN(NetworkTemplate):
         self.decoder.summary(input_data=bottleneck_output, device=self.device)
 
         # Saving the content of the subnetworks to the overall architecture dictionary
-        self.shapes_dict.update({'encoder' : self.encoder.shapes_dict})
-        self.shapes_dict.update({'bottleneck_encoder': self.bottleneck_encoder.shapes_dict})
-        self.shapes_dict.update({'bottleneck_decoder': self.bottleneck_decoder.shapes_dict})
-        self.shapes_dict.update({'decoder': self.decoder.shapes_dict})
+        self.shapes_dict.update({"encoder": self.encoder.shapes_dict})
+        self.shapes_dict.update(
+            {"bottleneck_encoder": self.bottleneck_encoder.shapes_dict}
+        )
+        self.shapes_dict.update(
+            {"bottleneck_decoder": self.bottleneck_decoder.shapes_dict}
+        )
+        self.shapes_dict.update({"decoder": self.decoder.shapes_dict})
 
     @as_tensor
     def projection(self, input_data: Union[np.ndarray, torch.Tensor]) -> torch.Tensor:
@@ -497,7 +501,7 @@ class AutoencoderKoopman(NetworkTemplate):
         shallow: Optional[bool] = False,
         encoder_activation: str = "relu",
         devices: Union[str, list] = "cpu",
-        name: str = None
+        name: str = None,
     ) -> None:
 
         super(AutoencoderKoopman, self).__init__(name=name)
@@ -518,7 +522,6 @@ class AutoencoderKoopman(NetworkTemplate):
                 for isn in [encoder, decoder, bottleneck_encoder, bottleneck_decoder]
             ]
         ):
-
 
             self.input_dim = input_dim
 
@@ -640,10 +643,14 @@ class AutoencoderKoopman(NetworkTemplate):
         self.decoder.summary(input_data=bottleneck_output, device=self.device)
 
         # Saving the content of the subnetworks to the overall architecture dictionary
-        self.shapes_dict.update({'encoder': self.encoder.shapes_dict})
-        self.shapes_dict.update({'bottleneck_encoder': self.bottleneck_encoder.shapes_dict})
-        self.shapes_dict.update({'bottleneck_decoder': self.bottleneck_decoder.shapes_dict})
-        self.shapes_dict.update({'decoder': self.decoder.shapes_dict})
+        self.shapes_dict.update({"encoder": self.encoder.shapes_dict})
+        self.shapes_dict.update(
+            {"bottleneck_encoder": self.bottleneck_encoder.shapes_dict}
+        )
+        self.shapes_dict.update(
+            {"bottleneck_decoder": self.bottleneck_decoder.shapes_dict}
+        )
+        self.shapes_dict.update({"decoder": self.decoder.shapes_dict})
 
     @as_tensor
     def _projection_with_bottleneck(
@@ -834,7 +841,6 @@ class AutoencoderVariational(NetworkTemplate):
             ]
         ):
 
-
             self.input_dim = input_dim
 
             encoder, decoder, bottleneck_encoder, bottleneck_decoder = autoencoder_auto(
@@ -955,10 +961,14 @@ class AutoencoderVariational(NetworkTemplate):
         self.decoder.summary(input_data=bottleneck_output, device=self.device)
 
         # Saving the content of the subnetworks to the overall architecture dictionary
-        self.shapes_dict.update({'encoder': self.encoder.shapes_dict})
-        self.shapes_dict.update({'bottleneck_encoder': self.bottleneck_encoder.shapes_dict})
-        self.shapes_dict.update({'bottleneck_decoder': self.bottleneck_decoder.shapes_dict})
-        self.shapes_dict.update({'decoder': self.decoder.shapes_dict})
+        self.shapes_dict.update({"encoder": self.encoder.shapes_dict})
+        self.shapes_dict.update(
+            {"bottleneck_encoder": self.bottleneck_encoder.shapes_dict}
+        )
+        self.shapes_dict.update(
+            {"bottleneck_decoder": self.bottleneck_decoder.shapes_dict}
+        )
+        self.shapes_dict.update({"decoder": self.decoder.shapes_dict})
 
     @as_tensor
     def _projection_with_bottleneck(

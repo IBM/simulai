@@ -1,10 +1,12 @@
-import numpy as np
 import os
 
-from simulai.models import AutoencoderVariational
+import numpy as np
+
 from simulai.file import SPFile
+from simulai.models import AutoencoderVariational
 
 input_data = np.random.rand(100, 1, 64, 128)
+
 
 def model():
 
@@ -17,9 +19,10 @@ def model():
         architecture="cnn",
         case="2d",
         shallow=True,
-        name='test_model',
+        name="test_model",
     )
     return autoencoder
+
 
 autoencoder = model()
 
@@ -38,11 +41,13 @@ print("Restoring model.")
 
 saver = SPFile(compact=False)
 
-autoencoder_restored = saver.read(model_path=os.path.join("/tmp", model_name), device='cpu')
+autoencoder_restored = saver.read(
+    model_path=os.path.join("/tmp", model_name), device="cpu"
+)
 
 estimated_data_restored = autoencoder_restored.eval(input_data=input_data)
 
-assert np.array_equal(estimated_data, estimated_data_restored) , (
+assert np.array_equal(estimated_data, estimated_data_restored), (
     "The output of eval is not correct."
     f" Expected {output_data.shape},"
     f" but received {estimated_output_data.shape}."

@@ -319,7 +319,7 @@ class NetworkTemplate(torch.nn.Module):
         print("Initializations at each layer:\n")
         pprinter.pprint(self.initializations)
 
-        self.shapes_dict = {'layers' : self.layers}
+        self.shapes_dict = {"layers": self.layers}
 
     def save(self, save_dir: str = None, name: str = None, device: str = None) -> None:
 
@@ -346,7 +346,7 @@ class NetworkTemplate(torch.nn.Module):
                 self.load_state_dict(
                     torch.load(
                         os.path.join(save_dir, name + ".pth"),
-                        map_location=torch.device(device)
+                        map_location=torch.device(device),
                     )
                 )
             else:

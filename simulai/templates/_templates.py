@@ -57,13 +57,16 @@ class ReservoirComputing(Regression):
             density=self._reservoir_dim_corrected_sparsity_level,
         )
 
+
 class NetworkInstanceGen:
 
     """
     It generates instances of networks considering default choices
     """
 
-    def __init__(self, architecture: str, dim: str = None, shallow : bool = False) -> None:
+    def __init__(
+        self, architecture: str, dim: str = None, shallow: bool = False
+    ) -> None:
 
         self.shallow = shallow
 
@@ -131,10 +134,10 @@ class NetworkInstanceGen:
         if self.shallow == True:
 
             config_dict = {
-                'input_size': input_dim,
-                'output_size': output_dim,
-                'activation': 'identity',
-                'name': name
+                "input_size": input_dim,
+                "output_size": output_dim,
+                "activation": "identity",
+                "name": name,
             }
 
         else:
@@ -146,7 +149,9 @@ class NetworkInstanceGen:
 
             if input_dim > output_dim:
 
-                while (ref % self.divisor < ref) and (result > self.divisor * output_dim):
+                while (ref % self.divisor < ref) and (
+                    result > self.divisor * output_dim
+                ):
 
                     result, remainder = divmod(ref, self.divisor)
                     ref = result
@@ -385,8 +390,8 @@ def mlp_autoencoder_auto(
     latent_dim: int = None,
     output_dim: Optional[int] = None,
     activation: str = None,
-    shallow : bool = False,
-    name : str = None,
+    shallow: bool = False,
+    name: str = None,
 ) -> Tuple[NetworkTemplate, ...]:
 
     from simulai.templates import NetworkInstanceGen
@@ -415,9 +420,17 @@ def mlp_autoencoder_auto(
     if name == None:
         name = str(id(autogen))
 
-    encoder = autogen(input_dim=input_dim, output_dim=latent_dim, activation=activation, name='encoder_' + name)
+    encoder = autogen(
+        input_dim=input_dim,
+        output_dim=latent_dim,
+        activation=activation,
+        name="encoder_" + name,
+    )
     decoder = autogen(
-        input_dim=latent_dim, output_dim=output_dim, activation=activation, name='decoder_' + name
+        input_dim=latent_dim,
+        output_dim=output_dim,
+        activation=activation,
+        name="decoder_" + name,
     )
 
     return encoder, decoder
@@ -431,7 +444,7 @@ def cnn_autoencoder_auto(
     activation: str = None,
     channels: int = None,
     case: str = None,
-    shallow : bool = False,
+    shallow: bool = False,
     name: str = None,
 ) -> Tuple[NetworkTemplate, ...]:
 
@@ -470,7 +483,11 @@ def cnn_autoencoder_auto(
         name = str(id(autogen_cnn))
 
     encoder = autogen_cnn(
-        input_dim=input_dim, activation=activation, channels=channels, flatten=False, name='cnn_encoder_'+name,
+        input_dim=input_dim,
+        activation=activation,
+        channels=channels,
+        flatten=False,
+        name="cnn_encoder_" + name,
     )
 
     encoder.summary(input_shape=list(input_dim), display=False)
@@ -479,11 +496,17 @@ def cnn_autoencoder_auto(
     dense_input_size = int(np.prod(encoder.output_size[1:]))
 
     bottleneck_encoder = autogen_dense(
-        input_dim=dense_input_size, output_dim=latent_dim, activation=activation, name='dense_encoder_' + name,
+        input_dim=dense_input_size,
+        output_dim=latent_dim,
+        activation=activation,
+        name="dense_encoder_" + name,
     )
 
     bottleneck_decoder = autogen_dense(
-        input_dim=latent_dim, output_dim=dense_input_size, activation=activation, name='dense_decoder_' + name,
+        input_dim=latent_dim,
+        output_dim=dense_input_size,
+        activation=activation,
+        name="dense_decoder_" + name,
     )
 
     decoder = autogen_cnn(
@@ -493,7 +516,7 @@ def cnn_autoencoder_auto(
         channels=last_channels,
         flatten=False,
         reduce_dimensionality=False,
-        name='cnn_decoder_'+name,
+        name="cnn_decoder_" + name,
     )
 
     return encoder, decoder, bottleneck_encoder, bottleneck_decoder
@@ -506,7 +529,7 @@ def autoencoder_auto(
     activation: str = None,
     channels: int = None,
     architecture: str = None,
-    shallow : bool = False,
+    shallow: bool = False,
     case: str = None,
     name: str = None,
 ) -> Tuple[Union[NetworkTemplate, None], ...]:
