@@ -29,8 +29,9 @@ class NetworkTemplate(torch.nn.Module):
 
         super(NetworkTemplate, self).__init__()
 
+        # Default choice for the model name
         if name == None:
-            name = str(id(self))
+            name = 'nnet'
 
         self.name = name
         self.engine = torch.nn

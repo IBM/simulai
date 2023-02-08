@@ -417,8 +417,9 @@ def mlp_autoencoder_auto(
 
     autogen = NetworkInstanceGen(architecture="dense", shallow=shallow)
 
+    # Default choice for the model name
     if name == None:
-        name = str(id(autogen))
+        name = 'mlp_autoencoder'
 
     encoder = autogen(
         input_dim=input_dim,
@@ -479,8 +480,9 @@ def cnn_autoencoder_auto(
     autogen_cnn = NetworkInstanceGen(architecture="cnn", dim=case)
     autogen_dense = NetworkInstanceGen(architecture="dense", shallow=shallow)
 
+    # Default choice for the model name
     if name == None:
-        name = str(id(autogen_cnn))
+        name = 'cnn_autoencoder'
 
     encoder = autogen_cnn(
         input_dim=input_dim,
