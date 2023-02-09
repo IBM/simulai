@@ -19,6 +19,7 @@ def model():
         case="2d",
         shallow=True,
         name="test_model",
+        devices='gpu',
     )
     return autoencoder
 
