@@ -3,17 +3,16 @@ import os
 import numpy as np
 
 from simulai.file import SPFile
-from simulai.models import AutoencoderVariational
+from simulai.optimization import Optimizer
 
-input_data = np.random.rand(100, 1, 64, 128)
-
+input_data = np.random.rand(100, 1, 80, 80)
 
 def model():
 
     from simulai.models import AutoencoderVariational
 
     autoencoder = AutoencoderVariational(
-        input_dim=(None, 1, 64, 128),
+        input_dim=(None, 1, 80, 80),
         latent_dim=8,
         activation="tanh",
         architecture="cnn",
@@ -24,31 +23,50 @@ def model():
     return autoencoder
 
 
-autoencoder = model()
+if __name__ == "__main__":
 
-estimated_data = autoencoder.eval(input_data=input_data)
+    DEVICE = 'gpu'
 
-autoencoder.summary()
+    autoencoder = model()
 
-model_name = "autoencoder_test"
+    autoencoder.summary()
 
-print("Saving model.")
+    optimizer_config = {"lr": 1e-3}
 
-saver = SPFile(compact=False)
-saver.write(save_dir="/tmp", name=model_name, model=autoencoder, template=model)
+    maximum_values = (1 / np.linalg.norm(input_data, 2, axis=0)).tolist()
+    params = {'use_mean': True, 'relative': True, 'beta': 1}
 
-print("Restoring model.")
+    optimizer = Optimizer("adam", params=optimizer_config)
 
-saver = SPFile(compact=False)
+    optimizer.fit(
+        op=autoencoder,
+        input_data=input_data,
+        target_data=input_data,
+        n_epochs=100,
+        loss="vaermse",
+        params=params,
+        device=DEVICE,
+    )
 
-autoencoder_restored = saver.read(
-    model_path=os.path.join("/tmp", model_name), device="cpu"
-)
+    estimated_data = autoencoder.eval(input_data=input_data)
 
-estimated_data_restored = autoencoder_restored.eval(input_data=input_data)
+    model_name = "autoencoder_test"
 
-assert np.array_equal(estimated_data, estimated_data_restored), (
-    "The output of eval is not correct."
-    f" Expected {output_data.shape},"
-    f" but received {estimated_output_data.shape}."
-)
+    print("Saving model.")
+
+    saver = SPFile(compact=False)
+    saver.write(save_dir="/tmp", name=model_name, model=autoencoder, template=model)
+
+    print("Restoring model.")
+
+    saver = SPFile(compact=False)
+
+    autoencoder_restored = saver.read(
+        model_path=os.path.join("/tmp", model_name), device="cpu"
+    )
+
+    estimated_data_restored = autoencoder_restored.eval(input_data=input_data)
+
+    assert np.array_equal(estimated_data, estimated_data_restored), (
+        "The output of eval is not correct."
+    )
