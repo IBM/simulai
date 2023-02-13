@@ -23,8 +23,11 @@ from matplotlib.colors import Normalize
 from simulai.io import BatchCopy, MapValid
 from simulai.metrics import L2Norm, MemorySizeEval
 from simulai.models import ModelPool
-from simulai.normalization import (BatchNormalization, UnitaryNormalization,
-                                   UnitarySymmetricalNormalization)
+from simulai.normalization import (
+    BatchNormalization,
+    UnitaryNormalization,
+    UnitarySymmetricalNormalization,
+)
 from simulai.rom import IPOD
 from simulai.simulation import Pipeline
 
@@ -34,7 +37,6 @@ from simulai.simulation import Pipeline
 def construct_and_test_pipeline(
     dataset_, fraction=None, n_components=None, batch_size=None, dataset_name=None
 ):
-
     n_samples = int(fraction * dataset_.shape[0])
     variables_names = list(dataset_.dtype.names)
     n_variables = len(variables_names)
@@ -103,7 +105,6 @@ def construct_and_test_pipeline(
 def prepare_time_series(
     pipeline=None, dataset=None, dataset_name=None, batch_size=None
 ):
-
     n_samples = dataset.shape[0]
     if norm_usage:
         rescaler = BatchNormalization(norm=UnitaryNormalization())
@@ -436,7 +437,6 @@ one_shot_extrapolation_list = list()
 
 # One-step ahead extrapolation
 for step in range(0, n_steps, sub_horizon):
-
     current_data = pool.predict(initial_state=initial_state, horizon=sub_horizon)
 
     initial_state = np.hstack(
@@ -458,7 +458,6 @@ nldas_one_shot_extrapolation_series = one_shot_extrapolation
 
 # Visualizing the latent results
 for cc in range(n_components):
-
     plt.plot(nldas_test_data[:, cc], label="exact")
     plt.plot(one_shot_extrapolation[:, cc], label="one-shot")
     plt.plot(nldas_extrapolation_series[:, cc], label="dynamic")
@@ -510,7 +509,6 @@ Long = lat_long_grid["Long"]
 
 for step in range(0, horizon, 10):
     for var in variables_names:
-
         estimated_var_state = nldas_extrapolation[var][step, 0, ...]
         exact_var_state = nldas_dataset[var][train_samples + step, 0, ...]
         one_shot_estimated_var_state = nldas_one_shot_extrapolation[var][step, 0, ...]

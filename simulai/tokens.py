@@ -27,28 +27,24 @@ Kronecker = sympy.Function("Kronecker")
 
 
 def L(u: sympy.Symbol, vars: tuple) -> callable:
-
     l = sum([D(D(u, var), var) for var in vars])
 
     return l
 
 
 def Div(u: sympy.Symbol, vars: tuple) -> callable:
-
     l = sum([D(u, var) for var in vars])
 
     return l
 
 
 def diff_op(func: callable) -> callable:
-
     func.op_method = "D"
 
     return func
 
 
 def make_op(func: callable) -> callable:
-
     func.is_op = True
 
     return func

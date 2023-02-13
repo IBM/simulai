@@ -21,11 +21,9 @@ from simulai.metrics import MinMaxEvaluation
 
 class TestMinMax(TestCase):
     def setUp(self) -> None:
-
         pass
 
     def test_minmax(self):
-
         arr = np.random.rand(1_000, 10, 10, 3)
 
         minmax = MinMaxEvaluation()

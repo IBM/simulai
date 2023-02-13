@@ -31,7 +31,6 @@ class TestModelPoolESN:
         pass
 
     def test_opinf_closure_dense(self):
-
         dt = 0.005
         T_max = 100
         rho = 28
@@ -190,7 +189,6 @@ class TestModelPoolESN:
         approximated_residual_data = lorenz_net.eval(input_data=test_field)
 
         for var in range(n_field):
-
             plt.title(
                 f"Comparison between aapproximated and ground truth residuals {tags[var]}"
             )
@@ -203,7 +201,6 @@ class TestModelPoolESN:
             plt.show()
 
     def test_opinf_closure_opinf(self):
-
         dt = 0.005
         T_max = 100
         rho = 28

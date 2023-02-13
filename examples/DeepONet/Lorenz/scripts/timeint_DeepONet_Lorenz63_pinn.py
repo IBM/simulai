@@ -97,7 +97,6 @@ time_chunks_train = list()
 data_chunks_train = list()
 
 for i in range(len(time_chunks)):
-
     # indices = sorted(np.random.choice(time_chunks[i].shape[0], n_chunk_samples))
     indices = sorted(np.arange(0, time_chunks[i].shape[0], n_chunk_samples).astype(int))
     time_chunks_train.append(time_chunks[i][indices])
@@ -232,7 +231,6 @@ ref = np.abs(output_test).max(axis=0)
 
 # Post-processing and visualizing
 for ii in range(n_outputs):
-
     plt.plot(approximated_data[:, ii], label="Approximated")
     plt.plot(output_test[:, ii], label="Exact")
     plt.legend(loc=0)

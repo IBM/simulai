@@ -31,7 +31,6 @@ from simulai.math.progression import gp
 
 class BatchIdentity:
     def __init__(self, input_data=None, output_data=None):
-
         input_list = np.split(input_data, input_data.shape[0], axis=0)
         output_list = np.split(output_data, output_data.shape[0], axis=0)
 
@@ -40,7 +39,6 @@ class BatchIdentity:
         }
 
     def __call__(self, input_data):
-
         return self.data_dict.get(input_data.tostring())
 
 
@@ -52,7 +50,6 @@ class TestBatchwiseExtrapolation(TestCase):
     """
 
     def test_without_auxiliary(self) -> None:
-
         # Constructing data
         t_max = 1
         t_min = 0

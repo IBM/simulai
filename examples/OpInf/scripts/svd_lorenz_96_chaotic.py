@@ -13,6 +13,7 @@
 #     limitations under the License.
 
 import os
+
 #!/usr/bin/env python
 import warnings
 
@@ -98,7 +99,6 @@ else:
 vpt_list = dict()
 
 for si in range(n_initial):
-
     print(f"Running case: {si}/{n_initial}")
 
     x0 = initial_states[si]

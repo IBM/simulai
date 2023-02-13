@@ -42,7 +42,6 @@ def generate_data_1d(
     n_inputs: int = None,
     n_outputs: int = None,
 ) -> (torch.Tensor, torch.Tensor):
-
     input_data = np.random.rand(n_samples, n_inputs, vector_size)
     output_data = np.random.rand(n_samples, n_outputs)
 
@@ -59,7 +58,6 @@ def model_2d(
     input_dim: tuple = (None, 1, 16, 16),
     output_dim: tuple = (None, 16, 1, 1),
 ):
-
     from simulai.templates import NetworkInstanceGen
 
     # Configuring model
@@ -86,7 +84,6 @@ def model_1d(
     input_dim: tuple = (None, 1, 16),
     output_dim: tuple = (None, 16, 1),
 ):
-
     from simulai.templates import NetworkInstanceGen
 
     # Configuring model
@@ -107,7 +104,6 @@ def model_1d(
 
 
 def model_dense(input_dim: int = 16, output_dim: int = 8):
-
     from simulai.templates import NetworkInstanceGen
 
     # Configuring model
@@ -126,7 +122,6 @@ class TestAutoGenNet(TestCase):
         pass
 
     def test_autogen_convnet_2d_eval(self):
-
         input_data, output_data = generate_data_2d(
             n_samples=100, image_size=(16, 16), n_inputs=1, n_outputs=16
         )
@@ -142,7 +137,6 @@ class TestAutoGenNet(TestCase):
         )
 
     def test_autogen_convnet_1d_eval(self):
-
         input_data, output_data = generate_data_1d(
             n_samples=100, vector_size=16, n_inputs=1, n_outputs=16
         )
@@ -158,7 +152,6 @@ class TestAutoGenNet(TestCase):
         )
 
     def test_autogen_upsample_convnet_2d_eval(self):
-
         input_data, output_data = generate_data_2d(
             n_samples=100, image_size=(16, 16), n_inputs=1, n_outputs=16
         )
@@ -180,7 +173,6 @@ class TestAutoGenNet(TestCase):
         )
 
     def test_autogen_upsample_convnet_1d_eval(self):
-
         input_data, output_data = generate_data_1d(
             n_samples=100, vector_size=16, n_inputs=1, n_outputs=16
         )
@@ -202,7 +194,6 @@ class TestAutoGenNet(TestCase):
         )
 
     def test_densenetwork_reduce(self) -> None:
-
         input_data = np.random.rand(100, 64)
         output_data = np.random.rand(100, 8)
 
@@ -214,7 +205,6 @@ class TestAutoGenNet(TestCase):
         assert output_estimated.shape == output_data.shape
 
     def test_densenetwork_increase(self) -> None:
-
         input_data = np.random.rand(100, 8)
         output_data = np.random.rand(100, 64)
 
@@ -226,7 +216,6 @@ class TestAutoGenNet(TestCase):
         assert output_estimated.shape == output_data.shape
 
     def test_autoencoder_mlp(self) -> None:
-
         from simulai.models import AutoencoderMLP
 
         input_data = np.random.rand(100, 64)
@@ -251,7 +240,6 @@ class TestAutoGenNet(TestCase):
         assert estimated_data.shape == input_data.shape
 
     def test_autoencoder_cnn(self) -> None:
-
         from simulai.models import AutoencoderCNN
 
         input_data = np.random.rand(100, 1, 64, 64)
@@ -278,7 +266,6 @@ class TestAutoGenNet(TestCase):
         assert estimated_data.shape == input_data.shape
 
     def test_autoencoder_koopman(self) -> None:
-
         from simulai.models import AutoencoderKoopman
 
         input_data = np.random.rand(100, 1, 64, 64)
@@ -311,7 +298,6 @@ class TestAutoGenNet(TestCase):
         assert estimated_data.shape == input_data.shape
 
     def test_autoencoder_rectangle(self) -> None:
-
         from simulai.models import AutoencoderVariational
 
         input_data = np.random.rand(100, 1, 64, 128)
@@ -331,7 +317,6 @@ class TestAutoGenNet(TestCase):
         assert estimated_data.shape == input_data.shape
 
     def test_autoencoder_rectangle_shallow(self) -> None:
-
         from simulai.models import AutoencoderVariational
 
         input_data = np.random.rand(100, 1, 64, 128)

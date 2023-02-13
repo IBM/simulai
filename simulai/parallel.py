@@ -26,6 +26,7 @@ except:
         "mpi4py is not installed. If you want to execute MPI jobs, we recommend you install it."
     )
 
+
 # Pipeline for executing independent MPI jobs
 class PipelineMPI:
 
@@ -56,7 +57,6 @@ class PipelineMPI:
         collect: bool = None,
         show_log: bool = True,
     ) -> None:
-
         self.exec = exec
         self.show_log = show_log
 
@@ -74,7 +74,6 @@ class PipelineMPI:
         self.status_dict = dict()
 
     def _check_kwargs_consistency(self, kwargs: dict = None) -> int:
-
         """
         It checks if the kwargs provided for each worker
         have the same length.
@@ -109,7 +108,6 @@ class PipelineMPI:
     def _split_kwargs(
         self, kwargs: dict, rank: int, size: int, total_size: int
     ) -> Tuple[dict, int]:
-
         """
         It allows the workload be executed serially in each worker node
 
@@ -165,7 +163,6 @@ class PipelineMPI:
         return kwargs_batch, batch_size
 
     def _attribute_dict_output(self, dicts: list = None) -> None:
-
         root = dict()
         for e in dicts:
             root.update(e)
@@ -175,14 +172,12 @@ class PipelineMPI:
 
     @staticmethod
     def inner_type(obj: list = None):
-
         types_list = [type(o) for o in obj]
         assert len(set(types_list)) == 1, "Composed types are not supported."
 
         return types_list[0]
 
     def _exec_wrapper(self, kwargs: dict, total_size: int) -> None:
-
         """
         A wrapper method around exec to facilitate the
         instantiation of each worker.
@@ -206,7 +201,6 @@ class PipelineMPI:
         # master
 
         if rank != 0:
-
             print(f"Executing rank {rank}.")
             kwargs_batch, batch_size = self._split_kwargs(
                 kwargs, rank, size_, total_size
@@ -219,7 +213,6 @@ class PipelineMPI:
 
             out = list()
             for i in kwargs_batch_list:
-
                 print(f"Executing batch {i['key']} in rank {rank}")
                 # Concatenate the rank to the extra parameters
                 i.update(self.extra_params)
@@ -240,14 +233,11 @@ class PipelineMPI:
 
         # The master awaits the responses of each worker node
         elif rank == 0:
-
             for r in range(1, size):
-
                 msg = comm.recv(source=r)
                 self.status[r - 1] = msg
 
                 if self.inner_type(msg) == dict:
-
                     self._attribute_dict_output(dicts=msg)
 
                 if self.show_log:
@@ -257,7 +247,6 @@ class PipelineMPI:
 
     @property
     def success(self) -> bool:
-
         """
         It returns True if the entire process worked without issues.
         """
@@ -265,7 +254,6 @@ class PipelineMPI:
         return all(self.status)
 
     def run(self, kwargs: dict = None) -> None:
-
         """
         It runs the MPI job
 

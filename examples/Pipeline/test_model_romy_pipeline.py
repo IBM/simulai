@@ -31,7 +31,6 @@ from simulai.simulation import Pipeline
 def evaluate_reduced_var_and_time_derivatives(
     pipeline, test_data, input_data, variables_list
 ):
-
     test_data_reduced = pipeline.project_data(
         data=test_data, variables_list=variables_list, mean_component=True
     )
@@ -53,7 +52,6 @@ def evaluate_reduced_var_and_time_derivatives(
 
 
 def test_projection_error(pipeline, input_data, test_data, variables_list, l2_norm):
-
     projected = pipeline.project_data(data=input_data, variables_list=variables_list)
     reconstructed = pipeline.reconstruct_data(data=projected)
 
@@ -79,7 +77,6 @@ def test_projection_error(pipeline, input_data, test_data, variables_list, l2_no
 
 
 def test_derivatives_error(pipeline, test_data_reduced, input_data_reduced, l2_norm):
-
     derivatives_output_test = pipeline.eval(
         data=test_data_reduced, with_projection=False, with_reconstruction=False
     )
@@ -106,7 +103,6 @@ def test_derivatives_error(pipeline, test_data_reduced, input_data_reduced, l2_n
 
 
 def test_extrapolation_error(pipeline, test_data, RK4, extra_kwargs):
-
     output = pipeline.predict(post_process_op=RK4, extra_kwargs=extra_kwargs)
 
     error = l2_norm(data=output, reference_data=test_data, relative_norm=True)
@@ -329,7 +325,6 @@ modes = pipeline.data_preparer.prepare_output_data(modes_)
 
 # Post-processing for visualization purposes
 for vv in range(output.shape[1]):
-
     plt.imshow(output[-1, vv, :, :])
     plt.colorbar()
     plt.savefig(save_path + "solution_estimated_{}.png".format(vv))
@@ -345,7 +340,6 @@ plt.savefig(save_path + "error_series.png")
 plt.close()
 
 for ss in range(output_reduced.shape[1]):
-
     plt.plot(output_reduced[:, ss], label="Estimated")
     plt.plot(test_data_reduced[:, ss], label="Expected")
     plt.legend()
@@ -369,7 +363,6 @@ n_variables = modes.shape[1]
 
 for mm in range(n_modes):
     for vv in range(n_variables):
-
         plt.imshow(modes[mm, vv, :, :])
         plt.colorbar()
         plt.savefig(save_path + "mode_{}_var{}.png".format(mm, vv))

@@ -18,6 +18,7 @@ from simulai.templates import NetworkTemplate
  
 """
 
+
 # Basis used for interpolating over the Riemaniann space
 class Omega:
     def __init__(
@@ -27,7 +28,6 @@ class Omega:
         covariance: torch.Tensor = None,
         batchwise: bool = None,
     ):
-
         self.rho = rho
         self.mu = mu
         self.covariance = covariance
@@ -35,7 +35,6 @@ class Omega:
         self.metric = MahalanobisDistance(batchwise=batchwise)
 
     def __call__(self, z: torch.Tensor = None):
-
         metric = torch.sqrt(
             self.metric(center=self.mu, metric_tensor=self.covariance, point=z)
         )
@@ -55,7 +54,6 @@ class G_metric:
         input_data: torch.Tensor = None,
         batchwise: bool = None,
     ):
-
         self.k = k
         self.tau = tau
         self.lambd = lambd
@@ -82,7 +80,6 @@ class G_metric:
         self.latent_dim = Mu.shape[1]
 
     def rho_criterion(self, c: torch.Tensor = None):
-
         differences = torch.stack(
             [
                 c[:, j : j + 1] - c[:, j : j + 1].T * torch.ones(self.k, self.k)
@@ -102,7 +99,6 @@ class G_metric:
         return rho
 
     def G(self, z: torch.Tensor = None) -> torch.Tensor:
-
         if z.requires_grad == False:
             z.requires_grad = True
 
@@ -115,11 +111,9 @@ class G_metric:
         return g_z
 
     def G_diag(self, z: torch.Tensor = None) -> torch.Tensor:
-
         return self.G(z=z).diag()
 
     def G_grad_z(self, z: torch.Tensor = None) -> torch.Tensor:
-
         G_diag = self.G_diag(z=z)
 
         G_diag_split = torch.split(G_diag, 1, dim=-1)
@@ -129,7 +123,6 @@ class G_metric:
         return g_grad_z
 
     def __call__(self, z: torch.Tensor = None):
-
         z.requires_grad = True
 
         g_z = self.G(z=z)
@@ -155,16 +148,13 @@ class G_metric:
 # The Hamiltonian system we are interested in
 class HamiltonianEquations:
     def __init__(self, metric: G_metric = None):
-
         self.metric = metric
         self.latent_dim = metric.latent_dim
 
     def H_til(self, z: torch.Tensor = None):
-
         return -(1 / 2) * torch.log(torch.det(self.metric.G(z=z)))
 
     def __call__(self, z: torch.Tensor = None, v: torch.Tensor = None):
-
         G_inv = self.metric.G(z=z).inverse()
         G_grad_z_value = self.metric.G_grad_z(z=z)
 
@@ -183,7 +173,6 @@ class LeapFrogIntegrator:
     def __init__(
         self, system: callable = None, n_steps: int = None, e_lf: float = None
     ):
-
         self.system = system
         self.latent_dim = self.system.latent_dim
 
@@ -193,7 +182,6 @@ class LeapFrogIntegrator:
         self.log_phrase = "LeapFrog Integration"
 
     def step(self, v: torch.Tensor = None, z: torch.Tensor = None):
-
         dHdz = self.system(z=z, v=v)
 
         v_bar = v - (self.e_lf / 2) * dHdz
@@ -206,12 +194,10 @@ class LeapFrogIntegrator:
         return z_til, v_til
 
     def solve(self, z_0: torch.Tensor = None, v_0: torch.Tensor = None):
-
         z = z_0
         v = v_0
 
         for k in range(self.n_steps):
-
             sys.stdout.write(
                 "\r {}, iteration: {}/{}".format(self.log_phrase, k + 1, self.n_steps)
             )
@@ -228,7 +214,6 @@ class LeapFrogIntegrator:
 # Hamiltonian sampling
 class HMC:
     def __init__(self, integrator: LeapFrogIntegrator = None, N: int = int):
-
         self.integrator = integrator
         self.H_system = integrator.system
         self.latent_dim = integrator.latent_dim
@@ -236,7 +221,6 @@ class HMC:
         self.N = N
 
     def stopping_criterion(self, z: torch.Tensor = None, z_0: torch.Tensor = None):
-
         H_0 = self.H_system.H_til(z=z)
         H = self.H_system.H_til(z=z_0)
 
@@ -245,11 +229,9 @@ class HMC:
         return alpha
 
     def solve(self, z_0: torch.Tensor = None):
-
         z = z_0
 
         for j in range(self.N):
-
             print(f"Iteration {j} of a chain with size {self.N}.")
 
             v = torch.randn(self.latent_dim)

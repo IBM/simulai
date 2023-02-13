@@ -31,7 +31,6 @@ class PendulumODE:
         self.k = 0.25
 
     def __call__(self, data):
-
         s1 = data[:, 0]
         s2 = data[:, 1]
         u = data[:, 2]
@@ -53,7 +52,6 @@ def x_forcing(x):
 
 
 def solver(x_interval=None, N=None, x=None, dx=None, u=x_forcing):
-
     if x is None and (N is not None and x_interval is not None):
         x = np.linspace(0, 1, N)
         dx = (x_interval[1] - x_interval[0]) / N
@@ -86,14 +84,12 @@ def solver(x_interval=None, N=None, x=None, dx=None, u=x_forcing):
 
 class ExecDeepONet:
     def __init__(self):
-
         self.enable_plots = False
         self.grf_data_filename = "grf_data.npz"
         self.test_grf_data_filename = "test_grf_data.npz"
         self.estimated_grf_data_filename = "estimated_grf_data.npy"
 
     def generate_GRF_data(self, x_interval, N_tot, n_features):
-
         points = np.linspace(*x_interval, N_tot)  # Positions for sampling u data
 
         generator = GaussianRandomFields(
@@ -127,7 +123,6 @@ class ExecDeepONet:
         trunk_width=200,
         path=None,
     ):
-
         x_interval = (0, 1)
 
         sensors_indices = np.arange(0, N_tot, int(N_tot / m))
@@ -251,7 +246,6 @@ class ExecDeepONet:
 
         V_evaluated_list = list()
         for feature in range(n_features_test):
-
             u_sensors = u_test[sensors_indices, feature : feature + 1].T
             U_sensors_test = np.tile(u_sensors, (x_test.shape[0], 1))
 
@@ -284,7 +278,6 @@ class ExecDeepONet:
         trunk_width=200,
         path=None,
     ):
-
         x_interval = (0, 1)
 
         sensors_indices = np.arange(0, N_tot, int(N_tot / m))
@@ -413,7 +406,6 @@ class ExecDeepONet:
         print("Concluded.")
 
     def plot(self, path=None):
-
         test_data_file = os.path.join(path, self.test_grf_data_filename)
         estimated_data_file = os.path.join(path, self.estimated_grf_data_filename)
 
@@ -426,7 +418,6 @@ class ExecDeepONet:
         n_features = data_estimated.shape[-1]
 
         for feature in range(n_features):
-
             estimated = data_estimated[:, :, feature]
             exact = data_exact[:, :, feature]
 
@@ -450,7 +441,6 @@ class ExecDeepONet:
 
 
 if __name__ == "__main__":
-
     parser = ArgumentParser(description="Reading input arguments")
 
     parser.add_argument("--save_path", type=str)
@@ -493,5 +483,4 @@ if __name__ == "__main__":
         )
         runner.plot(path=save_path)
     elif case == "plot":
-
         runner.plot(path=save_path)

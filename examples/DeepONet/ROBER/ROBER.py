@@ -19,13 +19,11 @@ from scipy.integrate import odeint
 
 class ROBER:
     def __init__(self, k1: float = None, k2: float = None, k3: float = None) -> None:
-
         self.k1 = k1
         self.k2 = k2
         self.k3 = k3
 
     def eval(self, state: np.ndarray = None, t: float = None) -> np.ndarray:
-
         s1 = state[0]
         s2 = state[1]
         s3 = state[2]
@@ -37,7 +35,6 @@ class ROBER:
         return np.array([s1_residual, s2_residual, s3_residual])
 
     def run(self, initial_state, t):
-
         print("Solving ROBER ...")
         solution = odeint(self.eval, initial_state, t)
 

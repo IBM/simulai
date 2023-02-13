@@ -26,12 +26,11 @@ import simulai.activations as simulact
 # Template for a generic neural network
 class NetworkTemplate(torch.nn.Module):
     def __init__(self, name: str = None) -> None:
-
         super(NetworkTemplate, self).__init__()
 
         # Default choice for the model name
         if name == None:
-            name = 'nnet'
+            name = "nnet"
 
         self.name = name
         self.engine = torch.nn
@@ -63,7 +62,6 @@ class NetworkTemplate(torch.nn.Module):
             raise Exception(f"Class {self} has no attribute self.weights.")
 
     def _set_device(self, devices: Union[str, list] = "cpu") -> str:
-
         device = None
         if type(devices) == list():
             raise Exception("In construction.")
@@ -79,14 +77,11 @@ class NetworkTemplate(torch.nn.Module):
         return device
 
     def _get_from_guest(self, **kwargs) -> None:
-
         search_dict = copy.copy(self.__dict__)
         search_dict.update(kwargs)
 
         for key, value in search_dict.items():
-
             if hasattr(value, "share_to_host"):
-
                 share_to_host = value.share_to_host
 
                 for k, v in share_to_host.items():
@@ -97,12 +92,10 @@ class NetworkTemplate(torch.nn.Module):
     def _get_operation(
         self, operation: str = None, is_activation: bool = True
     ) -> callable:
-
         mod_items = dir(self.engine)
         mod_items_lower = [item.lower() for item in mod_items]
 
         if operation in mod_items_lower:
-
             operation_name = mod_items[mod_items_lower.index(operation)]
             operation_class = getattr(self.engine, operation_name)
 
@@ -112,7 +105,6 @@ class NetworkTemplate(torch.nn.Module):
                 return operation_class
         else:
             try:
-
                 for engine in self.suplementary_engines:
                     res_ = getattr(engine, operation, None)
 
@@ -134,7 +126,6 @@ class NetworkTemplate(torch.nn.Module):
     def _setup_activations(
         self, activation: Union[str, list] = None, n_layers: int = None
     ) -> (list, Union[str, list]):
-
         if n_layers == None:
             assert self.n_layers, "n_layers is not defined."
             n_layers = self.n_layers
@@ -142,7 +133,6 @@ class NetworkTemplate(torch.nn.Module):
         # It instantiates an operation x^l = \sigma(y^l), in which y^l
         # is the output of the previous linear operation.
         if isinstance(activation, str):
-
             activation_op = self._get_operation(operation=activation)
 
             return (
@@ -154,7 +144,6 @@ class NetworkTemplate(torch.nn.Module):
         elif isinstance(activation, list) and all(
             [isinstance(el, str) for el in activation]
         ):
-
             activations_list = list()
             for activation_name in activation:
                 activation_op = self._get_operation(operation=activation_name)
@@ -164,7 +153,6 @@ class NetworkTemplate(torch.nn.Module):
             return activations_list, activation
 
         elif isinstance(activation, torch.nn.Module):
-
             return (
                 (n_layers - 1) * [activation]
                 + [self._get_operation(operation=self.default_last_activation)],
@@ -179,7 +167,6 @@ class NetworkTemplate(torch.nn.Module):
 
     # Instantiating all the linear layers.
     def _setup_hidden_layers(self, last_bias: bool = True) -> List[torch.nn.Module]:
-
         layers = list()
         input_layer = self._setup_layer(
             self.input_size,
@@ -219,7 +206,6 @@ class NetworkTemplate(torch.nn.Module):
     # It converts torch.tensor to np.ndarray. It is used for applications
     # employing SciPy optimizers.
     def _numpy_layers(self) -> List[np.ndarray]:
-
         numpy_layers = [
             [layer.weight.detach().numpy(), layer.bias.detach().numpy()]
             for layer in self.layers
@@ -230,7 +216,6 @@ class NetworkTemplate(torch.nn.Module):
     # It converts torch.tensor to np.ndarray. It is used for applications
     # employing SciPy optimizers in which gradients are required.
     def _numpy_grad_layers(self) -> List[np.ndarray]:
-
         numpy_layers = [
             [
                 layer.weight.grad.detach().numpy(),
@@ -244,7 +229,6 @@ class NetworkTemplate(torch.nn.Module):
     # It stores all the model parameters into a single flatten array, a
     # requirement from the SciPy optimizers.
     def _make_stitch_idx(self) -> np.ndarray:
-
         stitch_indices = list()
         partitions = list()
         self.n_tensors = len(self.shapes)
@@ -261,21 +245,18 @@ class NetworkTemplate(torch.nn.Module):
 
     # It returns all the model parameters in a single array.
     def get_parameters(self) -> np.ndarray:
-
         layers = self._numpy_layers()
 
         return np.hstack([item.flatten() for item in sum(layers, [])])
 
     # It returns all the gradients of the model parameters in a single array.
     def get_gradients(self) -> np.ndarray:
-
         grads = self._numpy_grad_layers()
 
         return np.hstack([item.flatten() for item in sum(grads, [])])
 
     # Setting up values for the model parameters.
     def set_parameters(self, parameters=None) -> None:
-
         for ll, layer in enumerate(self.layers_map):
             self.layers[ll].weight = Parameter(
                 data=torch.from_numpy(
@@ -294,7 +275,6 @@ class NetworkTemplate(torch.nn.Module):
         # Making evaluation using the trained fully-connected network
 
     def eval(self, input_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
-
         output_tensor = self.forward(input_data=input_data)
 
         # Guaranteeing the dataset location as CPU
@@ -304,7 +284,6 @@ class NetworkTemplate(torch.nn.Module):
 
     # It prints a summary of the network architecture.
     def summary(self) -> None:
-
         import pprint
 
         pprinter = pprint.PrettyPrinter(indent=2)
@@ -323,7 +302,6 @@ class NetworkTemplate(torch.nn.Module):
         self.shapes_dict = {"layers": self.layers}
 
     def save(self, save_dir: str = None, name: str = None, device: str = None) -> None:
-
         # Moving all the tensors to the destiny device if necessary
         if device is not None:
             print(f"Trying to move all the tensors to the destiny device {device}.")
@@ -339,7 +317,6 @@ class NetworkTemplate(torch.nn.Module):
             print(f"It was not possible to save {self}")
 
     def load(self, save_dir: str = None, name: str = None, device: str = None) -> None:
-
         print(f"Trying to load for {device}")
 
         try:
@@ -361,25 +338,20 @@ class NetworkTemplate(torch.nn.Module):
 # Decorators
 def as_tensor(method):
     def inside(self, input_data=None, **kwargs):
-
         if isinstance(input_data, torch.Tensor):
-
             return method(self, input_data, **kwargs)
 
         elif isinstance(input_data, np.ndarray):
-
             input_data_ = torch.from_numpy(input_data.astype(np.float32))
 
             return method(self, input_data_, **kwargs)
 
         elif isinstance(input_data, list):
-
             input_data_ = torch.cat(input_data, dim=-1)
 
             return method(self, input_data_, **kwargs)
 
         else:
-
             raise Exception("The input data must be numpy.ndarray or torch.tensor.")
 
     return inside
@@ -387,25 +359,20 @@ def as_tensor(method):
 
 def as_array(method):
     def inside(self, input_data=None):
-
         if isinstance(input_data, np.ndarray):
-
             return method(self, input_data)
 
         elif isinstance(input_data, torch.Tensor):
-
             input_data_ = input_data.detach().numpy()
 
             return method(self, input_data_)
 
         elif type(input_data) == list:
-
             input_data_ = torch.cat(input_data, dim=-1).detach().numpy()
 
             return method(self, input_data_)
 
         else:
-
             raise Exception("The input data must be numpy.ndarray or" "torch.tensor.")
 
     return inside
@@ -413,7 +380,6 @@ def as_array(method):
 
 def guarantee_device(method):
     def inside(self, **kwargs) -> callable:
-
         kwargs_ = {
             key: torch.from_numpy(value.astype(np.float32)).to(self.device)
             for key, value in kwargs.items()
@@ -435,7 +401,6 @@ def guarantee_device(method):
 
 def channels_dim(method):
     def inside(self, input_data=None):
-
         if len(input_data.shape) < self.n_dimensions:
             return method(self, input_data=input_data[:, None, ...])
         else:
@@ -446,7 +411,6 @@ def channels_dim(method):
 
 class ConvNetworkTemplate(NetworkTemplate):
     def __init__(self, name: str = None, flatten: bool = None) -> None:
-
         super(ConvNetworkTemplate, self).__init__()
 
         self.name = name
@@ -460,7 +424,6 @@ class ConvNetworkTemplate(NetworkTemplate):
         # When no name is provided, it will employ a random number
         # as model name
         if self.name == None:
-
             self.name = id(self)
 
         self.args = []
@@ -481,11 +444,9 @@ class ConvNetworkTemplate(NetworkTemplate):
         self.shapes_dict = None
 
     def _no_flatten(self, input_data: torch.Tensor = None) -> torch.Tensor:
-
         return input_data
 
     def _flatten(self, input_data: torch.Tensor = None) -> torch.Tensor:
-
         n_samples, n_channels = input_data.shape[:2]
         collapsible_dimensions = np.prod(input_data.shape[2:])
 
@@ -494,7 +455,6 @@ class ConvNetworkTemplate(NetworkTemplate):
         )
 
     def _setup_layers(self, layers_config: dict = None) -> (list, list, list):
-
         before_conv_layers = list()
         conv_layers = list()
         after_conv_layers = list()
@@ -502,7 +462,6 @@ class ConvNetworkTemplate(NetworkTemplate):
 
         # Configuring each layer
         for ll, layer_config in enumerate(layers_config):
-
             assert isinstance(layer_config, dict), (
                 "Each entry of the layers list must be a dictionary,"
                 f" but received {type(layer_config)}."
@@ -514,7 +473,6 @@ class ConvNetworkTemplate(NetworkTemplate):
 
             # If a post-conv operation is defined, instantiate it
             if self.before_conv_tag in layer_config:
-
                 assert type(layer_config[self.before_conv_tag]) == dict, (
                     f"If the argument {self.before_conv_tag}"
                     f" is present, it must be dict,"
@@ -538,7 +496,6 @@ class ConvNetworkTemplate(NetworkTemplate):
 
             # If a post-conv operation is defined, instantiate it
             if self.after_conv_tag in layer_config:
-
                 assert type(layer_config[self.after_conv_tag]) == dict, (
                     f"If the argument {self.after_conv_tag}"
                     f" is present, it must be dict,"
@@ -579,7 +536,6 @@ class ConvNetworkTemplate(NetworkTemplate):
         return before_conv_layers, conv_layers, after_conv_layers, weights
 
     def _corrrect_first_dim(self, shapes: list = None) -> list:
-
         shapes[0] = None
 
         return shapes
@@ -592,11 +548,9 @@ class ConvNetworkTemplate(NetworkTemplate):
         act: list = None,
         after_conv: list = None,
     ) -> list:
-
         merged_list = list()
 
         for h, i, j, k in zip(before_conv, conv, act, after_conv):
-
             merged_list.append(h)
             merged_list.append(i)
             merged_list.append(j)
@@ -612,14 +566,12 @@ class ConvNetworkTemplate(NetworkTemplate):
         device: str = "cpu",
         display: bool = True,
     ) -> None:
-
         import pprint
         from collections import OrderedDict
 
         # When no input data is provided, a list containing the shape is used for creating an
         # overview of the network architecture
         if type(input_data) == type(None):
-
             assert type(input_shape) == list, (
                 "If no input data is provided, it is necessary" " to have input_shape."
             )
@@ -632,7 +584,6 @@ class ConvNetworkTemplate(NetworkTemplate):
             pass
 
         if isinstance(input_data, np.ndarray):
-
             input_data = torch.from_numpy(input_data.astype("float32")).to(device)
 
         else:
@@ -642,12 +593,10 @@ class ConvNetworkTemplate(NetworkTemplate):
         shapes_dict = OrderedDict()
 
         for layer_id in range(len(self.conv_layers)):
-
             # Applying operations before convolution
             output_tensor_before_conv = self.before_conv_layers[layer_id](input_tensor_)
 
             if hasattr(self.after_conv_layers[layer_id], "_get_name"):
-
                 input_shape = self._corrrect_first_dim(list(input_tensor_.shape))
                 output_shape = self._corrrect_first_dim(
                     list(output_tensor_before_conv.shape)
@@ -678,7 +627,6 @@ class ConvNetworkTemplate(NetworkTemplate):
 
             # Applying operations before convolution
             if hasattr(self.after_conv_layers[layer_id], "_get_name"):
-
                 input_shape = self._corrrect_first_dim(list(output_tensor_conv.shape))
                 output_shape = self._corrrect_first_dim(
                     list(output_tensor_after_conv.shape)

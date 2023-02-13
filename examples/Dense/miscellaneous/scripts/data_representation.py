@@ -31,9 +31,9 @@ data_path = args.data_path
 
 manufactured = True
 
+
 # Model template
 def model():
-
     from simulai.activations import Siren
     from simulai.regression import ResDenseNetwork as DenseNetwork
 
@@ -85,7 +85,6 @@ if manufactured is True:
     positions = np.stack([X[::100].flatten(), T[::100].flatten()], axis=1)
     positions = 2 * positions / np.array([L, t_max]) - 1
 else:
-
     output_data = np.load(data_path)[::10]
 
 optimizer_config = {"lr": lr}

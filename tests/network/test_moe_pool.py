@@ -9,7 +9,6 @@ from simulai.regression import DenseNetwork
 
 class TestMoEPool(TestCase):
     def test_moe_pool(self):
-
         n_inputs_b = 20
         n_latent = 50
         n_outputs = 20
@@ -39,7 +38,6 @@ class TestMoEPool(TestCase):
         assert weights.shape[1] == n_experts
 
     def test_moe_pool_binary(self):
-
         n_inputs_b = 20
         n_latent = 50
         n_outputs = 20
@@ -75,7 +73,6 @@ class TestMoEPool(TestCase):
         )
 
     def test_moe_pool_optimization(self):
-
         lr = 1e-3
         optimizer_config = {"lr": lr}
 

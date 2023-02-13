@@ -24,7 +24,6 @@ class TestSpaces(TestCase):
         pass
 
     def test_gaussian_random_fields(self):
-
         n_features = 100
         M = 1_00
         n_sensors = 100

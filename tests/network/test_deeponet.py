@@ -20,6 +20,7 @@ from utils import configure_device
 
 DEVICE = configure_device()
 
+
 # Model template
 def model(
     product_type=None,
@@ -27,7 +28,6 @@ def model(
     residual: bool = False,
     multiply_by_trunk: bool = False,
 ):
-
     import importlib
 
     from simulai.regression import DenseNetwork
@@ -89,7 +89,6 @@ def model(
 
 
 def model_dense_product(product_type=None, n_outputs: int = 2):
-
     from simulai.models import DeepONet
     from simulai.regression import DenseNetwork
 
@@ -132,7 +131,6 @@ def model_dense_product(product_type=None, n_outputs: int = 2):
 
 
 def model_conv(product_type=None):
-
     from simulai.models import DeepONet
     from simulai.regression import ConvolutionalNetwork, DenseNetwork
 
@@ -211,7 +209,6 @@ class TestDeeponet(TestCase):
         pass
 
     def test_deeponet_forward(self):
-
         net = model()
         net.summary()
 
@@ -233,7 +230,6 @@ class TestDeeponet(TestCase):
         assert isinstance(output, np.ndarray)
 
     def test_deeponet_train(self):
-
         from simulai.optimization import Optimizer
 
         optimizer_config = {"lr": 1e-3}
@@ -253,7 +249,6 @@ class TestDeeponet(TestCase):
         model_dict = {None: model, "dense": model_dense_product}
 
         for multiply_by_trunk in [True, False]:
-
             net = model(n_outputs=4, residual=True, multiply_by_trunk=multiply_by_trunk)
 
             optimizer.fit(
@@ -271,7 +266,6 @@ class TestDeeponet(TestCase):
             assert output.shape[1] == 4, "The network output is not like expected."
 
         for product_type in [None, "dense"]:
-
             net = model_dict.get(product_type)(product_type=product_type)
 
             optimizer.fit(
@@ -290,7 +284,6 @@ class TestDeeponet(TestCase):
 
     # Vanilla DeepONets are single output
     def test_vanilla_deeponet_train(self):
-
         from simulai.optimization import Optimizer
 
         optimizer_config = {"lr": 1e-3}
@@ -329,7 +322,6 @@ class TestDeeponet_with_Conv(TestCase):
         pass
 
     def test_deeponet_forward(self):
-
         net = model_conv()
 
         data_trunk = torch.rand(1_000, 1)
@@ -342,7 +334,6 @@ class TestDeeponet_with_Conv(TestCase):
         assert output.shape[1] == 2, "The network output is not like expected."
 
     def test_deeponet_train(self):
-
         from simulai.optimization import Optimizer
 
         optimizer_config = {"lr": 1e-3}

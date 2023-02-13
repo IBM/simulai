@@ -35,7 +35,6 @@ class TestLorenzTorch:
         pass
 
     def test_manufactured_torch(self):
-
         N = 10_000
         n = 1_000
         T_max = 0.5
@@ -138,7 +137,6 @@ class TestLorenzTorch:
         )
 
         for ii in range(n_outputs):
-
             plt.plot(time_ext, approximated_data, label="Approximated")
             plt.plot(time_ext, u_data_ext, label="Exact")
             plt.xlabel("t")
@@ -149,7 +147,6 @@ class TestLorenzTorch:
         print(f"Approximation error for the derivatives: {error} %")
 
     def test_manufactured_implicit_torch(self):
-
         N = 5_000
         n = 1_000
         T_max = 0.5
@@ -252,7 +249,6 @@ class TestLorenzTorch:
         )
 
         for ii in range(n_outputs):
-
             plt.plot(time_ext, approximated_data, label="Approximated")
             plt.plot(time_ext, u_data_ext, label="Exact")
             plt.legend()

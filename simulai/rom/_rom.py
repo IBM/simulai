@@ -27,11 +27,9 @@ from simulai.optimization import SpaRSA
 
 
 class ByPassROM(ROM):
-
     name = "no_rom"
 
     def __init__(self) -> None:
-
         super().__init__()
 
     def __call__(self):
@@ -50,13 +48,11 @@ class IByPass(ROM):
     name = "ibypass"
 
     def __init__(self, config=None, data_mean=None):
-
         super().__init__()
 
         self.kind = "batchwise"
 
     def fit(self, data: np.ndarray = None) -> None:
-
         """
         Output shape: (space_dimension, n_modes)
 
@@ -66,7 +62,6 @@ class IByPass(ROM):
         pass
 
     def project(self, data: np.ndarray = None) -> np.ndarray:
-
         """
         Output shape: (n_timesteps, n_modes)
         """
@@ -74,7 +69,6 @@ class IByPass(ROM):
         return data
 
     def reconstruct(self, projected_data: np.ndarray = None) -> np.ndarray:
-
         """
         Output shape: (space_dimension, n_timesteps)
         """
@@ -82,7 +76,6 @@ class IByPass(ROM):
         return projected_data
 
     def save(self, save_path: str = None, model_name: str = None) -> None:
-
         """It saves data in a NPZ file
         :param save_path: path to save the model
         :type save_path: str
@@ -96,7 +89,6 @@ class IByPass(ROM):
         )
 
     def restore(self, save_path: str = None, model_name: str = None) -> None:
-
         """It saves data in a NPZ file
         :param save_path: path to save the model
         :type save_path: str
@@ -111,11 +103,9 @@ class IByPass(ROM):
 
 
 class ParallelSVD(ROM):
-
     name = "parallel_svd"
 
     def __init__(self, n_components: int = None, chunks: Tuple[int] = None) -> None:
-
         """Executing SVD using dask"""
         super().__init__()
 
@@ -127,7 +117,6 @@ class ParallelSVD(ROM):
         self.V = None
 
     def _chunk_size_condition(self, size: int, chunk_size: int) -> int:
-
         if size // chunk_size == 0:
             return size
         else:
@@ -136,7 +125,6 @@ class ParallelSVD(ROM):
     def fit(
         self, data: Union[np.ndarray, da.core.Array] = None
     ) -> Union[np.ndarray, da.core.Array]:
-
         if self.chunks == None:
             chunks = [
                 self._chunk_size_condition(size, self.default_chunks_numbers[j])
@@ -169,7 +157,6 @@ class POD(ROM):
     name = "pod"
 
     def __init__(self, config: dict = None, svd_filter: callable = None) -> None:
-
         """Propor Orthogonal Decomposition
         :param config: configuration dictionary for the POD parameters
         :type config: dict
@@ -202,7 +189,6 @@ class POD(ROM):
         self.svd_filter = svd_filter
 
     def fit(self, data: np.ndarray = None) -> None:
-
         """
         :param data:
         :type data: np.ndarray
@@ -243,7 +229,6 @@ class POD(ROM):
         print("Relative Modal Energy {}".format(relative_modal_energy))
 
     def project(self, data: np.ndarray = None) -> np.ndarray:
-
         """
         :param data: array of shape (n_samples, n_features)
         :type data: np.ndarray
@@ -265,7 +250,6 @@ class POD(ROM):
             return data_til.dot(self.modes.T)
 
     def reconstruct(self, projected_data: np.ndarray = None) -> np.ndarray:
-
         """
         :param projected_data: array of shape (n_samples, n_modes)
         :type projected_data: np.ndarray
@@ -299,7 +283,6 @@ class POD(ROM):
             return projected_data.dot(self.modes[slice(0, n_modes_used)])
 
     def save(self, save_path: str = None, model_name: str = None) -> None:
-
         """It saves data in a NPZ file
         :param save_path: path to save the model
         :type save_path: str
@@ -312,7 +295,6 @@ class POD(ROM):
         )
 
     def restore(self, save_path: str = None, model_name: str = None) -> None:
-
         """It saves data in a NPZ file
         :param save_path: path to save the model
         :type save_path: str
@@ -343,7 +325,6 @@ class IPOD(ROM):
         data_mean: np.ndarray = None,
         svd_filter: callable = None,
     ) -> None:
-
         """
         :param config: configuration dictionary for the POD parameters
         :type config: dict
@@ -382,7 +363,6 @@ class IPOD(ROM):
         self.svd_filter = svd_filter
 
     def fit(self, data: np.ndarray = None) -> None:
-
         """
         Output shape: (space_dimension, n_modes)
 
@@ -431,7 +411,6 @@ class IPOD(ROM):
         self.relative_modal_energy = relative_modal_energy
 
     def project(self, data: np.ndarray = None) -> np.ndarray:
-
         """
         :param data: array of shape (n_samples, n_features)
         :type data: np.ndarray
@@ -453,7 +432,6 @@ class IPOD(ROM):
             return data_til.dot(self.modes.T)
 
     def reconstruct(self, projected_data: np.ndarray = None) -> np.ndarray:
-
         """
         :param projected_data: array of shape (n_samples, n_modes)
         :type projected_data: np.ndarray
@@ -485,7 +463,6 @@ class IPOD(ROM):
             return projected_data.dot(self.modes[slice(0, n_modes_used)])
 
     def save(self, save_path: str = None, model_name: str = None) -> None:
-
         """It saves data in a NPZ file
         :param save_path: path to save the model
         :type save_path: str
@@ -499,7 +476,6 @@ class IPOD(ROM):
         )
 
     def restore(self, save_path: str = None, model_name: str = None) -> None:
-
         """It saves data in a NPZ file
         :param save_path: path to save the model
         :type save_path: str
@@ -529,7 +505,6 @@ class HOSVD(ROM):
         engine: str = "sklearn",
         limit: str = "1 GiB",
     ) -> None:
-
         """
         :param n_components: list with the number of components for each direction
         :type n_components: List[int]
@@ -573,7 +548,6 @@ class HOSVD(ROM):
             raise Exception(f"The engine {self.engine} is not supported.")
 
     def _configure_SVD(self) -> Union[List[TruncatedSVD], List[ParallelSVD]]:
-
         if self.engine == "sklearn":
             return [TruncatedSVD(n_components=n) for n in self.n_components]
         elif self.engine == "dask":
@@ -584,15 +558,12 @@ class HOSVD(ROM):
             )
 
     def _set_components(self) -> None:
-
         for j, name in enumerate(self.components_names):
-
             setattr(self, name.upper() + self._comp_tag, self.U_list[j])
 
     def _k_svd(
         self, data: np.ndarray = None, k: int = None
     ) -> Union[np.ndarray, da.core.Array]:
-
         """SVD applied to the k-mode flattening
         :param projected_data: array of shape (n_samples, n_features)
         :type projected_data: np.ndarray
@@ -616,7 +587,6 @@ class HOSVD(ROM):
     def _k_flattening(
         self, data: Union[np.ndarray, da.core.Array] = None, k: int = None
     ) -> Union[np.ndarray, da.core.Array]:
-
         """k-mode flattening
         :param projected_data: array of shape (n_1, n_2, ..., n_n)
         :type projected_data: np.ndarray
@@ -641,7 +611,6 @@ class HOSVD(ROM):
             return data.transpose(sizelist).reshape(-1, collapsible_dims)
 
     def fit(self, data: Union[np.ndarray, da.core.Array] = None) -> None:
-
         """Executing High-Order SVD
         :param data: input array of shape (n_1, n_2, ..., n_n)
         :type data: np.ndarray
@@ -662,7 +631,6 @@ class HOSVD(ROM):
         print("\n")
 
         for k in range(self.n_dims):
-
             print(f"Executing SVD for the dimension {k}")
 
             data_k_flatten = self._k_flattening(data=data, k=k)
@@ -679,7 +647,6 @@ class HOSVD(ROM):
     def project(
         self, data: Union[np.ndarray, da.core.Array] = None
     ) -> Union[np.ndarray, da.core.Array]:
-
         """Projecting using the SVD basis
         :param data: input array of shape (n_1, n_2, ..., n_n)
         :type data: np.ndarray
@@ -691,7 +658,6 @@ class HOSVD(ROM):
         S = data
 
         for k in range(self.n_dims):
-
             S = np.tensordot(S, self.U_list[k], axes=([0], [0]))
 
         return S
@@ -701,7 +667,6 @@ class HOSVD(ROM):
         data: Union[np.ndarray, da.core.Array] = None,
         replace_components: dict = None,
     ) -> Union[np.ndarray, da.core.Array]:
-
         """Reconstruction using the pre-existent basis
         :param data: reduced array of shape (n_1', n_2', ..., n_n')
         :type data: np.ndarray
@@ -713,7 +678,6 @@ class HOSVD(ROM):
             U_list = copy.deepcopy(self.U_list)
 
             for key, value in replace_components.items():
-
                 try:
                     index = self.components_names.index(key)
                 except:
@@ -727,7 +691,6 @@ class HOSVD(ROM):
         modes = np.arange(self.n_dims).tolist()
 
         for k in modes:
-
             A = np.tensordot(U_list[k], A, axes=([1], [k]))
 
         return A.transpose()
@@ -735,7 +698,6 @@ class HOSVD(ROM):
         # Saving to disk the complete model
 
     def save(self, save_path: str = None, model_name: str = None) -> None:
-
         """Complete saving
 
         :param save_path: path to the saving directory
@@ -758,7 +720,6 @@ class HOSVD(ROM):
 
 class DMD(ROM):
     def __init__(self, config=None):
-
         """
         Parameters
         ----------
@@ -778,7 +739,6 @@ class DMD(ROM):
     """
 
     def fit(self, data=None):
-
         data = data.T
 
         X_aug = np.vstack((data[:, 0:-2], data[:, 1:-1]))
@@ -806,14 +766,12 @@ class DMD(ROM):
         print("Fitting process concluded.")
 
     def predict(self, step=None):
-
         return self.Phi @ np.diag(self.Lambda ** (step - 1)) @ self.initial_state
 
 
 # Gappy POD
 class GPOD(ROM):
     def __init__(self, pca_type="pod", pca_config=None, config=None):
-
         """GPOD
         :param pca_type: the kind of PCA to be used
         :type pca_type: str
@@ -847,7 +805,6 @@ class GPOD(ROM):
             )
 
         if self.sensors_placer == "extrema":
-
             assert all(
                 [not item % 2 for item in self.sensors_distribution]
             ), "If extrema placement is being used, all the number of sensors must be pair"
@@ -868,12 +825,10 @@ class GPOD(ROM):
     # It gets the positions related to the n maximum and n minimum values to be used
     # to locate sensors
     def _extrema(self):
-
         locations = list()
         n_modes = self.modes.shape[0]
 
         for mode_i in range(n_modes):
-
             n_sensors = self.sensors_distribution[mode_i]
             n_minimum = n_maximum = int(n_sensors / 2)
 
@@ -884,11 +839,9 @@ class GPOD(ROM):
 
     # The m dot product (a, b)_m = (m*a, m*b), in which m is a mask array
     def m_dot(self, a, b, mask_array=None):
-
         return (mask_array * a).dot((mask_array * b).T)
 
     def fit(self, data=None):
-
         self.pca.fit(data=data)
         self.modes = self.pca.modes
 
@@ -906,14 +859,12 @@ class GPOD(ROM):
         print(f"The condition number for the matrix M is {np.linalg.cond(self.M)}")
 
     def project(self, data=None):
-
         data_til = self.mask_array * data
         f = self.m_dot(data_til, self.modes, mask_array=self.mask_array)
 
         return f @ self.M_inv.T
 
     def reconstruct(self, projected_data=None):
-
         return self.pca.reconstruct(projected_data=projected_data)
 
 
@@ -928,7 +879,6 @@ class QQM:
         epsilon: float = 1e-10,
         use_mean: bool = False,
     ) -> None:
-
         """It extends and enriches the POD approach by determining a quadratic basis for its residual
         :param n_inputs: number of inputs used in the POD approximation
         :type n_inputs:int
@@ -965,7 +915,6 @@ class QQM:
     def _kronecker_product(
         self, a: np.ndarray = None, b: np.ndarray = None
     ) -> np.ndarray:
-
         """It executes a Kronecker dot between two arrays
         :param a: left array
         :type a: np.ndarray
@@ -994,7 +943,6 @@ class QQM:
 
     # Each batch in W has n_inputs*(n_inputs + 1)/2 columns
     def W_transform(self, data: np.ndarray = None) -> np.ndarray:
-
         """W_transform simply applied Kronecker product for data itself
         :param data: the data to be W-transformed
         :type: np.ndarray
@@ -1010,7 +958,6 @@ class QQM:
         target_data: np.ndarray = None,
         pinv: bool = False,
     ) -> None:
-
         """It executes the fitting process using the chosen optimization algorithm, SpaRSA
          or Moore-Penrose pseudoinverse
 
@@ -1040,7 +987,6 @@ class QQM:
         )
 
     def project(self, data: np.ndarray = None) -> np.ndarray:
-
         """Executes the W-transformation and collects just the valid modes determined
          by the optimization algorithm
 
@@ -1053,7 +999,6 @@ class QQM:
         return self.W_transform(data=data)[:, self.valid_indices]
 
     def eval(self, data: np.ndarray = None) -> None:
-
         """It projects and reconstructs
 
         :param data: the data to be projected
@@ -1065,7 +1010,6 @@ class QQM:
         return self.W_transform(data=data) @ self.V_bar
 
     def save(self, save_path: str = None, model_name: str = None) -> None:
-
         """Complete saving
 
         :param save_path: path to the saving directory

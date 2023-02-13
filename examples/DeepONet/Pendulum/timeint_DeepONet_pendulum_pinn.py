@@ -73,7 +73,6 @@ lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
 
 def model():
-
     from simulai.models import ImprovedDeepONet
     from simulai.regression import SLFNN, ConvexDenseNetwork
 
@@ -187,7 +186,6 @@ approximated_data = pendulum_net.eval(
 )
 
 for ii in range(n_outputs):
-
     plt.plot(approximated_data[:, ii], label="Approximated")
     plt.legend()
     plt.savefig(f"pendulum_deeponet_time_int_{ii}.png")

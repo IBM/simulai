@@ -29,7 +29,6 @@ class HyperModelPoolESN(HyperTrainTemplate):
     def __init__(
         self, trial_config: dict = None, set_type="hard", other_params: dict = None
     ):
-
         self.model = None
 
         self.others_params = other_params
@@ -68,7 +67,6 @@ class HyperModelPoolESN(HyperTrainTemplate):
         self.model_id = self.tag + str(self.id)
 
     def _set_model(self):
-
         rc_config = {
             "reservoir_dim": self.trial_config["reservoir_dim"],
             "sparsity_level": self.trial_config["sparsity_level"]
@@ -90,7 +88,6 @@ class HyperModelPoolESN(HyperTrainTemplate):
         self.model = EchoStateNetwork(**rc_config)
 
     def fit(self, input_train_data=None, target_train_data=None):
-
         self.model.fit(input_data=input_train_data, target_data=target_train_data)
 
         self.model.save_model(save_path=self.path_to_save, model_name=self.model_id)
@@ -100,14 +97,12 @@ class ObjectiveWrapper:
     def __init__(
         self, test_data=None, forcings_input=None, initial_state=None, n_steps=None
     ):
-
         self.test_data = test_data
         self.forcings_input = forcings_input
         self.initial_state = initial_state
         self.n_steps = n_steps
 
     def __call__(self, trainer_instance=None, objective_function=None):
-
         return objective_function(
             model=trainer_instance,
             initial_state=self.initial_state,
@@ -120,7 +115,6 @@ class ObjectiveWrapper:
 def objective(
     model=None, initial_state=None, test_data=None, forcings_input=None, n_steps=None
 ):
-
     extrapolator = StepwiseExtrapolation(model=model.model, keys=["ESN_0"])
 
     l2_norm = L2Norm()
@@ -137,7 +131,6 @@ def objective(
 
 
 def test_esn_nonlinear_forcing_numba(path_to_save: str = None):
-
     n_steps = 1000
     A = 1
     T = 50
@@ -251,7 +244,6 @@ def test_esn_nonlinear_forcing_numba(path_to_save: str = None):
 
 
 if __name__ == "__main__":
-
     # Reading command-line arguments
     parser = ArgumentParser(description="Argument parsers")
 

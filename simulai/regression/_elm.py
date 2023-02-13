@@ -30,7 +30,6 @@ class ELM:
         form: str = "primal",
         solver: str = "lstsq",
     ) -> None:
-
         """Extreme Learning Machine
 
         :param n_i: number of input features
@@ -75,11 +74,9 @@ class ELM:
             raise Exception(f"It was not possible to find the actvation {activation}.")
 
     def _sigmoid(self, input_data: np.ndarray = None) -> np.ndarray:
-
         return 1 / (1 + np.exp(-input_data))
 
     def _is_symmetric(self, matrix: np.ndarray = None) -> bool:
-
         """It checks if the system matrix is symmetric
 
         :param matrix: the global system matrix
@@ -91,7 +88,6 @@ class ELM:
         return np.array_equal(matrix, matrix.T)
 
     def f_h(self, input_data: np.ndarray = None) -> np.ndarray:
-
         """Evaluating hidden state
         :param input_data: dataset for the input data
         :type input_data: np.ndarray
@@ -102,7 +98,6 @@ class ELM:
         return self.activation_func(input_data @ self.W_i.T + self.b)
 
     def _primal_matrix(self, H: np.ndarray = None) -> np.ndarray:
-
         """Primal version of the linear system matrix
         :param H: hidden state matrix
         :type H: np.ndarray
@@ -113,7 +108,6 @@ class ELM:
         return H.T @ H
 
     def _dual_matrix(self, H: np.ndarray = None) -> np.ndarray:
-
         """Dual version of the linear system matrix
         :param H: hidden state matrix
         :type H: np.ndarray
@@ -126,7 +120,6 @@ class ELM:
     def _primal_right_side(
         self, H: np.ndarray = None, target_data: np.ndarray = None
     ) -> np.ndarray:
-
         """Primal version of the right-hand side
         :param H: hidden state matrix
         :type H: np.ndarray
@@ -141,7 +134,6 @@ class ELM:
     def _dual_right_side(
         self, H: Optional[np.ndarray] = None, target_data: np.ndarray = None
     ) -> np.ndarray:
-
         """Primal version of the right-hand side
         :param target_data: target dataset
         :type target_data: np.ndarray
@@ -157,7 +149,6 @@ class ELM:
         target_data: np.ndarray = None,
         lambd: float = 0,
     ) -> None:
-
         """Fitting the ELM
         :param input_data: dataset for the input data
         :type input_data: np.ndarray
@@ -177,9 +168,7 @@ class ELM:
             sys_dim = self.n_samples
 
         if self.solver != "pinv":
-
             if self.L_operator is None and self.R_matrix is None:
-
                 self.L_operator = self._matrix(H=H)
                 self.R_matrix = self._right_side(H=H, target_data=target_data)
 
@@ -198,18 +187,15 @@ class ELM:
                     self.L_operator + lambd * np.eye(sys_dim), self.R_matrix, rcond=None
                 )[0]
         else:
-
             H_pinv = np.linalg.pinv(H)
             solution = H_pinv @ target_data
 
         if self.form == "dual":
-
             solution = H.T @ solution
 
         self.W_o = solution
 
     def eval(self, input_data: np.ndarray = None) -> np.ndarray:
-
         """Evaluating using ELM
         :param input_data: dataset for the input data
         :type input_data: np.ndarray
@@ -222,7 +208,6 @@ class ELM:
         return H @ self.W_o
 
     def save(self, name: str = None, path: str = None) -> None:
-
         """Complete saving
         :param path: path to the saving directory
         :type path: str

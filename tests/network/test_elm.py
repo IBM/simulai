@@ -31,7 +31,6 @@ class TestELM(TestCase):
         ) * np.cos(5 * np.pi * (t / t_max - 1 / 2) ** 2)
 
     def test_elm_instantiation(self):
-
         t_max = 10
         L = 5
         K = 512
@@ -76,7 +75,6 @@ class TestELM(TestCase):
         assert isinstance(approximator_reloaded, ELM)
 
     def test_elm_instantiation_dual(self):
-
         t_max = 10
         L = 5
         K = 512
@@ -121,7 +119,6 @@ class TestELM(TestCase):
         assert isinstance(approximator_reloaded, ELM)
 
     def test_failed_load_pkl(self):
-
         config = {"n_i": 2, "n_o": 1, "h": 800}
 
         approximator = ELM(**config)
@@ -132,7 +129,6 @@ class TestELM(TestCase):
             model_reloaded = load_pkl(path=f"/tmp/elm_model.{id(approximator)}")
 
         except:
-
             pass
 
         assert model_reloaded == None

@@ -84,7 +84,6 @@ def SymbolicOperator(
             device: str = "cpu",
             engine: str = "torch",
         ) -> None:
-
             if engine == "torch":
                 super(SymbolicOperatorClass, self).__init__()
             else:
@@ -184,7 +183,6 @@ def SymbolicOperator(
                 self.f_expressions.append(f_expr)
 
             if self.auxiliary_expressions is not None:
-
                 for key, expr in self.auxiliary_expressions.items():
                     g_expr = sympy.lambdify(self.all_vars, expr, subs)
 
@@ -404,7 +402,6 @@ def SymbolicOperator(
                 }
 
             elif type(inputs_list) is dict:
-
                 inputs_list = [
                     inputs_list[self.inputs_key]
                 ]  # TODO It it not generic the enough
@@ -458,7 +455,6 @@ def SymbolicOperator(
 
             # Periodic boundary conditions
             if self.periodic_bc_protected_key in key:
-
                 assert isinstance(inputs_list, list), (
                     "When a periodic boundary expression is used,"
                     " the input must be a list of arrays."
@@ -519,7 +515,6 @@ def SymbolicOperator(
 
             # The non-periodic cases
             else:
-
                 output = self.function.forward(input_data=inputs_list)
 
                 outputs_list = torch.split(output, 1, dim=-1)
@@ -534,7 +529,6 @@ def SymbolicOperator(
                     }
 
                 elif type(inputs_list) is np.ndarray:
-
                     arrays_list = np.split(inputs_list, inputs_list.shape[1], axis=1)
                     tensors_list = [torch.from_numpy(arr) for arr in arrays_list]
 

@@ -22,6 +22,7 @@ from simulai.math.integration import RK4
 
 sys.path.insert(0, "../../simulai/utilities")
 
+
 # Testing to solve a nonlinear oscillator problem using
 # a 4th order and a four steps Runge-Kutta
 def oscillator_solver(T, dt, initial_state, extra_params=None):
@@ -57,7 +58,6 @@ def oscillator_solver(T, dt, initial_state, extra_params=None):
     current_state = initial_state
 
     for tt in range(time.shape[0]):
-
         variables_state, derivatives_state = solver.step(current_state, dt)
         variables_timesteps.append(variables_state)
         derivatives_timesteps.append(derivatives_state)
@@ -108,7 +108,6 @@ def oscillator_solver_forcing(
     current_state = initial_state
 
     for tt in range(time.shape[0]):
-
         variables_state, derivatives_state = solver.step_with_forcings(
             current_state, forcing[tt : tt + 1], dt
         )

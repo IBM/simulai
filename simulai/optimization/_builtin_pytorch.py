@@ -45,7 +45,6 @@ class BBI(Optimizer):
         consEn: bool = True,
         n_fixed_bounces: int = 1,
     ) -> None:
-
         defaults = dict(
             lr=lr,
             eps1=eps1,
@@ -69,7 +68,6 @@ class BBI(Optimizer):
         super(BBI, self).__setstate__(state)
 
     def step(self, closure: callable) -> torch.Tensor:
-
         loss = closure()  # .item()
 
         # initialization
@@ -92,7 +90,6 @@ class BBI(Optimizer):
             self.min_loss = float("inf")
 
         for group in self.param_groups:
-
             V = loss - group["v0"]
             dt = group["lr"]
             eps1 = group["eps1"]
@@ -101,7 +98,6 @@ class BBI(Optimizer):
             threshold = group["threshold"]
 
             if V > eps2:
-
                 EoverV = self.init_energy / V
                 VoverE = V / self.init_energy
 
@@ -130,7 +126,6 @@ class BBI(Optimizer):
                     ps2_pre += torch.dot(buf.view(-1), buf.view(-1))
 
                 if self.consEn == True:
-
                     # Compare this \pi^2 with what it should have been if the energy was correct
                     ps2_correct = V * ((EoverV**2) - 1.0)
 
@@ -144,7 +139,6 @@ class BBI(Optimizer):
 
                 # Perform the optimization step
                 if (self.counter != threshold) and (self.counter0 != threshold0):
-
                     for p in group["params"]:
                         if p.grad is None:
                             continue
@@ -176,7 +170,6 @@ class BBI(Optimizer):
                         self.counter = 0
                 # Bounces
                 else:
-
                     # First we iterate once to compute pi^2, we randomly regenerate the directions, and we compute the new norm squared
 
                     ps20 = torch.tensor(

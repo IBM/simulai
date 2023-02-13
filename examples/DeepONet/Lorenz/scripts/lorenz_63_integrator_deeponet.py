@@ -31,7 +31,6 @@ from simulai.regression import DenseNetwork
 
 
 def project_to_interval(interval, data):
-
     return interval[1] * (data - data.min()) / (data.max() - data.min()) + interval[0]
 
 
@@ -73,7 +72,6 @@ batching = "intersected"
 # Preparing datasets to feed the DeepONet pipeline
 
 if batching == "segmented":
-
     time_chunks_ = [
         time[(time >= i) & (time <= i + delta_t)] for i in np.arange(0, T_max, delta_t)
     ]
@@ -103,7 +101,6 @@ if batching == "segmented":
     initial_states_test = initial_states[n_batches_train:]
 
 elif batching == "intersected":
-
     n_samples = lorenz_data.shape[0]
     n_samples_train = int(train_fraction * n_samples)
 
@@ -140,7 +137,6 @@ elif batching == "intersected":
     initial_states_test = [chunk[0] for chunk in data_aux]
 
 else:
-
     raise Exception(f"The option {batching} for batching does not exist.")
 
 branch_input_train = np.vstack(
@@ -246,7 +242,6 @@ error = 100 * l2_norm(
 )
 
 for ii in range(n_inputs):
-
     plt.plot(t, approximated_data[:, ii], label="Approximated")
     plt.plot(t, output_test[:, ii], label="Exact")
     plt.legend()

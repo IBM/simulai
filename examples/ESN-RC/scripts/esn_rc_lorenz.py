@@ -37,7 +37,6 @@ class ObjectiveFunction:
         data_path=None,
         pool_path=None,
     ):
-
         self.train_data = train_data
         self.validation_data = validation_data
         self.extra_stencil = 0
@@ -136,7 +135,6 @@ class ObjectiveFunction:
         return keep_trial
 
     def _raw_objective(self, trial_model_setup):
-
         print("Executing the trial: {}".format(trial_model_setup.number))
         # Configuration of ModelPool
         group_size = trial_model_setup.suggest_categorical(
@@ -212,7 +210,6 @@ class ObjectiveFunction:
         return objective_value
 
     def _reload_objective(self, trial_model_setup):
-
         print("Executing the trial: {}".format(trial_model_setup.number))
 
         beta = trial_model_setup.suggest_float("beta", *getattr(self, "beta"))
@@ -300,7 +297,6 @@ class ObjectiveFunction:
 
 
 if __name__ == "__main__":
-
     # Symbolic expressions for teh Lorenz system
     parser = ArgumentParser(description="Reading input arguments")
     parser.add_argument("--data_path", type=str)
@@ -368,7 +364,6 @@ if __name__ == "__main__":
     if not load_model:
         # Some configurations used for testing
         if exec_type == "dev":
-
             group_size = n_series
             fixed_group_size = n_series
             reservoir_dim = [4000, 4100]
@@ -419,7 +414,6 @@ if __name__ == "__main__":
         pool = modeler.load(hyper_search.best_trial.number)
 
     else:
-
         print("Restoring model from disk.")
 
         with open(load_model, "rb") as fp:

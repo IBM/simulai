@@ -27,14 +27,12 @@ class TestOperatorsConstruction(TestCase):
         pass
 
     def test_operators_construction_pinv(self):
-
         n_samples = 10_000
         BATCH_SIZES = [None, 1000]
         n_vars = 5
         FORCE_LAZY = [False, True]
 
         for force_lazy, batch_size in zip(FORCE_LAZY, BATCH_SIZES):
-
             data_input = np.random.rand(n_samples, n_vars)
             data_output = np.random.rand(n_samples, n_vars)
 
@@ -54,7 +52,6 @@ class TestOperatorsConstruction(TestCase):
             assert isinstance(model.c_hat, np.ndarray)
 
     def test_operators_jacobian(self):
-
         n_samples = 1000
         n_vars = 5
 
@@ -72,7 +69,6 @@ class TestOperatorsConstruction(TestCase):
         assert isinstance(model.K_op, np.ndarray)
 
     def test_operators_construction_lstsq(self):
-
         n_samples = 1000
         n_vars = 5
 
@@ -89,7 +85,6 @@ class TestOperatorsConstruction(TestCase):
         R_matrix_list = list()
 
         for batch_size in batch_sizes:
-
             # Instantiating OpInf
             model = OpInf(bias_rescale=1, solver="lstsq")
 
@@ -141,7 +136,6 @@ class TestOperatorsConstruction(TestCase):
             print(f"Maximum R_matrix deviation: {maximum_deviation_r_matrix}.")
 
     def test_operators_construction_forcing_linear(self):
-
         n_samples = 1000
         n_vars = 5
         n_vars_forcing = 5
@@ -162,7 +156,6 @@ class TestOperatorsConstruction(TestCase):
         forcing_case = "linear"
 
         for batch_size in batch_sizes:
-
             # Instantiating OpInf
             model = OpInf(bias_rescale=1, solver="lstsq", forcing=forcing_case)
 
@@ -180,7 +173,6 @@ class TestOperatorsConstruction(TestCase):
             assert model.B_hat.shape == (n_vars, n_vars_forcing)
 
             if forcing_case == "nonlinear":
-
                 assert model.H_hat.shape == (
                     n_vars,
                     int((n_vars_forcing + n_vars) * (n_vars_forcing + n_vars + 1) / 2),
@@ -198,7 +190,6 @@ class TestOperatorsConstruction(TestCase):
         l2_norm = L2Norm()
 
         for ii, (d_o, r_matrix) in enumerate(zip(D_o_list, R_matrix_list)):
-
             assert np.all(np.isclose(ref_D_o, d_o).astype(int)), (
                 "The case with batch_size"
                 f" {batch_sizes[ii]} is divergent for the matrix D_o"
@@ -225,7 +216,6 @@ class TestOperatorsConstruction(TestCase):
             print(f"Maximum R_matrix deviation: {maximum_deviation_r_matrix}.")
 
     def test_operators_construction_forcing_nonlinear(self):
-
         n_samples = 100
         n_vars = 5
         n_vars_forcing = 5
@@ -246,7 +236,6 @@ class TestOperatorsConstruction(TestCase):
         forcing_case = "nonlinear"
 
         for batch_size in batch_sizes:
-
             # Instantiating OpInf
             model = OpInf(bias_rescale=1, solver="lstsq", forcing=forcing_case)
 
@@ -305,7 +294,6 @@ class TestOperatorsConstruction(TestCase):
             print(f"Maximum R_matrix deviation: {maximum_deviation_r_matrix}.")
 
     def test_operators_construction_multipliers(self):
-
         n_samples = 1000
         n_vars = 50
         multipliers = np.array([10 ** (i / 20) for i in range(n_vars)])
@@ -323,7 +311,6 @@ class TestOperatorsConstruction(TestCase):
         R_matrix_list = list()
 
         for batch_size in batch_sizes:
-
             # Instantiating OpInf
             model = OpInf(bias_rescale=1, solver="lstsq")
 
@@ -345,7 +332,6 @@ class TestOperatorsConstruction(TestCase):
         l2_norm = L2Norm()
 
         for ii, (d_o, r_matrix) in enumerate(zip(D_o_list, R_matrix_list)):
-
             assert np.all(np.isclose(ref_D_o, d_o).astype(int)), (
                 "The case with batch_size"
                 f" {batch_sizes[ii]} is divergent for the matrix D_o"
@@ -372,7 +358,6 @@ class TestOperatorsConstruction(TestCase):
             print(f"Maximum R_matrix deviation: {maximum_deviation_r_matrix}.")
 
     def test_operators_setting(self):
-
         opinf = OpInf()
 
         coefficients = np.array(
@@ -404,7 +389,6 @@ class TestOperatorsConstruction(TestCase):
         )
 
     def test_operators_save_and_load(self):
-
         n_samples = 1000
         n_vars = 5
         multipliers = np.array([10 ** (i / 20) for i in range(n_vars)])

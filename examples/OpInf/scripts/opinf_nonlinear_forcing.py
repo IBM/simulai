@@ -37,7 +37,6 @@ class TestOpInfNonlinear:
         pass
 
     def test_opinf_nonlinear(self):
-
         dt = 0.001
         T_max = 20
         rho = 28
@@ -145,7 +144,6 @@ class TestOpInfNonlinear:
             plt.show()
 
     def test_opinf_nonlinear_int_lsoda(self):
-
         dt = 0.005
         T_max = 100
         rho = 28
@@ -261,7 +259,6 @@ class TestOpInfNonlinear:
         lorenz_op.lean_save(save_path="/tmp", model_name="lorenz_63_koopman_lean")
 
     def test_koopman_nonlinear_int_lsoda(self):
-
         dt = 0.005
         T_max = 100
         rho = 28
@@ -387,7 +384,6 @@ class TestOpInfNonlinear:
         lorenz_op.lean_save(save_path="/tmp", model_name="lorenz_63_koopman_lean")
 
     def test_koopman_nonlinear_int_lsoda_intervaled(self):
-
         dt = 0.005
         T_max = 100
         rho = 28
@@ -500,7 +496,6 @@ class TestOpInfNonlinear:
             plt.show()
 
     def test_opinf_nonlinear_incremental(self):
-
         dt = 0.0005
         T_max = 50
         rho = 28
@@ -567,7 +562,6 @@ class TestOpInfNonlinear:
             plt.show()
 
     def test_opinf_nonlinear_with_linear_forcing(self):
-
         dt = 0.0025
         T_max = 50
         rho = 28
@@ -660,7 +654,6 @@ class TestOpInfNonlinear:
         ii = 0
 
         while time < T_max - dt:
-
             state, derivative_state = solver.step_with_forcings_separated(
                 initial_state, test_forcings[ii : ii + 1], dt
             )
@@ -684,7 +677,6 @@ class TestOpInfNonlinear:
             plt.show()
 
     def test_opinf_nonlinear_with_linear_forcing_lsoda(self):
-
         dt = 0.0025
         T_max = 50
         rho = 28
@@ -781,7 +773,6 @@ class TestOpInfNonlinear:
             plt.show()
 
     def test_basic_opinf_nonlinear_with_linear_forcing(self):
-
         n_steps = 100000
         A = 1
         T = 50

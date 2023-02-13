@@ -38,7 +38,6 @@ class KoopmanNetwork(OpInfNetwork):
         fintervals: List[Union[int, list]] = None,
         operator_config: dict = None,
     ) -> None:
-
         self.observables_expressions = observables
         self.fobservables_expressions = fobservables
 
@@ -80,7 +79,6 @@ class KoopmanNetwork(OpInfNetwork):
         self._setup_architecture()
 
     def _get_n_inputs(self, n_inputs: int = None) -> int:
-
         test = np.ones(n_inputs)[None, :]
         return self._generate_observables(
             data=test, observables=self.observables
@@ -89,7 +87,6 @@ class KoopmanNetwork(OpInfNetwork):
     def _build_observables_spaces(
         self, observables: List[str] = None, fobservables: List[str] = None
     ) -> None:
-
         # Generating observables lambda functions from string expressions
         # Some of this objects are not pickleable, so they must re-generated when necessary
 
@@ -115,7 +112,6 @@ class KoopmanNetwork(OpInfNetwork):
         self.built_observables = True
 
     def _construct_intervals(self, interval: Union[int, list] = None) -> slice:
-
         if interval == -1:
             return slice(0, None)
         elif type(interval) and len(interval) == 2:
@@ -131,7 +127,6 @@ class KoopmanNetwork(OpInfNetwork):
     def _generate_observables(
         self, data: np.ndarray = None, observables: list = None
     ) -> np.ndarray:
-
         # The object data is guaranteed as a 2D matrix
         return np.hstack(
             [ob(data[:, self.intervals[oi]]) for oi, ob in enumerate(observables)]
@@ -142,7 +137,6 @@ class KoopmanNetwork(OpInfNetwork):
         input_field: Union[np.ndarray, torch.Tensor] = None,
         input_forcing: Union[np.ndarray, torch.Tensor] = None,
     ) -> torch.Tensor:
-
         forcing_observables = self._generate_observables(
             data=input_forcing, observables=self.fobservables
         )
@@ -168,7 +162,6 @@ class KoopmanNetwork(OpInfNetwork):
     def _forward_without_forcing(
         self, input_field: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
-
         input_observables = self._generate_observables(
             data=input_field, observables=self.observables
         )
@@ -186,7 +179,6 @@ class KoopmanNetwork(OpInfNetwork):
     def _eval_with_forcing(
         self, input_data: np.ndarray = None, forcing_data: np.ndarray = None
     ) -> np.ndarray:
-
         output_tensor = self._forward_with_forcing(
             input_field=input_data, input_forcing=forcing_data
         )
@@ -194,13 +186,11 @@ class KoopmanNetwork(OpInfNetwork):
         return output_tensor.detach().numpy()
 
     def _eval_without_forcing(self, input_data: np.ndarray = None) -> np.ndarray:
-
         output_tensor = self._forward_without_forcing(input_field=input_data)
 
         return output_tensor.detach().numpy()
 
     def _builtin_jacobian(self, x):
-
         if len(x.shape) == 1:
             x = x[None, :]
 
@@ -209,7 +199,6 @@ class KoopmanNetwork(OpInfNetwork):
         return self.A_hat + (self.K_op @ x_observables[0].T)
 
     def eval(self, input_data: np.ndarray = None, **kwargs) -> np.ndarray:
-
         input_observables = self._generate_observables(
             data=input_data, observables=self.observables
         )
@@ -217,7 +206,6 @@ class KoopmanNetwork(OpInfNetwork):
         return super().eval(input_data=input_observables, **kwargs)
 
     def save(self, save_path: str = None, model_name: str = None) -> None:
-
         for item in self.black_list:
             setattr(self, item, None)
 
@@ -226,7 +214,6 @@ class KoopmanNetwork(OpInfNetwork):
         super().save(save_path=save_path, model_name=model_name)
 
     def lean_save(self, save_path: str = None, model_name: str = None) -> None:
-
         for item in self.black_list:
             setattr(self, item, None)
 
@@ -237,7 +224,6 @@ class KoopmanNetwork(OpInfNetwork):
 
 # Neural network version of the Koopman operator theory
 class AutoEncoderKoopman(NetworkTemplate):
-
     name = "autoencoderkoopman"
     engine = "torch"
 
@@ -248,7 +234,6 @@ class AutoEncoderKoopman(NetworkTemplate):
         devices: Union[str, list] = "cpu",
         opinf_net: NetworkTemplate = None,
     ) -> None:
-
         super(AutoEncoderKoopman, self).__init__()
 
         # Determining the kind of device to be used for allocating the
@@ -285,7 +270,6 @@ class AutoEncoderKoopman(NetworkTemplate):
         )
 
     def _latent_dimension_is_correct(self, dim: Union[int, tuple]) -> bool:
-
         if type(dim) == int:
             return True
         elif type(dim) == tuple:
@@ -298,7 +282,6 @@ class AutoEncoderKoopman(NetworkTemplate):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
-
         encoder_output = self.encoder.forward(input_data=input_data)
         opinf_output = self.opinf_net.forward(input_field=encoder_output)
         decoder_output = self.decoder.forward(input_data=opinf_output)
@@ -319,7 +302,6 @@ class AutoEncoderKoopman(NetworkTemplate):
 
     @guarantee_device
     def eval(self, input_data: Union[torch.Tensor, np.ndarray] = None) -> np.ndarray:
-
         output = self.forward(input_data=input_data)
 
         return output.cpu().detach().numpy()
@@ -328,7 +310,6 @@ class AutoEncoderKoopman(NetworkTemplate):
 # Numpy version of the OpInf network
 class NumpyKoopmanNetwork(Regression):
     def __init__(self, opinf_net: torch.nn.Module = None, forcing: str = None) -> None:
-
         super().__init__()
 
         self.forcing = forcing
@@ -350,7 +331,6 @@ class NumpyKoopmanNetwork(Regression):
             self.B_op = None
 
         if self.forcing is None:
-
             self.n_cross_variables = self.n_inputs
             self.forward = self._forward_without_forcing
             self.eval = self._eval_without_forcing
@@ -364,27 +344,21 @@ class NumpyKoopmanNetwork(Regression):
         self.i_u, self.j_u = opinf_net.i_u, opinf_net.j_u
 
     def _builtin_jacobian(self, x):
-
         return self.A_op.weights + (self.K_op @ x.T)
 
     def _external_jacobian(self, x):
-
         return self.jacobian_op(x)
 
     def construct_K_op(self, op: callable = None):
-
         if op is None:
-
             self.jacobian = self._builtin_jacobian
 
         else:
-
             self.jacobian_op = op
 
             self.jacobian = self._external_jacobian
 
     def parametric_jacobian(self, input_data: np.ndarray = None):
-
         A_jac = np.tile(input_data, (self.n_inputs, 1))
         c_jac = np.eye(self.n_inputs)
 
@@ -396,13 +370,11 @@ class NumpyKoopmanNetwork(Regression):
     # The Kronecker dot is used for generating the quadratic component to be
     # used together the matrix H
     def kronecker_dot(self, data: np.ndarray = None) -> np.ndarray:
-
         kronecker_output = np.einsum("bi,bj->bij", data, data)
 
         return kronecker_output[:, self.i_u, self.j_u]
 
     def _forward_without_forcing(self, input_field: np.ndarray = None) -> np.ndarray:
-
         A_output = self.A_op.forward(input_field)  # Matrix for the linear field terms
 
         data = input_field
@@ -412,14 +384,12 @@ class NumpyKoopmanNetwork(Regression):
         return A_output + H_output
 
     def _eval_without_forcing(self, input_field: np.ndarray = None) -> np.ndarray:
-
         output_tensor = self._forward_without_forcing(input_field=input_field)
 
         return output_tensor
 
     # Saving to disk the complete model
     def save(self, save_path: str = None, model_name: str = None) -> None:
-
         path = os.path.join(save_path, model_name + ".pkl")
         try:
             with open(path, "wb") as fp:
@@ -430,7 +400,6 @@ class NumpyKoopmanNetwork(Regression):
     def _get_array_from_linear_operator(
         self, op=None, component: str = "weights"
     ) -> np.ndarray:
-
         return getattr(op, component)
 
     @property

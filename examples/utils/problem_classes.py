@@ -26,7 +26,6 @@ class NonlinearOscillator:
         beta1=2,
         beta2=-0.1,
     ):
-
         self.alpha1 = alpha1
         self.alpha2 = alpha2
         self.beta1 = beta1
@@ -44,7 +43,6 @@ class NonlinearOscillator:
             )
 
     def _eval_without_forcing(self, state):
-
         state_ = state[0]
 
         x = state_[0]
@@ -56,7 +54,6 @@ class NonlinearOscillator:
         return f, g
 
     def _eval_with_forcing(self, state):
-
         state_ = state[0]
 
         x = state_[0]
@@ -70,7 +67,6 @@ class NonlinearOscillator:
         return f, g
 
     def __call__(self, state):
-
         f, g = self.eval(state)
 
         return np.array([f, g])
@@ -101,7 +97,6 @@ class LorenzSystem:
             )
 
     def _eval_without_forcing(self, state, *args):
-
         state_ = state[0]
 
         x = state_[0]
@@ -115,7 +110,6 @@ class LorenzSystem:
         return np.array([f, g, h])
 
     def _eval_without_forcing_t(self, t, state):
-
         state_ = state
 
         x = state_[0]
@@ -129,7 +123,6 @@ class LorenzSystem:
         return np.array([f, g, h])
 
     def _eval_with_forcing(self, state):
-
         state_ = state[0]
 
         x = state_[0]
@@ -146,13 +139,11 @@ class LorenzSystem:
         return np.array([f, g, h])
 
     def __call__(self, state):
-
         f, g, h = self.eval(state)
 
         return np.array([f, g, h])
 
     def jacobian(self, state, e, w, dt):
-
         x = state[0]
         y = state[1]
         z = state[2]

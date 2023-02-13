@@ -8,7 +8,6 @@ from simulai.optimization import Optimizer
 
 
 def model(architecture: str = "AutoencoderVariational"):
-
     import importlib
 
     from simulai.regression import SLFNN, ConvolutionalNetwork
@@ -144,7 +143,6 @@ class TestAutoencoder(TestCase):
         pass
 
     def test_autoencoder_eval(self):
-
         data = np.random.rand(1_000, 3, 16, 16)
 
         autoencoder = model()
@@ -154,11 +152,9 @@ class TestAutoencoder(TestCase):
         assert estimated_output.shape == data.shape
 
     def test_autoencoder_save_restore(self):
-
         data = np.random.rand(1_000, 3, 16, 16)
 
         for arch in ["AutoencoderVariational", "AutoencoderCNN"]:
-
             autoencoder = model(architecture=arch)
 
             saver = SPFile(compact=False)
@@ -178,7 +174,6 @@ class TestAutoencoder(TestCase):
             assert estimated_output.shape == data.shape
 
     def test_autoencoder_train(self):
-
         loss_function = {"AutoencoderVariational": "vaermse", "AutoencoderCNN": "wrmse"}
 
         params_dict = {
@@ -203,7 +198,6 @@ class TestAutoencoder(TestCase):
         n_epochs = 10
 
         for arch in ["AutoencoderVariational", "AutoencoderCNN"]:
-
             autoencoder = model(architecture=arch)
 
             autoencoder.summary(input_shape=[None, 3, 16, 16])

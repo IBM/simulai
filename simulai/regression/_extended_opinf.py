@@ -32,7 +32,6 @@ class ExtendedOpInf(OpInf):
         fintervals: List[Union[int, list]] = None,
         operator_config: dict = None,
     ) -> None:
-
         super().__init__(**operator_config)
 
         if intervals is None:
@@ -70,7 +69,6 @@ class ExtendedOpInf(OpInf):
     def _build_observables_spaces(
         self, observables: List[str] = None, fobservables: List[str] = None
     ) -> None:
-
         # Generating observables lambda functions from string expressions
         # Some of this objects are not pickleable, so they must re-generated when necessary
 
@@ -96,7 +94,6 @@ class ExtendedOpInf(OpInf):
         self.built_observables = True
 
     def _construct_intervals(self, interval: Union[int, list] = None) -> slice:
-
         if interval == -1:
             return slice(0, None)
         elif type(interval) and len(interval) == 2:
@@ -112,7 +109,6 @@ class ExtendedOpInf(OpInf):
     def _generate_observables(
         self, data: np.ndarray = None, observables: list = None
     ) -> np.ndarray:
-
         # The object data is guaranteed as a 2D matrix
         return np.hstack(
             [ob(data[:, self.intervals[oi]]) for oi, ob in enumerate(observables)]
@@ -126,9 +122,7 @@ class ExtendedOpInf(OpInf):
         batch_size: int = None,
         **kwargs,
     ) -> None:
-
         if self.built_observables is False:
-
             self._build_observables_spaces(
                 observables=self.observables_expressions,
                 fobservables=self.fobservables_expressions,
@@ -165,7 +159,6 @@ class ExtendedOpInf(OpInf):
         self.funcgen.clean_engines()
 
     def _builtin_jacobian(self, x):
-
         if len(x.shape) == 1:
             x = x[None, :]
 
@@ -174,7 +167,6 @@ class ExtendedOpInf(OpInf):
         return self.A_hat + (self.K_op @ x_observables[0].T)
 
     def eval(self, input_data: np.ndarray = None, **kwargs) -> np.ndarray:
-
         input_observables = self._generate_observables(
             data=input_data, observables=self.observables
         )
@@ -182,7 +174,6 @@ class ExtendedOpInf(OpInf):
         return super().eval(input_data=input_observables, **kwargs)
 
     def save(self, save_path: str = None, model_name: str = None) -> None:
-
         for item in self.black_list:
             setattr(self, item, None)
 
@@ -191,7 +182,6 @@ class ExtendedOpInf(OpInf):
         super().save(save_path=save_path, model_name=model_name)
 
     def lean_save(self, save_path: str = None, model_name: str = None) -> None:
-
         for item in self.black_list:
             setattr(self, item, None)
 

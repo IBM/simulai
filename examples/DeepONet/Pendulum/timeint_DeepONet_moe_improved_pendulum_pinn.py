@@ -76,7 +76,6 @@ lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
 
 def model():
-
     from typing import List, Union
 
     from simulai.models import ImprovedDeepONet as DeepONet

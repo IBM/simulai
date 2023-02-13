@@ -30,7 +30,6 @@ class TestRBFProjection(TestCase):
         pass
 
     def test_rbf_projection(self):
-
         time = np.linspace(0, 1, 1_000)
 
         A = np.random.rand(20, 100)

@@ -23,9 +23,9 @@ from simulai.templates import NetworkTemplate, as_tensor
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
+
 # Linear operator F(u) = Au + b
 class Linear(NetworkTemplate):
-
     name = "linear"
     engine = "torch"
 
@@ -36,7 +36,6 @@ class Linear(NetworkTemplate):
         bias: bool = True,
         name: str = None,
     ) -> None:
-
         super(Linear, self).__init__(name=name)
 
         self.input_size = input_size
@@ -58,11 +57,9 @@ class Linear(NetworkTemplate):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
-
         return self.layers[0](input_data)
 
     def to_numpy(self):
-
         return LinearNumpy(layer=self.layers[0], name=self.name)
 
 
@@ -76,7 +73,6 @@ class SLFNN(Linear):
         name: str = None,
         activation: str = "tanh",
     ) -> None:
-
         super(SLFNN, self).__init__(
             input_size=input_size, output_size=output_size, bias=bias, name=name
         )
@@ -86,7 +82,6 @@ class SLFNN(Linear):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
-
         return self.activation(super().forward(input_data=input_data))
 
 
@@ -101,7 +96,6 @@ class ShallowNetwork(SLFNN):
         name: str = None,
         activation: str = "tanh",
     ) -> None:
-
         super(ShallowNetwork, self).__init__(
             input_size=input_size, output_size=hidden_size, bias=bias, name=name
         )
@@ -115,7 +109,6 @@ class ShallowNetwork(SLFNN):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
-
         hidden_state = self.activation(super().forward(input_data=input_data))
 
         return self.output_layer.forward(input_data=hidden_state)
@@ -123,7 +116,6 @@ class ShallowNetwork(SLFNN):
 
 # Dense (fully-connected) neural network written in PyTorch
 class DenseNetwork(NetworkTemplate):
-
     name = "dense"
     engine = "torch"
 
@@ -139,7 +131,6 @@ class DenseNetwork(NetworkTemplate):
         last_activation: str = "identity",
         **kwargs,
     ) -> None:
-
         super(DenseNetwork, self).__init__()
 
         assert layers_units, "Please, set a list of units for each layer"
@@ -194,9 +185,7 @@ class DenseNetwork(NetworkTemplate):
         self.layers_map = [[ll, ll + 1] for ll in range(0, 2 * n_layers, 2)]
 
     def _calculate_gain(self, activation: str = "Tanh") -> float:
-
         if type(activation) is not str:
-
             assert hasattr(
                 activation, "name"
             ), f"Activation object {type(activation)} must have attribute ´name´."
@@ -211,9 +200,7 @@ class DenseNetwork(NetworkTemplate):
 
     @staticmethod
     def _determine_initialization(activation: str = "Tanh") -> str:
-
         if type(activation) is not str:
-
             assert hasattr(
                 activation, "name"
             ), f"Activation object {type(activation)} must have attribute ´name´."
@@ -236,7 +223,6 @@ class DenseNetwork(NetworkTemplate):
         bias: bool = True,
         first_layer: bool = False,
     ) -> torch.nn.Linear:
-
         # It instantiates a linear operation
         # f: y^l = f(x^(l-1)) = (W^l).dot(x^(l-1)) + b^l
         layer = torch.nn.Linear(input_size, output_size, bias=bias)
@@ -249,7 +235,6 @@ class DenseNetwork(NetworkTemplate):
 
         # The Siren initialization requires some special consideration
         elif initialization == "siren":
-
             assert (
                 self.c is not None
             ), "When using siren, the parameter c must be defined."
@@ -283,7 +268,6 @@ class DenseNetwork(NetworkTemplate):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
-
         input_tensor_ = input_data
 
         # TODO It can be done using the PyTorch Sequential object
@@ -299,7 +283,6 @@ class DenseNetwork(NetworkTemplate):
 
 # Residual Dense (fully-connected) neural network written in PyTorch
 class ResDenseNetwork(DenseNetwork):
-
     name = "residualdense"
     engine = "torch"
 
@@ -316,7 +299,6 @@ class ResDenseNetwork(DenseNetwork):
         residual_size: int = 1,
         **kwargs,
     ) -> None:
-
         super().__init__(
             layers_units=layers_units,
             activations=activations,
@@ -355,18 +337,15 @@ class ResDenseNetwork(DenseNetwork):
 
     # Merging the layers into a reasonable sequence
     def _merge(self, layer: list = None, act: list = None) -> list:
-
         merged_list = list()
 
         for i, j in zip(layer, act):
-
             merged_list.append(i)
             merged_list.append(j)
 
         return merged_list
 
     def summary(self):
-
         super().summary()
 
         print("Residual Blocks:\n")
@@ -385,7 +364,6 @@ class ResDenseNetwork(DenseNetwork):
         input_tensor_ = self.input_block(input_tensor_)
 
         for block in self.hidden_blocks:
-
             output_tensor_ = self.ratio * (input_tensor_ + block(input_tensor_))
 
             input_tensor_ = output_tensor_
@@ -398,7 +376,6 @@ class ResDenseNetwork(DenseNetwork):
 # Dense network with convex combinations in the hidden layers
 # This architecture is useful when combined to the Improved Version ofr DeepONets
 class ConvexDenseNetwork(DenseNetwork):
-
     name = "convexdense"
     engine = "torch"
 
@@ -414,7 +391,6 @@ class ConvexDenseNetwork(DenseNetwork):
         last_activation: str = "identity",
         **kwargs,
     ) -> None:
-
         self.hidden_size = None
         assert self._check_regular_net(layers_units=layers_units), (
             "All the hidden layers must be equal in" "a Convex Dense Network."
@@ -433,7 +409,6 @@ class ConvexDenseNetwork(DenseNetwork):
         )
 
     def _check_regular_net(self, layers_units: list):
-
         mean = int(sum(layers_units) / len(layers_units))
         self.hidden_size = mean
 
@@ -450,7 +425,6 @@ class ConvexDenseNetwork(DenseNetwork):
         u: Union[torch.Tensor, np.ndarray] = None,
         v: Union[torch.Tensor, np.ndarray] = None,
     ) -> torch.Tensor:
-
         input_tensor_ = input_data
 
         # The first layer operation has no difference from the Vanilla one
@@ -462,7 +436,6 @@ class ConvexDenseNetwork(DenseNetwork):
         activations_hidden = self.activations[1:-1]
 
         for layer_id in range(len(layers_hidden)):
-
             output_tensor_ = layers_hidden[layer_id](input_tensor_)
             z = activations_hidden[layer_id](output_tensor_)
             _output_tensor_ = (1 - z) * u + z * v

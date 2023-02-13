@@ -30,7 +30,6 @@ class TestMapValid(TestCase):
         pass
 
     def data_gen(self, size=None, valid_percent=0.10, mask=None):
-
         assert isinstance(size, tuple), "size must be a tuple of integers"
 
         data = np.zeros(size)
@@ -47,7 +46,6 @@ class TestMapValid(TestCase):
         samples = np.array(random.sample(indices, n_valid)).tolist()
 
         for t in range(n_samples):
-
             data_t = data[t].reshape((n_tot, 1))
 
             data_t[samples] = np.random.rand(n_valid)[:, None]
@@ -57,7 +55,6 @@ class TestMapValid(TestCase):
         return data
 
     def data_gen_structured(self, size=None, valid_percent=0.10, mask=None):
-
         data_ = self.data_gen(size=size, valid_percent=valid_percent, mask=mask)
 
         data = np.core.records.fromarrays(
@@ -69,7 +66,6 @@ class TestMapValid(TestCase):
         return data
 
     def test_mapvalid(self):
-
         # Generating test_data
         Nx = 500
         Ny = 250
@@ -80,7 +76,6 @@ class TestMapValid(TestCase):
         config = {"replace_mask_with_large_number": False}
 
         for mask in masks:
-
             print(f"Testing using the mask: {mask}")
 
             data = self.data_gen(size=(Nx, Ny, Nz), valid_percent=0.50, mask=mask)
@@ -96,7 +91,6 @@ class TestMapValid(TestCase):
             ), "The original and the recovered are not equal"
 
     def test_mapvalid_structured(self):
-
         # Generating test_data
         Nx = 500
         Ny = 250
@@ -105,7 +99,6 @@ class TestMapValid(TestCase):
         masks = [np.inf, np.NaN, np.nan, 1e16, 0, -9999999]
 
         for mask in masks:
-
             print(f"Testing using the mask: {mask}")
 
             data = self.data_gen_structured(
@@ -115,7 +108,6 @@ class TestMapValid(TestCase):
 
             with make_temp_directory() as tmp_dir:
                 with h5py.File(os.path.join(tmp_dir, "test_data.h5"), "w") as fp:
-
                     dset = fp.create_dataset("data", shape=data.shape, dtype=data.dtype)
 
                     dset[:] = data

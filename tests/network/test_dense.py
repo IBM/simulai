@@ -23,9 +23,9 @@ from simulai.optimization import Optimizer
 
 DEVICE = configure_device()
 
+
 # Model template 1
 def model(activation: str = "tanh", architecture: str = "DenseNetwork"):
-
     import importlib
 
     regression_module = importlib.import_module("simulai.regression")
@@ -50,7 +50,6 @@ def model(activation: str = "tanh", architecture: str = "DenseNetwork"):
 
 # Model template 2
 def model_convex(activation: str = "tanh", **kwargs):
-
     from simulai.models import ImprovedDenseNetwork
     from simulai.regression import SLFNN, ConvexDenseNetwork
 
@@ -85,9 +84,7 @@ class TestDenseNetwork(TestCase):
         ) * np.cos(5 * np.pi * (t / t_max - 1 / 2) ** 2)
 
     def test_densenetwork_instantiation(self) -> None:
-
         for architecture in ["DenseNetwork", "ResDenseNetwork", "ImprovedDenseNetwork"]:
-
             print(f"Testing architecture: {architecture}.")
 
             if architecture == "ImprovedDenseNetwork":
@@ -96,15 +93,12 @@ class TestDenseNetwork(TestCase):
                 model_ = model
 
             for activation in ["tanh", "relu", "sigmoid", "sin", "cos", "elu", "selu"]:
-
                 model_(activation=activation, architecture=architecture)
 
     def test_densenetwork_instantiation_special(self) -> None:
-
         from simulai.activations import Siren
 
         for architecture in ["DenseNetwork", "ResDenseNetwork", "ImprovedDenseNetwork"]:
-
             print(f"Testing architecture: {architecture}.")
 
             if architecture == "ImprovedDenseNetwork":
@@ -113,11 +107,9 @@ class TestDenseNetwork(TestCase):
                 model_ = model
 
             for activation in [Siren(omega_0=30, c=6)]:
-
                 model_(activation=activation, architecture=architecture)
 
     def test_densenetwork_forward(self) -> None:
-
         net = model()
 
         net.summary()
@@ -153,9 +145,7 @@ class TestDenseNetwork(TestCase):
         assert output_estimated.shape == output_train.shape
 
     def test_densenetwork_optimization_and_persistency(self) -> None:
-
         for architecture in ["DenseNetwork", "ResDenseNetwork", "ImprovedDenseNetwork"]:
-
             print(f"Testing architecture: {architecture}.")
 
             if architecture == "ImprovedDenseNetwork":
@@ -164,7 +154,6 @@ class TestDenseNetwork(TestCase):
                 model_ = model
 
             for activation in ["tanh", "relu", "sigmoid", "sin", "elu", "selu"]:
-
                 net = model_(activation=activation, architecture=architecture)
 
                 lr = 5e-5

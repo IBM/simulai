@@ -13,7 +13,6 @@ class TestAutoencoder(TestCase):
         pass
 
     def test_autoencoder_eval(self):
-
         data = np.random.rand(1_000, 3, 16, 16)
 
         autoencoder = model()
@@ -23,7 +22,6 @@ class TestAutoencoder(TestCase):
         assert estimated_output.shape == data.shape
 
     def test_autoencoder_save_restore(self):
-
         data = np.random.rand(1_000, 3, 16, 16)
 
         autoencoder = model(architecture="AutoencoderKoopman")
@@ -45,7 +43,6 @@ class TestAutoencoder(TestCase):
         assert estimated_output.shape == data.shape
 
     def test_autoencoder_train(self):
-
         loss_function = "kaermse"
 
         params = {"lambda_1": 0.0, "lambda_2": 0.0, "use_mean": False, "relative": True}

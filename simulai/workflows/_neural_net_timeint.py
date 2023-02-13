@@ -29,7 +29,6 @@ class DeepOTimeIntegrator:
         decoder_architecture: Optional[str] = None,
         deeponet_architecture: str = "deeponet",
     ) -> None:
-
         self.trunk_architecture = trunk_architecture
         self.branch_architecture = branch_architecture
 

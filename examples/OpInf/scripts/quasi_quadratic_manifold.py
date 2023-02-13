@@ -80,14 +80,12 @@ x = np.arange(0, data.shape[1])
 
 # Use normalization or not
 if norm is not True:
-
     data_norm = data
     data_train_norm = data_train
     data_validation_norm = data_validation
     data_test_norm = data_test
 
 else:
-
     data_norm = 2 * (data - min_train) / (max_train - min_train) - 1
     data_train_norm = 2 * (data_train - min_train) / (max_train - min_train) - 1
     data_validation_norm = (

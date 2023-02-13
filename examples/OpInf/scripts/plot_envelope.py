@@ -54,7 +54,6 @@ else:
 
 
 def VPT(nrmse, t_test):
-
     time_ref = (t_test - t_test[0]) / lambda_1
     t_ref = time_ref[nrmse <= tol]
     VPT = t_ref[-1]
@@ -73,7 +72,6 @@ n_simulations = NMRSE.shape[-1]
 simulations_dict = dict()
 
 for index in range(n_simulations):
-
     nmrse = NMRSE[:, index]
 
     vpt = VPT(nmrse, t_test)

@@ -83,7 +83,6 @@ if __name__ == "__main__":
     field_data = list()
 
     for j in range(n_cases):
-
         alpha1 = list_of_cases[j]["alpha1"]
         beta1 = list_of_cases[j]["beta1"]
         alpha2 = list_of_cases[j]["alpha2"]
@@ -168,7 +167,6 @@ if __name__ == "__main__":
     Time_test = np.linspace(0, T, n_steps_ext)[:, None]
 
     for c in range(n_cases_test):
-
         Field_data_test = field_data_test[c]
         Input_parameters_test = np.tile(input_parameters_test[c], (n_steps_ext, 1))
 
@@ -177,7 +175,6 @@ if __name__ == "__main__":
         )
 
         if c in cases_plot_indices:
-
             plt.plot(Time_test[:, 0], approximated_data, label="Approximated")
             plt.plot(time, Field_data_test, label="Exact")
             plt.grid(True)

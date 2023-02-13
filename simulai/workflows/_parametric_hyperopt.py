@@ -23,6 +23,7 @@ try:
 except:
     print("It is necessary to configure it.")
 
+
 # Searching up for a set of scalar parameters
 class ParamHyperOpt:
     def __init__(
@@ -38,7 +39,6 @@ class ParamHyperOpt:
         others_params: dict = None,
         refresh: bool = False,
     ) -> None:
-
         self.params_intervals = params_intervals
         self.params_suggestions = params_suggestions
         self.name = name
@@ -91,12 +91,10 @@ class ParamHyperOpt:
             self.refresher = self._refresh
 
         else:
-
             self.refresher = self._refresh_nothing
 
         # Checking up if the model template has an inner fit method
         if hasattr(self.trainer_template, "fit") is False:
-
             raise Exception(
                 f"The model template {self.trainer_template} has no method fit"
             )
@@ -118,7 +116,6 @@ class ParamHyperOpt:
         self.models_ids_list = dict()
 
     def _set_data(self, data: list = None, name: str = None) -> None:
-
         indata, tardata, auxdata = tuple(data)
 
         assert indata.shape[0] == tardata.shape[0], (
@@ -153,7 +150,6 @@ class ParamHyperOpt:
         target_test_data: np.ndarray = None,
         auxiliary_test_data: np.ndarray = None,
     ) -> None:
-
         self._set_data(
             [input_train_data, target_train_data, auxiliary_train_data], "train"
         )
@@ -166,7 +162,6 @@ class ParamHyperOpt:
         self.there_are_datasets = True
 
     def _optuna_generate_instance_hard(self, trial: optuna.Trial):
-
         config = {
             key: getattr(trial, "suggest_" + value)(
                 key, *self.params_intervals.get(key)
@@ -190,7 +185,6 @@ class ParamHyperOpt:
         return trainer_instance
 
     def _optuna_generate_instance_soft(self, trial: optuna.Trial):
-
         config = {
             key: getattr(trial, "suggest_" + value)(
                 key, *self.params_intervals.get(key)
@@ -222,7 +216,6 @@ class ParamHyperOpt:
 
     # It stacks the required inputs
     def input_data(self, name: str = None):
-
         input_ = getattr(self, "input_" + name + "_data")
         auxiliary_ = getattr(self, "auxiliary_" + name + "_data")
 
@@ -236,7 +229,6 @@ class ParamHyperOpt:
 
     # Serial refresh
     def _refresh(self):
-
         models_ids_list = {
             key: value
             for key, value in self.models_ids_list.items()
@@ -244,7 +236,6 @@ class ParamHyperOpt:
         }
 
         for number, m_id in models_ids_list.items():
-
             filename = os.path.join(self.path_to_save, m_id)
 
             print(f"Removing {filename}.")
@@ -254,7 +245,6 @@ class ParamHyperOpt:
     def _default_instance_wrapper(
         self, trainer_instance=None, objective_function: callable = None
     ):
-
         return objective_function(
             model=trainer_instance,
             input_validation_data=self.input_data(name="validation"),
@@ -262,7 +252,6 @@ class ParamHyperOpt:
         )
 
     def _objective_optuna_wrapper(self, trial: optuna.Trial):
-
         self.refresher()
 
         trainer_instance = self._optuna_generate_instance(trial)
@@ -278,7 +267,6 @@ class ParamHyperOpt:
         )
 
     def optimize(self, n_trials: int = None):
-
         assert self.there_are_datasets == True, "The datasets were not informed."
 
         assert callable(self.objective_function), (
@@ -289,7 +277,6 @@ class ParamHyperOpt:
         self.study.optimize(self._objective_optuna_wrapper, n_trials=n_trials)
 
     def retrain_best_trial(self):
-
         if not hasattr(self.trainer_template, "params"):
             trainer_template = self.trainer_template
         else:

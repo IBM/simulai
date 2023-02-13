@@ -23,8 +23,7 @@ from numpy.lib import recfunctions
 from torch import Tensor
 
 from simulai.abstract import DataPreparer, Dataset
-from simulai.batching import (batchdomain_constructor,
-                              indices_batchdomain_constructor)
+from simulai.batching import batchdomain_constructor, indices_batchdomain_constructor
 from simulai.metrics import MemorySizeEval
 
 """
@@ -59,7 +58,6 @@ class ByPassPreparer(DataPreparer):
     name = "no_preparer"
 
     def __init__(self, channels_last: bool = False) -> None:
-
         super().__init__()
 
         self.channels_last = channels_last
@@ -195,7 +193,6 @@ class Reshaper(DataPreparer):
     name = "reshaper"
 
     def __init__(self, channels_last: bool = False) -> None:
-
         super().__init__()
         self.channels_last = channels_last
         self.collapsible_shapes = None
@@ -1052,7 +1049,6 @@ class Sampling(DataPreparer):
         )
 
         if isinstance(data, h5py.Dataset):
-
             if isinstance(batch_size, MemorySizeEval):
                 batch_size = batch_size(
                     max_batches=n_sampled_preserved, shape=data.shape[1:]
@@ -1292,7 +1288,6 @@ class MovingWindow:
         # Loop for covering the entire time-series dataset constructing the
         # training windows
         while center + self.horizon_size <= data_size:
-
             input_batch = input_data[center - self.history_size : center, :]
             output_batch = output_data[center : center + self.horizon_size, :]
 
@@ -1449,7 +1444,6 @@ class SlidingWindow:
         # Loop for covering the entire time-series dataset constructing the
         # training windows
         while center + self.skip_size <= data_size:
-
             input_batch = input_data[center - self.history_size : center, :]
             output_batch = output_data[
                 center - self.history_size + self.skip_size : center + self.skip_size, :
@@ -1541,7 +1535,6 @@ class IntersectingBatches:
         # Loop for covering the entire time-series dataset constructing the
         # training windows
         while center + self.batch_size < dim:
-
             index = center + self.batch_size
 
             indices.append(center)
@@ -1587,7 +1580,6 @@ class IntersectingBatches:
         # Loop for covering the entire time-series dataset constructing the
         # training windows
         while center + self.batch_size <= data_size:
-
             input_batch = input_data[center : center + self.batch_size]
 
             input_batches_list.append(input_batch)
@@ -1634,7 +1626,6 @@ class BatchwiseExtrapolation:
     """
 
     def __init__(self, op: callable = None, auxiliary_data: np.ndarray = None) -> None:
-
         self.op = op
         self.auxiliary_data = auxiliary_data
         self.time_id = 0
@@ -1662,7 +1653,6 @@ class BatchwiseExtrapolation:
     def _forcing_extrapolation(
         self, extrapolation_dataset: np.ndarray, history_size: int = 0
     ) -> np.ndarray:
-
         return np.hstack(
             [
                 extrapolation_dataset[-history_size:, :],
@@ -1724,7 +1714,6 @@ class BatchwiseExtrapolation:
         self.time_id = history_size
 
         if isinstance(self.auxiliary_data, np.ndarray):
-
             assert (
                 self.auxiliary_data.shape[-1] + n_series == init_state.shape[-1]
             ), "Number of series in the initial state must be {}".format(
@@ -1734,14 +1723,12 @@ class BatchwiseExtrapolation:
             current_state_constructor = self._forcing_extrapolation
 
         else:
-
             current_state_constructor = self._simple_extrapolation
 
         while (
             extrapolation_dataset.shape[0] - history_size + horizon_size
             <= testing_data_size
         ):
-
             extrapolation = self.op(current_state)
             extrapolation_dataset = np.concatenate(
                 [extrapolation_dataset, extrapolation[0]], 0
@@ -1785,7 +1772,6 @@ class BatchCopy:
     """
 
     def __init__(self, channels_last: bool = False) -> None:
-
         self.channels_last = channels_last
 
     def _single_copy(
@@ -1852,7 +1838,6 @@ class BatchCopy:
         n_variables = len(data.dtype.names)
 
         for batch_id, (batch, d_batch) in enumerate(zip(batches, dset_batches)):
-
             print(
                 f"Copying batch {batch_id+1}/{len(batches)} batch_size={batch[1]-batch[0]}"
             )
@@ -1938,7 +1923,6 @@ class BatchCopy:
         n_variables = sum([len(di.dtype.names) for di in data])
 
         for batch_id, (batch, d_batch) in enumerate(zip(batches, dset_batches)):
-
             print(
                 f"Copying and concatenating the batches {batch_id+1}/{len(batches)} batch_size={batch[1] - batch[0]}"
             )
@@ -1988,7 +1972,6 @@ class BatchCopy:
         dump_path: str = None,
         transformation: callable = lambda data: data,
     ) -> h5py.Dataset:
-
         """
         Copies the data from h5py.Dataset to a new h5py.Dataset file.
         It allows to apply a transformation function to the data.
@@ -2025,7 +2008,6 @@ class BatchCopy:
         """
 
         if isinstance(data, list):
-
             return self._multiple_copy(
                 data=data,
                 data_interval=data_interval,
@@ -2101,7 +2083,6 @@ class MakeTensor:
         inputs_list = list(torch.split(input_data, 1, dim=-1))
 
         for vv, var in enumerate(inputs_list):
-
             var.requires_grad = True
             var = var.to(device)
             inputs_list[vv] = var
@@ -2128,7 +2109,6 @@ class MakeTensor:
         inputs_dict = dict()
 
         for key, item in input_data.items():
-
             item.requires_grad = True
             item = item.to(device)
             inputs_dict[key] = item
@@ -2161,7 +2141,6 @@ class MakeTensor:
         """
 
         if type(input_data) == np.ndarray:
-
             input_data = torch.from_numpy(input_data.astype(np.float32))
 
             inputs_list = self._make_tensor(input_data=input_data, device=device)
@@ -2169,13 +2148,11 @@ class MakeTensor:
             return inputs_list
 
         if type(input_data) == torch.Tensor:
-
             inputs_list = self._make_tensor(input_data=input_data, device=device)
 
             return inputs_list
 
         elif type(input_data) == dict:
-
             inputs_list = self._make_tensor_dict(input_data=input_data, device=device)
 
             return inputs_list
@@ -2210,7 +2187,6 @@ class GaussianNoise(Dataset):
     def __init__(
         self, stddev: float = 0.01, input_data: Union[np.ndarray, Tensor] = None
     ):
-
         super(Dataset, self).__init__()
 
         self.stddev = stddev
@@ -2225,9 +2201,7 @@ class GaussianNoise(Dataset):
         self.data_shape = tuple(self.input_data.shape)
 
     def size(self):
-
         return self.data_shape
 
     def __call__(self):
-
         return (1 + self.stddev * torch.randn(*self.data_shape)) * self.input_data

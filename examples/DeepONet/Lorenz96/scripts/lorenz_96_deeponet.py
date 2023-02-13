@@ -112,9 +112,9 @@ train_output = np.vstack(train_data_splits)
 
 input_data = {"input_branch": branch_train_input, "input_trunk": trunk_train_input}
 
+
 # Model template
 def model():
-
     from simulai.models import ImprovedDeepONet as DeepONet
     from simulai.regression import SLFNN, ConvexDenseNetwork
 
@@ -228,7 +228,6 @@ state = test_initial_states[0]
 evaluations = list()
 
 for j in range(n_chunks_test):
-
     evaluation = l96_net.eval(
         trunk_data=time[:, None], branch_data=np.tile(state, (Q, 1))
     )

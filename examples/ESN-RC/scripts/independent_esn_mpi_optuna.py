@@ -46,7 +46,6 @@ class HyperModelPoolESN(HyperTrainTemplate):
         path_to_model: str = None,
         other_params: dict = None,
     ):
-
         self.model = None
 
         self.path_to_model = path_to_model
@@ -89,7 +88,6 @@ class HyperModelPoolESN(HyperTrainTemplate):
         self.model_id = self.tag + str(self.id)
 
     def _set_model(self):
-
         rc_config = {
             "reservoir_dim": self.trial_config["reservoir_dim"],
             "sparsity_level": self.trial_config["sparsity_level"]
@@ -121,7 +119,6 @@ class HyperModelPoolESN(HyperTrainTemplate):
         )
 
     def fit(self, input_train_data=None, target_train_data=None, forcings_input=None):
-
         msg = self.model.fit(
             input_data=input_train_data,
             target_data=target_train_data,
@@ -138,7 +135,6 @@ def objective(
     forcings_input_test=None,
     nt_test=None,
 ):
-
     extrapolation_data = model.predict(
         initial_state=initial_state, auxiliary_data=forcings_input_test, horizon=nt_test
     )
@@ -155,7 +151,6 @@ def objective(
 def test_modelpool_nonlinear_forcing_numba_MPI_Optuna(
     n_numba_workers: int = None, n_trials: int = None, parallel: str = "mpi"
 ):
-
     n_steps = 1000
     A = 1
     T = 50
@@ -263,7 +258,6 @@ def test_modelpool_nonlinear_forcing_numba_MPI_Optuna(
 
 
 if __name__ == "__main__":
-
     # Reading command-line arguments
     parser = ArgumentParser(description="Argument parsers")
 

@@ -56,7 +56,6 @@ max_value = np.maximum(np.abs(minimum), np.abs(maximum))
 
 
 def model():
-
     transpose = False
 
     ### Layers Configurations ####
@@ -111,7 +110,6 @@ def model():
     }
 
     if transpose == False:
-
         decoder_layers = [
             {
                 "in_channels": 128,

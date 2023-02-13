@@ -76,7 +76,6 @@ lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
 
 def model():
-
     import numpy as np
 
     from simulai.models import ImprovedDeepONet
@@ -192,7 +191,6 @@ approximated_data = rober_net.eval(
 )
 
 for ii in range(n_outputs):
-
     plt.plot(approximated_data[:, ii], label="Approximated")
     plt.legend()
     plt.savefig(f"rober_deeponet_time_int_{ii}.png")

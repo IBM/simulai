@@ -22,7 +22,6 @@ from simulai.residuals import SymbolicOperator
 
 
 def model(n_inputs: int = 1, n_outputs: int = 1):
-
     from simulai.regression import DenseNetwork
 
     # Configuration for the fully-connected network
@@ -42,13 +41,10 @@ def model(n_inputs: int = 1, n_outputs: int = 1):
 
 class TestSymbolicOperator(TestCase):
     def setUp(self) -> None:
-
         pass
 
     def test_symbolic_operator_ode(self):
-
         for token in ["sin", "cos", "sqrt"]:
-
             f = f"D(u, t) - alpha*{token}(u)"
 
             input_labels = ["t"]
@@ -73,9 +69,7 @@ class TestSymbolicOperator(TestCase):
             assert all([isinstance(item, torch.Tensor) for item in residual(t)])
 
     def test_symbolic_operator_diff_operators(self):
-
         for operator in ["L", "Div"]:
-
             f = f"D(u, x) - alpha*{operator}(u, (x, y))"
 
             input_labels = ["x", "y"]
@@ -106,7 +100,6 @@ class TestSymbolicOperator(TestCase):
             assert all([isinstance(item, torch.Tensor) for item in residual(data)])
 
     def test_symbolic_operator_1d_pde(self):
-
         # Allen-Cahn equation
         f_0 = "D(u, t) - mu*D(D(u, x), x) + alpha*(u**3) + beta*u"
         # Invented 1
@@ -157,7 +150,6 @@ class TestSymbolicOperator(TestCase):
         )
 
         for f in [f_0, f_1, f_2]:
-
             residual = SymbolicOperator(
                 expressions=[f],
                 input_vars=input_labels,

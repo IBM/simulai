@@ -25,7 +25,6 @@ class TestModelPoolAffinemapping:
         pass
 
     def test_modelpool_nonlinear_forcing_affinemapping(self):
-
         n_steps = 100
         A = 1
         T = 50
@@ -65,7 +64,6 @@ class TestModelPoolAffinemapping:
         initial_state = train_data[-1:, :]
 
         with make_temp_directory() as default_model_dir:
-
             rc_config = {
                 "number_of_inputs": sub_model_number_of_inputs,
                 "number_of_outputs": n_field,

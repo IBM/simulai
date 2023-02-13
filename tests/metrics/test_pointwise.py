@@ -22,7 +22,6 @@ from simulai.metrics import PointwiseError
 
 class TestPointwise(TestCase):
     def test_pointwise(self):
-
         data = np.random.rand(100, 10)
 
         data_ref = np.random.rand(100, 10)

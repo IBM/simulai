@@ -33,7 +33,6 @@ from simulai.residuals import SymbolicOperator
 
 
 def project_to_interval(interval, data):
-
     return interval[1] * (data - data.min()) / (data.max() - data.min()) + interval[0]
 
 
@@ -44,7 +43,6 @@ class TestLorenzTorch(TestCase):
         pass
 
     def test_lorenz_torch(self):
-
         dt = 0.0025
         T_max = 50
         rho = 15  # 28
@@ -76,7 +74,6 @@ class TestLorenzTorch(TestCase):
         f_z = "D(z, t) - x*y + betha*z"
 
         if batching == "segmented":
-
             time_chunks_ = [
                 time[(time >= i) & (time <= i + delta_t)]
                 for i in np.arange(0, T_max, delta_t)
@@ -108,7 +105,6 @@ class TestLorenzTorch(TestCase):
             initial_states_test = initial_states[n_batches_train:]
 
         elif batching == "intersected":
-
             n_samples = lorenz_data.shape[0]
             n_samples_train = int(train_fraction * n_samples)
 
@@ -146,7 +142,6 @@ class TestLorenzTorch(TestCase):
             initial_states_test = [chunk[0] for chunk in data_aux]
 
         else:
-
             raise Exception(f"The option {batching} for batching does not exist.")
 
         branch_input_train = np.vstack(
@@ -269,7 +264,6 @@ class TestLorenzTorch(TestCase):
         )
 
         for ii in range(n_inputs):
-
             plt.plot(approximated_data[:, ii], label="Approximated")
             plt.plot(output_test[:, ii], label="Exact")
             plt.legend()

@@ -28,7 +28,6 @@ from simulai.math.integration import RK4
 
 
 class ByPass:
-
     name = "no_metric"
 
     def __init__(self):
@@ -36,7 +35,6 @@ class ByPass:
 
 
 class L2Norm:
-
     name = "l2_norm"
 
     def __init__(
@@ -46,7 +44,6 @@ class L2Norm:
         large_number: float = 1e15,
         default_data: float = 0.0,
     ) -> None:
-
         """It evaluates a L^2 norm comparing an approximation and its reference value
         :param mask: if there are masked or missing data, it informs what kind of value is filling these gaps
         :type mask: Union[str, float, None]
@@ -61,7 +58,6 @@ class L2Norm:
         self.default_data = default_data
 
     def _clean_nan_and_large_single(self, d: np.ndarray) -> np.ndarray:
-
         """It removes NaNs and large numbers from a single array
         :param d: data to be cleaned
         :type d: np.ndarray
@@ -96,7 +92,6 @@ class L2Norm:
     def _clean_nan_and_large(
         self, data: np.ndarray, reference_data: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray]:
-
         """It removes NaNs and large number of the input and the reference dataset
         :param data: the data to be evaluated in the norm
         :type data: np.ndarray
@@ -120,7 +115,6 @@ class L2Norm:
         data_interval: list = None,
         batch_size: int = 1,
     ) -> float:
-
         """It evaluated the error over a single batch a time
         :param data: the data to be usd for assess the norm
         :type data: Union[np.ndarray, h5py.Dataset]
@@ -142,7 +136,6 @@ class L2Norm:
         accumulated_ref = 0
 
         for batch_id, batch in enumerate(batches):
-
             chunk_array = data[slice(*batch)]
 
             print(
@@ -192,7 +185,6 @@ class L2Norm:
         batch_size: int = 1,
         ord: int = 2,
     ) -> float:
-
         """It evaluated the error over a single batch a time
         :param data: the data to be usd for assess the norm
         :type data: Union[np.ndarray, da.core.Array, h5py.Dataset]
@@ -212,7 +204,6 @@ class L2Norm:
         if isinstance(data, (np.ndarray, da.core.Array)) and isinstance(
             reference_data, (np.ndarray, da.core.Array)
         ):
-
             data, reference_data = self._clean_nan_and_large(data, reference_data)
 
             # Linear algebra engine
@@ -240,7 +231,6 @@ class L2Norm:
             return float(eval_)
 
         if isinstance(data, h5py.Dataset) and isinstance(reference_data, h5py.Dataset):
-
             assert ord == 2, "We only implemented the norm 2 for hdf5 input data"
 
             assert data_interval, (
@@ -256,14 +246,12 @@ class L2Norm:
             )
 
         else:
-
             raise Exception(
                 "Data format not supported. It must be np.ndarray, dask.core.Array or h5py.Dataset."
             )
 
 
 class SampleWiseErrorNorm:
-
     name = "samplewiseerrornorm"
 
     def __init__(
@@ -272,7 +260,6 @@ class SampleWiseErrorNorm:
         pass
 
     def _aggregate_norm(self, norms, ord):
-
         n = np.stack(norms, axis=0)
         if ord == 1:
             return np.sum(n, axis=0)
@@ -306,7 +293,6 @@ class SampleWiseErrorNorm:
 
         n_samples = data_interval[1] - data_interval[0]
         if isinstance(data, np.ndarray) and isinstance(reference_data, np.ndarray):
-
             data_ = np.reshape(data[slice(*data_interval)], [n_samples, -1])
             reference_data_ = np.reshape(
                 reference_data[slice(*data_interval)], [n_samples, -1]
@@ -320,7 +306,6 @@ class SampleWiseErrorNorm:
         elif isinstance(data, h5py.Dataset) and isinstance(
             reference_data, h5py.Dataset
         ):
-
             if isinstance(batch_size, MemorySizeEval):
                 batch_size = batch_size(
                     max_batches=data_interval[1] - data_interval[0],
@@ -379,7 +364,6 @@ class SampleWiseErrorNorm:
             else:
                 norm = norms_dict
         else:
-
             raise Exception(
                 "Data format not supported. It must be np.ndarray or" "h5py.Dataset."
             )
@@ -401,7 +385,6 @@ def _relative(norm, ref_norm):
 
 
 class FeatureWiseErrorNorm:
-
     name = "featurewiseerrornorm"
 
     def __init__(
@@ -439,7 +422,6 @@ class FeatureWiseErrorNorm:
 
         n_samples = data_interval[1] - data_interval[0]
         if isinstance(data, np.ndarray) and isinstance(reference_data, np.ndarray):
-
             data_ = np.reshape(data[slice(*data_interval)], [n_samples, -1])
             reference_data_ = np.reshape(
                 reference_data[slice(*reference_data_interval)], [n_samples, -1]
@@ -453,7 +435,6 @@ class FeatureWiseErrorNorm:
         elif isinstance(data, h5py.Dataset) and isinstance(
             reference_data, h5py.Dataset
         ):
-
             if isinstance(batch_size, MemorySizeEval):
                 batch_size = batch_size(
                     max_batches=data_interval[1] - data_interval[0],
@@ -472,7 +453,6 @@ class FeatureWiseErrorNorm:
             norms_dict = []
             ref_norms_dict = []
             for ii, (batch, batch_ref) in enumerate(zip(batches, batches_ref)):
-
                 d = data[slice(*batch)]
                 print(
                     f"Computing norm for batch {ii+1}/{len(batches)} batch_size={d.shape[0]}"
@@ -514,7 +494,6 @@ class FeatureWiseErrorNorm:
             else:
                 norm = norms_dict
         else:
-
             raise Exception(
                 "Data format not supported. It must be np.ndarray or" "h5py.Dataset."
             )
@@ -529,7 +508,6 @@ class DeterminationCoeff:
     def __call__(
         self, data: np.ndarray = None, reference_data: np.ndarray = None
     ) -> float:
-
         self.mean = reference_data.mean(axis=0)
 
         assert isinstance(data, np.ndarray), "Error! data is not a ndarray: {}".format(
@@ -549,41 +527,33 @@ class DeterminationCoeff:
 
 
 class RosensteinKantz:
-
     name = "lyapunov_exponent"
 
     def __init__(self, epsilon: float = None) -> None:
-
         self.ref_index = 30
         self.epsilon = epsilon
         self.tau_amp = 30
 
     def _neighborhood(self, v_ref: np.ndarray, v: np.ndarray) -> np.ndarray:
-
         v_epsilon = np.where(np.abs(v - v_ref) <= self.epsilon)
 
         return v_epsilon
 
     def _reference_shift(self, v: np.ndarray, ref_index: int, shift: int) -> np.ndarray:
-
         return v[ref_index + shift]
 
     def __call__(self, data: np.ndarray = None) -> float:
-
         # It is expected data to be an array with shape (n_timesteps, n_variables)
         n_timesteps = data.shape[0]
         n_variables = data.shape[1]
 
         for vv in range(n_variables):
-
             var_ = data[:, vv]
             S_tau = list()
 
             for tau in range(-self.tau_amp, self.tau_amp):
-
                 s_tau_list = list()
                 for tt in range(self.ref_index, n_timesteps - self.ref_index - 1):
-
                     var = var_[self.ref_index : n_timesteps - self.ref_index]
 
                     var_ref = self._reference_shift(var_, tt, tau)
@@ -621,7 +591,6 @@ class RosensteinKantz:
 
 class PerturbationMethod:
     def __init__(self, jacobian_evaluator: callable = None) -> None:
-
         """
         :param jacobian_evaluator: function
         """
@@ -630,7 +599,6 @@ class PerturbationMethod:
         self.jacobian_evaluator = jacobian_evaluator
 
     def _definition_equation(self, z: np.ndarray) -> np.ndarray:
-
         """
         :param z: np.ndarray
         :return: np.ndarray
@@ -646,7 +614,6 @@ class PerturbationMethod:
         data_residual: np.ndarray = None,
         step: float = None,
     ) -> float:
-
         """
         :param data: np.ndarray
         :param data_residual: np.ndarray
@@ -669,7 +636,6 @@ class PerturbationMethod:
         current_state = init_state
 
         for timestep in range(n_timesteps):
-
             self.global_timestep = timestep
             variables_state, derivatives_state = integrator.step(current_state, step)
 
@@ -692,7 +658,6 @@ class PerturbationMethod:
 
 class MeanEvaluation:
     def __init__(self) -> None:
-
         pass
 
     def __call__(
@@ -702,7 +667,6 @@ class MeanEvaluation:
         batch_size: int = None,
         data_preparer: DataPreparer = None,
     ) -> np.ndarray:
-
         if isinstance(batch_size, MemorySizeEval):
             batch_size = batch_size(
                 max_batches=data_interval[1] - data_interval[0], shape=dataset.shape[1:]
@@ -719,7 +683,6 @@ class MeanEvaluation:
         data_mean = 0
 
         for batch_id, batch in enumerate(batches):
-
             data = dataset[slice(*batch)]
 
             if data_preparer is None:
@@ -740,7 +703,6 @@ class MeanEvaluation:
 # #valuating Minimum and Maximum values for large dataset in batch-wise mode
 class MinMaxEvaluation:
     def __init__(self) -> None:
-
         self.data_min_ref = np.inf
         self.data_max_ref = -np.inf
         self.default_axis = None
@@ -753,7 +715,6 @@ class MinMaxEvaluation:
         data_preparer: DataPreparer = None,
         axis: int = -1,
     ) -> np.ndarray:
-
         if isinstance(batch_size, MemorySizeEval):
             batch_size = batch_size(
                 max_batches=data_interval[1] - data_interval[0], shape=dataset.shape[1:]
@@ -767,7 +728,6 @@ class MinMaxEvaluation:
         )
 
         if axis is not None:
-
             n_dims = len(dataset.shape)
             axes = [i for i in range(n_dims)]
             axes.remove(axis)
@@ -777,13 +737,11 @@ class MinMaxEvaluation:
             data_min = self.data_min_ref * np.ones(n_dims - 1)
 
         else:
-
             axes = self.default_axis
             data_max = self.data_max_ref
             data_min = self.data_min_ref
 
         for batch_id, batch in enumerate(batches):
-
             data = dataset[slice(*batch)]
 
             max_ = data.max(axes)
@@ -803,12 +761,10 @@ class MinMaxEvaluation:
         axis: int = -1,
         keys: list = None,
     ) -> np.ndarray:
-
         data_min_ = list()
         data_max_ = list()
 
         for k in keys:
-
             data = dataset[k]
 
             data_max, data_min = self.__call__(
@@ -827,7 +783,6 @@ class MinMaxEvaluation:
 
 class MemorySizeEval:
     def __init__(self, memory_tol_percent: float = 0.5) -> None:
-
         self.memory_tol_percent = memory_tol_percent
         self.size_default = np.array([0]).astype("float64").itemsize
         self.available_memory = None
@@ -845,7 +800,6 @@ class MemorySizeEval:
     def __call__(
         self, max_batches: int = None, shape: Union[tuple, list] = None
     ) -> int:
-
         self.available_memory = (
             self.memory_tol_percent * psutil.virtual_memory().available
         )
@@ -853,11 +807,9 @@ class MemorySizeEval:
         memory_size = self.size_default * np.prod(shape)
 
         if memory_size <= self.available_memory:
-
             possible_batch_size = max_batches
 
         else:
-
             possible_batch_size = np.ceil(memory_size / self.available_memory).astype(
                 int
             )
@@ -868,7 +820,6 @@ class MemorySizeEval:
 # Cumulative error norm for time-series
 class CumulativeNorm:
     def __init__(self):
-
         pass
 
     def __call__(
@@ -878,7 +829,6 @@ class CumulativeNorm:
         relative_norm: bool = False,
         ord: int = 2,
     ) -> np.ndarray:
-
         assert (
             len(data.shape) == len(reference_data.shape) == 2
         ), "The data and reference_data must be two-dimensional."
@@ -894,7 +844,6 @@ class CumulativeNorm:
 # Cumulative error norm for time-series
 class PointwiseError:
     def __init__(self):
-
         pass
 
     def __call__(
@@ -904,7 +853,6 @@ class PointwiseError:
         relative_norm: bool = False,
         ord: int = 2,
     ) -> np.ndarray:
-
         assert (
             len(data.shape) == len(reference_data.shape) == 2
         ), "The data and reference_data must be two-dimensional."
@@ -928,7 +876,6 @@ class LyapunovUnits:
         time_scale=1,
         norm_criteria="cumulative_norm",
     ):
-
         self.lyapunov_unit = lyapunov_unit
         self.tol = tol
         self.time_scale = time_scale
@@ -947,7 +894,6 @@ class LyapunovUnits:
         relative_norm: bool = False,
         ord: int = 2,
     ) -> float:
-
         cumulative_norm = self.norm(
             data=data, reference_data=reference_data, relative_norm=relative_norm
         )
@@ -959,7 +905,6 @@ class LyapunovUnits:
 
 class MahalanobisDistance:
     def __init__(self, batchwise: bool = None) -> None:
-
         self.batchwise = batchwise
 
         if self.batchwise == True:
@@ -973,7 +918,6 @@ class MahalanobisDistance:
         b: torch.Tensor = None,
         metric_tensor: Union[np.ndarray, torch.Tensor] = None,
     ) -> torch.Tensor:
-
         return a.T @ metric_tensor @ b
 
     def batchwise_inner_dot(
@@ -982,7 +926,6 @@ class MahalanobisDistance:
         b: torch.Tensor = None,
         metric_tensor: Union[np.ndarray, torch.Tensor] = None,
     ) -> torch.Tensor:
-
         b_til = b @ metric_tensor
 
         return torch.bmm(a[:, None, :], b_til[..., None]).squeeze()
@@ -993,7 +936,6 @@ class MahalanobisDistance:
         center: Union[np.ndarray, torch.Tensor],
         point: Union[np.ndarray, torch.Tensor],
     ) -> torch.Tensor:
-
         return self.inner_dot(
             a=center - point, metric_tensor=metric_tensor, b=center - point
         )

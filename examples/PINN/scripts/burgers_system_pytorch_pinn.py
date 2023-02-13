@@ -26,7 +26,6 @@ class TestBurgersPINN:
         pass
 
     def test_burgers(self):
-
         # Our PDE
         # Inviscid Burgers equation
 

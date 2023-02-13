@@ -39,7 +39,6 @@ class Autoencoder1D(NetworkTemplate):
         bottleneck_decoder: Linear,
         decoder: ConvolutionalNetwork,
     ) -> None:
-
         super(Autoencoder1D, self).__init__()
 
         self.weights = list()
@@ -64,7 +63,6 @@ class Autoencoder1D(NetworkTemplate):
     def summary(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
-
         btnk_input = self.encoder.forward(input_data=input_data)
 
         self.encoder.summary(input_data=input_data)
@@ -90,7 +88,6 @@ class Autoencoder1D(NetworkTemplate):
         self.decoder.summary(input_data=bottleneck_output)
 
     def projection(self, input_data: Union[np.ndarray, torch.Tensor]) -> torch.Tensor:
-
         btnk_input = self.encoder.forward(input_data=input_data)
         self.last_encoder_channels = btnk_input.shape[1]
 
@@ -102,7 +99,6 @@ class Autoencoder1D(NetworkTemplate):
     def reconstruction(
         self, input_data: Union[torch.Tensor, np.ndarray]
     ) -> torch.Tensor:
-
         bottleneck_output = torch.nn.ReLU()(
             self.bottleneck_decoder.forward(input_data=input_data)
         )
@@ -117,7 +113,6 @@ class Autoencoder1D(NetworkTemplate):
         return reconstructed
 
     def forward(self, input_data: Union[np.ndarray, torch.Tensor]) -> torch.Tensor:
-
         latent = self.projection(input_data=input_data)
         reconstructed = self.reconstruction(input_data=latent)
 
@@ -129,7 +124,6 @@ class TestAutoencoder(TestCase):
         pass
 
     def test_autoencoder(self):
-
         K = 512
         N = 10_000
         n_inputs = 1

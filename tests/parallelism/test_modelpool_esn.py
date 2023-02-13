@@ -20,6 +20,7 @@ import random
 from unittest import TestCase
 
 import numpy as np
+
 # import optuna
 import optuna
 
@@ -27,20 +28,20 @@ from simulai.models import ModelPool
 from simulai.regression import EchoStateNetwork
 from simulai.special import reservoir_generator
 from simulai.utilities import make_temp_directory
-from simulai.workflows import (ObjectiveESNIndependent,
-                               define_reservoir_configs_for_affine_training,
-                               optuna_assess_best_solution_ESNIndependent,
-                               optuna_objectiveESNIndependent)
+from simulai.workflows import (
+    ObjectiveESNIndependent,
+    define_reservoir_configs_for_affine_training,
+    optuna_assess_best_solution_ESNIndependent,
+    optuna_objectiveESNIndependent,
+)
 
 
 class TestModelPoolESN(TestCase):
     def setUp(self) -> None:
-
         self.test_case = None
         self.atol = 1e-10
 
     def test_reservoir_creation(self):
-
         number_of_reservoirs = 20
         reservoir_dim = 1000
         sparsity_level = 0.2 * reservoir_dim
@@ -52,12 +53,10 @@ class TestModelPoolESN(TestCase):
         )
 
     def test_define_reservoir_configs_for_affine_training(self):
-
         for pool_template in [
             "no_communication_series",
             "independent_series",
         ]:
-
             with make_temp_directory() as tmp:
                 define_reservoir_configs_for_affine_training(
                     data_truncation_n=5,
@@ -73,7 +72,6 @@ class TestModelPoolESN(TestCase):
                 )
 
     def test_modelpool_ESN_damping(self):
-
         # Configuration of the sub-networks (in this case, ESN-RC)
         rc_config = {
             "reservoir_dim": 250,
@@ -97,7 +95,6 @@ class TestModelPoolESN(TestCase):
         self.assertTrue(True, "end")
 
     def test_ESN_save_load(self):
-
         nt = 10
         ns = 3
         data = np.random.rand(nt, ns)
@@ -142,7 +139,6 @@ class TestModelPoolESN(TestCase):
         self.assertTrue(True)
 
     def test_modelpool_ESN_direct_inversion(self):
-
         # Configuration of the subnetworks (in this case, ESN-RC)
         rc_config = {
             "reservoir_dim": 250,
@@ -156,7 +152,6 @@ class TestModelPoolESN(TestCase):
         self._run_ESN(rc_config)
 
     def test_modelpool_ESN_linear_system(self):
-
         # Configuration of the sub-networks (in this case, ESN-RC)
         rc_config = {
             "reservoir_dim": 250,
@@ -172,7 +167,6 @@ class TestModelPoolESN(TestCase):
         self._run_ESN(rc_config)
 
     def _train_single_model_in_pool(self, model_path, model_id, index):
-
         (
             field_train_data,
             forcings_train_data,
@@ -202,7 +196,6 @@ class TestModelPoolESN(TestCase):
             self.assertTrue(np.array_equal(getattr(m1, label), getattr(m2, label)))
 
     def test_modelpool_ESN_independently_multi_fit(self):
-
         # Configuration of the sub-networks (in this case, ESN-RC)
         rc_config = {
             "reservoir_dim": 250,
@@ -259,7 +252,6 @@ class TestModelPoolESN(TestCase):
         self.assertTrue(True)
 
     def test_modelpool_ESN_independently_single_fit(self):
-
         # Configuration of the subnetworks (in this case, ESN-RC)
         rc_config = {
             "reservoir_dim": 250,
@@ -317,7 +309,6 @@ class TestModelPoolESN(TestCase):
     '''
 
     def test_modelpool_ESN_save_restore_entire_model(self):
-
         # Configuration of the sub-networks (in this case, ESN-RC)
         rc_config = {
             "reservoir_dim": 250,
@@ -394,7 +385,6 @@ class TestModelPoolESN(TestCase):
         model_type: str = "EchoStateNetwork",
         output=False,
     ):
-
         (
             field_train_data,
             forcings_train_data,
@@ -413,7 +403,6 @@ class TestModelPoolESN(TestCase):
 
         # Default config dictionary
         if pool_config is None:
-
             pool_config = {"group_size": 10, "stencil_size": 10, "skip_size": 10}
 
         # Complementing pool_config with information about n_inputs and n_outputs
@@ -424,7 +413,6 @@ class TestModelPoolESN(TestCase):
         # characteristics of the function _run_ESN, which is used in multiple different cases
 
         if fit and model is None:
-
             pool = ModelPool(
                 config=pool_config, model_type=model_type, model_config=rc_config
             )
@@ -470,7 +458,6 @@ class TestModelPoolESN(TestCase):
         pool.reset()
 
         for step in range(0, n_steps, sub_horizon):
-
             current_data = pool.predict(
                 initial_state=initial_state,
                 horizon=sub_horizon,
@@ -495,14 +482,12 @@ class TestModelPoolESN(TestCase):
             return pool
 
     def test_training_ident_Wout_perfect_esn(self):
-
         ns = 3  # number of forcing terms
         nt = 11
         esn_input_data = np.random.rand(nt, ns)  # manufactured observed data
         reservoir_dim = 5
 
         for input_augmented_reservoir in [True, False]:
-
             rc_config = {
                 "reservoir_dim": reservoir_dim,
                 "sparsity_level": 4,
@@ -514,7 +499,6 @@ class TestModelPoolESN(TestCase):
             }
 
             with make_temp_directory() as default_model_dir:
-
                 esn = EchoStateNetwork(**rc_config)
                 esn.A = np.random.rand(esn.state_dim, esn.number_of_inputs) * 0.1
                 esn.b = np.random.rand(esn.state_dim) * 0.1
@@ -543,7 +527,6 @@ class TestModelPoolESN(TestCase):
                 self.assertTrue(max_error < 1e-10)
 
     def test_training_predicting_perfect_esn(self):
-
         ns = 3  # number of forcing terms
         nt = 23
         initial_data = np.random.rand(ns)  # manufactured observed data
@@ -568,7 +551,6 @@ class TestModelPoolESN(TestCase):
 
             for estimate_linear_transition in estimate_linear_transitions:
                 for estimate_bias_transition in estimate_bias_transitions:
-
                     rc_config = {
                         "reservoir_dim": 5,
                         "sparsity_level": 4,
@@ -583,7 +565,6 @@ class TestModelPoolESN(TestCase):
                     }
 
                     with make_temp_directory() as default_model_dir:
-
                         esn = EchoStateNetwork(**rc_config)
                         esn.A = np.random.rand(ns, esn.number_of_inputs) * 0.1
                         esn.b = np.random.rand(ns) * 0.1
@@ -627,7 +608,6 @@ class TestModelPoolESN(TestCase):
                         self.assertTrue(max_error < 1e-8)
 
     def test_grid_search_for_linear_training(self):
-
         data_truncation_n = 1  # number of field values to predict
         data_aux_truncation_n = 2  # number of forcing terms
         nt = 10  # size of time steps

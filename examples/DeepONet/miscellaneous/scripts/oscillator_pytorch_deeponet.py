@@ -49,7 +49,6 @@ list_of_cases = list()
 input_parameters = list()
 
 for j in range(n_cases):
-
     extra_params = {
         "alpha1": random.uniform(*alpha1_interval),
         "alpha2": random.uniform(*alpha2_interval),
@@ -74,7 +73,6 @@ input_parameters_test = input_parameters[cases_test_indices]
 field_data = list()
 
 for j in range(n_cases):
-
     oscillator_data, _ = oscillator_solver(
         T, dt, initial_state, extra_params=list_of_cases[j]
     )
@@ -155,7 +153,6 @@ optimizer.fit(
 )
 
 for c in range(n_cases_test):
-
     Time_test = time[:, None]
     Field_data_test = field_data_test[c]
     Input_parameters_test = np.tile(input_parameters_test[c], (n_steps, 1))
@@ -172,7 +169,6 @@ for c in range(n_cases_test):
 
     if c in cases_plot_indices:
         for ii in range(n_outputs):
-
             plt.plot(time, approximated_data[:, ii], label="Approximated")
             plt.plot(time, Field_data_test[:, ii], label="Exact")
             plt.grid(True)

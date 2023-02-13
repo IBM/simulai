@@ -35,24 +35,20 @@ class RBFLayer(torch.nn.Module):
         Sigma: Union[float, torch.Tensor] = None,
         device: str = None,
     ) -> None:
-
         super(RBFLayer, self).__init__()
 
         if (
             isinstance(xmax, np.ndarray) == True
             and isinstance(xmin, np.ndarray) == True
         ):
-
             self.xmin = torch.Tensor(xmin).detach()
             self.xmax = torch.Tensor(xmax).detach()
 
         elif isinstance(xmax, int) == True and isinstance(xmin, int) == True:
-
             self.xmin = torch.Tensor([xmin]).detach()
             self.xmax = torch.Tensor([xmax]).detach()
 
         else:
-
             raise Exception(
                 f"Both xmin and xmax must be numpy arrays or integers,"
                 f" but received {xmax} and {xmin}."
@@ -91,19 +87,15 @@ class RBFLayer(torch.nn.Module):
         self.Sigma = self.Sigma.to(self.device)
 
     def set_W(self, W: torch.Tensor = None) -> None:
-
         setattr(self, "W", W)
 
     def set_Sigma(self, Sigma: torch.Tensor = None) -> None:
-
         setattr(self, "Sigma", Sigma)
 
     def set_Mu(self, Mu: torch.Tensor = None) -> None:
-
         setattr(self, "Mu", Mu)
 
     def basis(self, input_data: Union[torch.Tensor, np.ndarray] = None) -> torch.Tensor:
-
         exponent = torch.pow(input_data - self.Mu, 2) / self.Sigma
 
         rbf_interpolation = torch.exp(-exponent)
@@ -114,11 +106,9 @@ class RBFLayer(torch.nn.Module):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
-
         return self.basis(input_data=input_data)
 
     def eval(self, input_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
-
         output_tensor = self.forward(input_data=input_data)
 
         # Guaranteeing the dataset location as CPU
@@ -127,7 +117,6 @@ class RBFLayer(torch.nn.Module):
         return output_tensor.detach().numpy()
 
     def summary(self):
-
         print(f"RBF layer with {self.Nk} basis.")
 
 
@@ -143,7 +132,6 @@ class ModalRBFNetwork(NetworkTemplate):
         Sigma: Union[float, torch.Tensor] = None,
         coeff_network: NetworkTemplate = None,
     ) -> None:
-
         super(ModalRBFNetwork, self).__init__()
 
         self.Nk = Nk
@@ -165,7 +153,6 @@ class ModalRBFNetwork(NetworkTemplate):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
-
         space_input = input_data[:, :-1]
         time_input = input_data[:, -1:]
 
@@ -188,7 +175,6 @@ class ModalRBFNetwork(NetworkTemplate):
         return output
 
     def summary(self):
-
         self.coeff_network.summary()
 
 
@@ -203,7 +189,6 @@ class RBFNetwork(NetworkTemplate):
         name: str = None,
         output_size: int = None,
     ):
-
         super(RBFNetwork, self).__init__()
 
         self.Nk = Nk
@@ -230,14 +215,12 @@ class RBFNetwork(NetworkTemplate):
     def _last_layer(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
-
         return self.output_layer(input_data)
 
     @as_array
     def _forward(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> csc_matrix:
-
         hidden_state = self.input_layer(input_data)
 
         self.Kg = Kansas(hidden_state, self.xk, sigma2=self.sigma2)
@@ -248,7 +231,6 @@ class RBFNetwork(NetworkTemplate):
 
     @as_array
     def _gradient(self, input_data: Union[np.ndarray, torch.Tensor]) -> csc_matrix:
-
         hidden_state = self.input_layer(input_data)
 
         self.Kg = Kansas(hidden_state, self.xk, sigma2=self.sigma2)
@@ -261,7 +243,6 @@ class RBFNetwork(NetworkTemplate):
     def forward(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
-
         G = self._forward(input_data=input_data)
 
         activated_state = np.array(G.todense())
@@ -273,7 +254,6 @@ class RBFNetwork(NetworkTemplate):
         ref_data: Union[np.ndarray, torch.Tensor],
         input_data: Union[np.ndarray, torch.Tensor] = None,
     ) -> torch.Tensor:
-
         Dx = self._gradient(input_data=input_data)
 
         activated_state = np.array(Dx.todense())
@@ -285,13 +265,11 @@ class RBFNetwork(NetworkTemplate):
         input_data: Union[np.ndarray, torch.Tensor] = None,
         target_data: Union[np.ndarray, torch.Tensor] = None,
     ):
-
         G = self._forward(input_data=input_data)
 
         self.weights = np.linalg.pinv(np.array(G.todense())) @ target_data
 
     def eval(self, input_data=None):
-
         G = self._forward(input_data=input_data)
 
         return G @ self.weights

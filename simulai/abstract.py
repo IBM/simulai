@@ -60,7 +60,6 @@ class DataPreparer(object):
     """
 
     def __init__(self) -> None:
-
         self.purpose = "data_preparer"
 
     # Following, we have the default methods of the
@@ -81,7 +80,6 @@ class DataPreparer(object):
 
 class ROM(Transformation):
     def __init__(self) -> None:
-
         self.purpose = "rom"
 
         self.kind = "global"
@@ -113,7 +111,6 @@ class ROM(Transformation):
 
 class BaseFramework(object):
     def __init__(self):
-
         pass
 
     def fit(self):

@@ -124,7 +124,6 @@ def pipeline_reconstruct(
     data_interval=None,
     batch_size=None,
 ):
-
     makedirs_to_file(reconstructed_dump_path)
 
     if data_interval is None:
@@ -267,7 +266,6 @@ def pipeline_projection_error(
             if reconstructed_dump_path is None or os.path.isdir(
                 reconstructed_dump_path
             ):
-
                 projected = np.load(projected_data_path)
                 variables_names = list(dataset.dtype.names)
                 with open(pipeline_path, "rb") as f_pipeline:

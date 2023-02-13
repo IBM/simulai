@@ -38,7 +38,6 @@ class TestLorenzTorch:
         pass
 
     def test_lorenz_torch(self):
-
         dt = 0.005
         T_max = 50
         rho = 28
@@ -151,7 +150,6 @@ class TestLorenzTorch:
         )
 
         for ii in range(n_outputs):
-
             plt.plot(approximated_data[:, ii], label="Approximated")
             plt.plot(train_input_data[:, ii], label="Exact")
             plt.legend()

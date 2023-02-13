@@ -38,9 +38,9 @@ class MetaModel:
 #### Improved Dense Network
 ############################
 
+
 # Dense network with hidden encoders aimed at improving convergence
 class ImprovedDenseNetwork(NetworkTemplate):
-
     name = "improveddense"
     engine = "torch"
 
@@ -51,7 +51,6 @@ class ImprovedDenseNetwork(NetworkTemplate):
         encoder_v: NetworkTemplate = None,
         devices: Union[str, list] = "cpu",
     ):
-
         """
 
         Improved DenseNetwork
@@ -104,7 +103,6 @@ class ImprovedDenseNetwork(NetworkTemplate):
     def forward(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
-
         """
 
         :param input_data: input dataset
@@ -133,7 +131,6 @@ class MoEPool(NetworkTemplate):
         devices: Union[list, str] = None,
         binary_selection: bool = False,
     ) -> None:
-
         super(MoEPool, self).__init__()
 
         # Determining the kind of device to be used for allocating the
@@ -178,17 +175,14 @@ class MoEPool(NetworkTemplate):
             self.get_weights = self._get_weights_bypass
 
     def _get_weights_bypass(self, gating: torch.Tensor = None) -> torch.Tensor:
-
         return gating
 
     def _get_weights_binary(self, gating: torch.Tensor = None) -> torch.Tensor:
-
         maxs = torch.max(gating, dim=1).values[:, None]
 
         return torch.where(gating == maxs, 1, 0).to(self.device)
 
     def gate(self, input_data: Union[np.ndarray, torch.Tensor]) -> torch.Tensor:
-
         gating = self.gating_network.forward(input_data=input_data)
         gating_weights_ = self.get_weights(gating=gating)
 
@@ -197,7 +191,6 @@ class MoEPool(NetworkTemplate):
     def forward(
         self, input_data: Union[np.ndarray, torch.Tensor], **kwargs
     ) -> torch.Tensor:
-
         gating_weights_ = self.gate(input_data=input_data)
 
         gating_weights = torch.split(gating_weights_, 1, dim=1)

@@ -72,7 +72,6 @@ lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
 
 def model():
-
     from simulai.models import DeepONet, MoEPool
     from simulai.regression import DenseNetwork
 

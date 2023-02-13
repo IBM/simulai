@@ -19,13 +19,11 @@ import numpy as np
 from simulai.math.filtering import SVDThreshold
 from simulai.math.progression import gp
 from simulai.rom import POD
-from simulai.special import (Scattering, bidimensional_map_nonlin_3,
-                             time_function)
+from simulai.special import Scattering, bidimensional_map_nonlin_3, time_function
 
 
 class TestPCADecomposition(TestCase):
     def setUp(self) -> None:
-
         self.N = 200
 
     """ Dataset constructed with an expression in which
@@ -33,7 +31,6 @@ class TestPCADecomposition(TestCase):
     """
 
     def test_2D_separable_dataset(self) -> None:
-
         train_factor = 0.6
 
         N = self.N
@@ -54,7 +51,6 @@ class TestPCADecomposition(TestCase):
         self._exec_PCA_tests(fit_data, test_data, N_components)
 
     def test_2D_separable_dataset_unknown_noise(self) -> None:
-
         train_factor = 0.6
         noise_scale = 0.1
 
@@ -76,7 +72,6 @@ class TestPCADecomposition(TestCase):
         self._exec_PCA_tests(fit_data, test_data, N_components, svd_filter=svd_filter)
 
     def test_2D_separable_dataset_unknown_noise_after_pca(self) -> None:
-
         train_factor = 0.6
         noise_scale = 0.1
 
@@ -105,7 +100,6 @@ class TestPCADecomposition(TestCase):
     """
 
     def test_2D_non_separable_dataset(self) -> None:
-
         train_factor = 0.6
 
         # Constructing dataset
@@ -139,9 +133,7 @@ class TestPCADecomposition(TestCase):
     def _exec_PCA_tests(
         self, fit_data, test_data, N_components, svd_filter=None
     ) -> None:
-
         for n_components in N_components:
-
             pca_config = {"n_components": n_components}
 
             pca = POD(config=pca_config, svd_filter=svd_filter)
@@ -166,7 +158,6 @@ class TestPCADecomposition(TestCase):
             )
 
     def _exec_single_PCA_test(self, fit_data, test_data, n_components, svd_filter=None):
-
         pca_config = {"n_components": n_components}
 
         pca = POD(config=pca_config)

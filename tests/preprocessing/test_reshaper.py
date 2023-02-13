@@ -13,6 +13,7 @@
 #     limitations under the License.
 
 import os
+
 # (C) Copyright IBM Corporation 2017, 2018, 2019
 # U.S. Government Users Restricted Rights:  Use, duplication or disclosure restricted
 # by GSA ADP Schedule Contract with IBM Corp.
@@ -29,7 +30,6 @@ from simulai.utilities import make_temp_directory
 
 class TestReshaper(TestCase):
     def setUp(self) -> None:
-
         # use make_temp_directory() above instead of os.path.join(os.getcwd(), '../Network/data') which might not exist
         # self.save_path = os.path.join(os.getcwd(), '../Network/data')
         pass
@@ -99,7 +99,6 @@ class TestReshaper(TestCase):
         self.assertEqual(result, last_dim)
 
     def test_prepare_output_structured_data(self):
-
         reshaper = Reshaper()
         # Constructing data
         N = 100
@@ -138,7 +137,6 @@ class TestReshaper(TestCase):
         self.assertEqual(input_data.shape, new_data.shape)
 
     def test_prepare_output_structured_data_channels_last(self):
-
         reshaper = Reshaper(channels_last=True)
 
         # Constructing data
@@ -198,14 +196,12 @@ class TestScalerReshaper(TestCase):
         self.assertTrue(np.all(reshaped_data == (1 - 5) / 2))
 
     def test_prepare_input_data_invalid_data(self):
-
         reshaper = ScalerReshaper()
         data = np.random.rand(1)
         with pytest.raises(AssertionError):
             reshaper.prepare_input_data(data=data)
 
     def test_prepare_output_data(self):
-
         reshaper = ScalerReshaper(bias=5, scale=2)
         data = np.ones((50, 1, 100, 100))
         collapsible = data.shape[2:]
@@ -220,7 +216,6 @@ class TestScalerReshaper(TestCase):
         self.assertTrue(np.all(new_data == 1))
 
     def test_prepare_input_structured_data(self):
-
         bias = {"U": 1, "U_t": 2}
         scale = {"U": 3, "U_t": 4}
         reshaper = ScalerReshaper(bias=bias, scale=scale)

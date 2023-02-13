@@ -26,7 +26,6 @@ from simulai.regression import ConvolutionalNetwork
 
 # Applying a simple nonlinear transformation
 def apply_transformation(data, k, cval=0):
-
     y_ = convolve(data, k, cval=cval)
 
     return np.where(y_ > y_.mean(), y_, y_**2)
@@ -34,7 +33,6 @@ def apply_transformation(data, k, cval=0):
 
 # MinMax normalization
 def normalize(data_train, data_test):
-
     maximum = data_train.max()
     minimum = data_train.min()
 

@@ -483,7 +483,6 @@ class ModelPool:
         ), f"The input must be a list of datasets, but received type {type(data)}"
 
         if shuffle:
-
             dim = data[0].shape[0]
             samples_indices = np.arange(dim)
             np.random.shuffle(samples_indices)
@@ -494,7 +493,6 @@ class ModelPool:
             return tuple(data)
 
     def _configure_parameters(self, no_parallelism_signal):
-
         group_dimension = self.group_size
 
         self.input_size = group_dimension
@@ -519,7 +517,6 @@ class ModelPool:
 
     # It prepares the datasets and the more important parameters
     def _configure_data(self, input_data=None, target_data=None, auxiliary_data=None):
-
         # It is expected input_data and target_data have the
         # shape (n_times, n_series)
 
@@ -541,7 +538,6 @@ class ModelPool:
             self.n_outputs = input_data.shape[-1]
 
     def _get_sub_datasets(self, input_data=None, target_data=None, auxiliary_data=None):
-
         sub_datasets = self._construct_subdatasets(
             self.groups_indices_input, input_data, auxiliary_data=auxiliary_data
         )
@@ -559,9 +555,7 @@ class ModelPool:
     def _configure_list_of_models(
         self, n_groups=None, regression=None, model_config=None
     ):
-
         for net_id in range(n_groups):
-
             self._configure_single_model(
                 model_config, net_id=net_id, regression=regression
             )
@@ -569,12 +563,10 @@ class ModelPool:
     def _configure_single_model(
         self, model_config, net_id=None, regression=None
     ) -> None:
-
         model_id = self._make_id(idx=net_id)
         model = self.model_instances_list.get(model_id, None)
 
         if model is None:
-
             print("This ModelPool is raw. Executing configuration.")
 
             model_config["model_id"] = model_id
@@ -597,7 +589,6 @@ class ModelPool:
 
             # It is just applied to models who depends on history.
             if model_instance.depends_on_history:
-
                 assert model_instance.horizon_size == 1, (
                     "A sub-model cannot extrapolate"
                     " more than one time-step per iteration."
@@ -623,22 +614,18 @@ class ModelPool:
 
     # Configuring and instantiating the sub-models,
     def _configure_model(self, model_config=None, index=None):
-
         # Instantiating each sub-network. They are expected to
         # employ the same regression technique.
         regression = self._get_regression_class()
 
         # _configure_single_model will basically instantiate the list of model instances
         if index is not None:
-
             self._configure_single_model(
                 model_config, net_id=index, regression=regression
             )
 
         else:
-
             if self.compute_parallel is None:
-
                 self._configure_list_of_models(
                     n_groups=self.n_groups,
                     regression=regression,
@@ -647,7 +634,6 @@ class ModelPool:
 
             # When MPI is used, it is necessary to avoid repetition during the processing.
             elif self.compute_parallel == "mpi":
-
                 comm = MPI.COMM_WORLD
                 rank = comm.Get_rank()
 
@@ -673,7 +659,6 @@ class ModelPool:
         sub_datasets_target_model_id,
         shuffle=False,
     ):
-
         # An auto-executable model can be trained without any wrapper class (as ModelMaker).
         # Basically is a method which does not use optimization
         # (as certain classes of Reservoir Computing).
@@ -683,7 +668,6 @@ class ModelPool:
         is_autoexecutable = hasattr(model, "fit")
 
         if is_autoexecutable:
-
             print("Executing the model {}".format(model_id))
 
             # Shuffling could be a strange stuff here, but here is it.
@@ -705,10 +689,8 @@ class ModelPool:
         model_instances_list=None,
         shuffle=False,
     ):
-
         # Serial dispatcher
         for model_id, model in model_instances_list.items():
-
             print("Executing the model {}".format(model_id))
 
             # Getting the correspond datasets for each model
@@ -731,7 +713,6 @@ class ModelPool:
         model_instances_list: dict = None,
         shuffle: bool = False,
     ) -> None:
-
         # Lists to be used for dispatching the sub-processes in parallel
         datasets = list()
         datasets_target = list()
@@ -744,7 +725,6 @@ class ModelPool:
         if rank == 0:
             # Preparing sub-datasets and sub-models
             for model_id, model in model_instances_list.items():
-
                 print("Preparing the model {}".format(model_id))
 
                 # Getting the corresponding datasets for each model
@@ -789,14 +769,12 @@ class ModelPool:
 
     # Executing the fitting processes for all the sub-models
     def _sub_model_dispatcher(self, sub_datasets, sub_datasets_target, shuffle=False):
-
         # An auto-executable model can be trained without any wrapper class (as ModelMaker).
         # Basically is a method with does not use back-propagation optimization
         # (as Reservoir Computing and Extreme Learning Machines classes).
         msg = None
 
         if self._all_autoexecutable:
-
             # Dispatching processes serially or in parallel
             msg = self._sub_model_pool_dispatcher(
                 sub_datasets=sub_datasets,
@@ -808,7 +786,6 @@ class ModelPool:
         # In case of handy models, we use a ModelMaker class to handle
         # the sub-networks
         elif not self._all_autoexecutable:
-
             assert "optimizers_list" in self.config, (
                 "In case of not auto-executable"
                 "models, it is necessary to provide "
@@ -839,7 +816,6 @@ class ModelPool:
             )
 
         else:
-
             raise Exception(
                 "At the moment, all the models must be auto-executable or not."
                 "it is not possible to mix them, let us say, in a hybrid model."
@@ -1081,7 +1057,6 @@ class ModelPool:
 
         # These conditionals might be merged
         if self._all_autoexecutable:
-
             # Constructing the data to be used during the extrapolation
             initial_state_datasets = self._construct_subdatasets(
                 self.groups_indices_input,
@@ -1093,7 +1068,6 @@ class ModelPool:
 
             # Time extrapolation loop
             for step in range(horizon):
-
                 step_outputs_list = list()
 
                 # TODO It can be really parallelized in multiple
@@ -1102,7 +1076,6 @@ class ModelPool:
 
                 # Serial dispatcher
                 for model_id, model in simulate_instances.items():
-
                     data = state_datasets.get(model_id)
                     out = model.step(data=data[0])
                     step_outputs_list.append(out)
@@ -1135,7 +1108,6 @@ class ModelPool:
             return np.vstack(extrapolation_list)
 
         elif not self._all_autoexecutable and self.wrapper_model:
-
             initial_state_datasets = self._construct_subdatasets(
                 self.groups_indices_input, initial_state
             )
@@ -1144,11 +1116,9 @@ class ModelPool:
             current_state = initial_state
 
             for step in range(horizon):
-
                 step_outputs_list = list()
 
                 for model_id, model in simulate_instances.items():
-
                     data = state_datasets.get(model_id)
                     data = self.train_input_data_preparer(model_id=model_id, data=data)
                     out = model.step(data=data)
@@ -1172,7 +1142,6 @@ class ModelPool:
             return np.vstack(extrapolation_list)
 
         else:
-
             raise Exception(
                 "There is something wrong: a wrapper model (ModelMaker)" "is necessary."
             )
@@ -1186,7 +1155,6 @@ class ModelPool:
         None
         """
         for model_id, model in self.model_instances_list.items():
-
             assert hasattr(model, "reset"), f"The moodel {model} has no method reset."
 
             print(f"Resetting model {model_id}")
@@ -1207,7 +1175,6 @@ class ModelPool:
         None
         """
         for model_id, model in self.model_instances_list.items():
-
             assert hasattr(
                 model, "current_state"
             ), f"The model {model} cannot set reference."

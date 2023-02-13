@@ -31,7 +31,6 @@ class NonlinearODE:
         pass
 
     def __call__(self, data):
-
         s = data[:, 0]
         u = data[:, 1]
 
@@ -52,7 +51,6 @@ def x_forcing(x):
 
 
 def solver(x_interval=None, N=None, x=None, dx=None, u=x_forcing):
-
     if x is None and (N is not None and x_interval is not None):
         x = np.linspace(0, 1, N)
         dx = (x_interval[1] - x_interval[0]) / N
@@ -85,14 +83,12 @@ def solver(x_interval=None, N=None, x=None, dx=None, u=x_forcing):
 
 class TestDeepONet:
     def __init__(self):
-
         self.enable_plots = False
         self.grf_data_filename = "grf_data.npz"
         self.test_grf_data_filename = "test_grf_data.npz"
         self.estimated_grf_data_filename = "estimated_grf_data.npy"
 
     def generate_GRF_data(self, x_interval, N_tot, n_features):
-
         points = np.linspace(*x_interval, N_tot)  # Positions for sampling u data
 
         generator = GaussianRandomFields(
@@ -126,7 +122,6 @@ class TestDeepONet:
         trunk_width=100,
         path=None,
     ):
-
         x_interval = (0, 1)
 
         sensors_indices = np.arange(0, N_tot, int(N_tot / m))
@@ -228,7 +223,6 @@ class TestDeepONet:
 
         V_evaluated_list = list()
         for feature in range(n_features_test):
-
             u_sensors = u_test[sensors_indices, feature : feature + 1].T
             U_sensors_test = np.tile(u_sensors, (x_test.shape[0], 1))
 
@@ -251,7 +245,6 @@ class TestDeepONet:
         print("Concluded.")
 
     def plot(self, path=None):
-
         test_data_file = os.path.join(path, self.test_grf_data_filename)
         estimated_data_file = os.path.join(path, self.estimated_grf_data_filename)
 
@@ -264,7 +257,6 @@ class TestDeepONet:
         n_features = data_estimated.shape[1]
 
         for feature in range(n_features):
-
             estimated = data_estimated[:, feature : feature + 1]
             exact = data_exact[:, feature : feature + 1]
 
@@ -288,7 +280,6 @@ class TestDeepONet:
 
 
 if __name__ == "__main__":
-
     parser = ArgumentParser(description="Reading input arguments")
 
     parser.add_argument("--save_path", type=str)
@@ -322,5 +313,4 @@ if __name__ == "__main__":
         )
         runner.plot(path=save_path)
     elif case == "plot":
-
         runner.plot(path=save_path)

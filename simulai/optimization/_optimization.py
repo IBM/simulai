@@ -25,6 +25,7 @@ from simulai.abstract import Dataset, Regression
 
 # Basic built-in optimization toolkit for SimulAI
 
+
 # Enforcing the input in the correct format, torch.Tensor or an iterable in which
 # each element has this format.
 def _convert_tensor_format(method):
@@ -35,36 +36,28 @@ def _convert_tensor_format(method):
         validation_data: Tuple[Union[torch.Tensor, np.ndarray]] = None,
         **kwargs,
     ):
-
         input_data_ = None
 
         if isinstance(input_data, torch.Tensor):
-
             input_data_ = input_data
 
         elif callable(input_data):
-
             input_data_ = input_data
 
         elif isinstance(input_data, np.ndarray):
-
             input_data_ = torch.from_numpy(input_data.astype(np.float32))
 
         elif isinstance(input_data, dict):
-
             input_data_ = dict()
 
             for key, item in input_data.items():
-
                 if type(item) == np.ndarray:
-
                     input_data_[key] = torch.from_numpy(item.astype(np.float32))
 
                 else:
                     input_data_[key] = item
 
         else:
-
             raise Exception(
                 "The input data must be numpy.ndarray, dict[np.ndarray], torch.tensor or h5py.Group."
             )
@@ -108,7 +101,6 @@ class Optimizer:
         params: dict = None,
         early_stopping_params: dict = None,
     ) -> None:
-
         if "n_samples" in list(params.keys()):
             self.n_samples = params.pop("n_samples")
         else:
@@ -182,9 +174,7 @@ class Optimizer:
         self.loss_states = None
 
     def _get_lr_decay(self) -> Union[callable, None]:
-
         if self.lr_decay_scheduler_params is not None:
-
             name = self.lr_decay_scheduler_params.pop("name")
             self.decay_frequency = self.lr_decay_scheduler_params.pop("decay_frequency")
 
@@ -196,15 +186,12 @@ class Optimizer:
             return None
 
     def _exec_shuffling(self, size: int = None) -> torch.Tensor:
-
         return torch.randperm(size)
 
     def _no_shuffling(self, size: int = None) -> torch.Tensor:
-
         return torch.arange(size)
 
     def _summary_writer(self, loss_states: dict = None, epoch: int = None) -> None:
-
         for k, v in loss_states.items():
             loss = v[epoch]
             self.writer.add_scalar(k, loss, epoch)
@@ -214,17 +201,14 @@ class Optimizer:
 
     # Doing nothing
     def _bypass_stop_handler(self, **kwargs):
-
         return False
 
     # Doing nothing
     def _bypass_lr_decay_handler(self, **kwargs):
-
         pass
 
     # It handles early-stopping for the optimization loop
     def _early_stopping_handler(self, val_loss_function: callable = None) -> None:
-
         loss = val_loss_function()
         self.accuracy_str = "acc: {}".format(loss)
 
@@ -245,9 +229,7 @@ class Optimizer:
             return True
 
     def _lr_decay_handler(self, epoch: int = None):
-
         if (epoch % self.decay_frequency == 0) and (epoch > 0):
-
             self.lr_decay_scheduler.step()
 
     # When data is a NumPy array
@@ -256,7 +238,6 @@ class Optimizer:
         dataset: Union[np.ndarray, torch.Tensor] = None,
         indices: np.ndarray = None,
     ) -> torch.Tensor:
-
         if dataset is None:
             return None
         elif isinstance(dataset, Dataset):
@@ -268,7 +249,6 @@ class Optimizer:
     def _get_ondisk_data(
         self, dataset: callable = None, indices: np.ndarray = None
     ) -> torch.Tensor:
-
         return dataset(indices=indices)
 
     # Preparing the batches (converting format and moving to the correct device)
@@ -276,7 +256,6 @@ class Optimizer:
     def _make_input_data(
         self, input_data: Union[dict, torch.Tensor], device="cpu"
     ) -> dict:
-
         if type(input_data) is dict:
             input_data_dict = {key: item.to(device) for key, item in input_data.items()}
         else:
@@ -291,7 +270,6 @@ class Optimizer:
         device="cpu",
         batch_indices: torch.Tensor = None,
     ) -> dict:
-
         if type(input_data) is dict:
             input_data_dict = {
                 key: self.get_data(dataset=item, indices=batch_indices).to(device)
@@ -308,32 +286,26 @@ class Optimizer:
 
     # Getting up optimizer from the supported engines
     def _get_optimizer(self, optimizer: str = None) -> torch.nn.Module:
-
         try:
             for optim_module in self.optim_modules:
-
                 mod_items = dir(optim_module)
                 mod_items_lower = [item.lower() for item in mod_items]
 
                 if optimizer in mod_items_lower:
-
                     print(f"Optimizer {optimizer} found in {optim_module}.")
                     optimizer_name = mod_items[mod_items_lower.index(optimizer)]
 
                     return getattr(optim_module, optimizer_name)
 
                 else:
-
                     print(f"Optimizer {optimizer} not found in {optim_module}.")
         except:
-
             raise Exception(
                 f"There is no correspondent to {optimizer} in any know optimization module."
             )
 
     # Getting up loss function from the correspondent module
     def _get_loss(self, loss: str = None) -> callable:
-
         if type(loss) == str:
             name = loss.upper()
             return getattr(self.losses_module, name + "Loss")
@@ -350,9 +322,7 @@ class Optimizer:
         loss_states: dict = None,
         validation_loss_function=None,
     ) -> None:
-
         for epoch in range(n_epochs):
-
             self.optimizer_instance.zero_grad()
             self.optimizer_instance.step(loss_function)
 
@@ -372,7 +342,6 @@ class Optimizer:
         params: dict = None,
         device: str = "cpu",
     ) -> None:
-
         print("Executing batchwise optimization loop.")
 
         if isinstance(loss, str):
@@ -390,7 +359,6 @@ class Optimizer:
                 raise Exception(f"It was not possible to instantiate the class {loss}.")
 
         if validation_data is not None:
-
             validation_input_data, validation_target_data = validation_data
             validation_input_data = self._make_input_data(
                 validation_input_data, device=device
@@ -419,13 +387,11 @@ class Optimizer:
         n_epochs_global = int(n_epochs / batch_size)
 
         while epoch < n_epochs_global and stop_criterion == False:
-
             # For each batch-wise realization it is possible to determine a
             # new permutation for the samples
             samples_permutation = self.sampler(size=self.n_samples)
 
             for ibatch in batches:
-
                 self.optimizer_instance.zero_grad()
 
                 indices = samples_permutation[ibatch]
@@ -460,11 +426,9 @@ class Optimizer:
             epoch += 1
 
         if hasattr(loss_instance, "loss_states"):
-
             if all(
                 [isinstance(item, list) for item in loss_instance.loss_states.values()]
             ):
-
                 self.loss_states = {
                     key: np.hstack(value)
                     for key, value in loss_instance.loss_states.items()
@@ -488,10 +452,8 @@ class Optimizer:
         device: str = "cpu",
         distributed: bool = False,
     ) -> None:
-
         # When using inputs with the format h5py.Dataset
         if callable(input_data) and callable(target_data):
-
             assert batch_size, (
                 "When the input and target datasets are in disk, it is necessary to provide a "
                 " value for batch_size."
@@ -516,7 +478,6 @@ class Optimizer:
             pass
 
         if "causality_preserving" in params.keys():
-
             assert self.shuffle == False, (
                 "If the causality preserving algorithm is being used,"
                 " no shuffling must be allowed when creating the mini-batches."
@@ -524,7 +485,6 @@ class Optimizer:
 
         # When early-stopping is used, it is necessary to provide a validation dataset
         if self.early_stopping is True:
-
             assert validation_data is not None, (
                 "If early-stopping is being used, it is necessary to provide a"
                 "validation dataset via validation_data."
@@ -550,7 +510,6 @@ class Optimizer:
 
         # In a multi-device execution, the optimizer must be properly instantiated to execute distributed tasks.
         if distributed == True:
-
             optimizer_params = list()
             for param in op.parameters():
                 optimizer_params.append(RRef(param))
@@ -578,17 +537,14 @@ class Optimizer:
 
         # Determining the kind of execution to be performed, batch-wise or not
         if batch_size is not None:
-
             # Determining the number of samples for each case
             # dictionary
             if type(input_data) is dict:
-
                 key = list(input_data.keys())[0]
                 self.n_samples = input_data[key].size()[0]
 
             # When using h5py.Group, the number of samples must be informed in the instantiation
             elif callable(input_data):
-
                 assert self.n_samples is not None, (
                     "If the dataset is on disk, it is necessary"
                     "to inform n_samples using the dictionary params."
@@ -596,7 +552,6 @@ class Optimizer:
 
             # other cases: torch.Tensor, np.ndarray
             else:
-
                 self.n_samples = input_data.size()[0]
 
             self._batchwise_optimization_loop(
@@ -630,7 +585,6 @@ class Optimizer:
 
             # Instantiating the validation loss function, if necessary
             if self.early_stopping is True:
-
                 validation_input_data, validation_target_data = validation_data
                 validation_loss_function = loss_instance(
                     input_data=validation_input_data,
@@ -660,7 +614,6 @@ class ScipyInterface:
         loss_config: dict = None,
         jac: callable = None,
     ) -> None:
-
         self.engine = "scipy.optimize"
         self.engine_module = importlib.import_module(self.engine)
         self.alternative_method = "minimize"
@@ -709,7 +662,6 @@ class ScipyInterface:
 
     @property
     def operators_list(self) -> list:
-
         return [
             ii
             for ii in sum([[layer.weights, layer.bias] for layer in self.layers], [])
@@ -719,9 +671,7 @@ class ScipyInterface:
     def _stack_and_convert_parameters(
         self, parameters: List[Union[torch.Tensor, np.ndarray]]
     ) -> np.ndarray:
-
         if type(parameters[0]) == torch.Tensor:
-
             return np.hstack(
                 [
                     param.detach().numpy().astype(np.float64).flatten()
@@ -730,25 +680,21 @@ class ScipyInterface:
             )
 
         elif type(parameters[0]) == np.ndarray:
-
             return np.hstack([param.flatten() for param in parameters])
         else:
             raise Exception(f"Type {type(parameters)} not accepted for parameters.")
 
     def _update_and_set_parameters(self, parameters: np.ndarray) -> None:
-
         operators = [
             parameters[slice(*interval)].reshape(shape)
             for interval, shape in zip(self.operators_intervals, self.operators_shapes)
         ]
 
         for opi, op in enumerate(operators):
-
             parent, child = self.operators_names[opi]
             setattr(getattr(self.fun, parent), child, op)
 
     def _fun(self, parameters) -> Union[np.ndarray, float]:
-
         self._update_and_set_parameters(parameters)
 
         approximation = self.fun.forward(**self.input_data)
@@ -758,7 +704,6 @@ class ScipyInterface:
         return loss
 
     def _jac(self, parameters) -> np.ndarray:
-
         return self.jac(self.input_data)
 
     def fit(
@@ -766,7 +711,6 @@ class ScipyInterface:
         input_data: Union[dict, torch.Tensor, np.ndarray] = None,
         target_data: Union[torch.Tensor, np.ndarray] = None,
     ) -> None:
-
         parameters_0 = self._stack_and_convert_parameters(self.operators_list)
 
         self.input_data = input_data

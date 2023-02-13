@@ -13,6 +13,7 @@
 #     limitations under the License.
 
 import os
+
 # (C) Copyright IBM Corporation 2017, 2018, 2019
 # U.S. Government Users Restricted Rights:  Use, duplication or disclosure restricted
 # by GSA ADP Schedule Contract with IBM Corp.
@@ -34,7 +35,6 @@ class TestMeanEvaluator(TestCase):
         pass
 
     def test_mean(self):
-
         batch_sizer = MemorySizeEval(memory_tol_percent=0.1)
 
         batch_size_list = [3, batch_sizer]
@@ -56,7 +56,6 @@ class TestMeanEvaluator(TestCase):
         vars_2 = [x, y, t]
 
         for x, y, t in [vars_1, vars_2]:
-
             T, X, Y = np.meshgrid(t, x, y, indexing="ij")
 
             Z_array = np.core.records.fromarrays(
@@ -67,10 +66,8 @@ class TestMeanEvaluator(TestCase):
                 for data_interval in data_interval_list:
                     for batch_size in batch_size_list:
                         with make_temp_directory() as tmp_dir:
-
                             test_data = os.path.join(tmp_dir, f"data.h5")
                             with h5py.File(test_data, "w") as fp:
-
                                 dataset = fp.create_dataset(
                                     "data", shape=Z_array.shape, dtype=Z_array.dtype
                                 )

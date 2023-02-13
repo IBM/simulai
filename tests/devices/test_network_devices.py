@@ -56,13 +56,10 @@ class TestDenseNetwork(TestCase):
         ) * np.cos(5 * np.pi * (t / t_max - 1 / 2) ** 2)
 
     def test_densenetwork_optimization_and_persistency(self) -> None:
-
         for architecture in ["DenseNetwork", "ResDenseNetwork", "ImprovedDenseNetwork"]:
-
             print(f"Testing architecture: {architecture}.")
 
             for DEVICE in ["cpu", "gpu", "tpu"]:
-
                 try:
                     net = model_convex()
 
@@ -159,7 +156,6 @@ class TestDenseNetwork(TestCase):
                     print(f"Projection error: {projection_error} %")
 
                 except Exception:
-
                     assert DEVICE == "tpu"
 
                     print("Device not supported.")

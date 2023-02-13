@@ -34,7 +34,6 @@ from simulai.templates import NetworkTemplate
 
 
 def project_to_interval(interval, data):
-
     return interval[1] * (data - data.min()) / (data.max() - data.min()) + interval[0]
 
 
@@ -46,7 +45,6 @@ class ConvexMoEPool(MoEPool):
         devices: Union[list, str] = None,
         hidden_size: int = None,
     ) -> None:
-
         super(ConvexMoEPool, self).__init__(
             experts_list=experts_list, input_size=input_size, devices=devices
         )
@@ -61,7 +59,6 @@ class TestROBER(TestCase):
         pass
 
     def test_rober_torch(self):
-
         Q = 1_000
         N = int(5e4)
 
@@ -209,7 +206,6 @@ class TestROBER(TestCase):
         )
 
         for ii in range(n_inputs):
-
             plt.plot(approximated_data[:, ii], label="Approximated")
             plt.legend()
             plt.savefig(f"rober_deeponet_time_int_{ii}.png")

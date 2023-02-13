@@ -28,7 +28,6 @@ from simulai.metrics import L2Norm
 
 class TestCollocationDerivative(TestCase):
     def setUp(self) -> None:
-
         self.max_steps = 3
 
     def generate_field(self, x, y, t, omega_t):
@@ -41,7 +40,6 @@ class TestCollocationDerivative(TestCase):
         return U, U_t
 
     def test_collocation_derivative(self) -> None:
-
         # Constructing data
         N_series = gp(init=25, factor=2, n=self.max_steps)
         Nt_series = gp(init=25, factor=2, n=self.max_steps)
@@ -58,7 +56,6 @@ class TestCollocationDerivative(TestCase):
         t_min = 0
 
         for N, Nt in zip(N_series, Nt_series):
-
             x = np.linspace(x_min, x_max, N)
             y = np.linspace(y_min, y_max, N)
             t = np.linspace(t_min, t_max, Nt)
@@ -87,7 +84,6 @@ class TestCollocationDerivative(TestCase):
 
     # Testing to interpolate and differentiate
     def test_collocation_derivative_interpolation(self) -> None:
-
         # Constructing data
         N_series = gp(init=25, factor=2, n=self.max_steps)
         Nt_series = gp(init=25, factor=2, n=self.max_steps)
@@ -106,7 +102,6 @@ class TestCollocationDerivative(TestCase):
         multiplier = 2
 
         for N, Nt in zip(N_series, Nt_series):
-
             x = np.linspace(x_min, x_max, N)
             y = np.linspace(y_min, y_max, N)
             t = np.linspace(t_min, t_max, Nt)
@@ -118,7 +113,6 @@ class TestCollocationDerivative(TestCase):
             kk = [1, 2, 3, 4]
 
             for k in kk:
-
                 print(f"Using splines of degree k={k}")
 
                 diff_op = CollocationDerivative(config={}, k=k)

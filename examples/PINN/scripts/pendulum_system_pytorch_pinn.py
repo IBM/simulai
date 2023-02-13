@@ -26,8 +26,7 @@ from simulai.io import IntersectingBatches
 from simulai.metrics import L2Norm
 from simulai.models import DeepONet, ImprovedDeepONet
 from simulai.optimization import Optimizer
-from simulai.regression import (SLFNN, ConvexDenseNetwork, DenseNetwork,
-                                ResDenseNetwork)
+from simulai.regression import SLFNN, ConvexDenseNetwork, DenseNetwork, ResDenseNetwork
 from simulai.residuals import SymbolicOperator
 
 
@@ -39,11 +38,9 @@ def project_to_interval(interval, data):
 # Pendulum numerical solver
 class Pendulum:
     def __init__(self, rho: float = None):
-
         self.rho = rho
 
     def eval(self, state: np.ndarray = None, t: float = None) -> np.ndarray:
-
         x = state[0]
         y = state[1]
 
@@ -63,7 +60,6 @@ class TestPendulumTorch(TestCase):
         pass
 
     def test_vanilla_deeponet(self):
-
         # Basic configurations
         dt = 0.01
         T_max = 300
@@ -117,7 +113,6 @@ class TestPendulumTorch(TestCase):
         data_chunks_train = list()
 
         for i in range(len(time_chunks)):
-
             indices = sorted(np.random.choice(time_chunks[i].shape[0], n_chunk_samples))
             time_chunks_train.append(time_chunks[i][indices])
             data_chunks_train.append(data_chunks[i][indices])
@@ -261,7 +256,6 @@ class TestPendulumTorch(TestCase):
 
         # Post-processing and visualizing
         for ii in range(n_outputs):
-
             plt.plot(t_test, approximated_data[:, ii], label="Approximated")
             plt.plot(t_test, output_test[:, ii], label="Exact")
             plt.legend()
@@ -272,7 +266,6 @@ class TestPendulumTorch(TestCase):
         print(f"Approximation error for the variables: {error} %")
 
     def test_improved_deeponet(self):
-
         # Basic configurations
         dt = 0.01
         T_max = 300

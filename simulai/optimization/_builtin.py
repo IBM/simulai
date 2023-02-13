@@ -28,7 +28,6 @@ class SpaRSA:
         use_mean: bool = False,
         transform: callable = None,
     ) -> None:
-
         self.lambd = lambd
         self.alpha_0 = alpha_0
         self.epsilon = epsilon
@@ -55,11 +54,9 @@ class SpaRSA:
         self.target_data = None
 
     def _bypass(self, data: np.ndarray) -> np.ndarray:
-
         return data
 
     def _F_lambda(self, V_bar: np.ndarray = None) -> np.ndarray:
-
         residual = (
             np.linalg.norm(self._WV_bar(W=self.W, V_bar=V_bar) - self.target_data, None)
             ** 2
@@ -76,24 +73,19 @@ class SpaRSA:
         target_data: np.ndarray = None,
         alpha: float = 0,
     ) -> np.ndarray:
-
         return V_bar - alpha * W.T @ (self._WV_bar(W=W, V_bar=V_bar) - target_data)
 
     def _WV_bar(self, W: np.ndarray = None, V_bar: np.ndarray = None) -> np.ndarray:
-
         return W @ V_bar
 
     def _no_null_V_plus(
         self, R_alpha: np.ndarray = None, alpha: float = 0
     ) -> np.ndarray:
-
         return (1 - self.lambd * alpha / np.linalg.norm(R_alpha, None)) * R_alpha
 
     def V_plus(self, R_alpha: np.ndarray = None, alpha: float = None):
-
         # Zeroing lines according to the regularization criteria
         def _row_function(vector: np.ndarray = None) -> np.ndarray:
-
             norm = np.linalg.norm(vector, None)
 
             if norm <= self.lambd * alpha:
@@ -108,7 +100,6 @@ class SpaRSA:
     def fit(
         self, input_data: np.ndarray = None, target_data: np.ndarray = None
     ) -> None:
-
         self.W = self.transform(data=input_data)
         self.target_data = target_data
 
@@ -126,7 +117,6 @@ class SpaRSA:
         k = 0
 
         while not stopping_criterion:
-
             V_bar = V_k
             R_alpha = self.R_alpha(
                 W=self.W, V_bar=V_bar, target_data=target_data, alpha=alpha
@@ -137,7 +127,6 @@ class SpaRSA:
             F_lambda_V_bar = self._F_lambda(V_bar=V_bar)
 
             while F_lambda_V_plus >= F_lambda_V_bar:
-
                 residual = F_lambda_V_plus - F_lambda_V_bar
 
                 sys.stdout.write(
@@ -160,11 +149,9 @@ class SpaRSA:
             alpha = min(self.lr_increase * alpha, self.alpha_0)
 
             if k > self.ref_step:
-
                 F_lambda_ref = F_lambda_list[-self.ref_step - 1]
 
                 if np.abs(F_lambda - F_lambda_ref) / F_lambda_ref <= self.epsilon:
-
                     stopping_criterion = True
 
             sys.stdout.write(("\rresidual loss: {}").format(self.norm(F_lambda)))

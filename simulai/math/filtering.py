@@ -26,7 +26,6 @@ from simulai.metrics import MemorySizeEval
 
 class HardPositivityLimiting:
     def __init__(self, tol: float = 1e-10) -> None:
-
         """
         Positivity limiting for avoiding negative values when they are physically inconsistent. It simply applies value >= tol for avoiding negative values.
 
@@ -39,7 +38,6 @@ class HardPositivityLimiting:
         self.tol = tol
 
     def _apply_limiting(self, data: np.ndarray = None) -> Tuple[np.ndarray, int]:
-
         """
         Effectively apply the limiting.
 
@@ -85,7 +83,6 @@ class HardPositivityLimiting:
             return self._apply_limiting(data=data)
 
         elif isinstance(data, h5py.Dataset):
-
             assert batch_size, (
                 "It is necessary to provide a way for estimating the " "batch size."
             )
@@ -104,7 +101,6 @@ class HardPositivityLimiting:
             total_number_of_limited = 0
 
             for batch_idx, batch in enumerate(batches):
-
                 chunk_data = data[slice(*batch)].view(float)
                 limited_chunk_data, number_of_applied = self._apply_limiting(
                     data=chunk_data
@@ -173,7 +169,6 @@ class TimeAveraging:
         formats = n_variables * ["f8"]
 
         for ii in range(0, output_n_samples):
-
             mini_batch = dataset[ii * self.batch_size : (ii + 1) * self.batch_size]
 
             mean_value = [mini_batch[name].mean(0) for name in dataset.dtype.names]
@@ -296,7 +291,6 @@ class SVDThreshold:
         return out
 
     def Marcenko_Pastur_integral(self, t: float, beta: float = None) -> float:
-
         """Calculate the Marcenko-Pastur integral
 
         Parameters
@@ -368,7 +362,6 @@ class SVDThreshold:
         data_shape: Union[tuple, list] = None,
         gamma: float = None,
     ) -> np.ndarray:
-
         """Filter singular values using the Marcenko-Pastur distribution.
 
         Parameters
@@ -473,7 +466,6 @@ class TimeSeriesExtremes:
         return previous * next
 
     def _get_indices_for_extremes(self, data: np.ndarray = None, index: int = None):
-
         """Get the indices for the extrema in the data array for a given index.
 
         Parameters

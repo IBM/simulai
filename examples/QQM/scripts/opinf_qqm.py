@@ -73,7 +73,6 @@ models = dict()
 errors = dict()
 
 for reg in regs:
-
     opinf_op = OpInf(bias_rescale=1e-15)
 
     lambda_linear = 10.0 ** reg[0]

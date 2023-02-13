@@ -193,7 +193,6 @@ test_indices = np.random.choice(n_cases_test, n_tests_choices)
 time_test = np.linspace(0, time_interval[-1], 2000)[:, None]
 
 for index in test_indices[::10]:
-
     target_test = output_dataset_test[:, :, index]
     input_test_ = input_dataset_test[None, sensors_indices, index]
     input_test = np.tile(input_test_, (2000, 1))

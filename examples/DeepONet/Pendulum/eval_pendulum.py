@@ -32,6 +32,7 @@ args = parser.parse_args()
 save_path = args.save_path
 model_name = os.path.basename(save_path)
 
+
 # Pendulum numerical solver
 class Pendulum:
     def __init__(self, rho: float = None, b: float = None, m: float = None) -> None:
@@ -72,7 +73,6 @@ saver = SPFile(compact=False)
 rober_net = saver.read(model_path=save_path)
 
 for j in range(N + 1):
-
     exact_data = solver.run(U_s[j], t)
 
     initial_state_test = U_s[j]
@@ -92,7 +92,6 @@ for j in range(N + 1):
     eval_list = list()
 
     for i in range(0, n_times):
-
         branch_input_test = np.tile(initial_state_test[None, :], (Q, 1))
 
         approximated_data = rober_net.eval(
@@ -118,7 +117,6 @@ for j in range(N + 1):
     print(f"Approximation errors, s1: {error_s1} %, s2: {error_s2} ")
 
     if j % 1 == 0:
-
         plt.plot(time, evaluation[:, 0], label="Approximated")
         plt.plot(time, exact_data[:, 0], label="Exact", ls="--")
         plt.xlabel("t (s)")

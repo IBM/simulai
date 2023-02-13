@@ -8,7 +8,6 @@ class TestKansas(TestCase):
         pass
 
     def test_rbf_basis(self):
-
         from simulai.math.kansas import Kansas
 
         n_rbfs = 50

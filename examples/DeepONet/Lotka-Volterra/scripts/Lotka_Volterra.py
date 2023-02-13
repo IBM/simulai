@@ -29,20 +29,17 @@ from scipy.integrate import odeint
 
 class PreyGaussianDisturb:
     def __init__(self, A=None, sigma=None, mu=None, T_max=None):
-
         self.sigma = sigma
         self.mu = mu
         self.T_max = T_max
         self.A = A
 
     def basis(self, t=None):
-
         output = self.A * np.exp(-((t - self.mu) ** 2) / self.sigma**2)
 
         return output
 
     def __call__(self, t=None):
-
         return self.basis(t=t)
 
 
@@ -57,7 +54,6 @@ np.random.shuffle(A)
 mus = np.linspace(10, T_max - 10, n_functions)
 
 for ff in range(n_functions):
-
     print(f"Generating input function: {ff}")
 
     function = PreyGaussianDisturb(A=A[ff], sigma=random.choice(sigmas), mu=mus[ff])
@@ -81,7 +77,6 @@ class LotkaVolterra:
     def __init__(
         self, alpha=None, beta=None, gamma=None, delta=None, forcing=None, lambd=None
     ):
-
         self.alpha = alpha
         self.beta = beta
         self.gamma = gamma
@@ -94,7 +89,6 @@ class LotkaVolterra:
         self.lambd = lambd
 
     def eval(self, state: np.ndarray = None, t: float = None) -> np.ndarray:
-
         x = state[0]
         y = state[1]
 
@@ -106,7 +100,6 @@ class LotkaVolterra:
         return np.array([x_residual, y_residual])
 
     def run(self, initial_state, t):
-
         solution = odeint(self.eval, initial_state, t)
 
         return np.vstack(solution), self.forcing(t)
@@ -129,7 +122,6 @@ output_dataset = list()
 input_dataset = list()
 
 for ff, function in enumerate(functions):
-
     print(f"Solving system using input function {ff}")
 
     # solver = LotkaVolterra(alpha=alpha, beta=beta, gamma=gamma, delta=delta, forcing=function, lambd=lambd)

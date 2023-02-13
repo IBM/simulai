@@ -39,7 +39,6 @@ from simulai.utilities import make_temp_directory
 
 
 def test_modelpool_nonlinear_forcing_numba_MPI(n_numba_workers: int = None):
-
     n_steps = 1000
     A = 1
     T = 50
@@ -138,7 +137,6 @@ def test_modelpool_nonlinear_forcing_numba_MPI(n_numba_workers: int = None):
 
 
 if __name__ == "__main__":
-
     # Reading command-line arguments
     parser = ArgumentParser(description="Argument parsers")
 

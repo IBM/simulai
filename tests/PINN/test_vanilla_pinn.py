@@ -26,7 +26,6 @@ class TestAllencahnPINN(TestCase):
         pass
 
     def test_allen_cahn(self):
-
         # Our PDE
         # Allen-cahn equation
 
@@ -92,7 +91,6 @@ class TestAllencahnPINN(TestCase):
         lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
         def model():
-
             from simulai.regression import DenseNetwork
 
             input_labels = ["x", "t"]
@@ -134,7 +132,6 @@ class TestAllencahnPINN(TestCase):
         net.summary()
 
         for optimizer_str in ["adam", "bbi"]:
-
             optimizer = Optimizer(
                 optimizer_str,
                 params=optimizer_config,

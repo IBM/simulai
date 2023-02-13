@@ -21,7 +21,6 @@ from simulai.regression import OpInf
 
 
 def jacobian(sigma=None, rho=None, beta=None, x=None, y=None, z=None):
-
     return np.array([[-sigma, sigma, 0], [rho - z, -1, -x], [y, x, -beta]])
 
 
@@ -78,7 +77,6 @@ lorenz_op.fit(
 
 # Post-processing just when the MPI process is finished
 if lorenz_op.success is True or (parallel is None and not lorenz_op.success):
-
     print(f"A_hat: {np.array_str(lorenz_op.A_hat, precision=2, suppress_small=True)}")
     print(f"H_hat: {np.array_str(lorenz_op.H_hat, precision=2, suppress_small=True)}")
     print(f"c_hat: {np.array_str(lorenz_op.c_hat, precision=2, suppress_small=True)}")

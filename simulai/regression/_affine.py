@@ -40,7 +40,6 @@ class AffineMapping:
         input_augmented_reservoir=False,
         model_id=None,
     ):
-
         """
         :param reservoir_dim: dimension of the reservoir matrix
         :type reservoir_dim: int
@@ -86,7 +85,6 @@ class AffineMapping:
         return {"A": self.A, "b": self.b}
 
     def fit(self, input_data=None, target_data=None):
-
         data_in = input_data.T
 
         if not self.estimate_bias_transition and not self.estimate_linear_transition:
@@ -130,7 +128,6 @@ class AffineMapping:
             raise RuntimeError("Unreachable line of code")
 
     def step(self, data=None):
-
         affine_term = 0
         if self.A is not None:
             affine_term += self.A @ data
@@ -143,17 +140,14 @@ class AffineMapping:
 
     @property
     def state_dim(self):
-
         return self.number_of_inputs
 
     def predict(self, initial_data=None, horizon=None):
-
         output_data = np.zeros((self.number_of_outputs, horizon))
 
         data = initial_data
 
         for tt in range(horizon):
-
             print("Extrapolating for the timestep {}".format(tt))
 
             affine_term = 0
@@ -169,7 +163,6 @@ class AffineMapping:
         return output_data.T
 
     def save(self, save_path=None, model_name=None):
-
         configs = {
             k: getattr(self, k) for k in signature(self.__init__).parameters.keys()
         }
@@ -188,7 +181,6 @@ class AffineMapping:
 
     @classmethod
     def restore(cls, model_path, model_name):
-
         path = os.path.join(model_path, model_name + ".pkl")
         with open(path, "rb") as fp:
             d = pickle.load(fp)

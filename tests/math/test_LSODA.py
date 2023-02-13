@@ -21,7 +21,6 @@ from simulai.math.integration import LSODA, RK4, ClassWrapper
 
 class Pendulum:
     def __init__(self, k=1, u=None):
-
         self.k = k
         self.u = u
 
@@ -31,14 +30,12 @@ class Pendulum:
             self.eval = self._eval_with_forcing
 
     def _eval_no_forcing(self, data):
-
         s1 = data[0, 0]
         s2 = data[0, 1]
 
         return np.array([s2, -self.k * np.sin(s1)])
 
     def _eval_with_forcing(self, data, forcing_data=None):
-
         s1 = data[0, 0]
         s2 = data[0, 1]
         u = forcing_data[0, 0]
@@ -46,11 +43,9 @@ class Pendulum:
         return np.array([s2, -self.k * np.sin(s1) + u])
 
     def jacobian(self, x):
-
         return np.array([[0, 1], [self.k * np.cos(x[0]), 0]])
 
     def __call__(self, data):
-
         return self.eval(data)
 
 
@@ -63,7 +58,6 @@ class TestLSODAIntegrator(TestCase):
         return A * (np.cos(2 * x) + np.sin(2 * x))
 
     def test_integration_without_forcings(self):
-
         N = 1000
         t = np.linspace(0, 10 * np.pi, N)
         dt = t[1] - t[0]
@@ -84,7 +78,6 @@ class TestLSODAIntegrator(TestCase):
         ), "The output of the integration must be a np.ndarray."
 
     def test_integration_with_forcings(self):
-
         N = 1000
         t = np.linspace(0, 10 * np.pi, N)
 
@@ -105,7 +98,6 @@ class TestLSODAIntegrator(TestCase):
         ), "The output of the integration must be a np.ndarray."
 
     def test_integration_with_forcings_stiffness(self):
-
         N = 1000
         t = np.linspace(0, 10 * np.pi, N)
 

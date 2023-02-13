@@ -53,7 +53,6 @@ class ObjectiveESNIndependent:
         reservoir_config_space: Dict = None,
         pool_template: str = None,
     ):
-
         self.train_data = train_data
         self.train_data_aux = train_data_aux
         self.validation_data = validation_data
@@ -101,7 +100,6 @@ class ObjectiveESNIndependent:
 
     @property
     def _default_reservoir_config_space(self):
-
         return {
             "radius": [0.1, 1.2],
             "sigma": [0.1, 1.2],
@@ -118,7 +116,6 @@ class ObjectiveESNIndependent:
         }
 
     def optuna_objective(self, trial: optuna.Trial):
-
         float_vars = [
             "radius",
             "sigma",
@@ -190,7 +187,6 @@ class ObjectiveESNIndependent:
         return abs(A_ix + aug_ix) < 1
 
     def _configure_pool(self, configs: Dict, trainable_variables: Dict = None):
-
         local_config = configs.copy()
         model_id = local_config.pop("model_id")
         if "exp_beta" in local_config:
@@ -223,7 +219,6 @@ class ObjectiveESNIndependent:
     def _extrapolate_target_model(
         self, init_state=None, init_aux=None, next_data=None, next_aux=None, reset=True
     ):
-
         if reset:
             self._pool_ix.set_reference()
             self._pool_ix.reset()
@@ -255,7 +250,6 @@ class ObjectiveESNIndependent:
         return extrapolation_data
 
     def objective(self, configs: Dict):
-
         self._configure_pool(configs=configs)
 
         self._fit()
@@ -372,7 +366,6 @@ def optuna_assess_best_solution_ESNIndependent(
     recompute_trainable_variables: bool = False,
     pool_template: str = None,
 ):
-
     hyper_search = optuna.load_study(
         study_name=study_name,
         storage=storage,
@@ -454,7 +447,6 @@ def optuna_objectiveESNIndependent(
     pool_template: str = None,
     do_grid_search: bool = False,
 ):
-
     o = ObjectiveESNIndependent(
         train_data=train_data,
         train_data_aux=train_data_aux,
@@ -497,7 +489,6 @@ def optuna_assess_best_joint_solution_ESNIndependent(
     pool_template: str = None,
     hidden_state_startup_burning_steps: int = 0,
 ):
-
     _n_inputs = initial_data.shape[1] + data_aux.shape[1]
     if pool_template == "independent_timeseries":
         _esn_n_inputs = _n_inputs
@@ -610,7 +601,6 @@ def define_reservoir_configs_for_affine_training(
     mount_path: str = None,
     pool_template: str = None,
 ):
-
     with contextlib.ExitStack() as stack:
         if mount_path is None:
             mount_path = os.getenv("MOUNT_PATH", "")

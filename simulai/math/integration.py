@@ -23,7 +23,6 @@ from simulai.abstract import Integral
 
 # Parent class for explicit time-integrators
 class ExplicitIntegrator(Integral):
-
     name = "int"
 
     def __init__(
@@ -125,7 +124,6 @@ class ExplicitIntegrator(Integral):
     def step_with_forcings_separated(
         self, variables_state_initial: np.ndarray, forcing_state: np.ndarray, dt: float
     ) -> Tuple[np.ndarray, np.ndarray]:
-
         """
         March a single step in the time-integration process, with variables and forcings being treated separately.
 
@@ -153,7 +151,6 @@ class ExplicitIntegrator(Integral):
         k_weighted = None
 
         for stage in range(self.n_stages):
-
             k = self.right_operator(**variables_state)
             residuals_list[stage, :] = k
             k_weighted = self.weights[stage].dot(residuals_list)
@@ -169,7 +166,6 @@ class ExplicitIntegrator(Integral):
 
     # Looping over multiple steps without using forcings
     def _loop(self, initial_state: np.ndarray, epochs: int, dt: float) -> list:
-
         """
         Time-integration loop.
 
@@ -207,7 +203,6 @@ class ExplicitIntegrator(Integral):
     def _loop_forcings(
         self, initial_state: np.ndarray, forcings: np.ndarray, epochs: int, dt: float
     ) -> list:
-
         """
         Forced time-integration loop.
 
@@ -295,7 +290,6 @@ class ExplicitIntegrator(Integral):
 
 # Built-in Runge-Kutta 4th order
 class RK4(ExplicitIntegrator):
-
     name = "rk4_int"
 
     def __init__(self, right_operator):
@@ -321,7 +315,6 @@ class RK4(ExplicitIntegrator):
 # Wrapper for using the SciPy LSODA (LSODA itself is a wrapper for ODEPACK)
 class LSODA:
     def __init__(self, right_operator: callable) -> None:
-
         self.right_operator = right_operator
 
         self.log_phrase = "LSODA with forcing"
@@ -412,7 +405,6 @@ class LSODA:
 # Wrapper for handling function objects in time-integrators
 class FunctionWrapper:
     def __init__(self, function: callable, extra_dim: bool = True) -> None:
-
         self.function = function
 
         if extra_dim is True:
@@ -426,23 +418,18 @@ class FunctionWrapper:
             self.prepare_output = self._no_extra_dim_prepare_output
 
     def _extra_dim_prepare_input(self, input_data: np.ndarray) -> np.ndarray:
-
         return input_data[None, :]
 
     def _no_extra_dim_prepare_input(self, input_data: np.ndarray) -> np.ndarray:
-
         return input_data
 
     def _extra_dim_prepare_output(self, output_data: np.ndarray) -> np.ndarray:
-
         return output_data[0, :]
 
     def _no_extra_dim_prepare_output(self, output_data: np.ndarray) -> np.ndarray:
-
         return output_data
 
     def __call__(self, input_data: np.ndarray) -> np.ndarray:
-
         input_data = self.prepare_input(input_data)
 
         return self.prepare_output(self.function(input_data))
@@ -451,7 +438,6 @@ class FunctionWrapper:
 # Wrapper for handling class objects in time-integrators
 class ClassWrapper:
     def __init__(self, class_instance: callable) -> None:
-
         assert hasattr(
             class_instance, "eval"
         ), f"The object class_instance={class_instance} has no attribute eval."
@@ -466,7 +452,6 @@ class ClassWrapper:
         self.forcing = None
 
     def _squeezable(self, input: np.ndarray) -> np.ndarray:
-
         try:
             output = np.squeeze(input, axis=0)
         except:
@@ -475,23 +460,19 @@ class ClassWrapper:
         return output
 
     def set(self, **kwargs):
-
         for key, value in kwargs.items():
             setattr(self, key, value)
 
     def __call__(self, input_data: np.ndarray) -> np.ndarray:
-
         return self.class_instance(input_data)[0, :]
 
     def eval(self, input_data: np.ndarray, t: float) -> np.ndarray:
-
         input_data = input_data
         evaluation = self.class_instance.eval(input_data[None, :])
 
         return self._squeezable(evaluation)
 
     def eval_forcing(self, input_data: np.ndarray, t: float, i: int) -> np.ndarray:
-
         evaluation = self.class_instance.eval(
             input_data[None, :], forcing_data=self.forcing[i : i + 1, :]
         )
@@ -499,7 +480,6 @@ class ClassWrapper:
         return self._squeezable(evaluation)
 
     def _jacobian(self, input_data: np.ndarray, *args, **kwargs) -> np.ndarray:
-
         print("Using jacobian: stiffness alert.")
 
         return self.class_instance.jacobian(input_data)

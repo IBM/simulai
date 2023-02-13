@@ -19,8 +19,12 @@ import h5py
 import numpy as np
 import pytest
 
-from simulai.metrics import (FeatureWiseErrorNorm, L2Norm, MemorySizeEval,
-                             SampleWiseErrorNorm)
+from simulai.metrics import (
+    FeatureWiseErrorNorm,
+    L2Norm,
+    MemorySizeEval,
+    SampleWiseErrorNorm,
+)
 from simulai.utilities import make_temp_directory
 
 
@@ -29,7 +33,6 @@ class TestMetrics(TestCase):
         pass
 
     def test_l2norm_clean_nan_and_large(self):
-
         # When there is invalid data in the datasets (masked as NaN or others)
         # it will be removed during the error evaluation
         a = 1.01
@@ -46,7 +49,6 @@ class TestMetrics(TestCase):
         self.assertTrue(abs(a - b) == n, "finish")
 
     def test_memory_size_eval(self):
-
         shape = (140000, 1000)
         max_batches = shape[0]
         batch_sizer = MemorySizeEval(memory_tol_percent=0.5)
@@ -60,7 +62,6 @@ class TestMetrics(TestCase):
             pass
 
     def test_samplewisenorm(self):
-
         batch_sizer = MemorySizeEval(memory_tol_percent=0.1)
 
         Nx = int(3)
@@ -92,13 +93,12 @@ class TestMetrics(TestCase):
         batch_size_list = [3, batch_sizer]
         data_interval_list = [[2, 4], [0, 7]]
         with make_temp_directory() as tmp_dir:
-
             test_data = os.path.join(tmp_dir, f"data.h5")
             with h5py.File(test_data, "w") as fp:
                 dataset = fp.create_dataset(
                     "data",
                     shape=(Nt, Nx, Ny, 1),
-                    dtype=[("T", np.float), ("X", np.float), ("Y", np.float)],
+                    dtype=[("T", float), ("X", float), ("Y", float)],
                 )
                 dataset[...] = Z_array
 
@@ -107,7 +107,7 @@ class TestMetrics(TestCase):
                 dataset = fp.create_dataset(
                     "data",
                     shape=(Nt, Nx, Ny, 1),
-                    dtype=[("T", np.float), ("X", np.float), ("Y", np.float)],
+                    dtype=[("T", float), ("X", float), ("Y", float)],
                 )
                 dataset[...] = Z_array_ref
 
@@ -142,7 +142,6 @@ class TestMetrics(TestCase):
                                     )
 
                                     for key in dataset.dtype.names:
-
                                         n1 = SampleWiseErrorNorm()(
                                             data=dataset,
                                             reference_data=reference,

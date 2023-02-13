@@ -35,9 +35,9 @@ x = np.linspace(0, L, K)
 t = np.linspace(0, t_max, N)
 T, X = np.meshgrid(t, x, indexing="ij")
 
+
 # Model template
 def model():
-
     from simulai.models import AutoencoderMLP
     from simulai.regression import DenseNetwork
 

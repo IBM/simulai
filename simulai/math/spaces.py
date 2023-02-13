@@ -21,7 +21,6 @@ class GaussianRandomFields:
     def __init__(
         self, x_interval=(0, 1), kernel="RBF", length_scale=1, N=None, interp="cubic"
     ):
-
         """
         Initialize a Gaussian process object.
 

@@ -8,7 +8,6 @@ from simulai.optimization import Optimizer
 
 
 def model():
-
     from simulai.models import AutoencoderMLP
     from simulai.regression import DenseNetwork
 
@@ -43,7 +42,6 @@ class TestAutoencoder(TestCase):
         pass
 
     def test_autoencoder_eval(self):
-
         data = np.random.rand(1_000, 256)
 
         autoencoder = model()
@@ -53,7 +51,6 @@ class TestAutoencoder(TestCase):
         assert estimated_output.shape == data.shape
 
     def test_autoencoder_save_restore(self):
-
         data = np.random.rand(1_000, 256)
 
         autoencoder = model()
@@ -75,7 +72,6 @@ class TestAutoencoder(TestCase):
         assert estimated_output.shape == data.shape
 
     def test_autoencoder_train(self):
-
         params = {
             "lambda_1": 0.0,
             "lambda_2": 0.0,

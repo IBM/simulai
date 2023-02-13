@@ -23,7 +23,6 @@ from simulai.rom import QQM
 
 class TestQQM(TestCase):
     def setUp(self) -> None:
-
         self.t = np.linspace(0, 2 * np.pi, 10000)
 
         # input: s = [t, sin(t), cos(t)]
@@ -41,7 +40,6 @@ class TestQQM(TestCase):
         )
 
     def test_qqm_sparsa(self):
-
         # Using the default solver (SpaRSA)
         qqm = QQM(n_inputs=3, lambd=1e-3, alpha_0=100, epsilon=1e-2, use_mean=True)
 
@@ -53,7 +51,6 @@ class TestQQM(TestCase):
         assert isinstance(qqm.V_bar, np.ndarray)
 
     def test_qqm_sparsa_hard_limiting(self):
-
         # Using the default solver (SpaRSA) with sparsity hard-limiting
         qqm = QQM(
             n_inputs=3,
@@ -69,7 +66,6 @@ class TestQQM(TestCase):
         assert isinstance(qqm.V_bar, np.ndarray)
 
     def test_qqm_pinv(self):
-
         qqm = QQM(n_inputs=3, lambd=1e-3, alpha_0=100, use_mean=True)
 
         # Using the Moore-Penrose generalized inverse
@@ -79,7 +75,6 @@ class TestQQM(TestCase):
         assert isinstance(qqm.V_bar, np.ndarray)
 
     def test_qqm_save_load(self):
-
         qqm = QQM(n_inputs=3, lambd=1e-3, alpha_0=100, use_mean=True)
 
         # Using the Moore-Penrose generalized inverse

@@ -49,14 +49,12 @@ class GaussLegendre:
             ]
             print("")
         elif isinstance(p_order, tuple):
-
             self.poly = tuple()
             self.poly_der = tuple()
             self.poly_roots = tuple()
             self.weights = tuple()
 
             for _p_order in p_order:
-
                 poly = jacobi(_p_order, self.alpha, self.beta)
                 poly_der = poly.deriv(1)
                 poly_roots = sorted(poly.roots)
@@ -105,7 +103,6 @@ class GaussLegendre:
         weights_list = list()
 
         for key, el in mesh.elements.items():
-
             sys.stdout.write(
                 "\rMapping from the reference to the real mesh element {}".format(key)
             )
@@ -142,12 +139,10 @@ class GaussLegendre:
         boundaries_list = dict()
 
         for boundary in mesh.boundary_nodes_tags:
-
             nodes_list = list()
             weights_list = list()
 
             for key, (el, tag) in mesh.boundary_elements[boundary].items():
-
                 nodes = mesh.internal_boundary_product(self.poly_roots)
 
                 weights = np.array(mesh.internal_boundary_product(self.weights)).prod(

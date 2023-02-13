@@ -27,7 +27,6 @@ class TestOperatorsConstruction(TestCase):
         pass
 
     def test_operators_construction(self):
-
         n_samples = 1000
         n_vars = 5
 
@@ -51,12 +50,10 @@ class TestOperatorsConstruction(TestCase):
         ]
 
         for ob in observables:
-
             D_o_list = list()
             R_matrix_list = list()
 
             for batch_size in batch_sizes:
-
                 # Instantiating OpInf
                 model = ExtendedOpInf(observables=ob, operator_config=operator_config)
 

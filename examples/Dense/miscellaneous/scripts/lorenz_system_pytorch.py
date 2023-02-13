@@ -36,7 +36,6 @@ class TestLorenzTorch:
         pass
 
     def test_lorenz_torch(self):
-
         dt = 0.005
         T_max = 50
         rho = 28
@@ -137,7 +136,6 @@ class TestLorenzTorch:
         )
 
         for ii in range(n_inputs):
-
             plt.plot(approximated_data[:, ii], label="Approximated")
             plt.plot(test_output_data[:, ii], label="Exact")
             plt.legend()
@@ -154,7 +152,6 @@ class TestLorenzTorch:
         estimated_field = solver.run(initial_state, time_test)
 
         for ii in range(n_inputs):
-
             plt.plot(estimated_field[:, ii], label="Approximated")
             plt.plot(test_input_data[:, ii], label="Exact")
             plt.legend()

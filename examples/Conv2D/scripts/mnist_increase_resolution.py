@@ -28,7 +28,6 @@ from simulai.regression import ConvolutionalNetwork
 
 # Applying a simple nonlinear transformation
 def apply_transformation(data, k, cval=0):
-
     y_ = convolve(data, k, cval=cval)
 
     return np.where(y_ > y_.mean(), y_, y_**2)
@@ -36,7 +35,6 @@ def apply_transformation(data, k, cval=0):
 
 # MinMax normalization
 def normalize(data_train, data_test):
-
     maximum = data_train.max()
     minimum = data_train.min()
 
@@ -71,12 +69,10 @@ values_train = x_train.reshape(-1, np.product(dims[:]))
 values_test = x_test.reshape(-1, np.product(dims[:]))
 
 if not os.path.isfile(path_new):
-
     interpolated_train_list = list()
     interpolated_test_list = list()
 
     for ii in range(n_samples_train):
-
         sys.stdout.write(f"\r{ii}/{n_samples_train}")
         sys.stdout.flush()
         interpolated = (
@@ -89,7 +85,6 @@ if not os.path.isfile(path_new):
         interpolated_train_list.append(interpolated)
 
     for ii in range(n_samples_test):
-
         sys.stdout.write(f"\r{ii}/{n_samples_test}")
         sys.stdout.flush()
         interpolated = (
@@ -106,7 +101,6 @@ if not os.path.isfile(path_new):
     np.savez(path_new, x_train_hr=x_train_hr, x_test_hr=x_test_hr)
 
 else:
-
     dataset_new = np.load(path_new)
 
     x_train_hr = dataset_new["x_train_hr"]

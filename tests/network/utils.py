@@ -2,7 +2,6 @@ import os
 
 
 def configure_device():
-
     simulai_network_gpu = os.getenv("SIMULAI_NETWORK_GPU")
 
     if not simulai_network_gpu:

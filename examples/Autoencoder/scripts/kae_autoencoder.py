@@ -34,11 +34,9 @@ def project_to_interval(interval, data):
 # Pendulum numerical solver
 class Pendulum:
     def __init__(self, rho: float = None):
-
         self.rho = rho
 
     def eval(self, state: np.ndarray = None, t: float = None) -> np.ndarray:
-
         x = state[0]
         y = state[1]
 
@@ -58,7 +56,6 @@ class TestPendulumKAE(TestCase):
         pass
 
     def test_kae(self):
-
         # Basic configurations
         dt = 0.01
         T_max = 300
@@ -136,7 +133,6 @@ class TestPendulumKAE(TestCase):
         )
 
         for j in range(2):
-
             plt.plot(data_test_evaluated[:, j])
             plt.plot(data_test[:, j])
             plt.show()

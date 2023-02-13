@@ -62,11 +62,9 @@ discard = int(T_discard / dt)
 save_path = os.path.dirname(data_path)
 
 if data_path.split(".")[-1] == "npy":
-
     data = np.load(data_path)[discard::10]
 
 elif data_path.split(".")[-1] == "h5":
-
     import h5py
 
     key = "XCO2"
@@ -93,13 +91,11 @@ x = np.arange(0, data.shape[1])
 norm = False
 # Use normalization or not
 if norm is not True:
-
     data_norm = data
     data_train_norm = data_train
     data_test_norm = data_test
 
 else:
-
     data_norm = 2 * (data - min_train) / (max_train - min_train) - 1
     data_train_norm = 2 * (data_train - min_train) / (max_train - min_train) - 1
     data_test_norm = 2 * (data_test - min_train) / (max_train - min_train) - 1

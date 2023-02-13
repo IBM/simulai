@@ -23,7 +23,6 @@ class StructuredMesh:
     def __init__(
         self, dim_bounds=None, dim_gdl=None, boundary_dim_gdl=None, dim_tags=None
     ):
-
         self.n_dim = len(dim_tags)
 
         self.dim_tags = dim_tags
@@ -44,21 +43,18 @@ class StructuredMesh:
 
         # Constructing axis
         for bounds, gdl, tag in zip(dim_bounds, dim_gdl, dim_tags):
-
             setattr(self, tag, np.linspace(*bounds, gdl + 1))
 
         mesh_matrices = np.meshgrid(*[getattr(self, tag) for tag in dim_tags])
 
         # Constructing the mesh matrices
         for tag, matrix in zip(dim_tags, mesh_matrices):
-
             matrix_tag = tag.capitalize() + "_f"
             self.mesh_tags.append(matrix_tag)
             setattr(self, matrix_tag, matrix)
 
         # Constructing the mesh elements
         for tag in self.dim_tags:
-
             gdl = self.dim_gdl_tags[tag]
 
             domain = getattr(self, tag).copy()
@@ -70,7 +66,6 @@ class StructuredMesh:
         for ii, el in enumerate(
             product(*[getattr(self, tag + "_subdomains") for tag in dim_tags])
         ):
-
             self.elements["el_" + str(ii)] = el
 
         for bounds, gdl, tag in zip(dim_bounds, boundary_dim_gdl, dim_tags):
@@ -78,7 +73,6 @@ class StructuredMesh:
 
         # Constructing the boundaries
         for dim, dim_tag in enumerate(self.dim_tags):
-
             dim_tags = copy.copy(self.dim_tags)
 
             lower_bound = getattr(self, dim_tag + "_b").copy()[0]
@@ -100,7 +94,6 @@ class StructuredMesh:
             upper_boundary.pop(0)
 
             for ii, otag in enumerate(dim_tags):
-
                 setattr(self, otag + "_" + dim_tag + "_b0", lower_boundary[ii])
                 setattr(self, otag + "_" + dim_tag + "_bL", upper_boundary[ii])
 
@@ -109,7 +102,6 @@ class StructuredMesh:
 
         # Constructing the boundary elements
         for ii, bb in enumerate(self.boundary_nodes_tags):
-
             boundary_array = getattr(self, bb).copy()
             gdl = boundary_array.shape[0]
 
@@ -124,11 +116,9 @@ class StructuredMesh:
             self.boundary_elements[bb] = subdomains
 
     def _get_boundaries_curves(self, but=None):
-
         return [getattr(self, tag + "_b") for tag in self.dim_tags if tag != but]
 
     def internal_product(self, vector):
-
         if isinstance(vector, list):
             product_list = self.n_dim * (vector,)
         elif isinstance(vector, tuple):
@@ -191,7 +181,6 @@ class StructuredMesh:
             print("An error occurred: ", e)
 
     def map_to_element(self, points, reference_interval, el):
-
         lower_bound, upper_bound = reference_interval
 
         local_el = np.array(el)
@@ -207,7 +196,6 @@ class StructuredMesh:
         return points_mapped
 
     def map_to_boundary_element(self, points, reference_interval, el, tag=None):
-
         lower_bound, upper_bound = reference_interval
 
         local_el = np.array(el)

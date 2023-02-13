@@ -26,7 +26,6 @@ from ._pytorch_network import NetworkTemplate
 
 class ReservoirComputing(Regression):
     def __init__(self, reservoir_dim=None, sparsity_level=None):
-
         super().__init__()
 
         self.sparsity_tolerance = 0.0025  # Default choice
@@ -67,7 +66,6 @@ class NetworkInstanceGen:
     def __init__(
         self, architecture: str, dim: str = None, shallow: bool = False
     ) -> None:
-
         self.shallow = shallow
 
         if architecture == "dense":
@@ -95,7 +93,6 @@ class NetworkInstanceGen:
         self.interp_tag = {"1d": "linear", "2d": "bicubic", "3d": "trilinear"}
 
         if architecture == "cnn":
-
             assert dim in ["1d", "2d", "3d"], "dim must be in ['1d', '2d', '3d']. "
 
             self.dim = dim
@@ -126,13 +123,11 @@ class NetworkInstanceGen:
         activation: str = None,
         name: str = None,
     ) -> dict:
-
         assert type(input_dim) == int
         assert type(output_dim) == int
         assert type(activation) == str
 
         if self.shallow == True:
-
             config_dict = {
                 "input_size": input_dim,
                 "output_size": output_dim,
@@ -141,26 +136,21 @@ class NetworkInstanceGen:
             }
 
         else:
-
             # Creating the list of units
             ref = input_dim
             result = input_dim
             units_list = list()
 
             if input_dim > output_dim:
-
                 while (ref % self.divisor < ref) and (
                     result > self.divisor * output_dim
                 ):
-
                     result, remainder = divmod(ref, self.divisor)
                     ref = result
                     units_list.append(result)
 
             else:
-
                 while result < int(output_dim / (self.multiplier)):
-
                     result *= self.multiplier
 
                     units_list.append(result)
@@ -176,19 +166,16 @@ class NetworkInstanceGen:
         return config_dict
 
     def _is_div_cnn_dims(self, dim: Tuple[int, ...]) -> bool:
-
         reduce_dims = dim[2:]
 
         return all([idim % self.divisor == 0 for idim in reduce_dims])
 
     def _div_cnn_dims(self, dim: Tuple[int, ...]) -> Tuple[int, ...]:
-
         reduce_dims = dim[2:]
 
         return dim[:2] + tuple([int(idim / self.divisor) for idim in reduce_dims])
 
     def _multiply_cnn_dims(self, dim: Tuple[int, ...]) -> Tuple[int, ...]:
-
         reduce_dims = dim[2:]
 
         return dim[:2] + tuple([int(idim * self.multiplier) for idim in reduce_dims])
@@ -196,7 +183,6 @@ class NetworkInstanceGen:
     def _gen_cnn_layer_increase_dimensionality(
         self, channels_in: int = None, channels_out: int = None
     ) -> dict:
-
         if channels_out == None:
             channels_out = int(channels_in / self.channels_multiplier)
 
@@ -218,7 +204,6 @@ class NetworkInstanceGen:
     def _gen_cnn_layer_reduce_dimensionality(
         self, channels_in: int = None, channels_out: int = None
     ) -> dict:
-
         if channels_out == None:
             channels_out = channels_in * self.channels_multiplier
 
@@ -245,7 +230,6 @@ class NetworkInstanceGen:
         name: str = None,
         **kwargs,
     ) -> dict:
-
         assert type(input_dim) == tuple
         assert type(activation) == str
 
@@ -255,7 +239,6 @@ class NetworkInstanceGen:
         layer_count = 0
 
         while self._is_div_cnn_dims(ref_dim):
-
             if layer_count == 0:
                 channels_out = self.channels
             else:
@@ -292,7 +275,6 @@ class NetworkInstanceGen:
         name: str = None,
         **kwargs,
     ) -> dict:
-
         assert type(input_dim) == tuple
         assert type(output_dim) == tuple
         assert type(activation) == str
@@ -304,7 +286,6 @@ class NetworkInstanceGen:
         layer_count = 0
 
         while not (sum(ref_dim[2:]) >= int(sum(output_dim[2:]) / self.multiplier)):
-
             layer = self._gen_cnn_layer_increase_dimensionality(channels_in=channels)
 
             channels = layer["out_channels"]
@@ -341,7 +322,6 @@ class NetworkInstanceGen:
         reduce_dimensionality: bool = True,
         **kwargs,
     ) -> NetworkTemplate:
-
         # Selecting the architecture generator function to be used.
         if self.architecture_str == "cnn":
             if reduce_dimensionality == True:
@@ -361,7 +341,6 @@ class NetworkInstanceGen:
             pass
 
         if self.architecture_str == "cnn":
-
             if channels == None:
                 warnings.warn(
                     "As no value was provided for 'channels',"
@@ -384,6 +363,7 @@ class NetworkInstanceGen:
 # Templates used for creating autoenoders using automatically
 # generated configurations
 
+
 # MLP autoencoder
 def mlp_autoencoder_auto(
     input_dim: int = None,
@@ -393,7 +373,6 @@ def mlp_autoencoder_auto(
     shallow: bool = False,
     name: str = None,
 ) -> Tuple[NetworkTemplate, ...]:
-
     from simulai.templates import NetworkInstanceGen
 
     msg = (
@@ -419,7 +398,7 @@ def mlp_autoencoder_auto(
 
     # Default choice for the model name
     if name == None:
-        name = 'mlp_autoencoder'
+        name = "mlp_autoencoder"
 
     encoder = autogen(
         input_dim=input_dim,
@@ -448,7 +427,6 @@ def cnn_autoencoder_auto(
     shallow: bool = False,
     name: str = None,
 ) -> Tuple[NetworkTemplate, ...]:
-
     from simulai.templates import NetworkInstanceGen
 
     msg = (
@@ -458,7 +436,6 @@ def cnn_autoencoder_auto(
     )
 
     if output_dim == None:
-
         print(
             "As no output_dim was provided, it is considered an identity autoencoder, so"
             + "output_dim == input_dim"
@@ -482,7 +459,7 @@ def cnn_autoencoder_auto(
 
     # Default choice for the model name
     if name == None:
-        name = 'cnn_autoencoder'
+        name = "cnn_autoencoder"
 
     encoder = autogen_cnn(
         input_dim=input_dim,
@@ -535,9 +512,7 @@ def autoencoder_auto(
     case: str = None,
     name: str = None,
 ) -> Tuple[Union[NetworkTemplate, None], ...]:
-
     if architecture == "dense":
-
         encoder, decoder = mlp_autoencoder_auto(
             input_dim=input_dim,
             latent_dim=latent_dim,
@@ -550,7 +525,6 @@ def autoencoder_auto(
         return encoder, decoder, None, None
 
     elif architecture == "cnn":
-
         encoder, decoder, bottleneck_encoder, bottleneck_decoder = cnn_autoencoder_auto(
             input_dim=input_dim,
             latent_dim=latent_dim,

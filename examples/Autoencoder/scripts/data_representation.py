@@ -30,9 +30,9 @@ args = parser.parse_args()
 
 data_path = args.data_path
 
+
 # Model template
 def model():
-
     from simulai.models import AutoencoderMLP
     from simulai.regression import DenseNetwork
 

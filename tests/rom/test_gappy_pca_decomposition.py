@@ -18,8 +18,7 @@ import numpy as np
 
 from simulai.math.progression import gp
 from simulai.rom import GPOD
-from simulai.special import (Scattering, bidimensional_map_nonlin_3,
-                             time_function)
+from simulai.special import Scattering, bidimensional_map_nonlin_3, time_function
 
 
 class TestPCADecomposition(TestCase):
@@ -31,7 +30,6 @@ class TestPCADecomposition(TestCase):
     """
 
     def test_2D_separable_dataset(self) -> None:
-
         train_factor = 0.6
 
         N = 1000
@@ -57,7 +55,6 @@ class TestPCADecomposition(TestCase):
     """
 
     def test_2D_non_separable_dataset(self) -> None:
-
         train_factor = 0.6
 
         # Constructing dataset
@@ -89,9 +86,7 @@ class TestPCADecomposition(TestCase):
         self._exec_GPCA_tests(fit_data, test_data, N_components)
 
     def _exec_GPCA_tests(self, fit_data, test_data, N_components) -> None:
-
         for n_components in N_components:
-
             pca_config = {"n_components": n_components}
 
             sensors_distribution = n_components * [12]

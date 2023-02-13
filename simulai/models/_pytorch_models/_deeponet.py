@@ -26,7 +26,6 @@ from simulai.templates import NetworkTemplate, guarantee_device
 
 
 class DeepONet(NetworkTemplate):
-
     name = "deeponet"
     engine = "torch"
 
@@ -102,7 +101,6 @@ class DeepONet(NetworkTemplate):
 
         # Checking the compatibility of the subnetworks outputs for each kind of product being employed
         if self.product_type != "dense":
-
             output_branch = self.branch_network.output_size
             output_trunk = self.trunk_network.output_size
 
@@ -114,7 +112,6 @@ class DeepONet(NetworkTemplate):
                 f" and {output_trunk}"
             )
         else:
-
             output_branch = self.branch_network.output_size
 
             assert not output_branch % self.var_dim, (
@@ -278,7 +275,6 @@ class DeepONet(NetworkTemplate):
         """
 
         if self.var_dim > 1:
-
             # The decoder network can be used for producing multidimensional outputs
             if self.decoder_network is not None:
                 return self._forward_decoder
@@ -294,7 +290,6 @@ class DeepONet(NetworkTemplate):
 
     @property
     def _var_map(self) -> dict:
-
         # It checks all the data arrays in self.var_map have the same
         # batches dimension
         batches_dimensions = set([value.shape[0] for value in self.var_map.values()])
@@ -315,7 +310,6 @@ class DeepONet(NetworkTemplate):
 
     @property
     def weights(self) -> list:
-
         return sum([net.weights for net in self.subnetworks], [])
 
     def forward(
@@ -372,7 +366,6 @@ class DeepONet(NetworkTemplate):
     def eval_subnetwork(
         self, name: str = None, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> np.ndarray:
-
         assert (
             name in self.subnetworks_names
         ), f"The name {name} is not a subnetwork of {self}."
@@ -382,7 +375,6 @@ class DeepONet(NetworkTemplate):
         return network_to_be_used.forward(input_data).cpu().detach().numpy()
 
     def summary(self) -> None:
-
         print("Trunk Network:")
         self.trunk_network.summary()
         print("Branch Network:")
@@ -390,7 +382,6 @@ class DeepONet(NetworkTemplate):
 
 
 class ResDeepONet(DeepONet):
-
     name = "resdeeponet"
     engine = "torch"
     """The operation performed is: output = input_branch + D(param, input_branch)"""
@@ -450,7 +441,6 @@ class ResDeepONet(DeepONet):
         self.forward_ = super().forward
 
         if residual == True:
-
             assert input_dim == var_dim, (
                 "For a residual network, it is necessary to have "
                 "size of branch_network input equal to var_dim, but "
@@ -535,7 +525,6 @@ class ResDeepONet(DeepONet):
 
 
 class ImprovedDeepONet(ResDeepONet):
-
     name = "improveddeeponet"
     engine = "torch"
 
@@ -554,7 +543,6 @@ class ImprovedDeepONet(ResDeepONet):
         multiply_by_trunk: bool = False,
         model_id=None,
     ) -> None:
-
         """
         The so-called Improved DeepONet architecture aims at enhancing the communication
         between the trunk and branch pipelines during the training process, thus allowing
@@ -609,7 +597,6 @@ class ImprovedDeepONet(ResDeepONet):
         input_trunk: Union[np.ndarray, torch.Tensor] = None,
         input_branch: Union[np.ndarray, torch.Tensor] = None,
     ) -> torch.Tensor:
-
         # Forward method execution
         v = self.encoder_trunk.forward(input_data=input_trunk)
         u = self.encoder_branch.forward(input_data=input_branch)
@@ -633,7 +620,6 @@ class ImprovedDeepONet(ResDeepONet):
         trunk_data: Union[np.ndarray, torch.Tensor] = None,
         branch_data: Union[np.ndarray, torch.Tensor] = None,
     ) -> np.ndarray:
-
         assert (
             name in self.subnetworks_names
         ), f"The name {name} is not a subnetwork of {self}."
@@ -652,7 +638,6 @@ class ImprovedDeepONet(ResDeepONet):
         )
 
     def summary(self) -> None:
-
         print("Trunk Network:")
         self.trunk_network.summary()
         print("Encoder Trunk:")
@@ -664,7 +649,6 @@ class ImprovedDeepONet(ResDeepONet):
 
 
 class FlexibleDeepONet(ResDeepONet):
-
     name = "flexibledeeponet"
     engine = "torch"
 
@@ -681,7 +665,6 @@ class FlexibleDeepONet(ResDeepONet):
         multiply_by_trunk: bool = False,
         model_id=None,
     ) -> None:
-
         """
 
         Flexible DeepONet uses a subnetwork called 'pre-network', which
@@ -725,7 +708,6 @@ class FlexibleDeepONet(ResDeepONet):
     def _rescaling_operation(
         self, input_data: torch.Tensor = None, rescaling_tensor: torch.Tensor = None
     ):
-
         angular = rescaling_tensor[:, : self.t_is]
         linear = rescaling_tensor[:, self.t_is :]
 
@@ -736,7 +718,6 @@ class FlexibleDeepONet(ResDeepONet):
         input_trunk: Union[np.ndarray, torch.Tensor] = None,
         input_branch: Union[np.ndarray, torch.Tensor] = None,
     ) -> torch.Tensor:
-
         # Forward method execution
         output_branch = self.branch_network.forward(input_data=input_branch).to(
             self.device
@@ -762,7 +743,6 @@ class FlexibleDeepONet(ResDeepONet):
         trunk_data: Union[np.ndarray, torch.Tensor] = None,
         branch_data: Union[np.ndarray, torch.Tensor] = None,
     ) -> np.ndarray:
-
         assert (
             name in self.subnetworks_names
         ), f"The name {name} is not a subnetwork of {self}."

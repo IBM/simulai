@@ -20,7 +20,6 @@ from simulai.batching import batchdomain_constructor
 
 class TestBatching(TestCase):
     def test_batching_data_interval(self):
-
         data_interval = [0, 100]
         batch_size = 10
 
@@ -31,7 +30,6 @@ class TestBatching(TestCase):
         assert isinstance(batches, list)
 
     def test_batching_batch_indices(self):
-
         n_samples = 100
         indices = sorted([random.randint(0, n_samples) for i in range(n_samples)])
 

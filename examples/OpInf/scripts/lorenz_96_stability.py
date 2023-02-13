@@ -14,6 +14,7 @@
 
 import os
 import pickle
+
 #!/usr/bin/env python
 import warnings
 from argparse import ArgumentParser
@@ -40,7 +41,6 @@ def NRSE(exact, approximated):
 
 class OpInfError:
     def __init__(self, A_hat: np.ndarray = None, H_hat: np.ndarray = None) -> None:
-
         self.A_hat = A_hat
         self.H_hat = H_hat
 
@@ -78,30 +78,25 @@ class OpInfError:
         self.compile()
 
     def compile(self):
-
         self.jac = self.lambdify(expression=self.jac_expressions)
         self.error = self.lambdify(expression=self.error_expressions)
 
     def lambdify(self, expression=None):
-
         return sp.lambdify([self.epsilon, self.u], expression, "numpy")
 
     def eval_jacobian(self, u: np.array = None, epsilon: np.array = None):
-
         u = u.T
         epsilon = epsilon.T
 
         return self.jac(epsilon, u)
 
     def eval_error(self, u: np.array = None, epsilon: np.array = None):
-
         u = u.T
         epsilon = epsilon.T
 
         return self.error(epsilon, u)
 
     def save(self, name: str = None, path: str = None) -> None:
-
         blacklist = ["jac", "error"]
 
         for item in blacklist:

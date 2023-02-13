@@ -13,11 +13,11 @@
 #     limitations under the License.
 
 import os
+
 #!/usr/bin/env python
 import warnings
 
 with warnings.catch_warnings():
-
     from argparse import ArgumentParser
 
     import matplotlib.pyplot as plt
@@ -96,7 +96,6 @@ else:
 
 
 def Lorenz96(x, t):
-
     """Lorenz 96 model with constant forcing"""
     # Setting up vector
     d = np.zeros(N)
@@ -126,7 +125,6 @@ vpt_list = dict()
 nrmse_list = list()
 
 for si in range(n_initial):
-
     print(f"Running case: {si}/{n_initial}")
 
     x0 = initial_states[si]

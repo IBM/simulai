@@ -25,8 +25,12 @@ os.environ["engine"] = "pytorch"
 from examples.utils.lorenz_solver import lorenz_solver
 from simulai.math.integration import LSODA, ClassWrapper
 from simulai.optimization import Optimizer, ScipyInterface
-from simulai.regression import (AutoEncoderKoopman, DenseNetwork,
-                                KoopmanNetwork, OpInfNetwork)
+from simulai.regression import (
+    AutoEncoderKoopman,
+    DenseNetwork,
+    KoopmanNetwork,
+    OpInfNetwork,
+)
 
 
 class LorenzJacobian:
@@ -36,7 +40,6 @@ class LorenzJacobian:
         self.beta = beta
 
     def __call__(self, data):
-
         x = data[0]
         y = data[1]
         z = data[2]
@@ -47,7 +50,6 @@ class LorenzJacobian:
 
 
 def loss(approximated_data, target_data, fun, lambd_1=0, lambd_2=0) -> np.ndarray:
-
     loss = (
         np.mean(np.square(approximated_data - target_data))
         + lambd_1 * fun.A_op.weights_l2
@@ -61,7 +63,6 @@ def loss(approximated_data, target_data, fun, lambd_1=0, lambd_2=0) -> np.ndarra
 
 
 def test_opinf_nonlinear_int_lsoda():
-
     dt = 0.005
     T_max = 100
     rho = 28
@@ -152,7 +153,6 @@ def test_opinf_nonlinear_int_lsoda():
     estimated_field = solver.run(initial_state, t_test)
 
     for var in range(n_field):
-
         plt.title(f"Variable {tags[var]}")
         plt.plot(t_test, test_field[:, var], label="Exact")
         plt.plot(t_test, estimated_field[:, var], label="Approximated")
@@ -163,7 +163,6 @@ def test_opinf_nonlinear_int_lsoda():
         plt.show()
 
     if second_optimizer is True:
-
         lorenz_op_np.construct_K_op()
 
         optimizer_scipy = ScipyInterface(
@@ -223,7 +222,6 @@ def test_opinf_nonlinear_int_lsoda():
 
 
 def test_koopman_nonlinear_int_lsoda():
-
     dt = 0.005
     T_max = 100
     rho = 28
@@ -320,7 +318,6 @@ def test_koopman_nonlinear_int_lsoda():
     estimated_field = solver.run(initial_state, t_test)
 
     for var in range(n_field):
-
         plt.title(f"Variable {tags[var]}")
         plt.plot(t_test, test_field[:, var], label="Exact")
         plt.plot(t_test, estimated_field[:, var], label="Approximated")
@@ -332,7 +329,6 @@ def test_koopman_nonlinear_int_lsoda():
 
     lorenz_op_np = lorenz_op.to_numpy()
     if second_optimizer is True:
-
         lorenz_op_np.construct_K_op()
 
         optimizer_scipy = ScipyInterface(
@@ -392,7 +388,6 @@ def test_koopman_nonlinear_int_lsoda():
 
 
 def test_koopman_autoencoder_nonlinear_int_lsoda():
-
     dt = 0.005
     T_max = 100
     rho = 28
@@ -533,7 +528,6 @@ def test_koopman_autoencoder_nonlinear_int_lsoda():
         plt.show()
 
     if second_optimizer is True:
-
         lorenz_net.construct_K_op()
 
         optimizer_scipy = ScipyInterface(

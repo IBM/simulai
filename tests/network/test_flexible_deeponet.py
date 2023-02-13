@@ -20,6 +20,7 @@ from utils import configure_device
 
 DEVICE = configure_device()
 
+
 # Model template
 def model(
     product_type=None,
@@ -27,7 +28,6 @@ def model(
     n_outputs: int = 4,
     residual: bool = False,
 ):
-
     from simulai.models import FlexibleDeepONet
     from simulai.regression import DenseNetwork
 
@@ -90,7 +90,6 @@ class TestImprovedDeeponet(TestCase):
         pass
 
     def test_deeponet_forward(self):
-
         net = model()
         net.summary()
 
@@ -122,7 +121,6 @@ class TestImprovedDeeponet(TestCase):
         assert isinstance(output, np.ndarray)
 
     def test_deeponet_train(self):
-
         from simulai.optimization import Optimizer
 
         optimizer_config = {"lr": 1e-3}
@@ -140,9 +138,7 @@ class TestImprovedDeeponet(TestCase):
         optimizer = Optimizer("adam", params=optimizer_config)
 
         for product_type in [None, "dense"]:
-
             for multiply_by_trunk in [True, False]:
-
                 print(
                     f"Multiply by trunk: {multiply_by_trunk}, Product type: {product_type}"
                 )
@@ -167,7 +163,6 @@ class TestImprovedDeeponet(TestCase):
 
     # Vanilla DeepONets are single output
     def test_vanilla_deeponet_train(self):
-
         from simulai.optimization import Optimizer
 
         optimizer_config = {"lr": 1e-3}

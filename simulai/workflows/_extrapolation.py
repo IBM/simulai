@@ -31,7 +31,6 @@ class StepwiseExtrapolation:
         model: Union[NetworkTemplate, Regression, list, dict] = None,
         keys: list = None,
     ) -> None:
-
         # Assertion error messages
         self.model_isnt_callable = (
             "In case of model be a list all their elements must be callable."
@@ -47,7 +46,6 @@ class StepwiseExtrapolation:
         self.keys = keys
 
         if isinstance(model, NetworkTemplate) or isinstance(model, Regression):
-
             assert hasattr(model, "step"), self.model_hasnt_step
             model_ = [model]
             assert len(keys) == len(model_), self.lengths_must_be_equal
@@ -57,7 +55,6 @@ class StepwiseExtrapolation:
             )
 
         elif type(model) == list:
-
             self._check_if_callable_and_has_step(model=model)
             assert len(keys) == len(model), self.lengths_must_be_equal
 
@@ -66,7 +63,6 @@ class StepwiseExtrapolation:
             )
 
         elif type(model) == dict:
-
             self._check_if_callable_and_has_step(model=model.values())
 
             if keys != None:
@@ -84,7 +80,6 @@ class StepwiseExtrapolation:
     def _check_if_callable_and_has_step(
         self, model: Union[list, dict.values] = None
     ) -> None:
-
         assert all(
             [
                 (
@@ -96,7 +91,6 @@ class StepwiseExtrapolation:
         ), self.model_isnt_callable
 
     def _check_if_is_two_dimensional(self, array: ndarray = None) -> None:
-
         assert len(array.shape) == 2, self.array_must_be_two_dim.format(array.shape)
 
     def _serial_predict_with_auxiliary(
@@ -105,18 +99,15 @@ class StepwiseExtrapolation:
         auxiliary_data: ndarray = None,
         horizon: int = None,
     ) -> ndarray:
-
         current_state = np.hstack([initial_state, auxiliary_data[0:1]])
         extrapolation_list = list()
 
         # Time extrapolation loop
         for step in range(horizon):
-
             step_outputs_list = list()
 
             # Serial dispatcher
             for model_id, model in self.models_instances.items():
-
                 out = model.step(data=current_state[0])
                 step_outputs_list.append(out)
 
@@ -134,7 +125,6 @@ class StepwiseExtrapolation:
         horizon: int = None,
         parallel: str = None,
     ):
-
         self._check_if_is_two_dimensional(array=initial_state)
         self._check_if_is_two_dimensional(auxiliary_data)
 

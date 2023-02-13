@@ -55,7 +55,6 @@ max_value = np.maximum(np.abs(minimum), np.abs(maximum))
 
 
 def model():
-
     from simulai.models import AutoencoderVariational
     from simulai.regression import SLFNN, ConvolutionalNetwork, Linear
 
@@ -113,7 +112,6 @@ def model():
     }
 
     if transpose == False:
-
         decoder_layers = [
             {
                 "in_channels": 128,

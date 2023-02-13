@@ -13,6 +13,7 @@
 #     limitations under the License.
 
 import os
+
 # (C) Copyright IBM Corporation 2017, 2018, 2019
 # U.S. Government Users Restricted Rights:  Use, duplication or disclosure restricted
 # by GSA ADP Schedule Contract with IBM Corp.
@@ -34,7 +35,6 @@ class TestReshaper(TestCase):
         pass
 
     def test_sample(self):
-
         batch_sizer = MemorySizeEval(memory_tol_percent=0.1)
 
         Nx = int(30)
@@ -59,10 +59,8 @@ class TestReshaper(TestCase):
             for sampling_choices_fraction in [0.6, 1]:
                 for batch_size in batch_size_list:
                     with make_temp_directory() as tmp_dir:
-
                         test_data = os.path.join(tmp_dir, f"data.h5")
                         with h5py.File(test_data, "w") as fp:
-
                             dataset = fp.create_dataset(
                                 "data",
                                 shape=(Nt, Nx, Ny, 1),

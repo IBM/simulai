@@ -21,7 +21,6 @@ from simulai.metrics import RosensteinKantz
 
 class TestPointwise(TestCase):
     def test_pointwise(self):
-
         data = np.random.rand(100, 10)
 
         rosenstein_kantz = RosensteinKantz(epsilon=1)

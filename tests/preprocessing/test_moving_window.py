@@ -30,7 +30,6 @@ class TestMovingWindow(TestCase):
         pass
 
     def test_input_equal_output(self) -> None:
-
         # Constructing data
         t_max = 1
         t_min = 0
@@ -70,7 +69,6 @@ class TestMovingWindow(TestCase):
         print("Moving Window operation performed.")
 
     def test_input_different_output(self) -> None:
-
         # Constructing data
         t_max = 1
         t_min = 0

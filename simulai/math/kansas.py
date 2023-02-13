@@ -31,7 +31,6 @@ class Kansas:
         kernel: str = "gaussian",
         eps: float = 1e-8,
     ) -> None:
-
         """
         Initialize the radial basis function interpolator.
 
@@ -70,7 +69,6 @@ class Kansas:
 
         # calculate sigma based on the mean maximal distance beteewn 2 kernels or use the informed sigma
         if sigma2 == "auto":
-
             d2 = spatial.distance.cdist(centers, centers, "sqeuclidean")
 
             d2Max = np.max(d2)
@@ -88,7 +86,6 @@ class Kansas:
         ]  # declare optimized implemented kernels
 
         if self.kernel in self.kernel_list:
-
             self.use_optimized = True
 
             # initialize interpolation matrices lists
@@ -113,7 +110,6 @@ class Kansas:
         if self.use_optimized:
             G = self.get_interpolation_matrix_optimized()
         else:
-
             g = sy.lambdify(
                 self.x, self.expr, "numpy"
             )  # create element to element function for evalueate kernel at every point on the radial function
@@ -252,11 +248,9 @@ class Kansas:
             print("index of variable are higher than dimension")
 
         if self.use_optimized:
-
             Dxy = self.get_cross_derivative_matrix_optimized(var_index1, var_index2)
 
         else:
-
             d2expr = self.expr.diff(self.x, 2)
 
             d2g = sy.lambdify(self.x, d2expr, "numpy")
@@ -321,11 +315,9 @@ class Kansas:
             print("index of variable are higher than dimension")
 
         if self.use_optimized:
-
             Dxx = self.get_second_derivative_matrix_optimized(var_index)
 
         else:
-
             d2expr = self.expr.diff(self.x, 2)
 
             d2g = sy.lambdify(self.x, d2expr, "numpy")
@@ -379,7 +371,6 @@ class Kansas:
         if self.use_optimized:
             L = self.kernel_Laplacian(self.r2, self.sigma2, self.kernel)
         else:
-
             d2expr = self.expr.diff(self.x, 2)
 
             d2g = sy.lambdify(self.x, d2expr, "numpy")
@@ -436,14 +427,12 @@ class Kansas:
             # G = np.exp(-r2/(2.0*sigma2))
 
         elif kernel_type == "MQ":
-
             G = ne.evaluate("sqrt(r2 + sigma2)")
 
         elif kernel_type == "IMQ":
             G = ne.evaluate("1.0/sqrt(r2 + sigma2)")
 
         else:
-
             print(" this kernel does not exist: ", kernel_type)
 
         G = np.float32(G)
@@ -484,11 +473,9 @@ class Kansas:
             # Dx = -(rx/sigma2)*np.exp(-r2/(2.0*sigma2))
 
         elif kernel_type == "MQ":
-
             Dx = ne.evaluate("rx/sqrt(r2 + sigma2)")
 
         elif kernel_type == "IMQ":
-
             Dx = ne.evaluate("-rx*((r2 + sigma2)**(-1.5))")
 
         else:
@@ -531,11 +518,9 @@ class Kansas:
             Dxy = ne.evaluate("((rx*ry)/(sigma2**2))*exp(-r2/(2*sigma2))")
 
         elif kernel_type == "MQ":
-
             Dxy = ne.evaluate("3.0*rx*ry*((r2 + sigma2)**(-2.5))")
 
         elif kernel_type == "IMQ":
-
             Dxy = ne.evaluate("5.0*rx*ry*((r2 + sigma2)**(-3.5))")
 
         else:
@@ -573,16 +558,13 @@ class Kansas:
 
         """
         if kernel_type == "gaussian":
-
             Dxx = ne.evaluate(
                 "((rx2/(sigma2**2)) - (1.0/sigma2) )*exp(-r2/(2.0*sigma2))"
             )
 
         elif kernel_type == "MQ":
-
             Dxx = ne.evaluate("(1.0/sqrt(r2 + sigma2))-rx2*((r2 + sigma2)**(-1.5))")
         elif kernel_type == "IMQ":
-
             Dxx = ne.evaluate(
                 "-((r2 + sigma2)**(-1.5))+3.0*rx2*((r2 + sigma2)**(-2.5))"
             )

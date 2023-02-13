@@ -25,6 +25,7 @@ from scipy.sparse.linalg import spsolve
     commonly used in numerical analysis
 """
 
+
 # This is like an identifier
 class Derivative(object):
     """Parent class for the derivative operations
@@ -54,7 +55,6 @@ class SpaceDerivative(Derivative):
 
 class LeleDerivative:
     def __init__(self, N: int = 1, h: float = 1) -> None:
-
         """
         Initialize the 10th-order derivative algorithm purposed by Lele.
 
@@ -72,7 +72,6 @@ class LeleDerivative:
         RightMatrix = lil_matrix((N + 6, N + 6))
 
         for j in range(2, N + 2):
-
             i = j - 2
             delta_1 = self.delta_1(i, N)
             delta_2 = self.delta_2(i, N)
@@ -88,7 +87,6 @@ class LeleDerivative:
         self.LeftMatrix = LeftMatrix[2:-2, 2:-2]
 
         for j in range(3, N + 3):
-
             i = j - 3
             delta_3 = self.delta_3(i, N, h)
             delta_4 = self.delta_4(i, N, h)
@@ -109,7 +107,6 @@ class LeleDerivative:
         self.RightMatrix = RightMatrix[3:-3, 3:-3]
 
     def solve(self, f: np.ndarray) -> np.ndarray:
-
         """
         Perform Lele differentiation.
 
@@ -130,7 +127,6 @@ class LeleDerivative:
         return spsolve(self.LeftMatrix, b)
 
     def delta_1(self, j: int, N: int) -> float:
-
         """
         Calculate the term delta_1 from the Lele's expression.
 
@@ -159,7 +155,6 @@ class LeleDerivative:
             return 1.0 / 2
 
     def delta_2(self, j: int, N: int) -> float:
-
         """
         Calculate the term delta_2 from the Lele's expression.
 
@@ -188,7 +183,6 @@ class LeleDerivative:
             return 1.0 / 20
 
     def delta_3(self, j: int, N: int, h: float) -> float:
-
         """
         Calculate the term delta_3 from the Lele's expression.
 
@@ -219,7 +213,6 @@ class LeleDerivative:
             return 1.0 / 100 * (1 / (6 * h))
 
     def delta_4(self, j: int, N: int, h: float) -> float:
-
         """
         Term delta_4 from the Lele's expression
 
@@ -252,7 +245,6 @@ class LeleDerivative:
             return (101.0 / 105) * (1.0 / (4 * h))
 
     def delta_5(self, j: int, N: int, h: float) -> float:
-
         """
         Term delta_5 from the Lele's expression
 
@@ -513,7 +505,6 @@ class CollocationDerivative:
             ), differentiated_data_array.reshape(self.original_shape)
 
     def __call__(self, data: np.ndarray = None) -> np.ndarray:
-
         """
         Wrapper for executing self.solve.
 

@@ -18,7 +18,6 @@ from scipy.integrate import odeint
 
 class LotkaVolterra:
     def __init__(self, alpha=None, beta=None, gamma=None, delta=None):
-
         self.alpha = alpha
         self.beta = beta
         self.gamma = gamma

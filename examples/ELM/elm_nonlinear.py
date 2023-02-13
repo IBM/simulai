@@ -21,7 +21,6 @@ from simulai.regression import ELM
 
 
 def jacobian(sigma=None, rho=None, beta=None, x=None, y=None, z=None):
-
     return np.array([[-sigma, sigma, 0], [rho - z, -1, -x], [y, x, -beta]])
 
 

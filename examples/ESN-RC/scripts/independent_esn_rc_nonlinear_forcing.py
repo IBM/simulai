@@ -19,8 +19,10 @@ import random
 import matplotlib.pyplot as plt
 import numpy as np
 
-from examples.utils.oscillator_solver import (oscillator_solver,
-                                              oscillator_solver_forcing)
+from examples.utils.oscillator_solver import (
+    oscillator_solver,
+    oscillator_solver_forcing,
+)
 from simulai.models import ModelPool
 from simulai.regression import EchoStateNetwork
 from simulai.utilities import make_temp_directory
@@ -31,7 +33,6 @@ class TestModelPoolESN:
         pass
 
     def test_modelpool_nonlinear(self, save_path=None):
-
         n_steps = 1000
         T = 50
         dt = T / n_steps
@@ -63,7 +64,6 @@ class TestModelPoolESN:
         reservoir_dim = random.randint(5000, 10000)
 
         with make_temp_directory() as default_model_dir:
-
             rc_config = {
                 "reservoir_dim": reservoir_dim,
                 "sparsity_level": 0.25 * reservoir_dim,
@@ -86,7 +86,6 @@ class TestModelPoolESN:
 
             # Fitting each sub-model independently
             for idx in range(n_field):
-
                 solution_pool.fit(
                     input_data=input_data, target_data=target_data, index=idx
                 )
@@ -102,7 +101,6 @@ class TestModelPoolESN:
                 plt.show()
 
     def test_modelpool_nonlinear_forcing_multiprocessing(self):
-
         n_steps = 1000
         A = 1
         T = 50
@@ -142,7 +140,6 @@ class TestModelPoolESN:
         initial_state = train_data[-1:, :]
 
         with make_temp_directory() as default_model_dir:
-
             reservoir_dim = random.randint(3000, 4000)
 
             rc_config = {
@@ -189,7 +186,6 @@ class TestModelPoolESN:
                 plt.show()
 
     def test_modelpool_nonlinear_forcing_numba(self):
-
         n_steps = 1000
         A = 1
         T = 50
@@ -229,7 +225,6 @@ class TestModelPoolESN:
         initial_state = train_data[-1:, :]
 
         with make_temp_directory() as default_model_dir:
-
             reservoir_dim = random.randint(3000, 4000)
 
             rc_config = {
@@ -256,7 +251,6 @@ class TestModelPoolESN:
             )
 
             for idx in range(n_field):
-
                 solution_pool.fit(
                     input_data=input_data,
                     target_data=target_data,
@@ -277,7 +271,6 @@ class TestModelPoolESN:
                 plt.show()
 
     def test_modelpool_nonlinear_forcing_no_communication(self):
-
         n_steps = 1000
         A = 1
         T = 50
@@ -317,7 +310,6 @@ class TestModelPoolESN:
         initial_state = train_data[-1:, :]
 
         with make_temp_directory() as default_model_dir:
-
             reservoir_dim = random.randint(3000, 4000)
 
             rc_config = {
@@ -344,7 +336,6 @@ class TestModelPoolESN:
             )
 
             for idx in range(n_field):
-
                 solution_pool.fit(
                     input_data=input_data,
                     target_data=target_data,
@@ -365,7 +356,6 @@ class TestModelPoolESN:
                 plt.show()
 
     def test_modelpool_nonlinear_forcing_deepesn(self):
-
         n_steps = 1000
         A = 1
         T = 50
@@ -405,7 +395,6 @@ class TestModelPoolESN:
         initial_state = train_data[-1:, :]
 
         with make_temp_directory() as default_model_dir:
-
             reservoir_dim = random.randint(100, 100)
 
             rc_config = {
@@ -435,7 +424,6 @@ class TestModelPoolESN:
             )
 
             for idx in range(n_field):
-
                 solution_pool.fit(
                     input_data=input_data,
                     target_data=target_data,
@@ -456,7 +444,6 @@ class TestModelPoolESN:
                 plt.show()
 
     def test_modelpool_nonlinear_forcing_wideesn(self):
-
         n_steps = 1000
         A = 1
         T = 50
@@ -494,7 +481,6 @@ class TestModelPoolESN:
         initial_state = train_data[-1:, :]
 
         with make_temp_directory() as default_model_dir:
-
             reservoir_dim = random.randint(400, 401)
 
             rc_config = {
@@ -523,7 +509,6 @@ class TestModelPoolESN:
             )
 
             for idx in range(n_field):
-
                 solution_pool.fit(
                     input_data=input_data,
                     target_data=target_data,
@@ -544,7 +529,6 @@ class TestModelPoolESN:
                 plt.show()
 
     def test_esn_nonlinear_forcing_numba(self):
-
         from simulai.workflows import StepwiseExtrapolation
 
         n_steps = 1000

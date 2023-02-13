@@ -35,24 +35,20 @@ from simulai.templates import ConvNetworkTemplate
 
 class ResNet(ConvNetworkTemplate):
     def __init__(self, networks_list: List[ConvNetworkTemplate]) -> None:
-
         super(ResNet, self).__init__()
 
         self.networks_list = networks_list
         self.weights = list()
 
         for net in networks_list:
-
             self.add_module(f"subnetwork_{net.name}", net)
             self.weights += net.weights
 
     def forward(self, input_data: Union[np.ndarray, torch.Tensor]) -> torch.Tensor:
-
         input_data_ = input_data
         output_data = None
 
         for net in self.networks_list:
-
             output_data = net.forward(input_data=input_data_)
 
             input_data_ = output_data
@@ -65,13 +61,11 @@ class TestResidualConv(TestCase):
         pass
 
     def u(self, t, x, L: float = None, t_max: float = None) -> np.ndarray:
-
         return np.sin(4 * np.pi * t * (x / L - 1 / 2) ** 2) * np.cos(
             5 * np.pi * (t / t_max - 1 / 2) ** 2
         )
 
     def test_residual(self):
-
         K_l = 32
         K = 256
         N = 1_00

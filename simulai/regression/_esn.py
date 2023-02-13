@@ -32,7 +32,6 @@ from simulai.templates import ReservoirComputing
 # It could be used for executing multi-core CPU or even GPU jobs
 # with NumPy arrays
 def tensor_dot(self, engine: str = "numba") -> callable:
-
     try:
         from numba import float64, guvectorize
     except:
@@ -40,7 +39,6 @@ def tensor_dot(self, engine: str = "numba") -> callable:
 
     @guvectorize([(float64[:, :], float64[:, :])], "(n,m)->(n,n)", target="cpu")
     def _tensor_dot(vector: np.ndarray, out: np.ndarray) -> None:
-
         for index in range(vector.shape[1]):
             out += vector[:, index][:, None] @ (vector[:, index][:, None]).transpose()
 
@@ -49,9 +47,7 @@ def tensor_dot(self, engine: str = "numba") -> callable:
 
 # Numba loop for shared-memory parallel execution
 def outer_dot(engine: str = "numba") -> callable:
-
     if engine == "numba":
-
         try:
             from numba import njit
         except:
@@ -61,7 +57,6 @@ def outer_dot(engine: str = "numba") -> callable:
 
         @njit(parallel=True)
         def _outer_dot(vector: np.ndarray, out: np.ndarray) -> np.ndarray:
-
             for ii in range(vector.shape[1]):
                 out += np.outer(vector[:, ii], vector[:, ii])
 
@@ -70,7 +65,6 @@ def outer_dot(engine: str = "numba") -> callable:
     else:
 
         def _outer_dot(vector: np.ndarray, out: np.ndarray):
-
             pass
 
     return _outer_dot
@@ -78,7 +72,6 @@ def outer_dot(engine: str = "numba") -> callable:
 
 # Combining Numba with multiprocessing
 def multiprocessing_dot(vector: np.ndarray) -> np.ndarray:
-
     print("Using multiprocessing engine.")
 
     out = np.zeros((vector.shape[0], vector.shape[0]))
@@ -131,7 +124,6 @@ class EchoStateNetwork(ReservoirComputing):
         input_augmented_reservoir: bool = False,
         model_id: str = None,
     ) -> None:
-
         """
         :param reservoir_dim: dimension of the reservoir matrix
         :type reservoir_dim: int
@@ -202,7 +194,6 @@ class EchoStateNetwork(ReservoirComputing):
         if self.global_matrix_constructor_str == "direct":
             self.global_matrix_constructor = self._construct_global_matrix_direct
         elif self.global_matrix_constructor_str == "numba":
-
             if platform.system() == "Darwin":
                 warnings.warn(
                     "You are using MacOS. Numba have presented some bugs in this platform."
@@ -240,7 +231,6 @@ class EchoStateNetwork(ReservoirComputing):
             self.logger = self._no_log
 
     def _show_log(self, i):
-
         sys.stdout.write(f"\r state {i}")
         sys.stdout.flush()
 
@@ -258,7 +248,6 @@ class EchoStateNetwork(ReservoirComputing):
         self.activation_op = self._get_activation_function(self.activation)
 
     def _get_activation_function(self, activation):
-
         method = (
             getattr(np, activation, None)
             or getattr(np.math, activation, None)
@@ -273,12 +262,10 @@ class EchoStateNetwork(ReservoirComputing):
 
     # Linear activation
     def _linear(self, data):
-
         return data
 
     # Sigmoid activation
     def _sigmoid(self, data):
-
         return 1 / (1 + np.exp(-data))
 
     """
@@ -294,13 +281,11 @@ class EchoStateNetwork(ReservoirComputing):
 
     # ByPass transformation
     def _T0(self, r):
-
         r_til = r.copy()
 
         return r_til
 
     def _T1(self, r):
-
         n_rows = r.shape[0]
         r_til = r.copy()
 
@@ -312,7 +297,6 @@ class EchoStateNetwork(ReservoirComputing):
         return r_til
 
     def _T2(self, r):
-
         n_rows = r.shape[0]
         r_til = r.copy()
 
@@ -324,7 +308,6 @@ class EchoStateNetwork(ReservoirComputing):
         return r_til
 
     def _T3(self, r):
-
         n_rows = r.shape[0]
         r_til = r.copy()
 
@@ -344,7 +327,6 @@ class EchoStateNetwork(ReservoirComputing):
         self.kappa = None
 
     def _default_kappa(self, size):
-
         x = np.arange(size) / size
 
         # tau is a positive number in (0, inf] preferably close to 0, e.g., 0.1
@@ -356,7 +338,6 @@ class EchoStateNetwork(ReservoirComputing):
         return y
 
     def _update_state(self, previous_state, input_series_state):
-
         reservoir_input = previous_state[: self.reservoir_dim]
         state = (1 - self.leak_rate) * reservoir_input
         state += self.leak_rate * self.activation_op(
@@ -371,7 +352,6 @@ class EchoStateNetwork(ReservoirComputing):
 
     # TODO this stage is considerably expensive. It is necessary to fix it in anyway.
     def _reservoir_layer(self, input_series, data_size):
-
         r_states = np.zeros((self.state_dim, data_size))
         r_state = self.default_state
         for i in range(data_size):
@@ -384,7 +364,6 @@ class EchoStateNetwork(ReservoirComputing):
 
     # This method is used for initializing a raw model
     def _initialize_parameters(self):
-
         # Sparse uniform random matrix
         sparse_reservoir_matrix = self.create_reservoir()
 
@@ -461,7 +440,6 @@ class EchoStateNetwork(ReservoirComputing):
 
     # It solves a linear system via direct matrix inversion
     def _direct_inversion(self, data_out_, U, r_til):
-
         print("Solving the system via direct matrix inversion.")
 
         Uinv = np.linalg.inv(U)
@@ -473,7 +451,6 @@ class EchoStateNetwork(ReservoirComputing):
     # It solves a linear system using the SciPy algorithms
     # Note that U is symmetric positive definite
     def _linear_system(self, data_out_, U, r_til):
-
         print("Solving the linear system using the most proper algorithm.")
 
         Wout = linalg.solve(U, (r_til @ data_out_.T)).T
@@ -481,7 +458,6 @@ class EchoStateNetwork(ReservoirComputing):
         return Wout
 
     def _construct_global_matrix_direct(self, r_til, idenmat):
-
         U = np.zeros((r_til.shape[0], r_til.shape[0]))
 
         for ii in range(r_til.shape[1]):
@@ -492,7 +468,6 @@ class EchoStateNetwork(ReservoirComputing):
         return U
 
     def _construct_global_matrix_numba(self, r_til, idenmat):
-
         U = np.zeros((r_til.shape[0], r_til.shape[0]))
 
         dot = outer_dot(engine="numba")
@@ -503,7 +478,6 @@ class EchoStateNetwork(ReservoirComputing):
         return U
 
     def _construct_global_matrix_multiprocessing(self, r_til, idenmat):
-
         assert self.n_workers is not None, (
             "If you are using multiprocessing," "it is necessary to define n_workers."
         )
@@ -552,7 +526,6 @@ class EchoStateNetwork(ReservoirComputing):
 
     # Setting up new parameters for a restored model
     def set_parameters(self, parameters):
-
         for key, value in parameters.items():
             if key in [
                 "radius",
@@ -567,7 +540,6 @@ class EchoStateNetwork(ReservoirComputing):
                 setattr(self, key, value)
 
     def fit(self, input_data=None, target_data=None):
-
         data_in = input_data.T
         data_out = target_data.T
 
@@ -670,7 +642,6 @@ class EchoStateNetwork(ReservoirComputing):
         print("Fitting concluded.")
 
     def step(self, data=None):
-
         affine_term = 0
         if self.A is not None:
             affine_term += self.A @ data
@@ -703,7 +674,6 @@ class EchoStateNetwork(ReservoirComputing):
         return np.zeros((self.state_dim,), dtype=self.s_reservoir_matrix.dtype)
 
     def set_reference(self, reference=None):
-
         if reference is None:
             self.reference_state = self.default_state
         else:
@@ -720,7 +690,6 @@ class EchoStateNetwork(ReservoirComputing):
         self.current_state = self.reference_state
 
     def predict(self, initial_data=None, horizon=None, auxiliary_data=None):
-
         if auxiliary_data is not None:
             concat = True
         else:
@@ -735,7 +704,6 @@ class EchoStateNetwork(ReservoirComputing):
         data = prepare_data(initial_data, auxiliary_data, 0)
 
         for tt in range(horizon):
-
             print("Extrapolating for the timestep {}".format(tt))
 
             r_ = self._update_state(state, data)
@@ -761,7 +729,6 @@ class EchoStateNetwork(ReservoirComputing):
         return output_data.T
 
     def save(self, save_path=None, model_name=None):
-
         configs = {
             k: getattr(self, k) for k in signature(self.__init__).parameters.keys()
         }
@@ -781,7 +748,6 @@ class EchoStateNetwork(ReservoirComputing):
 
     # Saving the entire model
     def save_model(self, save_path=None, model_name=None):
-
         path = os.path.join(save_path, model_name + ".pkl")
         try:
             with open(path, "wb") as fp:
@@ -791,7 +757,6 @@ class EchoStateNetwork(ReservoirComputing):
 
     @classmethod
     def restore(cls, model_path, model_name):
-
         path = os.path.join(model_path, model_name + ".pkl")
         with open(path, "rb") as fp:
             d = pickle.load(fp)
@@ -844,7 +809,6 @@ class DeepEchoStateNetwork:
         input_augmented_reservoir=False,
         model_id=None,
     ):
-
         """
         :param reservoir_dim: dimension of the reservoir matrix
         :type reservoir_dim: int
@@ -916,7 +880,6 @@ class DeepEchoStateNetwork:
         if self.global_matrix_constructor_str == "direct":
             self.global_matrix_constructor = self._construct_global_matrix_direct
         elif self.global_matrix_constructor_str == "numba":
-
             if platform.system() == "Darwin":
                 warnings.warn(
                     "You are using MacOS. Numba have presented some bugs in this platform."
@@ -955,7 +918,6 @@ class DeepEchoStateNetwork:
 
     # The number of inputs is variable with the layer
     def _make_n_inputs_list(self):
-
         if self.all_for_input:
             extra_dim = self.number_of_inputs
         else:
@@ -983,7 +945,6 @@ class DeepEchoStateNetwork:
         return sum(self.reservoir_dim)
 
     def _show_log(self, i):
-
         sys.stdout.write(f"\r state {i}")
         sys.stdout.flush()
 
@@ -1001,7 +962,6 @@ class DeepEchoStateNetwork:
         self.activation_op = self._get_activation_function(self.activation)
 
     def _get_activation_function(self, activation):
-
         method = (
             getattr(np, activation, None)
             or getattr(np.math, activation, None)
@@ -1016,12 +976,10 @@ class DeepEchoStateNetwork:
 
     # Linear activation
     def _linear(self, data):
-
         return data
 
     # Sigmoid activation
     def _sigmoid(self, data):
-
         return 1 / (1 + np.exp(-data))
 
     """
@@ -1037,13 +995,11 @@ class DeepEchoStateNetwork:
 
     # ByPass transformation
     def _T0(self, r):
-
         r_til = r.copy()
 
         return r_til
 
     def _T1(self, r):
-
         n_rows = r.shape[0]
         r_til = r.copy()
 
@@ -1055,7 +1011,6 @@ class DeepEchoStateNetwork:
         return r_til
 
     def _T2(self, r):
-
         n_rows = r.shape[0]
         r_til = r.copy()
 
@@ -1067,7 +1022,6 @@ class DeepEchoStateNetwork:
         return r_til
 
     def _T3(self, r):
-
         n_rows = r.shape[0]
         r_til = r.copy()
 
@@ -1087,7 +1041,6 @@ class DeepEchoStateNetwork:
         self.kappa = None
 
     def _default_kappa(self, size):
-
         x = np.arange(size) / size
 
         # tau is a positive number in (0, inf] preferably close to 0, e.g., 0.1
@@ -1099,7 +1052,6 @@ class DeepEchoStateNetwork:
         return y
 
     def _update_state(self, previous_state, input_series_state, layer_id=None):
-
         reservoir_input = previous_state[: self.reservoir_dim[layer_id]]
         state = (1 - self.leak_rate[layer_id]) * reservoir_input
         state += self.leak_rate[layer_id] * self.activation_op(
@@ -1114,7 +1066,6 @@ class DeepEchoStateNetwork:
 
     # TODO this stage is considerably expensive. It is necessary to fix it in anyway.
     def _reservoir_layer(self, input_series, data_size):
-
         r_states_list = self._initialize_r_states(data_size)
 
         hidden_states = list()
@@ -1122,7 +1073,6 @@ class DeepEchoStateNetwork:
 
         # The states updating are executed for each layer
         for ll in range(self.n_layers):
-
             print(f"Applying layer {ll}")
             r_state = np.zeros(
                 (self.state_dim(ll),), dtype=self.s_reservoir_matrix[ll].dtype
@@ -1130,7 +1080,6 @@ class DeepEchoStateNetwork:
             r_states = r_states_list[ll]
 
             for i in range(data_size):
-
                 r_states[:, i] = self._update_state(
                     r_state, input_series_[:, i], layer_id=ll
                 )
@@ -1152,7 +1101,6 @@ class DeepEchoStateNetwork:
     def _reservoir_dim_corrected_sparsity_level(
         self, sparsity_level=None, reservoir_dim=None
     ):
-
         # Guaranteeing a minimum sparsity tolerance
         dim = (
             max(sparsity_level, self.sparsity_tolerance)
@@ -1177,7 +1125,6 @@ class DeepEchoStateNetwork:
 
     # Each layerwise state is initialized as zero
     def _initialize_r_states(self, data_size):
-
         r_states_list = list()
 
         for ll in range(self.n_layers):
@@ -1188,7 +1135,6 @@ class DeepEchoStateNetwork:
 
     # This method is used for initializing a raw model
     def _initialize_layer_parameters(self, layer_id=None):
-
         sparsity_level = self.sparsity_level[layer_id]
         reservoir_dim = self.reservoir_dim[layer_id]
         radius = self.radius[layer_id]
@@ -1244,7 +1190,6 @@ class DeepEchoStateNetwork:
         return sparse_reservoir_matrix, np.array(Win)
 
     def _initialize_parameters(self):
-
         sparse_reservoir_matrix_list = list()
         W_in_list = list()
 
@@ -1287,7 +1232,6 @@ class DeepEchoStateNetwork:
 
     # It solves a linear system via direct matrix inversion
     def _direct_inversion(self, data_out_, U, r_til):
-
         print("Solving the system via direct matrix inversion.")
 
         Uinv = np.linalg.inv(U)
@@ -1299,7 +1243,6 @@ class DeepEchoStateNetwork:
     # It solves a linear system using the SciPy algorithms
     # Note that U is symmetric positive definite
     def _linear_system(self, data_out_, U, r_til):
-
         print("Solving the linear system using the most proper algorithm.")
 
         Wout = linalg.solve(U, (r_til @ data_out_.T)).T
@@ -1307,7 +1250,6 @@ class DeepEchoStateNetwork:
         return Wout
 
     def _construct_global_matrix_direct(self, r_til, idenmat):
-
         U = np.zeros((r_til.shape[0], r_til.shape[0]))
 
         for ii in range(r_til.shape[1]):
@@ -1318,7 +1260,6 @@ class DeepEchoStateNetwork:
         return U
 
     def _construct_global_matrix_numba(self, r_til, idenmat):
-
         U = np.zeros((r_til.shape[0], r_til.shape[0]))
 
         dot = outer_dot(engine="numba")
@@ -1329,7 +1270,6 @@ class DeepEchoStateNetwork:
         return U
 
     def _construct_global_matrix_multiprocessing(self, r_til, idenmat):
-
         assert self.n_workers is not None, (
             "If you are using multiprocessing," "it is necessary to define n_workers."
         )
@@ -1365,7 +1305,6 @@ class DeepEchoStateNetwork:
 
     # Setting up new parameters for a restored model
     def set_parameters(self, parameters):
-
         for key, value in parameters.items():
             if key in [
                 "radius",
@@ -1381,7 +1320,6 @@ class DeepEchoStateNetwork:
 
     # It constructs each layerwise states array and executes the W_out fitting
     def fit(self, input_data=None, target_data=None):
-
         data_in = input_data.T
         data_out = target_data.T
 
@@ -1488,7 +1426,6 @@ class DeepEchoStateNetwork:
         print("Fitting concluded.")
 
     def step(self, data=None):
-
         affine_term = 0
         if self.A is not None:
             affine_term += self.A @ data
@@ -1501,7 +1438,6 @@ class DeepEchoStateNetwork:
         data_ = data
 
         for ll in range(self.n_layers):
-
             r_ = self._update_state(state, data_, layer_id=ll)
 
             if self.all_for_input:
@@ -1541,7 +1477,6 @@ class DeepEchoStateNetwork:
         return np.zeros((self.state_dim(0),), dtype=self.s_reservoir_matrix[0].dtype)
 
     def set_reference(self, reference=None):
-
         if reference is None:
             self.reference_state = self.default_state
         else:
@@ -1558,7 +1493,6 @@ class DeepEchoStateNetwork:
         self.current_state = self.reference_state
 
     def predict(self, initial_data=None, horizon=None):
-
         output_data = np.zeros((self.W_out.shape[0], horizon))
 
         state = self.current_state.copy()  # End of fit stage
@@ -1566,7 +1500,6 @@ class DeepEchoStateNetwork:
         data = initial_data
 
         for tt in range(horizon):
-
             print("Extrapolating for the timestep {}".format(tt))
 
             r_ = self._update_state(state, data)
@@ -1592,7 +1525,6 @@ class DeepEchoStateNetwork:
         return output_data.T
 
     def save(self, save_path=None, model_name=None):
-
         configs = {
             k: getattr(self, k) for k in signature(self.__init__).parameters.keys()
         }
@@ -1612,7 +1544,6 @@ class DeepEchoStateNetwork:
 
     @classmethod
     def restore(cls, model_path, model_name):
-
         path = os.path.join(model_path, model_name + ".pkl")
         with open(path, "rb") as fp:
             d = pickle.load(fp)
@@ -1664,7 +1595,6 @@ class WideEchoStateNetwork:
         input_augmented_reservoir=False,
         model_id=None,
     ):
-
         """
         :param reservoir_dim: dimension of the reservoir matrix
         :type reservoir_dim: int
@@ -1735,7 +1665,6 @@ class WideEchoStateNetwork:
         if self.global_matrix_constructor_str == "direct":
             self.global_matrix_constructor = self._construct_global_matrix_direct
         elif self.global_matrix_constructor_str == "numba":
-
             if platform.system() == "Darwin":
                 warnings.warn(
                     "You are using MacOS. Numba have presented some bugs in this platform."
@@ -1773,7 +1702,6 @@ class WideEchoStateNetwork:
             self.logger = self._no_log
 
     def _make_n_inputs_list(self):
-
         n_inputs_list = self.n_layers * [self.number_of_inputs]
 
         return n_inputs_list
@@ -1793,7 +1721,6 @@ class WideEchoStateNetwork:
         return sum(self.reservoir_dim)
 
     def _show_log(self, i):
-
         sys.stdout.write(f"\r state {i}")
         sys.stdout.flush()
 
@@ -1811,7 +1738,6 @@ class WideEchoStateNetwork:
         self.activation_op = self._get_activation_function(self.activation)
 
     def _get_activation_function(self, activation):
-
         method = (
             getattr(np, activation, None)
             or getattr(np.math, activation, None)
@@ -1826,12 +1752,10 @@ class WideEchoStateNetwork:
 
     # Linear activation
     def _linear(self, data):
-
         return data
 
     # Sigmoid activation
     def _sigmoid(self, data):
-
         return 1 / (1 + np.exp(-data))
 
     """
@@ -1847,13 +1771,11 @@ class WideEchoStateNetwork:
 
     # ByPass transformation
     def _T0(self, r):
-
         r_til = r.copy()
 
         return r_til
 
     def _T1(self, r):
-
         n_rows = r.shape[0]
         r_til = r.copy()
 
@@ -1865,7 +1787,6 @@ class WideEchoStateNetwork:
         return r_til
 
     def _T2(self, r):
-
         n_rows = r.shape[0]
         r_til = r.copy()
 
@@ -1877,7 +1798,6 @@ class WideEchoStateNetwork:
         return r_til
 
     def _T3(self, r):
-
         n_rows = r.shape[0]
         r_til = r.copy()
 
@@ -1897,7 +1817,6 @@ class WideEchoStateNetwork:
         self.kappa = None
 
     def _default_kappa(self, size):
-
         x = np.arange(size) / size
 
         # tau is a positive number in (0, inf] preferably close to 0, e.g., 0.1
@@ -1909,7 +1828,6 @@ class WideEchoStateNetwork:
         return y
 
     def _update_state(self, previous_state, input_series_state, layer_id=None):
-
         reservoir_input = previous_state[: self.reservoir_dim[layer_id]]
         state = (1 - self.leak_rate[layer_id]) * reservoir_input
         state += self.leak_rate[layer_id] * self.activation_op(
@@ -1924,13 +1842,11 @@ class WideEchoStateNetwork:
 
     # TODO this stage is considerably expensive. It is necessary to fix it in anyway.
     def _reservoir_layer(self, input_series, data_size):
-
         r_states_list = self._initialize_r_states(data_size)
 
         hidden_states = list()
         input_series_ = input_series
         for ll in range(self.n_layers):
-
             print(f"Applying layer {ll}")
             r_state = np.zeros(
                 (self.state_dim(ll),), dtype=self.s_reservoir_matrix[ll].dtype
@@ -1938,7 +1854,6 @@ class WideEchoStateNetwork:
             r_states = r_states_list[ll]
 
             for i in range(data_size):
-
                 r_states[:, i] = self._update_state(
                     r_state, input_series_[:, i], layer_id=ll
                 )
@@ -1953,7 +1868,6 @@ class WideEchoStateNetwork:
     def _reservoir_dim_corrected_sparsity_level(
         self, sparsity_level=None, reservoir_dim=None
     ):
-
         # Guaranteeing a minimum sparsity tolerance
         dim = (
             max(sparsity_level, self.sparsity_tolerance)
@@ -1977,7 +1891,6 @@ class WideEchoStateNetwork:
         )
 
     def _initialize_r_states(self, data_size):
-
         r_states_list = list()
 
         for ll in range(self.n_layers):
@@ -1988,7 +1901,6 @@ class WideEchoStateNetwork:
 
     # This method is used for initializing a raw model
     def _initialize_layer_parameters(self, layer_id=None):
-
         sparsity_level = self.sparsity_level[layer_id]
         reservoir_dim = self.reservoir_dim[layer_id]
         radius = self.radius[layer_id]
@@ -2044,7 +1956,6 @@ class WideEchoStateNetwork:
         return sparse_reservoir_matrix, np.array(Win)
 
     def _initialize_parameters(self):
-
         sparse_reservoir_matrix_list = list()
         W_in_list = list()
 
@@ -2087,7 +1998,6 @@ class WideEchoStateNetwork:
 
     # It solves a linear system via direct matrix inversion
     def _direct_inversion(self, data_out_, U, r_til):
-
         print("Solving the system via direct matrix inversion.")
 
         Uinv = np.linalg.inv(U)
@@ -2099,7 +2009,6 @@ class WideEchoStateNetwork:
     # It solves a linear system using the SciPy algorithms
     # Note that U is symmetric positive definite
     def _linear_system(self, data_out_, U, r_til):
-
         print("Solving the linear system using the most proper algorithm.")
 
         Wout = linalg.solve(U, (r_til @ data_out_.T)).T
@@ -2107,7 +2016,6 @@ class WideEchoStateNetwork:
         return Wout
 
     def _construct_global_matrix_direct(self, r_til, idenmat):
-
         U = np.zeros((r_til.shape[0], r_til.shape[0]))
 
         for ii in range(r_til.shape[1]):
@@ -2118,7 +2026,6 @@ class WideEchoStateNetwork:
         return U
 
     def _construct_global_matrix_numba(self, r_til, idenmat):
-
         U = np.zeros((r_til.shape[0], r_til.shape[0]))
 
         dot = outer_dot(engine="numba")
@@ -2129,7 +2036,6 @@ class WideEchoStateNetwork:
         return U
 
     def _construct_global_matrix_multiprocessing(self, r_til, idenmat):
-
         assert self.n_workers is not None, (
             "If you are using multiprocessing," "it is necessary to define n_workers."
         )
@@ -2165,7 +2071,6 @@ class WideEchoStateNetwork:
 
     # Setting up new parameters for a restored model
     def set_parameters(self, parameters):
-
         for key, value in parameters.items():
             if key in [
                 "radius",
@@ -2180,7 +2085,6 @@ class WideEchoStateNetwork:
                 setattr(self, key, value)
 
     def fit(self, input_data=None, target_data=None):
-
         data_in = input_data.T
         data_out = target_data.T
 
@@ -2287,7 +2191,6 @@ class WideEchoStateNetwork:
         print("Fitting concluded.")
 
     def step(self, data=None):
-
         affine_term = 0
         if self.A is not None:
             affine_term += self.A @ data
@@ -2300,7 +2203,6 @@ class WideEchoStateNetwork:
         data_ = data
 
         for ll in range(self.n_layers):
-
             r_ = self._update_state(state, data_, layer_id=ll)
 
             hidden_states.append(r_)
@@ -2335,7 +2237,6 @@ class WideEchoStateNetwork:
         return np.zeros((self.state_dim(0),), dtype=self.s_reservoir_matrix[0].dtype)
 
     def set_reference(self, reference=None):
-
         if reference is None:
             self.reference_state = self.default_state
         else:
@@ -2352,7 +2253,6 @@ class WideEchoStateNetwork:
         self.current_state = self.reference_state
 
     def predict(self, initial_data=None, horizon=None):
-
         output_data = np.zeros((self.W_out.shape[0], horizon))
 
         state = self.current_state.copy()  # End of fit stage
@@ -2360,7 +2260,6 @@ class WideEchoStateNetwork:
         data = initial_data
 
         for tt in range(horizon):
-
             print("Extrapolating for the timestep {}".format(tt))
 
             r_ = self._update_state(state, data)
@@ -2386,7 +2285,6 @@ class WideEchoStateNetwork:
         return output_data.T
 
     def save(self, save_path=None, model_name=None):
-
         configs = {
             k: getattr(self, k) for k in signature(self.__init__).parameters.keys()
         }
@@ -2406,7 +2304,6 @@ class WideEchoStateNetwork:
 
     @classmethod
     def restore(cls, model_path, model_name):
-
         path = os.path.join(model_path, model_name + ".pkl")
         with open(path, "rb") as fp:
             d = pickle.load(fp)

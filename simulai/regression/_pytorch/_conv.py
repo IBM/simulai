@@ -23,7 +23,6 @@ from simulai.templates import ConvNetworkTemplate, as_tensor
 
 def channels_dim(method):
     def inside(self, input_data=None):
-
         if len(input_data.shape) < self.n_dimensions:
             return method(self, input_data=input_data[:, None, ...])
         else:
@@ -34,7 +33,6 @@ def channels_dim(method):
 
 # High-level class for assembling different kinds of convolutional networks
 class ConvolutionalNetwork(ConvNetworkTemplate):
-
     name = "conv"
     engine = "torch"
 
@@ -48,7 +46,6 @@ class ConvolutionalNetwork(ConvNetworkTemplate):
         flatten: bool = False,
         name: str = None,
     ) -> None:
-
         super(ConvolutionalNetwork, self).__init__(name=name, flatten=flatten)
 
         self.args = ["in_channels", "out_channels", "kernel_size"]
@@ -100,7 +97,6 @@ class ConvolutionalNetwork(ConvNetworkTemplate):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
-
         return self.flattener(input_data=self.pipeline(input_data))
 
 
@@ -115,7 +111,6 @@ class ResConvolutionalNetwork(ConvNetworkTemplate):
         transpose: bool = False,
         name: str = None,
     ) -> None:
-
         super(ResConvolutionalNetwork, self).__init__(name=name)
 
         self.args = ["in_channels", "out_channels", "kernel_size"]
@@ -151,8 +146,7 @@ class ResConvolutionalNetwork(ConvNetworkTemplate):
 
         self.blocks = list()
 
-        for (stage, activations) in zip(self.stages, self.activations):
-
+        for stage, activations in zip(self.stages, self.activations):
             (
                 before_conv_layers,
                 conv_layers,
@@ -183,7 +177,6 @@ class ResConvolutionalNetwork(ConvNetworkTemplate):
         input_tensor_ = input_data
 
         for block in self.blocks:
-
             output_tensor = input_tensor_ + block(input_tensor_)
 
             input_tensor_ = output_tensor

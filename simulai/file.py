@@ -22,7 +22,6 @@ from simulai.templates import NetworkTemplate
 
 
 def load_pkl(path: str = None) -> Union[object, None]:
-
     """Load a pickle file into a Python object.
 
     Parameters:
@@ -128,7 +127,6 @@ class SPFile:
         model: NetworkTemplate = None,
         device: str = None,
     ) -> None:
-
         """
         Writes the model and its instantiating function to a directory.
 

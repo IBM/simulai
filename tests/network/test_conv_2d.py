@@ -31,7 +31,6 @@ def generate_data(
     n_inputs: int = None,
     n_outputs: int = None,
 ) -> (torch.Tensor, torch.Tensor):
-
     input_data = np.random.rand(n_samples, n_inputs, *image_size)
     output_data = np.random.rand(n_samples, n_outputs)
 
@@ -42,7 +41,6 @@ def generate_data(
 
 # Model template
 def model_2d():
-
     from simulai.regression import ConvolutionalNetwork
 
     # Configuring model
@@ -96,13 +94,11 @@ class TestConvNet2D(TestCase):
         pass
 
     def test_convnet_2d_n_parameters(self):
-
         convnet = model_2d()
 
         assert type(convnet.n_parameters) == int
 
     def test_convnet_2d_eval(self):
-
         input_data, output_data = generate_data(
             n_samples=100, image_size=(16, 16), n_inputs=1, n_outputs=16
         )
@@ -118,7 +114,6 @@ class TestConvNet2D(TestCase):
         )
 
     def test_convnet_2d_save_restore(self):
-
         convnet = model_2d()
 
         input_data, output_data = generate_data(
@@ -146,7 +141,6 @@ class TestConvNet2D(TestCase):
         )
 
     def test_convnet_2d_forward(self):
-
         n_epochs = 100
 
         lr = 1e-3  # Initial learning rate for the ADAM algorithm

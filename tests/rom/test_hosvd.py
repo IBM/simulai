@@ -19,8 +19,7 @@ import numpy as np
 from simulai.file import load_pkl
 from simulai.metrics import L2Norm
 from simulai.rom import HOSVD
-from simulai.special import (Scattering, bidimensional_map_nonlin_3,
-                             time_function)
+from simulai.special import Scattering, bidimensional_map_nonlin_3, time_function
 
 
 class TestHOSVDDecomposition(TestCase):
@@ -28,7 +27,6 @@ class TestHOSVDDecomposition(TestCase):
         pass
 
     def test_hosvd_sklearn(self):
-
         # Constructing dataset
         N_x = 32
         N_y = 32
@@ -58,7 +56,6 @@ class TestHOSVDDecomposition(TestCase):
         Z_list = list()
 
         for c_x, c_y in zip(centers_x, centers_y):
-
             Z_ = generator.exec(data=T, scatter_data=(X, Y, c_x, c_y))
             Z_ *= generator.exec(data=T, scatter_data=(X, Y, 0.25, 0.25))
 
@@ -113,7 +110,6 @@ class TestHOSVDDecomposition(TestCase):
         print("Process completed.")
 
     def test_hosvd_dask(self):
-
         import dask.array as da
 
         # Constructing dataset

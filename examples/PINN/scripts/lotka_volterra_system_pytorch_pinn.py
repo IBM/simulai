@@ -35,7 +35,6 @@ class TestLorenzTorch:
         pass
 
     def test_manufactured_torch(self):
-
         N = 10_00
         n = 5_000
         n_sampled = 1_000
@@ -130,7 +129,6 @@ class TestLorenzTorch:
             plt.show()
 
     def test_manufactured_torch_rbf(self):
-
         N = 10_00
         n = 5_000
         n_sampled = 1_000

@@ -56,7 +56,6 @@ def lorenz_solver(
 
     # Using the built-in RK45 implementation
     if solver == "RK4":
-
         problem = LorenzSystem(rho, sigma, beta)
         time = np.arange(0, T, dt)
 
@@ -70,7 +69,6 @@ def lorenz_solver(
         iter = 0
 
         for tt in range(time.shape[0]):
-
             variables_state, derivatives_state = solver.step(current_state, dt)
 
             variables_timesteps.append(variables_state)
@@ -87,7 +85,6 @@ def lorenz_solver(
 
     # Using the SciPy RK4 implementation
     elif solver == "RK45":
-
         from scipy.integrate import solve_ivp
 
         from simulai.math.differentiation import CollocationDerivative
@@ -187,7 +184,6 @@ def lorenz_solver_forcing(
     iter = 0
 
     for tt in range(time.shape[0]):
-
         variables_state, derivatives_state = solver.step_with_forcings(
             current_state, forcing[tt : tt + 1], dt
         )
@@ -239,7 +235,6 @@ def lorenz_solver_forcing(
 
 
 if __name__ == "__main__":
-
     parser = ArgumentParser(description="Reading input arguments")
     parser.add_argument("--data_path", type=str)
     parser.add_argument("--time", type=float)

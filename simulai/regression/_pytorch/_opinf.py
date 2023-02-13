@@ -36,7 +36,6 @@ class OpInfNetwork(NetworkTemplate):
         name: str = None,
         setup_architecture: bool = True,
     ) -> None:
-
         super(OpInfNetwork, self).__init__()
 
         self.n_inputs = n_inputs
@@ -77,7 +76,6 @@ class OpInfNetwork(NetworkTemplate):
             self._setup_architecture()
 
     def _setup_architecture(self) -> None:
-
         # The bias c is placed in the operator Linear for A_op
         self.A_op = Linear(
             input_size=self.n_inputs, output_size=self.n_outputs, name="A_op"
@@ -113,25 +111,21 @@ class OpInfNetwork(NetworkTemplate):
 
     # Adding each operator as submodule, according to the torch syntax
     def _setup_operators(self) -> None:
-
         for op in self.operators:
             self.add_module(self.name + "_" + op.name, op)
 
     @property
     def weights(self) -> list:
-
         return sum([net.weights for net in self.operators], [])
 
     @property
     def linear_weights_l2(self):
-
         return sum([torch.norm(weight, p=2) for weight in self.A_op.weights]) + sum(
             [torch.norm(bias, p=2) for bias in self.A_op.bias]
         )
 
     @property
     def forcing_liner_weights_l2(self):
-
         if self.forcing is not None:
             return sum([torch.norm(weight, p=2) for weight in self.B_op.weights])
         else:
@@ -139,7 +133,6 @@ class OpInfNetwork(NetworkTemplate):
 
     @property
     def nonlinear_weights_l2(self):
-
         return sum([torch.norm(weight, p=2) for weight in self.H_op.weights])
 
     #############################################################################
@@ -166,7 +159,6 @@ class OpInfNetwork(NetworkTemplate):
         input_field: Union[np.ndarray, torch.Tensor] = None,
         input_forcing: Union[np.ndarray, torch.Tensor] = None,
     ) -> torch.Tensor:
-
         A_output = self.A_op.forward(input_field)  # Matrix for the linear field terms
         B_output = self.B_op.forward(
             input_forcing
@@ -181,7 +173,6 @@ class OpInfNetwork(NetworkTemplate):
     def _forward_without_forcing(
         self, input_field: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
-
         A_output = self.A_op.forward(input_field)  # Matrix for the linear field terms
 
         data = input_field
@@ -193,7 +184,6 @@ class OpInfNetwork(NetworkTemplate):
     def _eval_with_forcing(
         self, input_data: np.ndarray = None, forcing_data: np.ndarray = None
     ) -> np.ndarray:
-
         output_tensor = self._forward_with_forcing(
             input_field=input_data, input_forcing=forcing_data
         )
@@ -201,27 +191,22 @@ class OpInfNetwork(NetworkTemplate):
         return output_tensor.detach().numpy()
 
     def _eval_without_forcing(self, input_data: np.ndarray = None) -> np.ndarray:
-
         output_tensor = self._forward_without_forcing(input_field=input_data)
 
         return output_tensor.detach().numpy()
 
     def _builtin_jacobian(self, x):
-
         return self.A_hat + (self.K_op @ x.T)
 
     def _external_jacobian(self, x):
-
         return self.jacobian_op(x)
 
     def _get_H_hat_column_position(self, i: int, j: int) -> Union[int, None]:
-
         jj = j - i
 
         return int((i / 2) * (2 * self.n_inputs + 1 - i) + jj)
 
     def _define_H_hat_coefficient_function(self, k: int, l: int, n: int, m: int):
-
         if m is not None:
             H_coeff = self.H_hat[k, m]
         else:
@@ -236,7 +221,6 @@ class OpInfNetwork(NetworkTemplate):
 
     # Constructing a tensor for evaluating Jacobians
     def construct_K_op(self, op: callable = None) -> None:
-
         # Vector versions of the index functions
         get_H_hat_column_position = np.vectorize(self._get_H_hat_column_position)
         define_H_hat_coefficient_function = np.vectorize(
@@ -247,7 +231,6 @@ class OpInfNetwork(NetworkTemplate):
             self.n_outputs = self.n_inputs
 
         if op is None:
-
             self.K_op = np.zeros((self.n_outputs, self.n_inputs, self.n_inputs))
             K = np.zeros((self.n_outputs, self.n_inputs, self.n_inputs))
 
@@ -271,7 +254,6 @@ class OpInfNetwork(NetworkTemplate):
             self.jacobian = self._builtin_jacobian
 
         else:
-
             self.jacobian_op = op
 
             self.jacobian = self._external_jacobian
@@ -281,7 +263,6 @@ class OpInfNetwork(NetworkTemplate):
     def kronecker_dot(
         self, data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
-
         if type(data) == np.ndarray:
             data_ = torch.from_numpy(data)
         else:
@@ -328,7 +309,6 @@ class OpInfNetwork(NetworkTemplate):
 # Numpy version of the OpInf network
 class NumpyOpInfNetwork(Regression):
     def __init__(self, opinf_net: torch.nn.Module = None, forcing: str = None) -> None:
-
         super().__init__()
 
         self.forcing = forcing
@@ -345,7 +325,6 @@ class NumpyOpInfNetwork(Regression):
             self.B_op = None
 
         if self.forcing is None:
-
             self.n_cross_variables = self.n_inputs
             self.forward = self._forward_without_forcing
             self.eval = self._eval_without_forcing
@@ -359,27 +338,21 @@ class NumpyOpInfNetwork(Regression):
         self.i_u, self.j_u = opinf_net.i_u, opinf_net.j_u
 
     def _builtin_jacobian(self, x):
-
         return self.A_op.weights + (self.K_op @ x.T)
 
     def _external_jacobian(self, x):
-
         return self.jacobian_op(x)
 
     def construct_K_op(self, op: callable = None):
-
         if op is None:
-
             self.jacobian = self._builtin_jacobian
 
         else:
-
             self.jacobian_op = op
 
             self.jacobian = self._external_jacobian
 
     def parametric_jacobian(self, input_data: np.ndarray = None):
-
         A_jac = np.tile(input_data, (self.n_inputs, 1))
         c_jac = np.eye(self.n_inputs)
 
@@ -391,13 +364,11 @@ class NumpyOpInfNetwork(Regression):
     # The Kronecker dot is used for generating the quadratic component to be
     # used together the matrix H
     def kronecker_dot(self, data: np.ndarray = None) -> np.ndarray:
-
         kronecker_output = np.einsum("bi,bj->bij", data, data)
 
         return kronecker_output[:, self.i_u, self.j_u]
 
     def _forward_without_forcing(self, input_field: np.ndarray = None) -> np.ndarray:
-
         A_output = self.A_op.forward(input_field)  # Matrix for the linear field terms
 
         data = input_field
@@ -407,14 +378,12 @@ class NumpyOpInfNetwork(Regression):
         return A_output + H_output
 
     def _eval_without_forcing(self, input_field: np.ndarray = None) -> np.ndarray:
-
         output_tensor = self._forward_without_forcing(input_field=input_field)
 
         return output_tensor
 
     # Saving to disk the complete model
     def save(self, save_path: str = None, model_name: str = None) -> None:
-
         path = os.path.join(save_path, model_name + ".pkl")
         try:
             with open(path, "wb") as fp:
@@ -425,7 +394,6 @@ class NumpyOpInfNetwork(Regression):
     def _get_array_from_linear_operator(
         self, op=None, component: str = "weights"
     ) -> np.ndarray:
-
         return getattr(op, component)
 
     @property

@@ -294,7 +294,6 @@ def batchdomain_constructor(
         raise Exception("Either data_interval or batch_indices must be provided.")
 
     if data_interval is not None:
-
         if interval_size < batch_size:
             batches_ = [interval[0], interval[1]]
             batches_ = np.array(batches_)

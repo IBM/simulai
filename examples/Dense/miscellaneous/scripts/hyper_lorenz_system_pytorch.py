@@ -35,13 +35,11 @@ class HyperTrainDense(HyperTrainTemplate):
     def __init__(
         self, trial_config: dict = None, set_type="hard", path_to_model: str = None
     ):
-
         super().__init__(trial_config=trial_config, set_type=set_type)
 
         self.path_to_model = path_to_model
 
     def _set_model(self):
-
         config = {
             "layers_units": self.trial_config.get("layers_units"),
             "activations": self.trial_config.get("activations"),
@@ -53,7 +51,6 @@ class HyperTrainDense(HyperTrainTemplate):
         self.model = DenseNetwork(**config)
 
     def _set_optimizer(self):
-
         optimizer = self.trial_config.get("optimizer")
 
         optimizer_config = {"lr": self.trial_config.get("lr")}
@@ -71,7 +68,6 @@ class HyperTrainDense(HyperTrainTemplate):
         self.optimizer = Optimizer(optimizer=optimizer, params=optimizer_config)
 
     def fit(self, input_train_data=None, target_train_data=None):
-
         if self.path_to_model:
             self.model.load_state_dict(torch.load(self.path_to_model))
         else:
@@ -88,7 +84,6 @@ class HyperTrainDense(HyperTrainTemplate):
 
 
 def objective(model, input_validation_data=None, target_validation_data=None):
-
     approximated_data = model.eval(input_data=input_validation_data)
 
     l2_norm = L2Norm()
@@ -106,7 +101,6 @@ def objective(model, input_validation_data=None, target_validation_data=None):
 # feedforward fully-connected neural networks
 class TestLorenzTorch(TestCase):
     def test_lorenz_torch(self):
-
         dt = 0.005
         T_max = 50
         rho = 28
@@ -213,7 +207,6 @@ class TestLorenzTorch(TestCase):
         hyper_search.optimize(n_trials=n_trials)
 
     def test_lorenz_torch_predefined(self):
-
         dt = 0.005
         T_max = 50
         rho = 28
@@ -336,7 +329,6 @@ class TestLorenzTorch(TestCase):
         )
 
         for ii in range(n_inputs):
-
             plt.plot(approximated_data[:, ii], label="Approximated")
             plt.plot(test_output_data[:, ii], label="Exact")
             plt.legend()

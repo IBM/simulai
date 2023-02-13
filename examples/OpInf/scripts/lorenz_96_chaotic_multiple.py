@@ -14,6 +14,7 @@
 
 import os
 import time
+
 #!/usr/bin/env python
 import warnings
 
@@ -162,7 +163,6 @@ else:
     conditions = [case]
 
 for si in conditions:
-
     print(f"Running case: {si}/{n_initial}")
 
     x0 = initial_states[si]

@@ -25,7 +25,6 @@ class TestDeepOperatorROBERPINN(TestCase):
         pass
 
     def test_rober_deeponet_pinn(self):
-
         Q = 1_00
         N = int(5)
 
@@ -58,7 +57,6 @@ class TestDeepOperatorROBERPINN(TestCase):
         lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
         def model():
-
             import numpy as np
 
             from simulai.models import ImprovedDeepONet

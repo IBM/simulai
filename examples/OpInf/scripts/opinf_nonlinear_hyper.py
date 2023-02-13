@@ -35,7 +35,6 @@ class LorenzJacobian:
         self.beta = beta
 
     def __call__(self, data):
-
         x = data[0]
         y = data[1]
         z = data[2]
@@ -54,7 +53,6 @@ class HyperOpInfTwoParameters(HyperTrainTemplate):
         path_to_model: str = None,
         other_params: dict = None,
     ):
-
         self.model = None
 
         self.path_to_model = path_to_model
@@ -83,7 +81,6 @@ class HyperOpInfTwoParameters(HyperTrainTemplate):
         self.model_id = self.tag + str(self.id)
 
     def _set_model(self):
-
         rc_config = {
             "lambda_linear": 10 ** self.trial_config["lambda_linear_exp"],
             "lambda_quadratic": 10 ** self.trial_config["lambda_quadratic_exp"],
@@ -98,7 +95,6 @@ class HyperOpInfTwoParameters(HyperTrainTemplate):
         self.model.set(**rc_config)
 
     def fit(self, input_train_data=None, target_train_data=None):
-
         msg = self.model.fit(input_data=input_train_data, target_data=target_train_data)
 
         return msg
@@ -106,13 +102,11 @@ class HyperOpInfTwoParameters(HyperTrainTemplate):
 
 class ObjectiveWrapper:
     def __init__(self, test_data=None, t_test=None, initial_state=None):
-
         self.test_data = test_data
         self.t_test = t_test
         self.initial_state = initial_state
 
     def __call__(self, trainer_instance=None, objective_function=None):
-
         return objective_function(
             model=trainer_instance,
             initial_state=self.initial_state,
@@ -124,7 +118,6 @@ class ObjectiveWrapper:
 def objective(
     model=None, initial_state=None, t_test=None, test_field=None, jacobian=None
 ):
-
     model.model.construct_K_op(op=jacobian)
 
     # Using the derivatives surrogate for time-integrating
@@ -144,7 +137,6 @@ def objective(
 
 
 def test_opinf_nonlinear_int_lsoda():
-
     dt = 0.0001
     T_max = 100
     rho = 28
@@ -195,7 +187,6 @@ def test_opinf_nonlinear_int_lsoda():
     # If a baseline is used, the datasets pre-processing is executed and recurrently used
     # along the process.
     if use_baseline:
-
         rc_config = {"lambda_linear": 10**0, "lambda_quadratic": 10**0}
 
         baseline_model = OpInf(bias_rescale=1e-15, solver="lstsq")
@@ -270,7 +261,6 @@ def test_opinf_nonlinear_int_lsoda():
     tags = ["x", "y", "z"]
 
     for var in range(n_field):
-
         plt.title(f"Variable {tags[var]}")
         plt.plot(t_test, test_field[:, var], label="Exact")
         plt.plot(t_test, estimated_field[:, var], label="Approximated")

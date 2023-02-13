@@ -24,7 +24,6 @@ class TestDMDDecomposition(TestCase):
         pass
 
     def test_run_dmd_decomposition(self) -> None:
-
         # One-dimensional case
         # Constructing dataset
         train_factor = 0.96

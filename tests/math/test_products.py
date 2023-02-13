@@ -24,11 +24,9 @@ class TestProducts(TestCase):
         pass
 
     def test_kronecker(self):
-
         n_features = [5, 10, 20, 40]
 
         for n in n_features:
-
             a = np.random.rand(1_000, n)
 
             a_ = kronecker(a=a)

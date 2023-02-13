@@ -18,13 +18,11 @@ from simulai.templates import ReservoirComputing
 
 
 def time_function(t):
-
     omega = np.pi
     return np.sin(omega * t) + np.sin(10 * omega * t) + np.sin(20 * omega * t)
 
 
 def bidimensional_map_nonlin_1(h, t, x, y, x_0, y_0):
-
     gamma = 3 * np.pi
     r = np.sqrt(np.square(x - x_0) + np.square(y - y_0))
 
@@ -34,7 +32,6 @@ def bidimensional_map_nonlin_1(h, t, x, y, x_0, y_0):
 
 
 def bidimensional_map_nonlin_2(h, t, x, y, x_0, y_0):
-
     gamma = 3 * np.pi
     r = np.sqrt(np.square(x - x_0) + np.square(y - y_0))
 
@@ -44,7 +41,6 @@ def bidimensional_map_nonlin_2(h, t, x, y, x_0, y_0):
 
 
 def bidimensional_map_nonlin_3(h, t, x, y, x_0, y_0):
-
     gamma = 3 * np.pi
     r = np.sqrt(np.square(x - x_0) + np.square(y - y_0))
 
@@ -54,7 +50,6 @@ def bidimensional_map_nonlin_3(h, t, x, y, x_0, y_0):
 
 
 def bidimensional_map_nonlin_4(h, t, x, y, x_0, y_0):
-
     gamma = 3 * np.pi
     r = np.sqrt(np.square(x - x_0) + np.square(y - y_0))
 
@@ -64,7 +59,6 @@ def bidimensional_map_nonlin_4(h, t, x, y, x_0, y_0):
 
 
 def bidimensional_map_nonlin_5(h, t, x, y, x_0, y_0):
-
     gamma = 3 * np.pi
 
     r = np.sqrt(np.square(x - x_0) + np.square(y - y_0))
@@ -80,7 +74,6 @@ def bidimensional_map_nonlin_5(h, t, x, y, x_0, y_0):
 
 
 def bidimensional_map_nonlin_6(h, t, x, y, x_0, y_0):
-
     gamma = 3 * np.pi
     r = np.sqrt(
         np.square(x - x_0 + 0.01 * x_0 * np.sin(gamma * t))
@@ -93,7 +86,6 @@ def bidimensional_map_nonlin_6(h, t, x, y, x_0, y_0):
 
 
 def bidimensional_map_lin(h, t, x, y, x_0, y_0):
-
     gamma = 3 * np.pi
     r = np.sqrt(np.square(x - x_0) + np.square(y - y_0))
 
@@ -105,7 +97,6 @@ def bidimensional_map_lin(h, t, x, y, x_0, y_0):
 def reservoir_generator(
     number_of_reservoirs=None, sparsity_level=None, reservoir_dim=None
 ):
-
     reservoir_computing = ReservoirComputing(
         reservoir_dim=reservoir_dim, sparsity_level=sparsity_level
     )
@@ -115,10 +106,8 @@ def reservoir_generator(
 
 class Scattering:
     def __init__(self, root=None, scatter_op=None):
-
         self.root = root
         self.scatter_op = scatter_op
 
     def exec(self, data=None, scatter_data=None):
-
         return self.scatter_op(self.root, data, *scatter_data)

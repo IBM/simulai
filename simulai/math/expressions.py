@@ -22,7 +22,6 @@ from sympy.parsing.sympy_parser import parse_expr
 
 class FromSymbol2FLambda:
     def __init__(self, engine: str = "numpy", variables: List[str] = None) -> None:
-
         """
         Initialize a lambda function from a string.
 
@@ -152,7 +151,6 @@ class FromSymbol2FLambda:
 
             op_map = dict()
             for expression_name in expression_names:
-
                 try:
                     engine_function = getattr(
                         self.engine_module, expression_name.lower(), None

@@ -12,6 +12,7 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
+
 # Geometrical progression
 def gp(init, factor, n) -> list:
     """

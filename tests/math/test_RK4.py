@@ -21,7 +21,6 @@ from simulai.math.integration import RK4
 
 class Pendulum:
     def __init__(self, k=1, u=None):
-
         self.k = k
         self.u = u
 
@@ -31,14 +30,12 @@ class Pendulum:
             self.call = self._call_with_forcing
 
     def _call_no_forcing(self, data):
-
         s1 = data[0, 0]
         s2 = data[0, 1]
 
         return np.array([s2, -self.k * np.sin(s1)])
 
     def _call_with_forcing(self, data):
-
         s1 = data[0, 0]
         s2 = data[0, 1]
         u = data[0, 2]
@@ -46,7 +43,6 @@ class Pendulum:
         return np.array([s2, -self.k * np.sin(s1) + u])
 
     def __call__(self, data):
-
         return self.call(data)
 
 
@@ -59,7 +55,6 @@ class TestRK4Integrator(TestCase):
         return A * (np.cos(2 * x) + np.sin(2 * x))
 
     def test_integration_without_forcings(self):
-
         N = 1000
         t = np.linspace(0, 10 * np.pi, N)
         dt = t[1] - t[0]
@@ -77,7 +72,6 @@ class TestRK4Integrator(TestCase):
         ), "The output of the integration must be a np.ndarray."
 
     def test_integration_with_forcings(self):
-
         N = 1000
         t = np.linspace(0, 10 * np.pi, N)
         dt = t[1] - t[0]

@@ -6,12 +6,10 @@ import numpy as np
 from simulai.file import SPFile
 from simulai.metrics import L2Norm
 from simulai.optimization import Optimizer
-from simulai.sampling import (HMC, G_metric, HamiltonianEquations,
-                              LeapFrogIntegrator)
+from simulai.sampling import HMC, G_metric, HamiltonianEquations, LeapFrogIntegrator
 
 
 def model():
-
     from simulai.models import AutoencoderVariational
     from simulai.regression import SLFNN, ConvolutionalNetwork
 
@@ -128,7 +126,6 @@ def train_autoencoder_mnist(
     n_epochs: int = None,
     batch_size: int = None,
 ):
-
     lr = 1e-3
 
     autoencoder = model()
@@ -168,7 +165,6 @@ def train_autoencoder_mnist(
 def eval_autoencoder(
     model_name: str = None, test_data: np.ndarray = None, path: str = None
 ):
-
     saver = SPFile(compact=False)
     autoencoder = saver.read(model_path=os.path.join(path, model_name))
     autoencoder.summary(input_shape=list(test_data.shape))
@@ -196,7 +192,6 @@ def eval_autoencoder(
 
 
 if __name__ == "__main__":
-
     # Reading command line arguments.
     parser = ArgumentParser(description="Reading input parameters")
 

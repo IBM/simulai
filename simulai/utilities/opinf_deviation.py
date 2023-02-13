@@ -22,7 +22,6 @@ from sympy import MatrixExpr
 
 class OpInfDeviation:
     def __init__(self, A_hat: np.ndarray = None, H_hat: np.ndarray = None) -> None:
-
         """Evaluating the deviation evolution in an OpInf model
         :param A_hat: linear OpInf operator
         :type A_hat: np.ndarray
@@ -68,18 +67,15 @@ class OpInfDeviation:
         self.compile()
 
     def compile(self) -> None:
-
         self.jac = self.lambdify(expression=self.jac_expressions)
         self.error = self.lambdify(expression=self.error_expressions)
 
     def lambdify(self, expression: MatrixExpr = None) -> callable:
-
         return sp.lambdify([self.epsilon, self.u], expression, "numpy")
 
     def eval_jacobian(
         self, u: np.ndarray = None, epsilon: np.ndarray = None
     ) -> np.ndarray:
-
         """Evaluating error Jacobian
         :param u: reference solution
         :type u: np.ndarray
@@ -95,7 +91,6 @@ class OpInfDeviation:
         return self.jac(epsilon, u)
 
     def eval_error(self, u: np.ndarray = None, epsilon: np.array = None) -> np.ndarray:
-
         """Evaluating error
         :param u: reference solution
         :type u: np.ndarray
@@ -111,7 +106,6 @@ class OpInfDeviation:
         return self.error(epsilon, u)
 
     def save(self, name: str = None, path: str = None) -> None:
-
         """Complete saving
         :param path: path to the saving directory
         :type path: str

@@ -24,8 +24,7 @@ from simulai.math.progression import gp
 from simulai.metrics import L2Norm, MeanEvaluation
 from simulai.rom import IPOD
 from simulai.simulation import Pipeline
-from simulai.special import (Scattering, bidimensional_map_nonlin_3,
-                             time_function)
+from simulai.special import Scattering, bidimensional_map_nonlin_3, time_function
 from simulai.utilities import make_temp_directory
 
 
@@ -38,7 +37,6 @@ class TestIPCADecomposition(TestCase):
     """
 
     def test_2D_non_separable_structured_dataset(self) -> None:
-
         Nx = int(64)
         Ny = int(64)
         Nt = int(1e3)
@@ -51,7 +49,6 @@ class TestIPCADecomposition(TestCase):
 
         with make_temp_directory() as tmp_dir:
             with h5py.File(os.path.join(tmp_dir, f"test_data.h5"), "w") as fp:
-
                 dataset = fp.create_dataset(
                     "data",
                     shape=(Nt, Nx * Ny, 1),
@@ -61,7 +58,6 @@ class TestIPCADecomposition(TestCase):
                 batches = batchdomain_constructor([0, Nt], batch_sizes[1])
 
                 for j, batch in enumerate(batches):
-
                     print(f"Sub-domain {j}")
 
                     T, X, Y = np.meshgrid(t[slice(*batch)], x, y, indexing="ij")
@@ -84,7 +80,6 @@ class TestIPCADecomposition(TestCase):
                     dataset[slice(*batch)] = Z_array
 
                 for batch_size in batch_sizes:
-
                     print(f"Using batch size as {batch_size}")
 
                     N_components = gp(init=1, factor=2, n=3)
@@ -96,7 +91,6 @@ class TestIPCADecomposition(TestCase):
     def _exec_IPCA_tests_reshaper(
         self, dataset, N_components, batch_size, save_path
     ) -> None:
-
         train_factor = 0.6
         N_samples = dataset.shape[0]
         N_train = int(train_factor * N_samples)
@@ -104,7 +98,6 @@ class TestIPCADecomposition(TestCase):
         variables_names = dataset.dtype.names
 
         for n_components in N_components:
-
             rom_config = {"n_components": n_components, "mean_component": True}
 
             dump_path = os.path.join(save_path, f"sampled_data_{n_components}.h5")

@@ -2,13 +2,11 @@ from unittest import TestCase
 
 import numpy as np
 
-from simulai.normalization import (UnitaryNormalization,
-                                   UnitarySymmetricalNormalization)
+from simulai.normalization import UnitaryNormalization, UnitarySymmetricalNormalization
 
 
 class TestNormalization(TestCase):
     def test_unitary(self):
-
         factor = 20
         data = factor * np.random.rand(1_000, 100)
         data_ext = factor * np.random.rand(1_00, 100)
@@ -46,7 +44,6 @@ class TestNormalization(TestCase):
         assert data_norm.min() == 0.0
 
     def test_simmetric_unitary(self):
-
         factor = 20
         data = factor * np.random.rand(1_000, 100)
         data_ext = factor * np.random.rand(1_00, 100)
