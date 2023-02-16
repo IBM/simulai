@@ -23,7 +23,8 @@ from numpy.lib import recfunctions
 from torch import Tensor
 
 from simulai.abstract import DataPreparer, Dataset
-from simulai.batching import batchdomain_constructor, indices_batchdomain_constructor
+from simulai.batching import (batchdomain_constructor,
+                              indices_batchdomain_constructor)
 from simulai.metrics import MemorySizeEval
 
 """

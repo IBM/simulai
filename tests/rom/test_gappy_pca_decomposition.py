@@ -18,7 +18,8 @@ import numpy as np
 
 from simulai.math.progression import gp
 from simulai.rom import GPOD
-from simulai.special import Scattering, bidimensional_map_nonlin_3, time_function
+from simulai.special import (Scattering, bidimensional_map_nonlin_3,
+                             time_function)
 
 
 class TestPCADecomposition(TestCase):

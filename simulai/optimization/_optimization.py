@@ -22,6 +22,7 @@ from torch.distributed.optim import DistributedOptimizer
 from torch.distributed.rpc import RRef
 
 from simulai.abstract import Dataset, Regression
+from simulai.templates import NetworkTemplate
 
 # Basic built-in optimization toolkit for SimulAI
 
@@ -86,6 +87,42 @@ def _convert_tensor_format(method):
         )
 
     return inside
+
+
+# It verifies if the loss function provided to Optimizer
+# is the most proper for the given model
+def _adjust_loss_function_to_model(
+    model: NetworkTemplate = None, loss: str = None, physics_informed: bool = False
+) -> None:
+    import simulai.models as simmod
+
+    if physics_informed == True:
+        if isinstance(model, simmod.DeepONet):
+            recommended_loss = "opirmse"
+
+        else:
+            recommended_loss = "pirmse"
+
+    else:
+        if isinstance(model, simmod.AutoencoderVariational):
+            recommended_loss = "vaermse"
+
+        elif isinstance(model, simmod.AutoencoderKoopman):
+            recommended_loss = "kaermse"
+
+        elif isinstance(model, simmod.AutoencoderCNN) or isinstance(
+            model, simmod.AutoencoderMLP
+        ):
+            recommended_loss = "wrmse"
+
+        else:
+            recommended_loss = loss
+
+    if recommended_loss != loss:
+        raise Exception(
+            f"The loss function used for this case ({loss})"
+            + f" is not the recommended ({recommended_loss}). Please, redefine it."
+        )
 
 
 # Wrapper for basic back-propagation optimization
@@ -172,6 +209,7 @@ class Optimizer:
         self.accuracy_str = ""
         self.decay_frequency = None
         self.loss_states = None
+        self.is_physics_informed = False
 
     def _get_lr_decay(self) -> Union[callable, None]:
         if self.lr_decay_scheduler_params is not None:
@@ -452,6 +490,15 @@ class Optimizer:
         device: str = "cpu",
         distributed: bool = False,
     ) -> None:
+        # Verifying if the params dictionary contains Physics-informed
+        # attributes
+        if "residual" in params:
+            self.is_physics_informed = True
+
+        _adjust_loss_function_to_model(
+            model=op, loss=loss, physics_informed=self.is_physics_informed
+        )
+
         # When using inputs with the format h5py.Dataset
         if callable(input_data) and callable(target_data):
             assert batch_size, (

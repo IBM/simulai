@@ -24,7 +24,8 @@ from simulai.math.progression import gp
 from simulai.metrics import L2Norm, MeanEvaluation
 from simulai.rom import IPOD
 from simulai.simulation import Pipeline
-from simulai.special import Scattering, bidimensional_map_nonlin_3, time_function
+from simulai.special import (Scattering, bidimensional_map_nonlin_3,
+                             time_function)
 from simulai.utilities import make_temp_directory
 
 

@@ -16,7 +16,6 @@ from simulai import engine
 
 from ._affine import AffineMapping
 from ._elm import ELM
-
 # No back-propagation mechanisms
 from ._esn import DeepEchoStateNetwork, EchoStateNetwork, WideEchoStateNetwork
 from ._extended_opinf import ExtendedOpInf
@@ -28,14 +27,8 @@ assert engine is not None, "The variable engine was not defined."
 
 if engine == "pytorch":
     from ._pytorch._conv import ConvolutionalNetwork, ResConvolutionalNetwork
-    from ._pytorch._dense import (
-        SLFNN,
-        ConvexDenseNetwork,
-        DenseNetwork,
-        Linear,
-        ResDenseNetwork,
-        ShallowNetwork,
-    )
+    from ._pytorch._dense import (SLFNN, ConvexDenseNetwork, DenseNetwork,
+                                  Linear, ResDenseNetwork, ShallowNetwork)
     from ._pytorch._koopman import AutoEncoderKoopman, KoopmanNetwork
     from ._pytorch._numpy import LinearNumpy
     from ._pytorch._opinf import OpInfNetwork

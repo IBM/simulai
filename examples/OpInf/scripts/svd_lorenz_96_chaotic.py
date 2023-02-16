@@ -13,7 +13,6 @@
 #     limitations under the License.
 
 import os
-
 #!/usr/bin/env python
 import warnings
 
