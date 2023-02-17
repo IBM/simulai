@@ -548,12 +548,12 @@ class PIRMSELoss(LossBasics):
 
         if type(input_data) == dict:
             return {
-                key: torch.from_numpy(item.astype(np.float32)).to(device)
+                key: torch.from_numpy(item.astype("float32")).to(device)
                 for key, item in input_data.items()
             }
 
         else:
-            return torch.from_numpy(input_data.astype(np.float32)).to(device)
+            return torch.from_numpy(input_data.astype("float32")).to(device)
 
     def _to_tensor(self, *args, device: str = "cpu") -> List[torch.Tensor]:
         """
@@ -837,12 +837,12 @@ class OPIRMSELoss(LossBasics):
     ) -> Union[dict, torch.Tensor]:
         if type(input_data) == dict:
             return {
-                key: torch.from_numpy(item.astype(np.float32)).to(device)
+                key: torch.from_numpy(item.astype("float32")).to(device)
                 for key, item in input_data.items()
             }
 
         else:
-            return torch.from_numpy(input_data.astype(np.float32)).to(device)
+            return torch.from_numpy(input_data.astype("float32")).to(device)
 
     def _to_tensor(self, *args, device="cpu"):
         return [self._convert(input_data=arg, device=device) for arg in args]
@@ -1063,12 +1063,12 @@ class KAERMSELoss(LossBasics):
     ) -> Union[dict, torch.Tensor]:
         if type(input_data) == dict:
             return {
-                key: torch.from_numpy(item.astype(np.float32)).to(device)
+                key: torch.from_numpy(item.astype("float32")).to(device)
                 for key, item in input_data.items()
             }
 
         else:
-            return torch.from_numpy(input_data.astype(np.float32)).to(device)
+            return torch.from_numpy(input_data.astype("float32")).to(device)
 
     def _to_tensor(self, *args, device="cpu"):
         return [self._convert(input_data=arg, device=device) for arg in args]
@@ -1271,12 +1271,12 @@ class VAERMSELoss(LossBasics):
     ) -> Union[dict, torch.Tensor]:
         if type(input_data) == dict:
             return {
-                key: torch.from_numpy(item.astype(np.float32)).to(device)
+                key: torch.from_numpy(item.astype("float32")).to(device)
                 for key, item in input_data.items()
             }
 
         else:
-            return torch.from_numpy(input_data.astype(np.float32)).to(device)
+            return torch.from_numpy(input_data.astype("float32")).to(device)
 
     def _to_tensor(self, *args, device="cpu"):
         return [self._convert(input_data=arg, device=device) for arg in args]

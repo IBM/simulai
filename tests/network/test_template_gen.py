@@ -31,8 +31,8 @@ def generate_data_2d(
     input_data = np.random.rand(n_samples, n_inputs, *image_size)
     output_data = np.random.rand(n_samples, n_outputs)
 
-    return torch.from_numpy(input_data.astype(np.float32)), torch.from_numpy(
-        output_data.astype(np.float32)
+    return torch.from_numpy(input_data.astype("float32")), torch.from_numpy(
+        output_data.astype("float32")
     )
 
 
@@ -45,8 +45,8 @@ def generate_data_1d(
     input_data = np.random.rand(n_samples, n_inputs, vector_size)
     output_data = np.random.rand(n_samples, n_outputs)
 
-    return torch.from_numpy(input_data.astype(np.float32)), torch.from_numpy(
-        output_data.astype(np.float32)
+    return torch.from_numpy(input_data.astype("float32")), torch.from_numpy(
+        output_data.astype("float32")
     )
 
 
