@@ -721,7 +721,7 @@ class ScipyInterface:
         if type(parameters[0]) == torch.Tensor:
             return np.hstack(
                 [
-                    param.detach().numpy().astype(np.float64).flatten()
+                    param.detach().numpy().astype("float64").flatten()
                     for param in parameters
                 ]
             )

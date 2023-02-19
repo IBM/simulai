@@ -19,8 +19,10 @@ import random
 import matplotlib.pyplot as plt
 import numpy as np
 
-from examples.utils.oscillator_solver import (oscillator_solver,
-                                              oscillator_solver_forcing)
+from examples.utils.oscillator_solver import (
+    oscillator_solver,
+    oscillator_solver_forcing,
+)
 from simulai.models import ModelPool
 from simulai.regression import EchoStateNetwork
 from simulai.utilities import make_temp_directory

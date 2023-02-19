@@ -24,8 +24,7 @@ from simulai.math.progression import gp
 from simulai.metrics import L2Norm
 from simulai.rom import IPOD
 from simulai.simulation import Pipeline
-from simulai.special import (Scattering, bidimensional_map_nonlin_3,
-                             time_function)
+from simulai.special import Scattering, bidimensional_map_nonlin_3, time_function
 from simulai.utilities import make_temp_directory
 
 
@@ -127,7 +126,7 @@ class TestIPCADecomposition(TestCase):
                 dataset = fp.create_dataset(
                     "data",
                     shape=(Nt, Nx * Ny, 1),
-                    dtype=[("Z_1", np.float), ("Z_2", np.float), ("Z_3", np.float)],
+                    dtype=[("Z_1", float), ("Z_2", float), ("Z_3", float)],
                 )
 
                 batches = batchdomain_constructor([0, Nt], batch_sizes[1])
