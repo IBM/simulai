@@ -107,7 +107,7 @@ input_dataset_sensor_sampled = input_dataset_train[sensors_indices, ...][:, None
 output_target = output_dataset_time_sampled.transpose(2, 0, 1).reshape(
     n_cases * n_time_samples, -1
 )
-output_target_tensor = torch.from_numpy(output_target.astype(np.float32))
+output_target_tensor = torch.from_numpy(output_target.astype("float32"))
 input_branch = np.tile(
     input_dataset_sensor_sampled.transpose(2, 1, 0), (1, n_time_samples, 1)
 ).reshape(n_cases * n_time_samples, -1)

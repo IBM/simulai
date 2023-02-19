@@ -260,14 +260,14 @@ class NetworkTemplate(torch.nn.Module):
         for ll, layer in enumerate(self.layers_map):
             self.layers[ll].weight = Parameter(
                 data=torch.from_numpy(
-                    parameters[self.stitch_idx[layer[0]]].astype(np.float32)
+                    parameters[self.stitch_idx[layer[0]]].astype("float32")
                 ),
                 requires_grad=True,
             )
 
             self.layers[ll].bias = Parameter(
                 data=torch.from_numpy(
-                    parameters[self.stitch_idx[layer[1]]].astype(np.float32)
+                    parameters[self.stitch_idx[layer[1]]].astype("float32")
                 ),
                 requires_grad=True,
             )
@@ -342,7 +342,7 @@ def as_tensor(method):
             return method(self, input_data, **kwargs)
 
         elif isinstance(input_data, np.ndarray):
-            input_data_ = torch.from_numpy(input_data.astype(np.float32))
+            input_data_ = torch.from_numpy(input_data.astype("float32"))
 
             return method(self, input_data_, **kwargs)
 
@@ -381,7 +381,7 @@ def as_array(method):
 def guarantee_device(method):
     def inside(self, **kwargs) -> callable:
         kwargs_ = {
-            key: torch.from_numpy(value.astype(np.float32)).to(self.device)
+            key: torch.from_numpy(value.astype("float32")).to(self.device)
             for key, value in kwargs.items()
             if isinstance(value, np.ndarray) == True
         }

@@ -13,6 +13,7 @@
 #     limitations under the License.
 
 import os
+
 # (C) Copyright IBM Corporation 2017, 2018, 2019
 # U.S. Government Users Restricted Rights:  Use, duplication or disclosure restricted
 # by GSA ADP Schedule Contract with IBM Corp.
@@ -64,9 +65,9 @@ class TestReshaper(TestCase):
                                 "data",
                                 shape=(Nt, Nx, Ny, 1),
                                 dtype=[
-                                    ("T", np.float),
-                                    ("X", np.float),
-                                    ("Y", np.float),
+                                    ("T", float),
+                                    ("X", float),
+                                    ("Y", float),
                                 ],
                             )
 

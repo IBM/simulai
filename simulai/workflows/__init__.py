@@ -14,9 +14,12 @@
 
 from ._cloud_object_storage import CloudObjectStorage
 from ._esn_modelpool_train import (
-    ObjectiveESNIndependent, define_reservoir_configs_for_affine_training,
+    ObjectiveESNIndependent,
+    define_reservoir_configs_for_affine_training,
     optuna_assess_best_joint_solution_ESNIndependent,
-    optuna_assess_best_solution_ESNIndependent, optuna_objectiveESNIndependent)
+    optuna_assess_best_solution_ESNIndependent,
+    optuna_objectiveESNIndependent,
+)
 from ._extrapolation import StepwiseExtrapolation
 from ._h5_comparison import compute_datasets_to_reference_norm
 from ._h5_ipod import dataset_ipod, pipeline_projection_error

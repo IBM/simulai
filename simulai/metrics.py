@@ -686,7 +686,7 @@ class MeanEvaluation:
             data = dataset[slice(*batch)]
 
             if data_preparer is None:
-                data_ = data.view(np.float)
+                data_ = data.view(float)
                 data_flatten = data_.reshape(-1, np.product(data_.shape[1:]))
             else:
                 data_flatten = data_preparer.prepare_input_structured_data(data)

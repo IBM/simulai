@@ -46,14 +46,14 @@ def _convert_tensor_format(method):
             input_data_ = input_data
 
         elif isinstance(input_data, np.ndarray):
-            input_data_ = torch.from_numpy(input_data.astype(np.float32))
+            input_data_ = torch.from_numpy(input_data.astype("float32"))
 
         elif isinstance(input_data, dict):
             input_data_ = dict()
 
             for key, item in input_data.items():
                 if type(item) == np.ndarray:
-                    input_data_[key] = torch.from_numpy(item.astype(np.float32))
+                    input_data_[key] = torch.from_numpy(item.astype("float32"))
 
                 else:
                     input_data_[key] = item
@@ -64,14 +64,14 @@ def _convert_tensor_format(method):
             )
 
         if isinstance(target_data, np.ndarray):
-            target_data_ = torch.from_numpy(target_data.astype(np.float32))
+            target_data_ = torch.from_numpy(target_data.astype("float32"))
         else:
             target_data_ = target_data
 
         if validation_data is not None:
             if isinstance(validation_data[0], np.ndarray):
                 validation_data_ = tuple(
-                    [torch.from_numpy(j.astype(np.float32)) for j in validation_data]
+                    [torch.from_numpy(j.astype("float32")) for j in validation_data]
                 )
             else:
                 validation_data_ = validation_data
@@ -721,7 +721,7 @@ class ScipyInterface:
         if type(parameters[0]) == torch.Tensor:
             return np.hstack(
                 [
-                    param.detach().numpy().astype(np.float64).flatten()
+                    param.detach().numpy().astype("float64").flatten()
                     for param in parameters
                 ]
             )
