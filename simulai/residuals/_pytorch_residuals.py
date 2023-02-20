@@ -26,6 +26,7 @@ from torch.autograd.functional import jacobian
 from simulai.io import MakeTensor
 from simulai.tokens import D
 
+
 class SymbolicOperator(torch.nn.Module):
     """
     The SymbolicOperatorClass is a class that constructs tensor operators using symbolic expressions written in PyTorch.
@@ -46,6 +47,7 @@ class SymbolicOperator(torch.nn.Module):
     Returns:
         object: An instance of the SymbolicOperatorClass.
     """
+
     def __init__(
         self,
         expressions: List[Union[sympy.Expr, str]] = None,
@@ -61,7 +63,6 @@ class SymbolicOperator(torch.nn.Module):
         engine: str = "torch",
         auxiliary_expressions: list = None,
     ) -> None:
-        
         if engine == "torch":
             super(SymbolicOperator, self).__init__()
         else:
@@ -90,15 +91,11 @@ class SymbolicOperator(torch.nn.Module):
         elif device == "cpu":
             print("Using CPU.")
         else:
-            raise Exception(
-                f"The device must be cpu or gpu, but received: {device}"
-            )
+            raise Exception(f"The device must be cpu or gpu, but received: {device}")
 
         self.device = device
 
-        self.expressions = [
-            self._parse_expression(expr=expr) for expr in expressions
-        ]
+        self.expressions = [self._parse_expression(expr=expr) for expr in expressions]
 
         if isinstance(auxiliary_expressions, dict):
             self.auxiliary_expressions = {
@@ -201,8 +198,7 @@ class SymbolicOperator(torch.nn.Module):
         operators_engine = importlib.import_module("simulai.tokens")
 
         protected_operators = {
-            func: getattr(operators_engine, func)
-            for func in self.protected_operators
+            func: getattr(operators_engine, func) for func in self.protected_operators
         }
 
         return protected_operators
@@ -300,9 +296,7 @@ class SymbolicOperator(torch.nn.Module):
         """
         return self.function.forward(**input_data)
 
-    def _process_expression_serial(
-        self, feed_vars: dict = None
-    ) -> List[torch.Tensor]:
+    def _process_expression_serial(self, feed_vars: dict = None) -> List[torch.Tensor]:
         """
         Process the expression list serially using the given feed variables.
 
@@ -370,14 +364,10 @@ class SymbolicOperator(torch.nn.Module):
 
         outputs_list = torch.split(output, 1, dim=-1)
 
-        outputs = {
-            key: value for key, value in zip(self.output_names, outputs_list)
-        }
+        outputs = {key: value for key, value in zip(self.output_names, outputs_list)}
 
         if type(inputs_list) is list:
-            inputs = {
-                key: value for key, value in zip(self.input_names, inputs_list)
-            }
+            inputs = {key: value for key, value in zip(self.input_names, inputs_list)}
 
         elif type(inputs_list) is dict:
             inputs_list = [
@@ -389,9 +379,7 @@ class SymbolicOperator(torch.nn.Module):
             ), "If inputs_list is dict, \
                                                  it is necessary to provide\
                                                  a key."
-            inputs = {
-                key: value for key, value in zip(self.input_names, inputs_list)
-            }
+            inputs = {key: value for key, value in zip(self.input_names, inputs_list)}
         else:
             raise Exception(
                 f"Format {type(inputs_list)} not supported \
@@ -443,9 +431,7 @@ class SymbolicOperator(torch.nn.Module):
                 input_names=self.input_names, output_names=self.output_names
             )
 
-            tensors_list = constructor(
-                input_data=inputs_list[0], device=self.device
-            )
+            tensors_list = constructor(input_data=inputs_list[0], device=self.device)
 
             inputs_L = {
                 key: value for key, value in zip(self.input_names, tensors_list)
@@ -468,9 +454,7 @@ class SymbolicOperator(torch.nn.Module):
                 input_names=self.input_names, output_names=self.output_names
             )
 
-            tensors_list = constructor(
-                input_data=inputs_list[-1], device=self.device
-            )
+            tensors_list = constructor(input_data=inputs_list[-1], device=self.device)
 
             inputs_U = {
                 key: value for key, value in zip(self.input_names, tensors_list)
@@ -602,4 +586,3 @@ class SymbolicOperator(torch.nn.Module):
             return self.forward(input_data=inputs)
 
         return jacobian(inner, inputs)
-
