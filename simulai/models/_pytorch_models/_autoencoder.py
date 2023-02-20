@@ -759,7 +759,7 @@ class AutoencoderVariational(NetworkTemplate):
     This is an implementation of a Koopman autoencoder as
     Reduced Order Model;
 
-        A Koopman autoencoder architecture consists of five stages:
+        A variational autoencoder architecture consists of five stages:
         --> The convolutional encoder [Optional]
         --> Fully-connected encoder
         --> Gaussian noise
