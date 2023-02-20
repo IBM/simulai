@@ -55,8 +55,8 @@ class Kansas:
             kernel  # kernel function or string specifiying the type of kernel function
         )
         self.eps = eps  # tolerance to take off interpolation matrices elements
-        self.points = np.float32(points)  # interpolation points
-        self.centers = np.float32(centers)  # kernel centers
+        self.points = (points).astype("float32")  # interpolation points
+        self.centers = (centers).astype("float32")  # kernel centers
         self.ndim = centers.shape[1]  # dimension of points
 
         if self.ndim != points.shape[1]:
@@ -65,7 +65,9 @@ class Kansas:
         self.f1_was_gen = False
 
         # Calculate the radial function for the combination of centers and interpolation points
-        self.r2 = np.float32(spatial.distance.cdist(points, centers, "sqeuclidean"))
+        self.r2 = (spatial.distance.cdist(points, centers, "sqeuclidean")).astype(
+            "float32"
+        )
 
         # calculate sigma based on the mean maximal distance beteewn 2 kernels or use the informed sigma
         if sigma2 == "auto":
@@ -435,7 +437,7 @@ class Kansas:
         else:
             print(" this kernel does not exist: ", kernel_type)
 
-        G = np.float32(G)
+        G = (G).astype("float32")
 
         return G
 
@@ -481,7 +483,7 @@ class Kansas:
         else:
             print(" this kernel does not exist: ", kernel_type)
 
-        Dx = np.float32(Dx)
+        Dx = (Dx).astype("float32")
 
         return Dx
 
@@ -526,7 +528,7 @@ class Kansas:
         else:
             print(" this kernel does not exist: ", kernel_type)
 
-        Dxy = np.float32(Dxy)
+        Dxy = (Dxy).astype("float32")
 
         return Dxy
 
@@ -571,7 +573,7 @@ class Kansas:
         else:
             print(" thins kernel does not exist: ", kernel_type)
 
-        Dxx = np.float32(Dxx)
+        Dxx = (Dxx).astype("float32")
 
         return Dxx
 
@@ -616,6 +618,6 @@ class Kansas:
         else:
             print(" thins kernel does not exist: ", kernel_type)
 
-        L = np.float32(L)
+        L = (L).astype("float32")
 
         return L

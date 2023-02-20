@@ -18,8 +18,13 @@ import numpy as np
 import torch
 
 from simulai.regression import ConvolutionalNetwork, DenseNetwork, Linear
-from simulai.templates import (NetworkTemplate, as_tensor, autoencoder_auto,
-                               cnn_autoencoder_auto, mlp_autoencoder_auto)
+from simulai.templates import (
+    NetworkTemplate,
+    as_tensor,
+    autoencoder_auto,
+    cnn_autoencoder_auto,
+    mlp_autoencoder_auto,
+)
 
 ########################################
 ### Some usual AutoEncoder architectures

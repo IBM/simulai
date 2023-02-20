@@ -23,8 +23,7 @@ from numpy.lib import recfunctions
 from torch import Tensor
 
 from simulai.abstract import DataPreparer, Dataset
-from simulai.batching import (batchdomain_constructor,
-                              indices_batchdomain_constructor)
+from simulai.batching import batchdomain_constructor, indices_batchdomain_constructor
 from simulai.metrics import MemorySizeEval
 
 """
@@ -553,7 +552,7 @@ class ScalerReshaper(Reshaper):
         Examples:
         ---------
         >>> reshaper = ScalerReshaper(bias=10, scale=2)
-        >>> reshaper._get_structured_bias_scale(np.dtype([('a', np.float), ('b', np.float)]))
+        >>> reshaper._get_structured_bias_scale(np.dtype([('a', float), ('b', float)]))
         ({'a': 10, 'b': 10}, {'a': 2, 'b': 2})
 
         NOTE:
@@ -2142,7 +2141,7 @@ class MakeTensor:
         """
 
         if type(input_data) == np.ndarray:
-            input_data = torch.from_numpy(input_data.astype(np.float32))
+            input_data = torch.from_numpy(input_data.astype("float32"))
 
             inputs_list = self._make_tensor(input_data=input_data, device=device)
 
