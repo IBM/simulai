@@ -12,6 +12,7 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
+import os
 import importlib
 from functools import reduce
 from typing import List, Tuple, Union
@@ -545,7 +546,7 @@ class Optimizer:
                 print("Warning: There is no GPU available, using CPU instead.")
                 device = "cpu"
             else:
-                device = "cuda"
+                device = "cuda:" + os.environ['LOCAL_RANK']
                 print("Using GPU.")
         elif device == "cpu":
             print("Using CPU.")
