@@ -39,7 +39,7 @@ For installing the most recent stable version from PyPI:
 
 For installing from the latest commit sent to GitHub (just for testing and developing purposes):
 
-    $ pip install -U git+https://github.com/IBM/simulai@main
+    $ pip install -U git+https://github.com/IBM/simulai@$(git ls-remote git@github.com:IBM/simulai.git  | head -1 | awk '{print $1;}')#egg=simulai_toolkit
 
 Contributing code to SimulAI
 ============================
