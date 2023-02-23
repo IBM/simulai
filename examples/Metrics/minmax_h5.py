@@ -8,4 +8,4 @@ dataset = fp.get("tasks")
 N = dataset["u"].shape[0]
 
 minmax = MinMaxEvaluation()
-minmax
+max_value, min_value = minmax.eval_h5(dataset=dataset, data_interval=[0, 4000], keys=['u', 'w', 'T'], batch_size=1_00, axis=None)

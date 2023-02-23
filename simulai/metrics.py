@@ -730,7 +730,9 @@ class MinMaxEvaluation:
         if axis is not None:
             n_dims = len(dataset.shape)
             axes = [i for i in range(n_dims)]
+
             axes.remove(axis)
+
             axes = tuple(axes)
 
             data_max = self.data_max_ref * np.ones(n_dims - 1)
@@ -778,7 +780,7 @@ class MinMaxEvaluation:
             data_min_.append(data_min)
             data_max_.append(data_max)
 
-        return np.hstack(data_min_), np.hstack(data_max_)
+        return  np.hstack(data_max_), np.hstack(data_min_)
 
 
 class MemorySizeEval:
