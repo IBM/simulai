@@ -84,7 +84,7 @@ Additionally, you can refer to examples in the `respective folder <examples/>`_.
 License
 =======
 
-This software is licensed under Apache license 2.0. See `LICENSE <LICENSE>`_.
+This software is licensed under Apache license 2.0. See `LICENSE <LICENSE.md>`_.
 
 How to cite SimulAI in your publications
 ========================================
