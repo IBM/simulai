@@ -116,16 +116,16 @@ or, via Zenodo:
         }
 Publications
 ============
-João Lucas de Sousa Almeida, Pedro Roberto Barbosa Rocha, Allan Moreira de Carvalho, and Alberto Costa Nogueira Jr. A coupled Variational
+João Lucas de Sousa Almeida, Pedro Roberto Barbosa Rocha, Allan Moreira de Carvalho and Alberto Costa Nogueira Jr. A coupled Variational
 Encoder-Decoder - DeepONet surrogate model for the Rayleigh-Bénard convection problem. In When Machine Learning meets Dynamical Systems:
 Theory and Applications, AAAI, 2023.
 
 João Lucas S. Almeida, Arthur C. Pires, Klaus F. V. Cid, and Alberto C.
-Nogueira. Non-intrusive operator inference for chaotic systems. IEEE Transactions on Artificial Intelligence, pages 1–14, 2022.
+Nogueira Jr. Non-intrusive operator inference for chaotic systems. IEEE Transactions on Artificial Intelligence, pages 1–14, 2022.
 
-Pedro Roberto Barbosa Rocha, Marcos Sebastião de Paula Gomes Gomes,
-Carvalho Allan Moreira Almeida, João Lucas de Sousa, and Alberto Costa)
-Nogueira Jr. Data-driven reduced-order model for atmospheric co2 dispersion. In AAAI 2022 Fall Symposium: The Role of AI in Responding to
+Pedro Roberto Barbosa Rocha, Marcos Sebastião de Paula Gomes,
+Allan Moreira de Carvalho, João Lucas de Sousa Almeida and Alberto Costa
+Nogueira Jr. Data-driven reduced-order model for atmospheric CO2 dispersion. In AAAI 2022 Fall Symposium: The Role of AI in Responding to
 Climate Challenges, 2022.
 
 References
