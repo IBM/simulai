@@ -546,7 +546,11 @@ class Optimizer:
                 print("Warning: There is no GPU available, using CPU instead.")
                 device = "cpu"
             else:
-                device = "cuda:" + os.environ['LOCAL_RANK']
+                try:
+                    device = "cuda:" + os.environ['LOCAL_RANK']
+                except KeyError:
+                    device = "cuda"
+
                 print("Using GPU.")
         elif device == "cpu":
             print("Using CPU.")
