@@ -108,14 +108,18 @@ def bidimensional_map_nonlin_3(h, t, x, y, x_0, y_0):
 
     Parameters
     ----------
-    h : callable
-        Function to apply to the map.
-    t : float
-        Time.
-    x, y : float
-        Coordinates.
-    x_0, y_0 : float
-        Reference coordinates.
+    h : function
+        The function to use for mapping.
+    t : float or array-like
+        The time value(s) at which to compute the function.
+    x : float or array-like
+        The x-coordinate(s) of the map.
+    y : float or array-like
+        The y-coordinate(s) of the map.
+    x_0 : float
+        The x-coordinate of the center of the map.
+    y_0 : float
+        The y-coordinate of the center of the map.
 
     Returns
     -------
@@ -136,14 +140,18 @@ def bidimensional_map_nonlin_4(h, t, x, y, x_0, y_0):
 
     Parameters
     ----------
-    h : callable
-        Function to apply to the map.
-    t : float
-        Time.
-    x, y : float
-        Coordinates.
-    x_0, y_0 : float
-        Reference coordinates.
+    h : function
+        The function to use for mapping.
+    t : float or array-like
+        The time value(s) at which to compute the function.
+    x : float or array-like
+        The x-coordinate(s) of the map.
+    y : float or array-like
+        The y-coordinate(s) of the map.
+    x_0 : float
+        The x-coordinate of the center of the map.
+    y_0 : float
+        The y-coordinate of the center of the map.
 
     Returns
     -------
@@ -165,17 +173,17 @@ def bidimensional_map_nonlin_5(h, t, x, y, x_0, y_0):
     Parameters
     ----------
     h : function
-        Function to apply.
-    t : float
-        Time parameter.
-    x : float
-        X coordinate.
-    y : float
-        Y coordinate.
+        The function to use for mapping.
+    t : float or array-like
+        The time value(s) at which to compute the function.
+    x : float or array-like
+        The x-coordinate(s) of the map.
+    y : float or array-like
+        The y-coordinate(s) of the map.
     x_0 : float
-        Initial X coordinate.
+        The x-coordinate of the center of the map.
     y_0 : float
-        Initial Y coordinate.
+        The y-coordinate of the center of the map.
 
     Returns
     -------
@@ -203,18 +211,18 @@ def bidimensional_map_nonlin_6(h, t, x, y, x_0, y_0):
     Parameters
     ----------
     h : function
-        Function to apply.
-    t : float
-        Time parameter.
-    x : float
-        X coordinate.
-    y : float
-        Y coordinate.
+        The function to use for mapping.
+    t : float or array-like
+        The time value(s) at which to compute the function.
+    x : float or array-like
+        The x-coordinate(s) of the map.
+    y : float or array-like
+        The y-coordinate(s) of the map.
     x_0 : float
-        Initial X coordinate.
+        The x-coordinate of the center of the map.
     y_0 : float
-        Initial Y coordinate.
-
+        The y-coordinate of the center of the map.
+        
     Returns
     -------
     result : float
@@ -238,18 +246,18 @@ def bidimensional_map_lin(h, t, x, y, x_0, y_0):
     Parameters
     ----------
     h : function
-        Input function.
-    t : float
-        Current time.
-    x : float
-        Current x value.
-    y : float
-        Current y value.
+        The function to use for mapping.
+    t : float or array-like
+        The time value(s) at which to compute the function.
+    x : float or array-like
+        The x-coordinate(s) of the map.
+    y : float or array-like
+        The y-coordinate(s) of the map.
     x_0 : float
-        Initial x value.
+        The x-coordinate of the center of the map.
     y_0 : float
-        Initial y value.
-
+        The y-coordinate of the center of the map.
+        
     Returns
     -------
     float
