@@ -12,8 +12,8 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import os
 import importlib
+import os
 from functools import reduce
 from typing import List, Tuple, Union
 
@@ -547,7 +547,7 @@ class Optimizer:
                 device = "cpu"
             else:
                 try:
-                    device = "cuda:" + os.environ['LOCAL_RANK']
+                    device = "cuda:" + os.environ["LOCAL_RANK"]
                 except KeyError:
                     device = "cuda"
 

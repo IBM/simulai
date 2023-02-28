@@ -18,11 +18,49 @@ from simulai.templates import ReservoirComputing
 
 
 def time_function(t):
+    """
+    Computes the sum of three sine waves at frequencies of pi, 10*pi, and 20*pi.
+
+    Parameters
+    ----------
+    t : float or array-like
+        The time value(s) at which to compute the function.
+
+    Returns
+    -------
+    output : float or array-like
+        The value(s) of the function at the specified time(s).
+    """
+
     omega = np.pi
     return np.sin(omega * t) + np.sin(10 * omega * t) + np.sin(20 * omega * t)
 
 
 def bidimensional_map_nonlin_1(h, t, x, y, x_0, y_0):
+    """
+    Computes a bidimensional nonlinear map using the given parameters.
+
+    Parameters
+    ----------
+    h : function
+        The function to use for mapping.
+    t : float or array-like
+        The time value(s) at which to compute the function.
+    x : float or array-like
+        The x-coordinate(s) of the map.
+    y : float or array-like
+        The y-coordinate(s) of the map.
+    x_0 : float
+        The x-coordinate of the center of the map.
+    y_0 : float
+        The y-coordinate of the center of the map.
+
+    Returns
+    -------
+    output : float or array-like
+        The value(s) of the bidimensional map at the specified time(s) and coordinates.
+    """
+
     gamma = 3 * np.pi
     r = np.sqrt(np.square(x - x_0) + np.square(y - y_0))
 
@@ -32,6 +70,30 @@ def bidimensional_map_nonlin_1(h, t, x, y, x_0, y_0):
 
 
 def bidimensional_map_nonlin_2(h, t, x, y, x_0, y_0):
+    """
+    Computes a bidimensional nonlinear map using the given parameters.
+
+    Parameters
+    ----------
+    h : function
+        The function to use for mapping.
+    t : float or array-like
+        The time value(s) at which to compute the function.
+    x : float or array-like
+        The x-coordinate(s) of the map.
+    y : float or array-like
+        The y-coordinate(s) of the map.
+    x_0 : float
+        The x-coordinate of the center of the map.
+    y_0 : float
+        The y-coordinate of the center of the map.
+
+    Returns
+    -------
+    output : float or array-like
+        The value(s) of the bidimensional map at the specified time(s) and coordinates.
+    """
+
     gamma = 3 * np.pi
     r = np.sqrt(np.square(x - x_0) + np.square(y - y_0))
 
@@ -41,6 +103,25 @@ def bidimensional_map_nonlin_2(h, t, x, y, x_0, y_0):
 
 
 def bidimensional_map_nonlin_3(h, t, x, y, x_0, y_0):
+    """
+    Computes the nonlinear bidimensional map with function h.
+
+    Parameters
+    ----------
+    h : callable
+        Function to apply to the map.
+    t : float
+        Time.
+    x, y : float
+        Coordinates.
+    x_0, y_0 : float
+        Reference coordinates.
+
+    Returns
+    -------
+    float
+        Result of applying the map.
+    """
     gamma = 3 * np.pi
     r = np.sqrt(np.square(x - x_0) + np.square(y - y_0))
 
@@ -50,6 +131,25 @@ def bidimensional_map_nonlin_3(h, t, x, y, x_0, y_0):
 
 
 def bidimensional_map_nonlin_4(h, t, x, y, x_0, y_0):
+    """
+    Computes the nonlinear bidimensional map with function h and a temporal modulation.
+
+    Parameters
+    ----------
+    h : callable
+        Function to apply to the map.
+    t : float
+        Time.
+    x, y : float
+        Coordinates.
+    x_0, y_0 : float
+        Reference coordinates.
+
+    Returns
+    -------
+    float
+        Result of applying the map.
+    """
     gamma = 3 * np.pi
     r = np.sqrt(np.square(x - x_0) + np.square(y - y_0))
 
@@ -59,6 +159,29 @@ def bidimensional_map_nonlin_4(h, t, x, y, x_0, y_0):
 
 
 def bidimensional_map_nonlin_5(h, t, x, y, x_0, y_0):
+    """
+    Computes the nonlinear bidimensional map function.
+
+    Parameters
+    ----------
+    h : function
+        Function to apply.
+    t : float
+        Time parameter.
+    x : float
+        X coordinate.
+    y : float
+        Y coordinate.
+    x_0 : float
+        Initial X coordinate.
+    y_0 : float
+        Initial Y coordinate.
+
+    Returns
+    -------
+    result : float
+        Result of the bidimensional map function.
+    """
     gamma = 3 * np.pi
 
     r = np.sqrt(np.square(x - x_0) + np.square(y - y_0))
@@ -74,6 +197,29 @@ def bidimensional_map_nonlin_5(h, t, x, y, x_0, y_0):
 
 
 def bidimensional_map_nonlin_6(h, t, x, y, x_0, y_0):
+    """
+    Computes the nonlinear bidimensional map function.
+
+    Parameters
+    ----------
+    h : function
+        Function to apply.
+    t : float
+        Time parameter.
+    x : float
+        X coordinate.
+    y : float
+        Y coordinate.
+    x_0 : float
+        Initial X coordinate.
+    y_0 : float
+        Initial Y coordinate.
+
+    Returns
+    -------
+    result : float
+        Result of the bidimensional map function.
+    """
     gamma = 3 * np.pi
     r = np.sqrt(
         np.square(x - x_0 + 0.01 * x_0 * np.sin(gamma * t))
@@ -86,6 +232,29 @@ def bidimensional_map_nonlin_6(h, t, x, y, x_0, y_0):
 
 
 def bidimensional_map_lin(h, t, x, y, x_0, y_0):
+    """
+    Compute the bidimensional linear map.
+
+    Parameters
+    ----------
+    h : function
+        Input function.
+    t : float
+        Current time.
+    x : float
+        Current x value.
+    y : float
+        Current y value.
+    x_0 : float
+        Initial x value.
+    y_0 : float
+        Initial y value.
+
+    Returns
+    -------
+    float
+        The result of the bidimensional linear map for the given input.
+    """
     gamma = 3 * np.pi
     r = np.sqrt(np.square(x - x_0) + np.square(y - y_0))
 
@@ -97,6 +266,22 @@ def bidimensional_map_lin(h, t, x, y, x_0, y_0):
 def reservoir_generator(
     number_of_reservoirs=None, sparsity_level=None, reservoir_dim=None
 ):
+    """Generate a list of reservoirs.
+
+    Parameters
+    ----------
+    number_of_reservoirs : int, optional
+        The number of reservoirs to generate, by default None.
+    sparsity_level : float, optional
+        The sparsity level of the reservoirs, by default None.
+    reservoir_dim : int, optional
+        The dimension of the reservoirs, by default None.
+
+    Returns
+    -------
+    list
+        A list containing the generated reservoirs.
+    """
     reservoir_computing = ReservoirComputing(
         reservoir_dim=reservoir_dim, sparsity_level=sparsity_level
     )
@@ -105,9 +290,50 @@ def reservoir_generator(
 
 
 class Scattering:
+    """
+    Class for applying a scattering operator on data using a root and scatter_data.
+
+    Parameters
+    ----------
+    root : int
+        Index of the root node to apply the scatter operation.
+    scatter_op : function
+        Function that takes the root node, input data and scatter_data as input and returns the scattered data.
+
+    Methods
+    -------
+    exec(data=None, scatter_data=None)
+        Applies the scatter operation on data using the specified root and scatter_data.
+    """
+
     def __init__(self, root=None, scatter_op=None):
+        """
+        Initialize a Scattering instance.
+
+        Parameters
+        ----------
+        root : int
+            Index of the root node to apply the scatter operation.
+        scatter_op : function
+            Function that takes the root node, input data and scatter_data as input and returns the scattered data.
+        """
         self.root = root
         self.scatter_op = scatter_op
 
     def exec(self, data=None, scatter_data=None):
+        """
+        Apply scatter operation on input data using specified root and scatter_data.
+
+        Parameters
+        ----------
+        data : array_like
+            Input data on which scatter operation will be applied.
+        scatter_data : tuple
+            Tuple of additional data that is needed for scatter operation.
+
+        Returns
+        ----s---
+        array_like
+            Scattered data.
+        """
         return self.scatter_op(self.root, data, *scatter_data)

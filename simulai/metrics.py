@@ -780,7 +780,7 @@ class MinMaxEvaluation:
             data_min_.append(data_min)
             data_max_.append(data_max)
 
-        return  np.hstack(data_max_), np.hstack(data_min_)
+        return np.hstack(data_max_), np.hstack(data_min_)
 
 
 class MemorySizeEval:

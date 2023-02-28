@@ -69,7 +69,7 @@ class NetworkTemplate(torch.nn.Module):
             if devices == "gpu":
                 if torch.cuda.is_available():
                     try:
-                        device = "cuda:" + os.environ['LOCAL_RANK']
+                        device = "cuda:" + os.environ["LOCAL_RANK"]
                     except KeyError:
                         device = "cuda"
                 else:
