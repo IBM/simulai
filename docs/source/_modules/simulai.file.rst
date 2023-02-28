@@ -1,4 +1,4 @@
-File module
+File Module
 ===========
 
 .. automodule:: simulai.file
