@@ -14,7 +14,7 @@
 
 import copy
 import sys
-from typing import Tuple, Union
+from typing import Tuple, Union, Optional
 
 import dask.array as da
 import h5py
@@ -700,9 +700,14 @@ class MeanEvaluation:
         return data_mean
 
 
-# #valuating Minimum and Maximum values for large dataset in batch-wise mode
 class MinMaxEvaluation:
+
     def __init__(self) -> None:
+
+        """
+        Evaluating Minimum and Maximum values for large dataset in batch-wise mode
+        """
+
         self.data_min_ref = np.inf
         self.data_max_ref = -np.inf
         self.default_axis = None
@@ -712,9 +717,40 @@ class MinMaxEvaluation:
         dataset: Union[np.ndarray, h5py.Dataset] = None,
         data_interval: list = None,
         batch_size: int = None,
-        data_preparer: DataPreparer = None,
+        data_preparer: Optional[DataPreparer] = None,
         axis: int = -1,
-    ) -> np.ndarray:
+    ) -> Tuple[np.ndarray, np.ndarray]:
+
+        """
+        It evaluates the minimum and maximum values of a h5py.Dataset (lazzy) or numpy.ndarray (on memory)
+        object
+
+        Parameters
+        ----------
+        dataset : Union[h5py.Dataset, np.ndarray]
+                  The dataset to be used for MinMax evaluation.
+        data_interval : list
+                  A list containing the interval along axis 0 (batches) used for
+                  the MinMax evaluation.
+        batch_size : int
+                  The value of the batch size to be used for the incremental evaluation.
+                  Usually it is chosen as smaller than the total dataset size in order to avoid
+                  memory overflow. 
+        data_preparer : DataPreparer (simulai.io.DataPreparer), optional
+                  A class for reformatting the data before executing the MinMax evaluation.
+        axis : int
+                  The axis used as reference for the MinMax evaluation. Use None for global
+                  values. 
+
+        Returns
+        -------
+        np.ndarray
+                  An array for the maximum values.
+        np.dnarray
+                  An array for the minimum values. 
+
+        """
+
         if isinstance(batch_size, MemorySizeEval):
             batch_size = batch_size(
                 max_batches=data_interval[1] - data_interval[0], shape=dataset.shape[1:]
@@ -756,13 +792,47 @@ class MinMaxEvaluation:
 
     def eval_h5(
         self,
-        dataset: h5py.Group = None,
+        dataset: Union[h5py.Group, h5py.File] = None,
         data_interval: list = None,
         batch_size: int = None,
         data_preparer: DataPreparer = None,
         axis: int = -1,
         keys: list = None,
-    ) -> np.ndarray:
+    ) -> Tuple[np.ndarray, np.ndarray]:
+
+        """
+        It evaluates the minimum and maximum values of a h5py.Dataset (lazzy) or numpy.ndarray (on memory)
+        object
+
+        Parameters
+        ----------
+        dataset : Union[h5py.Group, h5py.File]
+                  The dataset to be used for MinMax evaluation. The type h5py.File is supported
+                  only when the datasets are directly placed inside it, without intermediary 
+                  h5py.Group objects.
+        data_interval : list
+                  A list containing the interval along axis 0 (batches) used for
+                  the MinMax evaluation.
+        batch_size : int
+                  The value of the batch size to be used for the incremental evaluation.
+                  Usually it is chosen as smaller than the total dataset size in order to avoid
+                  memory overflow. 
+        data_preparer : DataPreparer (simulai.io.DataPreparer), optional
+                  A class for reformatting the data before executing the MinMax evaluation.
+        axis : int
+                  The axis used as reference for the MinMax evaluation. Use None for global
+                  values. 
+        keys : list
+                  The list of keys (variables or fields) to be used during the evaluation.
+        Returns
+        -------
+        np.ndarray
+                  An array for the maximum values.
+        np.dnarray
+                  An array for the minimum values. 
+
+        """
+
         data_min_ = list()
         data_max_ = list()
 
