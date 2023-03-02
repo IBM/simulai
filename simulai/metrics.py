@@ -14,7 +14,7 @@
 
 import copy
 import sys
-from typing import Tuple, Union, Optional
+from typing import Optional, Tuple, Union
 
 import dask.array as da
 import h5py
@@ -64,7 +64,6 @@ class L2Norm:
         :returns: the data cleaned
         :rtype: np.ndarray
         """
-
         if self.mask is not None:
             is_mask = d == self.mask
             if np.any(is_mask):
@@ -404,13 +403,36 @@ class FeatureWiseErrorNorm:
         ord=2,
     ):
         """
+        Compute the L2-norm or relative L2-norm between data and reference data along the first axis.
 
-        :param data: np.ndarray
-        :param reference_data: np.ndarray
-        :param relative_norm: bool
-        :return: None
+        Parameters
+        ----------
+        data : numpy.ndarray or h5py.Dataset, optional
+            Data to compute the norm, by default None.
+        reference_data : numpy.ndarray or h5py.Dataset, optional
+            Reference data to compute the norm, by default None.
+        relative_norm : bool, optional
+            Whether to compute the relative norm, by default False.
+        key : str or sequence of str, optional
+            Keys of the datasets to compute the norm when data and reference_data are h5py.Datasets,
+            by default None.
+        data_interval : tuple, optional
+            Interval of the data to use for computing the norm, by default None.
+        reference_data_interval : tuple, optional
+            Interval of the reference data to use for computing the norm, by default None.
+        batch_size : int or MemorySizeEval, optional
+            Size of the batch to use for computing the norm when data and reference_data are h5py.Datasets,
+            by default 1.
+        ord : int or inf or -inf or 'fro', optional
+            Order of the norm. Supported values are positive integers,
+            numpy.inf, numpy.NINF and 'fro'. By default 2.
+
+        Returns
+        -------
+        norm : numpy.ndarray
+            L2-norm or relative L2-norm between data and reference_data along the first axis.
+            The shape of the output array depends on the input data format and the value of `key`.
         """
-
         if data_interval is None:
             data_interval = (0, data.shape[0])
         if reference_data_interval is None:
@@ -590,9 +612,42 @@ class RosensteinKantz:
 
 
 class PerturbationMethod:
+    """
+    Class for computing the largest Lyapunov exponent of a time series.
+
+    Parameters
+    ----------
+    jacobian_evaluator : callable, optional
+        A function that computes the Jacobian matrix at each time step.
+        If None, it must be passed as an argument to the `__call__` method.
+
+    Attributes
+    ----------
+    jacobian_matrix_series : ndarray or None
+        The Jacobian matrices computed by the `jacobian_evaluator` at each time step.
+
+    global_timestep : int or None
+        The current time step.
+
+    Methods
+    -------
+    __call__(self, data: ndarray = None, data_residual: ndarray = None, step: float = None) -> float:
+        Computes the largest Lyapunov exponent of the time series data using the
+        specified step size and residual data. Returns the Lyapunov exponent as a float.
+
+    _definition_equation(self, z: ndarray) -> ndarray:
+        Computes the derivative of the state vector z. Returns an ndarray.
+    """
+
     def __init__(self, jacobian_evaluator: callable = None) -> None:
         """
-        :param jacobian_evaluator: function
+        Initialize the LyapunovExponent object.
+
+        Parameters
+        ----------
+        jacobian_evaluator : callable, optional
+            A function that computes the Jacobian matrix at each time step.
+            If None, it must be passed as an argument to the `__call__` method.
         """
         self.jacobian_matrix_series = None
         self.global_timestep = None
@@ -600,12 +655,19 @@ class PerturbationMethod:
 
     def _definition_equation(self, z: np.ndarray) -> np.ndarray:
         """
-        :param z: np.ndarray
-        :return: np.ndarray
+        Compute the derivative of the state vector z.
+
+        Parameters
+        ----------
+        z : ndarray
+            The state vector.
+
+        Returns
+        -------
+        ndarray
+            The derivative of the state vector.
         """
-
         jacobian_matrix = self.jacobian_matrix_series[self.global_timestep, :, :]
-
         return jacobian_matrix.dot(z.T).T
 
     def __call__(
@@ -615,12 +677,22 @@ class PerturbationMethod:
         step: float = None,
     ) -> float:
         """
-        :param data: np.ndarray
-        :param data_residual: np.ndarray
-        :param step: float
-        :return: float
-        """
+        Compute the largest Lyapunov exponent for a given dataset.
 
+        Parameters
+        ----------
+        data : np.ndarray
+            The dataset for which to compute the largest Lyapunov exponent.
+        data_residual : np.ndarray, optional
+            The residual data. Default is None.
+        step : float, optional
+            The time step to use. Default is None.
+
+        Returns
+        -------
+        float
+        The largest Lyapunov exponent for the given dataset.
+        """
         n_timesteps = data.shape[0]
 
         self.jacobian_matrix_series = self.jacobian_evaluator(
@@ -701,7 +773,6 @@ class MeanEvaluation:
 
 
 class MinMaxEvaluation:
-
     def __init__(self) -> None:
 
         """
@@ -735,19 +806,19 @@ class MinMaxEvaluation:
         batch_size : int
                   The value of the batch size to be used for the incremental evaluation.
                   Usually it is chosen as smaller than the total dataset size in order to avoid
-                  memory overflow. 
+                  memory overflow.
         data_preparer : DataPreparer (simulai.io.DataPreparer), optional
                   A class for reformatting the data before executing the MinMax evaluation.
         axis : int
                   The axis used as reference for the MinMax evaluation. Use None for global
-                  values. 
+                  values.
 
         Returns
         -------
         np.ndarray
                   An array for the maximum values.
         np.dnarray
-                  An array for the minimum values. 
+                  An array for the minimum values.
 
         """
 
@@ -808,7 +879,7 @@ class MinMaxEvaluation:
         ----------
         dataset : Union[h5py.Group, h5py.File]
                   The dataset to be used for MinMax evaluation. The type h5py.File is supported
-                  only when the datasets are directly placed inside it, without intermediary 
+                  only when the datasets are directly placed inside it, without intermediary
                   h5py.Group objects.
         data_interval : list
                   A list containing the interval along axis 0 (batches) used for
@@ -816,12 +887,12 @@ class MinMaxEvaluation:
         batch_size : int
                   The value of the batch size to be used for the incremental evaluation.
                   Usually it is chosen as smaller than the total dataset size in order to avoid
-                  memory overflow. 
+                  memory overflow.
         data_preparer : DataPreparer (simulai.io.DataPreparer), optional
                   A class for reformatting the data before executing the MinMax evaluation.
         axis : int
                   The axis used as reference for the MinMax evaluation. Use None for global
-                  values. 
+                  values.
         keys : list
                   The list of keys (variables or fields) to be used during the evaluation.
         Returns
@@ -829,7 +900,7 @@ class MinMaxEvaluation:
         np.ndarray
                   An array for the maximum values.
         np.dnarray
-                  An array for the minimum values. 
+                  An array for the minimum values.
 
         """
 
@@ -895,11 +966,7 @@ class CumulativeNorm:
         pass
 
     def __call__(
-        self,
-        data: np.ndarray = None,
-        reference_data: np.ndarray = None,
-        relative_norm: bool = False,
-        ord: int = 2,
+        self, data: np.ndarray = None, reference_data: np.ndarray = None
     ) -> np.ndarray:
         assert (
             len(data.shape) == len(reference_data.shape) == 2
@@ -919,11 +986,7 @@ class PointwiseError:
         pass
 
     def __call__(
-        self,
-        data: np.ndarray = None,
-        reference_data: np.ndarray = None,
-        relative_norm: bool = False,
-        ord: int = 2,
+        self, data: np.ndarray = None, reference_data: np.ndarray = None
     ) -> np.ndarray:
         assert (
             len(data.shape) == len(reference_data.shape) == 2
@@ -964,7 +1027,6 @@ class LyapunovUnits:
         data: np.ndarray = None,
         reference_data: np.ndarray = None,
         relative_norm: bool = False,
-        ord: int = 2,
     ) -> float:
         cumulative_norm = self.norm(
             data=data, reference_data=reference_data, relative_norm=relative_norm
