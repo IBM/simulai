@@ -1063,6 +1063,8 @@ class AutoencoderVariational(NetworkTemplate):
         if isinstance(input_data, np.ndarray):
             input_data = torch.from_numpy(input_data.astype("float32"))
 
+        input_data = input_data.to(self.device)
+
         projected_data_latent = self.Mu(input_data=input_data)
 
         return projected_data_latent.cpu().detach().numpy()
@@ -1072,6 +1074,8 @@ class AutoencoderVariational(NetworkTemplate):
     ) -> np.ndarray:
         if isinstance(input_data, np.ndarray):
             input_data = torch.from_numpy(input_data.astype("float32"))
+
+        input_data = input_data.to(self.device)
 
         reconstructed_data = self.reconstruction(input_data=input_data)
 
