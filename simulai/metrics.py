@@ -1038,7 +1038,20 @@ class LyapunovUnits:
 
 
 class MahalanobisDistance:
+
     def __init__(self, batchwise: bool = None) -> None:
+
+        """
+        It evaluates the Mahalanobis distance metric
+
+        Parameters
+        ----------
+        batchwise: bool
+                A boolean variable to define if a batchwise loop will
+                be executed to evaluate the metric or not.
+
+        """
+
         self.batchwise = batchwise
 
         if self.batchwise == True:
@@ -1052,6 +1065,25 @@ class MahalanobisDistance:
         b: torch.Tensor = None,
         metric_tensor: Union[np.ndarray, torch.Tensor] = None,
     ) -> torch.Tensor:
+
+        """
+        Simple inner dot between tensors
+
+        Parameters
+        ----------
+        a : torch.Tensor
+            A one-dimensional tensor.
+        b: torch.Tensor
+            Another one-dimensional tensor.
+        metric_tensor: Union[np.ndarray, torch.Tensor]
+            A two-dimensional matrix (array or tensor) with
+            the metric paramters.
+        Returns
+        -------
+        torch.Tensor
+            the result of the inner product
+        """
+
         return a.T @ metric_tensor @ b
 
     def batchwise_inner_dot(
@@ -1060,6 +1092,25 @@ class MahalanobisDistance:
         b: torch.Tensor = None,
         metric_tensor: Union[np.ndarray, torch.Tensor] = None,
     ) -> torch.Tensor:
+
+        """
+        Inner dot between higher-dimensional tensors
+
+        Parameters
+        ----------
+        a : torch.Tensor
+            A one-dimensional tensor.
+        b: torch.Tensor
+            Another one-dimensional tensor.
+        metric_tensor: Union[np.ndarray, torch.Tensor]
+            A two-dimensional matrix (array or tensor) with
+            the metric paramters.
+        Returns
+        -------
+        torch.Tensor
+            The result of the inner product
+        """
+
         b_til = b @ metric_tensor
 
         return torch.bmm(a[:, None, :], b_til[..., None]).squeeze()
@@ -1070,6 +1121,25 @@ class MahalanobisDistance:
         center: Union[np.ndarray, torch.Tensor],
         point: Union[np.ndarray, torch.Tensor],
     ) -> torch.Tensor:
+
+        """
+        Evaluating the Mahalanobis distance.
+
+        Parameters
+        ----------
+        metric_tensor: Union[np.ndarray, torch.Tensor]
+            A two-dimensional matrix (array or tensor) with
+            the metric paramters.
+        center:  Union[np.ndarray, torch.Tensor]
+            Centroids used as reference.
+        points: Union[np.ndarray, torch.Tensor]
+            Points for what the metric will be evaluated.
+        Returns
+        -------
+        torch.Tensor
+            The value of the metric for each point.
+        """
+
         return self.inner_dot(
             a=center - point, metric_tensor=metric_tensor, b=center - point
         )

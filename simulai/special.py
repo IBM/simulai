@@ -222,7 +222,7 @@ def bidimensional_map_nonlin_6(h, t, x, y, x_0, y_0):
         The x-coordinate of the center of the map.
     y_0 : float
         The y-coordinate of the center of the map.
-        
+
     Returns
     -------
     result : float
@@ -257,7 +257,7 @@ def bidimensional_map_lin(h, t, x, y, x_0, y_0):
         The x-coordinate of the center of the map.
     y_0 : float
         The y-coordinate of the center of the map.
-        
+
     Returns
     -------
     float
