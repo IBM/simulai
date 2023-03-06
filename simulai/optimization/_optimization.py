@@ -16,6 +16,7 @@ import importlib
 import os
 from functools import reduce
 from typing import List, Tuple, Union
+import math
 
 import numpy as np
 import torch
@@ -416,6 +417,9 @@ class Optimizer:
             np.arange(self.n_samples), int(self.n_samples / batch_size)
         )
 
+        # Number of batchwise optimization epochs
+        n_batch_epochs = len(batches)
+
         epoch = 0  # Outer loop iteration
         b_epoch = 0  # Total iteration
         stop_criterion = False
@@ -423,7 +427,10 @@ class Optimizer:
         # When using mini-batches, it is necessary to
         # determine the number of iterations for the outer optimization
         # loop
-        n_epochs_global = int(n_epochs / batch_size)
+        if n_batch_epochs < n_epochs:
+            n_epochs_global = 1
+        else:
+            n_epochs_global = int(math.ceil(n_epochs / n_batch_epochs))
 
         while epoch < n_epochs_global and stop_criterion == False:
             # For each batch-wise realization it is possible to determine a
