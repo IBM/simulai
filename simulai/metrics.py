@@ -774,7 +774,6 @@ class MeanEvaluation:
 
 class MinMaxEvaluation:
     def __init__(self) -> None:
-
         """
         Evaluating Minimum and Maximum values for large dataset in batch-wise mode
         """
@@ -791,7 +790,6 @@ class MinMaxEvaluation:
         data_preparer: Optional[DataPreparer] = None,
         axis: int = -1,
     ) -> Tuple[np.ndarray, np.ndarray]:
-
         """
         It evaluates the minimum and maximum values of a h5py.Dataset (lazzy) or numpy.ndarray (on memory)
         object
@@ -870,7 +868,6 @@ class MinMaxEvaluation:
         axis: int = -1,
         keys: list = None,
     ) -> Tuple[np.ndarray, np.ndarray]:
-
         """
         It evaluates the minimum and maximum values of a h5py.Dataset (lazzy) or numpy.ndarray (on memory)
         object
@@ -1038,9 +1035,7 @@ class LyapunovUnits:
 
 
 class MahalanobisDistance:
-
     def __init__(self, batchwise: bool = None) -> None:
-
         """
         It evaluates the Mahalanobis distance metric
 
@@ -1065,7 +1060,6 @@ class MahalanobisDistance:
         b: torch.Tensor = None,
         metric_tensor: Union[np.ndarray, torch.Tensor] = None,
     ) -> torch.Tensor:
-
         """
         Simple inner dot between tensors
 
@@ -1092,7 +1086,6 @@ class MahalanobisDistance:
         b: torch.Tensor = None,
         metric_tensor: Union[np.ndarray, torch.Tensor] = None,
     ) -> torch.Tensor:
-
         """
         Inner dot between higher-dimensional tensors
 
@@ -1121,7 +1114,6 @@ class MahalanobisDistance:
         center: Union[np.ndarray, torch.Tensor],
         point: Union[np.ndarray, torch.Tensor],
     ) -> torch.Tensor:
-
         """
         Evaluating the Mahalanobis distance.
 

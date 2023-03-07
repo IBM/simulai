@@ -18,8 +18,13 @@ import numpy as np
 import torch
 
 from simulai.regression import ConvolutionalNetwork, DenseNetwork, Linear
-from simulai.templates import (NetworkTemplate, as_tensor, autoencoder_auto,
-                               cnn_autoencoder_auto, mlp_autoencoder_auto)
+from simulai.templates import (
+    NetworkTemplate,
+    as_tensor,
+    autoencoder_auto,
+    cnn_autoencoder_auto,
+    mlp_autoencoder_auto,
+)
 
 ########################################
 ### Some usual AutoEncoder architectures
@@ -897,14 +902,15 @@ class AutoencoderVariational(NetworkTemplate):
         input_data: Union[np.ndarray, torch.Tensor] = None,
         input_shape: list = None,
     ) -> torch.Tensor:
-
         if self.input_dim != None:
             if type(self.input_dim) == tuple:
                 input_shape = list(self.input_dim)
             elif type(self.input_dim) == int:
                 input_shape = [None, self.input_dim]
             else:
-                raise Exception(f"input_dim is expected to be tuple or int, but received {type(self.input_dim)}")
+                raise Exception(
+                    f"input_dim is expected to be tuple or int, but received {type(self.input_dim)}"
+                )
         else:
             pass
 
@@ -947,7 +953,9 @@ class AutoencoderVariational(NetworkTemplate):
                 self.bottleneck_decoder.forward(input_data=latent)
             )
 
-            bottleneck_output = bottleneck_output.reshape((-1, *before_flatten_dimension))
+            bottleneck_output = bottleneck_output.reshape(
+                (-1, *before_flatten_dimension)
+            )
         else:
             bottleneck_output = btnk_input
 

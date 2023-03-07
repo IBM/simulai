@@ -6,8 +6,7 @@ import numpy as np
 from simulai.file import SPFile
 from simulai.metrics import L2Norm
 from simulai.optimization import Optimizer
-from simulai.sampling import (HMC, G_metric, HamiltonianEquations,
-                              LeapFrogIntegrator)
+from simulai.sampling import HMC, G_metric, HamiltonianEquations, LeapFrogIntegrator
 
 
 def model():

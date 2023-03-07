@@ -2,8 +2,7 @@ from unittest import TestCase
 
 import numpy as np
 
-from simulai.normalization import (UnitaryNormalization,
-                                   UnitarySymmetricalNormalization)
+from simulai.normalization import UnitaryNormalization, UnitarySymmetricalNormalization
 
 
 class TestNormalization(TestCase):

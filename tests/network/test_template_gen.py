@@ -337,7 +337,6 @@ class TestAutoGenNet(TestCase):
         assert estimated_data.shape == input_data.shape
 
     def test_autoencoder_variational_mlp(self) -> None:
-
         from simulai.models import AutoencoderVariational
 
         input_data = np.random.rand(100, 1_000)

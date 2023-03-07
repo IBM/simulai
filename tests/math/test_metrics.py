@@ -19,8 +19,12 @@ import h5py
 import numpy as np
 import pytest
 
-from simulai.metrics import (FeatureWiseErrorNorm, L2Norm, MemorySizeEval,
-                             SampleWiseErrorNorm)
+from simulai.metrics import (
+    FeatureWiseErrorNorm,
+    L2Norm,
+    MemorySizeEval,
+    SampleWiseErrorNorm,
+)
 from simulai.utilities import make_temp_directory
 
 

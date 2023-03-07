@@ -13,10 +13,10 @@
 #     limitations under the License.
 
 import importlib
+import math
 import os
 from functools import reduce
 from typing import List, Tuple, Union
-import math
 
 import numpy as np
 import torch
@@ -98,6 +98,8 @@ def _adjust_loss_function_to_model(
 ) -> None:
     import simulai.models as simmod
 
+    special_losses = ["pirmse", "opirmse", "vaermse", "kaermse"]
+
     if physics_informed == True:
         if isinstance(model, simmod.DeepONet):
             recommended_loss = "opirmse"
@@ -118,7 +120,10 @@ def _adjust_loss_function_to_model(
             recommended_loss = "wrmse"
 
         else:
-            recommended_loss = loss
+            if loss not in special_losses:
+                recommended_loss = loss
+            else:
+                recommended_loss = ["rmse", "wrmse"]
 
     if recommended_loss != loss:
         raise Exception(
