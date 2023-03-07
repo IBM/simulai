@@ -311,6 +311,48 @@ class RK4(ExplicitIntegrator):
 
         self.log_phrase += "Runge-Kutta 4th order "
 
+# Basic Leapfrog integrator
+class LeapFrogIntegrator:
+    def __init__(
+        self, system: callable = None, n_steps: int = None, e_lf: float = None
+    ):
+        self.system = system
+        self.latent_dim = self.system.latent_dim
+
+        self.n_steps = n_steps
+        self.e_lf = e_lf
+
+        self.log_phrase = "LeapFrog Integration"
+
+    def step(self, v: torch.Tensor = None, z: torch.Tensor = None):
+        dHdz = self.system(z=z, v=v)
+
+        v_bar = v - (self.e_lf / 2) * dHdz
+        z_til = z + self.e_lf * v_bar
+
+        dHdz_til = self.system(z=z_til, v=v_bar)
+
+        v_til = v_bar - (self.e_lf / 2) * dHdz_til
+
+        return z_til, v_til
+
+    def solve(self, z_0: torch.Tensor = None, v_0: torch.Tensor = None):
+        z = z_0
+        v = v_0
+
+        for k in range(self.n_steps):
+            sys.stdout.write(
+                "\r {}, iteration: {}/{}".format(self.log_phrase, k + 1, self.n_steps)
+            )
+            sys.stdout.flush()
+
+            z_til, v_til = self.step(v=v, z=z)
+
+            z = z_til
+            v = v_til
+
+        return z, v
+
 # Runge-Kutta 7[8]
 class RKF78:
 
