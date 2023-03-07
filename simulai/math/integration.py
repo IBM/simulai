@@ -311,6 +311,105 @@ class RK4(ExplicitIntegrator):
 
         self.log_phrase += "Runge-Kutta 4th order "
 
+# Runge-Kutta 7[8]
+class RKF78:
+
+    def __init__(self, right_operator:callable=None) -> None:
+
+        self.right_operator = right_operator
+
+        self.log_phrase = "Runge-Kutta 78"
+
+        self.n_stages = 13
+        self.n_stages_aux = 12
+
+        self.weights = np.zeros((self.n_stages, 1))
+        self.alpha = np.zeros((self.n_stages, 1))
+        self.beta = np.zeros((self.n_stages, self.n_stages_aux))
+
+        self.weights[5,0] = 34.0 / 105
+        self.weights[6,0] = 9.0 / 35
+        self.weights[7,0] = ch[6,0]
+        self.weights[8,0] = 9.0 / 280
+        self.weights[9,0] = ch[8,0]
+        self.weights[11,0] = 41.0 / 840
+        self.weights[12,0] = ch[11,0]
+
+        self.alpha[1,0] = 2.0 / 27
+        self.alpha[2,0] = 1.0 / 9
+        self.alpha[3,0] = 1.0 / 6
+        self.alpha[4,0] = 5.0 / 12
+        self.alpha[5,0] = 0.5
+        self.alpha[6,0] = 5.0 / 6
+        self.alpha[7,0] = 1.0 / 6
+        self.alpha[8,0] = 2.0 / 3
+        self.alpha[9,0] = 1.0 / 3
+        self.alpha[10,0] = 1
+        self.alpha[12,0] = 1
+
+        self.beta[1,0] = 2.0 / 27
+        self.beta[2,0] = 1.0 / 36
+        self.beta[3,0] = 1.0 / 24
+        self.beta[4,0] = 5.0 / 12
+        self.beta[5,0] = 0.05
+        self.beta[6,0] = -25.0 / 108
+        self.beta[7,0] = 31.0 / 300
+        self.beta[8,0] = 2.0
+        self.beta[9,0] = -91.0 / 108
+        self.beta[10,0] = 2383.0 / 4100
+        self.beta[11,0] = 3.0 / 205
+        self.beta[12,0] = -1777.0 / 4100
+        self.beta[2,1] = 1.0 / 12
+        self.beta[3,2] = 1.0 / 8
+        self.beta[4,2] = -25.0 / 16
+        self.beta[4,3] = -beta[4,2]
+        self.beta[5,3] = 0.25
+        self.beta[6,3] = 125.0 / 108
+        self.beta[8,3] = -53.0 / 6
+        self.beta[9,3] = 23.0 / 108
+        self.beta[10,3] = -341.0 / 164
+        self.beta[12,3] =self.beta[10,3]
+        self.beta[5,4] = 0.2
+        self.beta[6,4] = -65.0 / 27
+        self.beta[7,4] = 61.0 / 225
+        self.beta[8,4] = 704.0 / 45
+        self.beta[9,4] = -976.0 / 135
+        self.beta[10,4] = 4496.0 / 1025
+        self.beta[12,4] =self.beta[10,4]
+        self.beta[6,5] = 125.0 / 54
+        self.beta[7,5] = -2.0 / 9
+        self.beta[8,5] = -107.0 / 9
+        self.beta[9,5] = 311.0 / 54
+        self.beta[10,5] = -301.0 / 82
+        self.beta[11,5] = -6.0 / 41
+        self.beta[12,5] = -289.0 / 82
+        self.beta[7,6] = 13.0 / 900
+        self.beta[8,6] = 67.0 / 90
+        self.beta[9,6] = -19.0 / 60
+        self.beta[10,6] = 2133.0 / 4100
+        self.beta[11,6] = -3.0 / 205
+        self.beta[12,6] = 2193.0 / 4100
+        self.beta[8,7] = 3.0
+        self.beta[9,7] = 17.0 / 6
+        self.beta[10,7] = 45.0 / 82
+        self.beta[11,7] = -3.0 / 41
+        self.beta[12,7] = 51.0 / 82
+        self.beta[9,8] = -1.0 / 12
+        self.beta[10,8] = 45.0 / 164
+        self.beta[11,8] = 3.0 / 41
+        self.beta[12,8] = 33.0 / 164
+        self.beta[10,9] = 18.0 / 41
+        self.beta[11,9] = 6.0 / 41
+        self.beta[12,9] = 12.0 / 41
+        self.beta[12,11] = 1.0
+
+    def step():
+
+        stop_criterion = False
+
+        while stop_criterion == False:
+            pass
+
 
 # Wrapper for using the SciPy LSODA (LSODA itself is a wrapper for ODEPACK)
 class LSODA:
