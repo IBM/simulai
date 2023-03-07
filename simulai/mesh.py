@@ -15,14 +15,38 @@
 import copy
 from collections import OrderedDict
 from itertools import product
-
+from typing import Union, Optional, Tuple, Dict
 import numpy as np
 
-
 class StructuredMesh:
+    """
+    A class for generating structured meshes with a given dimensionality and boundary conditions.
+    """
     def __init__(
         self, dim_bounds=None, dim_gdl=None, boundary_dim_gdl=None, dim_tags=None
     ):
+        """
+        Initializes a StructuredMesh object with the given dimension bounds, number of grid points, boundary conditions, and dimension tags.
+
+        Parameters:
+        ----------
+        dim_bounds : list of tuple or array-like, optional
+            A list of tuples or array-like objects, where each tuple or array-like represents the
+            bounds of the corresponding dimension. The default is None.
+        dim_gdl : list of int or array-like, optional
+            A list of integers or array-like objects, where each integer or array-like represents
+            the number of grid points of the corresponding dimension. The default is None.
+        boundary_dim_gdl : list of int or array-like, optional
+            A list of integers or array-like objects, where each integer or array-like represents
+            the number of grid points on the boundary of the corresponding dimension. The default is None.
+        dim_tags : list of str, optional
+            A list of strings representing the tags of the mesh dimensions. The default is None.
+
+        Returns:
+        -------
+        None.
+
+        """
         self.n_dim = len(dim_tags)
 
         self.dim_tags = dim_tags
@@ -116,9 +140,41 @@ class StructuredMesh:
             self.boundary_elements[bb] = subdomains
 
     def _get_boundaries_curves(self, but=None):
+        """
+        Returns a list of numpy arrays that represent the boundary curves for each 
+        dimension of the mesh except for the one specified by the `but` parameter.
+
+        Parameters
+        ----------
+        but : str, optional
+            The dimension tag to exclude. Default is None.
+
+        Returns
+        -------
+        list of numpy.ndarray
+            A list of boundary curves for each dimension except `but`.
+        """
         return [getattr(self, tag + "_b") for tag in self.dim_tags if tag != but]
 
     def internal_product(self, vector):
+        """
+        Computes the internal product of the given vector and the mesh, returning a list 
+        of tuples representing the resulting vectors.
+
+        Parameters
+        ----------
+        vector : list or tuple
+            A list or tuple of vectors to perform the internal product with.
+
+        Returns
+        -------
+        list of tuple
+            A list of tuples representing the resulting vectors after the internal product.
+        Raises
+        ------
+        Exception
+            If the input `vector` is neither a list nor a tuple.
+        """
         if isinstance(vector, list):
             product_list = self.n_dim * (vector,)
         elif isinstance(vector, tuple):
@@ -180,7 +236,25 @@ class StructuredMesh:
         except Exception as e:
             print("An error occurred: ", e)
 
-    def map_to_element(self, points, reference_interval, el):
+    def map_to_element(self, points: np.ndarray, reference_interval: Tuple[float, float], el: np.ndarray) -> np.ndarray:
+        """
+        Map a set of points from the reference interval to an element.
+
+        Parameters
+        ----------
+        points : np.ndarray
+            Points in the reference interval to be mapped.
+        reference_interval : tuple of float
+            Lower and upper bounds of the reference interval.
+        el : np.ndarray
+            Coordinates of the vertices of the element.
+
+        Returns
+        -------
+        np.ndarray
+            Mapped points in the element.
+
+        """
         lower_bound, upper_bound = reference_interval
 
         local_el = np.array(el)
@@ -195,11 +269,33 @@ class StructuredMesh:
 
         return points_mapped
 
-    def map_to_boundary_element(self, points, reference_interval, el, tag=None):
+    def map_to_boundary_element(self, points: Union[np.ndarray, Dict[str, np.ndarray]],
+                                reference_interval: Tuple[float, float],
+                                el: np.ndarray, tag: Optional[str] = None) -> np.ndarray:
+        """
+        Map a set of points from the reference interval to the boundary of an element.
+
+        Parameters
+        ----------
+        points : np.ndarray or dict
+            Points in the reference interval to be mapped.
+        reference_interval : tuple of float
+            Lower and upper bounds of the reference interval.
+        el : np.ndarray
+            Coordinates of the vertices of the element.
+        tag : str, optional
+            The tag of the boundary, by default None.
+
+        Returns
+        -------
+        np.ndarray
+            Mapped points on the boundary of the element.
+
+        """
         lower_bound, upper_bound = reference_interval
 
         local_el = np.array(el)
-        if tag != None:
+        if tag is not None:
             local_points = np.array(points[tag])
         else:
             local_points = np.array(points)
