@@ -286,7 +286,7 @@ class NetworkTemplate(torch.nn.Module):
         return output_tensor.detach().numpy()
 
     # It prints a summary of the network architecture.
-    def summary(self) -> None:
+    def summary(self, **kwargs) -> None:
         import pprint
 
         pprinter = pprint.PrettyPrinter(indent=2)

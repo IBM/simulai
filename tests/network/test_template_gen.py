@@ -335,3 +335,23 @@ class TestAutoGenNet(TestCase):
         autoencoder.summary()
 
         assert estimated_data.shape == input_data.shape
+
+    def test_autoencoder_variational_mlp(self) -> None:
+
+        from simulai.models import AutoencoderVariational
+
+        input_data = np.random.rand(100, 1_000)
+
+        autoencoder = AutoencoderVariational(
+            input_dim=1_000,
+            latent_dim=8,
+            activation="tanh",
+            architecture="dense",
+            case="2d",
+        )
+
+        estimated_data = autoencoder.eval(input_data=input_data)
+
+        autoencoder.summary()
+
+        assert estimated_data.shape == input_data.shape
