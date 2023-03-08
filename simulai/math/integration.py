@@ -407,8 +407,8 @@ class RKF78:
         self.tetol = tetol
 
     def run(
-        self, initial_state: np.ndarray = None, dt: float = None, n_eq:int=None, tf : float = None,
-    ) -> Tuple[np.ndarray, np.ndarray]:
+        self, initial_state: np.ndarray = None, dt: float = None, n_eq:int = None, t_f : float = None,
+    ) -> np.ndarray:
 
         initial_state = initial_state.T
 
@@ -416,8 +416,6 @@ class RKF78:
 
         dt_ = dt
         t_i = 0
-
-        current_state = initial_state
 
         f = np.zeros((n_eq,13))
 
@@ -433,7 +431,7 @@ class RKF78:
 
             twrk = t_i
 
-            sys.stdout.write("\r Time : {}".format(twrk))
+            sys.stdout.write("\r Time : {}, dt : {}".format(twrk, dt_))
             sys.stdout.flush()
 
             f_state = self.right_operator(initial_state.T)
@@ -444,8 +442,9 @@ class RKF78:
             for k in range(1, self.n_stages):
 
                 for i in range(n_eq):
+
                     initial_state[i,0] = xwrk[i,0] + dt_ * sum(self.beta[k, 0:k] * f[i, 0:k])
-                    ti = twrk + self.alpha[k,0] * dt_
+                    t_i = twrk + self.alpha[k,0] * dt_
                     xdot = self.right_operator(initial_state.T)
                     xdot_tra = np.transpose(xdot)
                     f[:,k] = xdot_tra
@@ -454,11 +453,10 @@ class RKF78:
 
             for i in range(0, n_eq):
 
-                f_tra=np.transpose(f)
+                f_tra = np.transpose(f)
                 initial_state[i,0] = xwrk[i,0] + dt_ * sum(self.weights[:,0] * f_tra[:,i])
 
                 # truncation error calculations
-
                 ter = abs((f[i, 0] + f[i, 10] - f[i, 11] - f[i, 12]) * self.weights[11,0] * dt_)
                 tol = abs(initial_state[i,0]) * self.tetol + self.tetol
                 tconst = ter / tol
@@ -471,11 +469,11 @@ class RKF78:
 
             if (xerr > 1):
             # reject current step
-                ti = twrk
+                t_i = twrk
                 initial_state = xwrk
 
-            if ti >= tf:
-                stop_criterion == True
+            if t_i >= t_f:
+                stop_criterion = True
 
             solutions.append(initial_state[None, :])
 

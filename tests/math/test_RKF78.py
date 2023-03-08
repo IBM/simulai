@@ -63,7 +63,7 @@ class TestRKF78Integrator(TestCase):
 
         pendulum = Pendulum(k=1)
         integrator = RKF78(right_operator=pendulum)
-        output_array = integrator.run(initial_state=initial_state, tf=10*np.pi, dt=dt, n_eq=2)
+        output_array = integrator.run(initial_state=initial_state, t_f=10*np.pi, dt=dt, n_eq=2)
 
         print("Extrapolation concluded.")
 
