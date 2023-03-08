@@ -292,7 +292,7 @@ class ExplicitIntegrator(Integral):
 class RK4(ExplicitIntegrator):
     name = "rk4_int"
 
-    def __init__(self, right_operator):
+    def __init__(self, right_operator:callable=None) -> None:
         """
         Initialize a 4th-order Runge-Kutta time-integrator.
 
@@ -311,52 +311,11 @@ class RK4(ExplicitIntegrator):
 
         self.log_phrase += "Runge-Kutta 4th order "
 
-# Basic Leapfrog integrator
-class LeapFrogIntegrator:
-    def __init__(
-        self, system: callable = None, n_steps: int = None, e_lf: float = None
-    ):
-        self.system = system
-        self.latent_dim = self.system.latent_dim
-
-        self.n_steps = n_steps
-        self.e_lf = e_lf
-
-        self.log_phrase = "LeapFrog Integration"
-
-    def step(self, v: torch.Tensor = None, z: torch.Tensor = None):
-        dHdz = self.system(z=z, v=v)
-
-        v_bar = v - (self.e_lf / 2) * dHdz
-        z_til = z + self.e_lf * v_bar
-
-        dHdz_til = self.system(z=z_til, v=v_bar)
-
-        v_til = v_bar - (self.e_lf / 2) * dHdz_til
-
-        return z_til, v_til
-
-    def solve(self, z_0: torch.Tensor = None, v_0: torch.Tensor = None):
-        z = z_0
-        v = v_0
-
-        for k in range(self.n_steps):
-            sys.stdout.write(
-                "\r {}, iteration: {}/{}".format(self.log_phrase, k + 1, self.n_steps)
-            )
-            sys.stdout.flush()
-
-            z_til, v_til = self.step(v=v, z=z)
-
-            z = z_til
-            v = v_til
-
-        return z, v
-
+### In construction
 # Runge-Kutta 7[8]
 class RKF78:
 
-    def __init__(self, right_operator:callable=None) -> None:
+    def __init__(self, right_operator:callable=None, tetol:float=1e-4) -> None:
 
         self.right_operator = right_operator
 
@@ -371,11 +330,11 @@ class RKF78:
 
         self.weights[5,0] = 34.0 / 105
         self.weights[6,0] = 9.0 / 35
-        self.weights[7,0] = ch[6,0]
+        self.weights[7,0] = self.weights[6,0]
         self.weights[8,0] = 9.0 / 280
-        self.weights[9,0] = ch[8,0]
+        self.weights[9,0] = self.weights[8,0]
         self.weights[11,0] = 41.0 / 840
-        self.weights[12,0] = ch[11,0]
+        self.weights[12,0] = self.weights[11,0]
 
         self.alpha[1,0] = 2.0 / 27
         self.alpha[2,0] = 1.0 / 9
@@ -404,7 +363,7 @@ class RKF78:
         self.beta[2,1] = 1.0 / 12
         self.beta[3,2] = 1.0 / 8
         self.beta[4,2] = -25.0 / 16
-        self.beta[4,3] = -beta[4,2]
+        self.beta[4,3] = - self.beta[4,2]
         self.beta[5,3] = 0.25
         self.beta[6,3] = 125.0 / 108
         self.beta[8,3] = -53.0 / 6
@@ -445,12 +404,83 @@ class RKF78:
         self.beta[12,9] = 12.0 / 41
         self.beta[12,11] = 1.0
 
-    def step():
+        self.tetol = tetol
+
+    def run(
+        self, initial_state: np.ndarray = None, dt: float = None, n_eq:int=None, tf : float = None,
+    ) -> Tuple[np.ndarray, np.ndarray]:
+
+        initial_state = initial_state.T
 
         stop_criterion = False
 
-        while stop_criterion == False:
-            pass
+        dt_ = dt
+        t_i = 0
+
+        current_state = initial_state
+
+        f = np.zeros((n_eq,13))
+
+        xdot = np.zeros((n_eq,1))
+
+        xwrk = np.zeros((n_eq, 1))
+
+        xwrk[:,0] = initial_state[:,0]
+
+        solutions = list()
+
+        while not stop_criterion:
+
+            twrk = t_i
+
+            sys.stdout.write("\r Time : {}".format(twrk))
+            sys.stdout.flush()
+
+            f_state = self.right_operator(initial_state.T)
+
+            f_state_tra = np.transpose(f_state)
+            f[:, 0] = f_state_tra
+
+            for k in range(1, self.n_stages):
+
+                for i in range(n_eq):
+                    initial_state[i,0] = xwrk[i,0] + dt_ * sum(self.beta[k, 0:k] * f[i, 0:k])
+                    ti = twrk + self.alpha[k,0] * dt_
+                    xdot = self.right_operator(initial_state.T)
+                    xdot_tra = np.transpose(xdot)
+                    f[:,k] = xdot_tra
+
+            xerr = self.tetol
+
+            for i in range(0, n_eq):
+
+                f_tra=np.transpose(f)
+                initial_state[i,0] = xwrk[i,0] + dt_ * sum(self.weights[:,0] * f_tra[:,i])
+
+                # truncation error calculations
+
+                ter = abs((f[i, 0] + f[i, 10] - f[i, 11] - f[i, 12]) * self.weights[11,0] * dt_)
+                tol = abs(initial_state[i,0]) * self.tetol + self.tetol
+                tconst = ter / tol
+
+            if tconst > xerr: xerr = tconst
+
+            # compute new step size
+
+            dt_ = 0.8 * dt_ * (1.0 / xerr) ** (1.0 / 8)
+
+            if (xerr > 1):
+            # reject current step
+                ti = twrk
+                initial_state = xwrk
+
+            if ti >= tf:
+                stop_criterion == True
+
+            solutions.append(initial_state[None, :])
+
+        return np.vstack(solutions)
+
 
 
 # Wrapper for using the SciPy LSODA (LSODA itself is a wrapper for ODEPACK)
