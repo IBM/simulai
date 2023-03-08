@@ -784,6 +784,10 @@ class PerturbationMethod:
 
 class MeanEvaluation:
     def __init__(self) -> None:
+
+        """
+        Evaluating mean for large dataset in batch-wise mode
+        """
         pass
 
     def __call__(
@@ -793,6 +797,31 @@ class MeanEvaluation:
         batch_size: int = None,
         data_preparer: DataPreparer = None,
     ) -> np.ndarray:
+
+        """
+        It evaluates the mean values of a h5py.Dataset (lazzy) or numpy.ndarray (on memory)
+        object
+
+        Parameters
+        ----------
+        dataset : Union[h5py.Dataset, np.ndarray]
+                  The dataset to be used for MinMax evaluation.
+        data_interval : list
+                  A list containing the interval along axis 0 (batches) used for
+                  the MinMax evaluation.
+        batch_size : int
+                  The value of the batch size to be used for the incremental evaluation.
+                  Usually it is chosen as smaller than the total dataset size in order to avoid
+                  memory overflow.
+        data_preparer : DataPreparer (simulai.io.DataPreparer), optional
+                  A class for reformatting the data before executing the MinMax evaluation.
+
+        Returns
+        -------
+        np.ndarray
+                  An array for the mean values.
+        """
+
         if isinstance(batch_size, MemorySizeEval):
             batch_size = batch_size(
                 max_batches=data_interval[1] - data_interval[0], shape=dataset.shape[1:]
@@ -828,6 +857,7 @@ class MeanEvaluation:
 
 class MinMaxEvaluation:
     def __init__(self) -> None:
+
         """
         Evaluating Minimum and Maximum values for large dataset in batch-wise mode
         """
@@ -869,7 +899,7 @@ class MinMaxEvaluation:
         -------
         np.ndarray
                   An array for the maximum values.
-        np.dnarray
+        np.ndarray
                   An array for the minimum values.
 
         """
