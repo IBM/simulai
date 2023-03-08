@@ -44,12 +44,22 @@ class L2Norm:
         large_number: float = 1e15,
         default_data: float = 0.0,
     ) -> None:
-        """It evaluates a L^2 norm comparing an approximation and its reference value
-        :param mask: if there are masked or missing data, it informs what kind of value is filling these gaps
-        :type mask: Union[str, float, None]
-        :param do_clean_data: Execute a data cleaning (removing large numbers and NaN) or not ?
-        :type do_clean_data: bool
-        :returns: nothing
+
+        """
+        Parameters
+        __________
+
+        mask: Union[str, float]
+            A floating point number or string indicating which positions in
+            the dataset are not valid, it means, are missing data. 
+        do_clean_data: bool
+            It is necessary to execute a cleaning in the dataset (removing NaN and very large numbers)
+            or not ?
+        large_number: float
+            Threshold for considering number as large numbers.
+        default_data: float
+            The defulat data used for replacing NaN and large number when the 
+            option `do_clean_data` is `True`.
         """
 
         self.large_number = large_number
@@ -58,12 +68,24 @@ class L2Norm:
         self.default_data = default_data
 
     def _clean_nan_and_large_single(self, d: np.ndarray) -> np.ndarray:
-        """It removes NaNs and large numbers from a single array
-        :param d: data to be cleaned
-        :type d: np.ndarray
-        :returns: the data cleaned
-        :rtype: np.ndarray
+
         """
+        It removes NaN and large numbers in an array and replaces those by
+        a defualt value.
+
+        Parameters
+        __________
+
+        d : np.ndarray
+            The array to be cleaned. 
+
+        Returns
+        _______
+
+        np.ndarray
+            The array cleaned.
+        """
+
         if self.mask is not None:
             is_mask = d == self.mask
             if np.any(is_mask):
@@ -91,13 +113,24 @@ class L2Norm:
     def _clean_nan_and_large(
         self, data: np.ndarray, reference_data: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray]:
-        """It removes NaNs and large number of the input and the reference dataset
-        :param data: the data to be evaluated in the norm
-        :type data: np.ndarray
-        :param reference_data: the data to used as comparison
-        :type reference_data: np.ndarray
-        :returns: both the datasets after have been cleaned
-        :rtype: (np.ndarray, np.ndarray)
+
+        """
+        It removes NaN and large number of the input and the reference dataset.
+
+        Parameters
+        __________
+
+        data: np.ndarray 
+            The data to be evaluated in the norm.
+        reference_data: np.ndarray
+            the data to be used as comparison.
+
+        Returns
+        _______
+
+        Tuple[np.ndarray, np.ndarray]
+            Both the datasets after have been cleaned.
+
         """
 
         if self.do_clean_data:
@@ -114,21 +147,31 @@ class L2Norm:
         data_interval: list = None,
         batch_size: int = 1,
     ) -> float:
-        """It evaluated the error over a single batch a time
-        :param data: the data to be usd for assess the norm
-        :type data: Union[np.ndarray, h5py.Dataset]
-        :param reference_data: the data to use as comparison
-        :type data: Union[np.ndarray, h5py.Dataset]
-        :param relative_norm: use relative norm or not ?
-        :type relative_norm: bool
-        :param data_interval: the interval over the samples' axis to use for evaluating the norm
-        :type data_interval: list
-        :param batch_size: the maximum size of each batch
-        :type batch_size: int
-        :returns: the total norm
-        :rtype: float
-        """
 
+        """
+        It evaluates the error over a single dataset batch a time.
+
+        Parameters
+        __________
+
+        data : Union[np.ndarray, h5py.Dataset]
+            The data to be used for assessing the norm.
+        reference_data : Union[np.ndarray, h5py.Dataset]
+            The data to be used as comparison.
+        relative_norm : bool
+            Using relative norm or not ? (Dividing the error norm by the norm of reference_data)
+        data_interval : list
+            The interval along the samples axis to use for evaluating the norm.
+        batch_size : int
+            The maximum size of each mini-batch created for evaluating the norm.
+
+        Returns
+        _______
+
+        float
+            The overall norm for the batch. 
+
+        """
         batches = batchdomain_constructor(data_interval, batch_size)
 
         accumulated_error = 0
@@ -184,19 +227,30 @@ class L2Norm:
         batch_size: int = 1,
         ord: int = 2,
     ) -> float:
-        """It evaluated the error over a single batch a time
-        :param data: the data to be usd for assess the norm
-        :type data: Union[np.ndarray, da.core.Array, h5py.Dataset]
-        :param reference_data: the data to use as comparison
-        :type data: Union[np.ndarray, da.core.Array, h5py.Dataset]
-        :param relative_norm: use relative norm or not ?
-        :type relative_norm: bool
-        :param data_interval: the interval over the samples' axis to use for evaluating the norm
-        :type data_interval: list
-        :param batch_size: the maximum size of each batch
-        :type batch_size: int
-        :returns: the total norm
-        :rtype: float
+
+        """
+        It evaluates the norm error os a large dataset in a batchwise and lazzy way.
+
+        Parameters
+        __________
+
+        data : Union[np.ndarray, da.core.Array, h5py.Dataset]
+            The data to be used for assessing the norm.
+        reference_data : Union[np.ndarray, da.core.Array, h5py.Dataset]
+            The data to be used for comparison.
+        relative_norm : bool
+            Using relative norm or not ? (Dividing the error norm by the norm of reference_data)
+       data_interval : list
+            The interval along the samples axis to use for evaluating the norm.
+        batch_size : int
+            The maximum size of each mini-batch created for evaluating the norm.
+
+        Returns
+        _______
+
+        float
+            The overall norm for the dataset.
+
         """
 
         # NumPy and Dask arrays have similar properties
@@ -1036,6 +1090,7 @@ class LyapunovUnits:
 
 class MahalanobisDistance:
     def __init__(self, batchwise: bool = None) -> None:
+
         """
         It evaluates the Mahalanobis distance metric
 
