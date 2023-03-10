@@ -15,8 +15,10 @@
 import copy
 from collections import OrderedDict
 from itertools import product
-from typing import Union, Optional, Tuple, Dict
+from typing import Dict, Optional, Tuple, Union
+
 import numpy as np
+
 
 class StructuredMesh:
     """
