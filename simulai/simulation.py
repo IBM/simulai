@@ -32,8 +32,46 @@ from simulai.rom import ROM
 # Prototype of the class Pipeline
 class Pipeline(BaseFramework):
     """
-    Pipeline class manages the execution of multiple operations such as data pre-processing (DataPreparer), ROM,
-    and ML modeling (Model)
+    Pipeline class is used to create a pipeline of algorithms to be used in a simulation.
+    
+    Methods:
+    --------
+    set_data_preparer(data_preparer: DataPreparer) -> None:
+        Set the data preparer to be used in the pipeline
+    set_rom(rom: ROM) -> None:
+        Set the ROM to be used in the pipeline
+    set_model(model: Model) -> None:
+        Set the model to be used in the pipeline
+    set_normalization(normalization: Normalization) -> None:
+        Set the normalization to be used in the pipeline
+    set_integration(integration: Integration) -> None:
+        Set the integration to be used in the pipeline
+    set_target(target: Dataset) -> None:
+        Set the target dataset to be used in the pipeline
+    set_reference(reference: Dataset) -> None:
+        Set the reference dataset to be used in the pipeline
+    set_batchwise(batchwise: bool) -> None:
+        Set the batchwise flag to be used in the pipeline
+    set_input_vars_list(input_vars_list: list) -> None:
+        Set the input variables list to be used in the pipeline
+    set_target_vars_list(target_vars_list: list) -> None:
+        Set the target variables list to be used in the pipeline
+    set_reference_vars_list(reference_vars_list: list) -> None:
+        Set the reference variables list to be used in the pipeline
+    set_input_data(input_data: np.ndarray) -> None:
+        Set the input data to be used in the pipeline
+    set_target_data(target_data: np.ndarray) -> None:
+        Set the target data to be used in the pipeline
+    set_reference_data(reference_data: np.ndarray) -> None:
+        Set the reference data to be used in the pipeline
+    set_input_data_prepared(input_data_prepared: np.ndarray) -> None:
+        Set the input data prepared to be used in the pipeline
+    set_target_data_prepared(target_data_prepared: np.ndarray) -> None:
+        Set the target data prepared to be used in the pipeline
+    set_reference_data_prepared(reference_data_prepared: np.ndarray) -> None:
+        Set the reference data prepared to be used in the pipeline
+    set_input_data_normalized(input_data_normalized: np.ndarray) -> None:
+        Set the input data normalized to be used in the pipeline
 
     """
 
@@ -111,10 +149,36 @@ class Pipeline(BaseFramework):
 
     @property
     def input_data(self):
+        """
+        this function is used to get the input data
+        
+        Returns:
+        -------
+        input_data: np.ndarray
+            input data
+        """
         return self._input_data
 
     @input_data.setter
     def input_data(self, v):
+        """
+        function to set the input data
+        
+        Parameters:
+        ----------
+        v: np.ndarray
+            input data
+        
+        
+        Exceptions:
+        -----------
+        assert: AssertionError
+            if the input data is not a numpy.ndarray
+        
+        Returns:
+        -------
+        None
+        """
         assert isinstance(v, np.ndarray) or isinstance(
             v, h5py.Dataset
         ), "Error! input_data is not a numpy.ndarray: {}".format(type(v))
@@ -124,15 +188,21 @@ class Pipeline(BaseFramework):
     @staticmethod
     def _construct_data_array(data, var_names_list):
         """
-
-        :param data:
-        :type data: np.ndarray
-        :param var_names_list:
-        :type var_names_list: List[str]
-        :return:
-
+        Construct a structured array from a list of variables
+        
+        Parameters:
+        -----------
+        var_names_list: List[str]
+            list of variable names
+            
+        data: np.ndarray
+            data array
+            
+        Returns:
+        --------
+        data: np.ndarray
+            structured array
         """
-
         # It considers the argument data as a structured array
 
         if isinstance(data, np.ndarray) and isinstance(data.dtype.names, tuple):
@@ -143,11 +213,20 @@ class Pipeline(BaseFramework):
 
     def _classify_op(self, op_dict):
         """
-        Classify the type of execution method used for each operation in the pipeline
-
-        :param op_dict:
-        :type op_dict: dict
-        :return:
+        Classify the operations in the pipeline
+        
+        Parameters:
+        -----------
+        op_dict: OrderedDict
+            dictionary of operations
+            
+        Returns:
+        --------
+        execution_pipeline: OrderedDict
+            dictionary of operations
+            
+        pipeline_algorithms: OrderedDict
+            dictionary of algorithms
         """
 
         execution_pipeline = OrderedDict()
@@ -169,10 +248,20 @@ class Pipeline(BaseFramework):
     @staticmethod
     def _recover_array(data, var_names_list):
         """
-
-        :param data:
-        :param var_names_list: List[str]
-        :return:
+        Recover a structured array from a list of variables
+        
+        Parameters:
+        -----------
+        data: np.ndarray
+            data array
+            
+        var_names_list: List[str]
+            list of variable names
+            
+        Returns:
+        --------
+        recovered_data: np.ndarray
+            structured array
         """
         variables_list = list()
 
@@ -189,17 +278,61 @@ class Pipeline(BaseFramework):
         return recovered_data
 
     def _slice_by_interval(self, batch):
+        """
+        Slice the data by interval
+        
+        Parameters:
+        -----------
+        batch: List[int]
+            list of batch indices
+            
+        Returns:
+        --------
+        batch: slice
+            slice object
+        """
         return slice(*batch)
 
     def _slice_by_set(self, batch):
+        """
+        slice the data by set
+        
+        Parameters:
+        ----------
+        batch: List[int]
+            list of batch indices
+            
+        Returns:
+        --------
+        batch: List[int]
+            list of batch indices
+        """
         return batch
 
     def _data_preparer_wrapper(self, data_preparer):
         """
-
-        :param data_preparer:
-        :type data_preparer: DataPreparer
-        :return: None
+        Wrapper for the data preparer
+        
+        Parameters:
+        -----------
+        data_preparer: DataPreparer
+            data preparer object
+        
+        Returns:
+        --------
+        result: np.ndarray
+            prepared data
+            
+        Raises:
+        -------
+        raise Exception: Exception
+            if the data preparer is not an instance of DataPreparer
+            
+        raise Exception: Exception
+            if the data preparer is not a list of DataPreparer
+            
+        raise Exception: Exception
+            if the data preparer is not an instance of DataPreparer
         """
 
         if isinstance(data_preparer, DataPreparer):
@@ -229,6 +362,19 @@ class Pipeline(BaseFramework):
                 pass
 
     def _get_operator(self, operator):
+        """
+        Get the operator
+        
+        Parameters:
+        -----------
+        operator: Operator
+            operator object
+            
+        Returns:
+        --------
+        wrapper: function
+            wrapper function
+        """
         if self.normalization:
 
             def wrapper(data):
@@ -254,6 +400,19 @@ class Pipeline(BaseFramework):
         return wrapper
 
     def _model_wrapper(self, model):
+        """
+        Wrapper for the model
+        
+        Parameters:
+        -----------
+        model: Model
+            model object
+            
+        Returns:
+        --------
+        return: None
+            model is fitted
+        """
         if model.is_this_model_rough:
             model.fit(
                 input_data=self.input_data,
@@ -268,12 +427,38 @@ class Pipeline(BaseFramework):
 
     @staticmethod
     def _get_kwargs(op):
+        """
+        Get the kwargs of the operator
+        
+        Parameters:
+        -----------
+        op: Operator
+            operator object
+            
+        Returns: 
+        --------
+        kwargs: List[str]
+            list of kwargs
+        """
         kwargs = inspect.getfullargspec(op).args
         kwargs.remove("self")
 
         return kwargs
 
     def _integration_wrapper(self, integration_op):
+        """
+        Wrapper for the integration operator
+        
+        Parameters:
+        -----------
+        integration_op: Operator
+            operator object
+            
+        Returns:
+        --------
+        return: None
+            integration operator is instantiated
+        """
         # It checks if the post_process_op is instantiated or not
         self.right_operator = self.model.eval
         for key, var in self.extra_kwargs.items():
@@ -304,15 +489,20 @@ class Pipeline(BaseFramework):
 
     def _rom_wrapper(self, rom):
         """
-
-        :param rom:
-        :type rom: ROM
-        :return: None
+        Wrapper for the ROM
+        
+        Parameters:
+        -----------
+        rom: ROM
+            ROM object
+            
+        Returns:
+        --------
+        return: None
+            ROM is fitted
         """
-
         # The target data may be previously provided or constructed after the
         # dimensionality reduction
-
         if self.is_batchwise:
             assert rom.kind == "batchwise", (
                 "The ROM chosen is not proper " "to batchwise executions"
@@ -346,6 +536,19 @@ class Pipeline(BaseFramework):
             pass
 
     def _normalization_wrapper(self, normalization_op):
+        """
+        normalization wrapper
+        
+        Parameters:
+        -----------
+        normalization_op: Operator
+            operator object
+            
+        Returns:
+        --------
+        return: None
+            normalization operator is instantiated
+        """
         map_dict = dict()
         if isinstance(self.input_data, np.ndarray):
             map_dict.update({"input": self.input_data})
@@ -377,6 +580,33 @@ class Pipeline(BaseFramework):
         batch_size=None,
         batch_indices=None,
     ):
+        """
+        batchwise projection
+        
+        Parameters:
+        -----------
+        data: np.ndarray
+            data array
+        variables_list: List[str]
+            list of variables
+        data_interval: Tuple[int, int]
+            data interval
+        batch_size: int
+            batch size
+        batch_indices: List[int]
+            list of batch indices
+            
+        Returns:
+        --------
+        batch_list: List[np.ndarray]
+            list of batches
+
+        Raises:
+        -------
+        raise: Exception
+            if there is a contradiction
+        """
+
         if data_interval is not None:
             n_samples = data_interval[1] - data_interval[0]
             slicer = self._slice_by_interval
@@ -435,6 +665,29 @@ class Pipeline(BaseFramework):
         batch_indices=None,
         dump_path=None,
     ):
+        """
+        batchwise reconstruction
+        
+        Parameters:
+        -----------
+        data: np.ndarray
+            data array
+        variables_list: List[str]
+            list of variables
+        data_interval: Tuple[int, int]
+            data interval
+        batch_size: int
+            batch size
+        batch_indices: List[int]
+            list of batch indices
+        dump_path: str 
+            path to dump the reconstruction
+        
+        Raises:
+        -------
+        rise: Exception
+            if there is a contradiction
+        """
         assert dump_path, (
             "It is necessary to provide a path to save the reconstruction"
             "output to a HDF5 file."
@@ -508,14 +761,30 @@ class Pipeline(BaseFramework):
         batch_indices=None,
     ):
         """
-
-        :param data:
-        :type data: np.ndarray
-        :param variables_list:
-        :type variables_list: List[str]
-        :param mean_component:
-        :type mean_component: bool
-        :return:
+        project data
+        
+        Parameters:
+        -----------
+        data: np.ndarray
+            data array
+        variables_list: List[str]
+            list of variables
+        data_interval: Tuple[int, int]
+            data interval
+        batch_size: int
+            batch size
+        batch_indices: List[int]
+            list of batch indices
+            
+        Returns:
+        --------
+        return: np.ndarray
+            projected data
+        
+        Raises:
+        -------
+        rise: Exception
+            Data format not supported
         """
 
         if isinstance(data, np.ndarray):
@@ -555,6 +824,34 @@ class Pipeline(BaseFramework):
         batch_size=1,
         dump_path=None,
     ):
+        """
+        Reconstruction of data
+        
+        Parameters:
+        ----------- 
+        data: np.ndarray
+            data array
+        variables_list: List[str]
+            list of variables
+        data_interval: Tuple[int, int]  
+            data interval
+        batch_size: int 
+            batch size
+        dump_path: str  
+            path to dump the reconstruction
+        
+        Returns:
+        --------
+        Return: np.ndarray
+            reconstructed data
+            
+        Raises:
+        -------
+        rise: Exception
+            Data format not supported  
+        """
+        
+        
         if isinstance(data, np.ndarray) and not data_interval:
             print("Applying the global reconstruction strategy.")
 
@@ -579,6 +876,24 @@ class Pipeline(BaseFramework):
             )
 
     def pipeline_loop(self, input_data, target_data, reference_data, extra_kwargs):
+        """
+        pipeline loop
+        
+        Parameters:
+        -----------
+        input_data: np.ndarray
+            input data
+        target_data: np.ndarray
+            target data
+        reference_data: np.ndarray
+            reference data
+        extra_kwargs: dict  
+            extra kwargs
+        
+        Returns:
+        --------
+        return: None
+        """
         self.input_data = input_data
         self.target_data = target_data
         self.reference_data = reference_data
@@ -606,6 +921,35 @@ class Pipeline(BaseFramework):
         batch_size=None,
         batch_indices=None,
     ):
+        """
+        implementation of the batchwise pipeline loop
+        
+        Parameters:
+        -----------
+        input_data: np.ndarray
+            input data
+        target_data: np.ndarray
+            target data
+        reference_data: np.ndarray
+            reference data
+        extra_kwargs: dict
+            extra kwargs
+        data_interval: Tuple[int, int]
+            data interval
+        batch_size: int
+            batch size
+        batch_indices: List[int]
+            list of batch indices
+            
+        Returns:
+        --------
+        return: None
+        
+        Asserts:
+        --------
+        rise: AssertionError
+            There is a contradiction. Or data_interval or batch_indices must be provided.
+        """
         self.input_data = input_data
         self.target_data = target_data
         self.reference_data = reference_data
@@ -676,20 +1020,39 @@ class Pipeline(BaseFramework):
         batch_indices=None,
     ):
         """
-
-        :param batch_size:
-        :param batch_size: int
-        :param data:
-        :type data: np.ndarray
-        :param input_data:
-        :type input_data: np.ndarray
-        :param target_data:
-        :type target_data: np.ndarray
-        :param reference_data:
-        :param data_generator:
-        :param extra_kwargs:
-        :return:
-
+        implementation of the exec method
+        
+        Parameters:
+        -----------
+        input_data: np.ndarray
+            input data
+        target_data: np.ndarray
+            target data
+        reference_data: np.ndarray
+            reference data
+        data_generator: DataGenerator
+            data generator
+        extra_kwargs: dict
+            extra kwargs
+        fit_kwargs: dict
+            fit kwargs
+        data_interval: Tuple[int, int]
+            data interval
+        batch_size: int
+            batch size
+        batch_indices: List[int]
+            list of batch indices
+        
+        Returns:
+        --------
+        return: None
+        
+        Raises:
+        -------
+        rise: Exception
+            There is a contradiction. Or data_interval or batch_indices must be provided.
+        raise: Exception
+            Data format not supported. It must be np.ndarray or h5py.Dataset.
         """
         data_format = list()
 
@@ -798,6 +1161,23 @@ class Pipeline(BaseFramework):
             raise Exception("The data format was not understood")
 
     def eval(self, data=None, with_projection=True, with_reconstruction=True):
+        """
+        evaluation method is used to evaluate the model
+        
+        Parameters:
+        -----------
+        data: np.ndarray
+            data
+        with_projection: bool
+            with projection
+        with_reconstruction: bool
+            with reconstruction
+        
+        Returns:
+        --------
+        return: np.ndarray
+            evaluation of the model
+        """
         if self.rom and with_projection:
             data_ = self.project_data(data, self.input_vars_list)
         else:
@@ -829,6 +1209,23 @@ class Pipeline(BaseFramework):
     def predict(
         self, post_process_op=None, extra_kwargs=None, with_reconstruction=True
     ):
+        """
+        predict method is used to predict the model
+        
+        Parameters:
+        -----------
+        post_process_op: object
+            post process operator
+        extra_kwargs: dict
+            extra keyword arguments
+        with_reconstruction: bool
+            with reconstruction
+        
+        Returns:
+        --------
+        return: np.ndarray
+            prediction of the model
+        """
         # It checks if the post_process_op is instantiated or not
 
         initial_state = extra_kwargs["initial_state"]
@@ -869,6 +1266,20 @@ class Pipeline(BaseFramework):
         return output
 
     def _save(self, save_path=None, model_name=None):
+        """
+        _save method is used to save the model
+        
+        Parameters:
+        -----------
+        save_path: str
+            save path
+        model_name: str
+            model name
+            
+        Returns:
+        --------
+        return: None
+        """
         fp = open(os.path.join(save_path, model_name), "wb")
 
         try:
@@ -882,6 +1293,25 @@ class Pipeline(BaseFramework):
             print(f"Object {self} is not pickable." f" Trying to save with another way")
 
     def save(self, save_path=None, model_name=None):
+        """
+        Save method is used to save the model
+        
+        Parameters:
+        -----------
+        save_path: str
+            save path
+        model_name: str
+            model name
+        
+        Returns:
+        --------
+        return: None
+        
+        Raises:
+        -------
+        AssertionError
+            model is not an attribute of self.model
+        """
         try:
             self._save(save_path=save_path, model_name=model_name)
         except Exception:
@@ -890,6 +1320,21 @@ class Pipeline(BaseFramework):
             self.model.save(save_path, model_name)
 
     def test(self, metric=None, data=None):
+        """
+        test method is used to test the model
+        
+        Parameters:
+        -----------
+        metric: object
+            metric
+        data: np.ndarray
+            data
+        
+        Returns:
+        --------
+        error: float
+            error
+        """
         data = self._construct_data_array(data, self.input_vars_list)
 
         error = metric(data, self.output)
