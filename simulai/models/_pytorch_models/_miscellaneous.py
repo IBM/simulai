@@ -126,7 +126,7 @@ class MoEPool(NetworkTemplate):
     def __init__(
         self,
         experts_list: List[NetworkTemplate],
-        gating_network: NetworkTemplate = None,
+        gating_network: [NetworkTemplate, callable] = None,
         input_size: int = None,
         devices: Union[list, str] = None,
         binary_selection: bool = False,
@@ -141,9 +141,9 @@ class MoEPool(NetworkTemplate):
         self.n_experts = len(experts_list)
         self.input_size = input_size
         self.binary_selection = binary_selection
+        self.is_gating_trainable = None
 
-        # Gating (classifier) network
-
+        # Gating (classifier) network/object
         # The default gating network is a single-layer fully-connected network
         if gating_network is None:
             self.gating_network = SLFNN(
@@ -155,11 +155,25 @@ class MoEPool(NetworkTemplate):
         else:
             self.gating_network = gating_network.to(self.device)
 
+        # Determining if the gating network is trainable or not
+        if isinstance(self.gating_network, NetworkTemplate):
+            self.is_gating_trainable = True
+        else:
+            self.is_gating_trainable = False
+            # When the gating is not trainable, we consider that there
+            # are a single expert choice for each sample which is already
+            # chosen, in this case the selection is always binary
+            self.binary_selection = True
+
         # Sending each sub-network to the correct device
         for ei, expert in enumerate(self.experts_list):
             self.experts_list[ei] = expert.to(self.device)
 
-        self.add_module("gating", self.gating_network)
+        # Just the trainable objects need to be included as modules
+        if self.is_gating_trainable is True:
+            self.add_module("gating", self.gating_network)
+        else:
+            pass
 
         for ii, item in enumerate(self.experts_list):
             self.add_module(f"expert_{ii}", item)
@@ -169,10 +183,15 @@ class MoEPool(NetworkTemplate):
 
         self.output_size = self.experts_list[-1].output_size
 
-        if self.binary_selection is True:
-            self.get_weights = self._get_weights_binary
+        # Selecting the method to be used for determining the 
+        # gating weights
+        if self.is_gating_trainable is True:
+            if self.binary_selection is True:
+                self.get_weights = self._get_weights_binary
+            else:
+                self.get_weights = self._get_weights_bypass
         else:
-            self.get_weights = self._get_weights_bypass
+            self.get_weights = self._get_weights_not_trainable
 
     def _get_weights_bypass(self, gating: torch.Tensor = None) -> torch.Tensor:
         return gating
@@ -181,6 +200,13 @@ class MoEPool(NetworkTemplate):
         maxs = torch.max(gating, dim=1).values[:, None]
 
         return torch.where(gating == maxs, 1, 0).to(self.device)
+
+    # When the gating process is not trainable, it is considered some kind of
+    # clustering approach, which will return integers corresponding to the
+    # cluster for each sample in the batch
+    def _get_weights_not_trainable(self, gating: torch.Tensor = None) -> torch.Tensor:
+
+        return gating
 
     def gate(self, input_data: Union[np.ndarray, torch.Tensor]) -> torch.Tensor:
         gating = self.gating_network.forward(input_data=input_data)
