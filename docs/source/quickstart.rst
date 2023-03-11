@@ -7,14 +7,14 @@ Quick Start
 .. image:: https://readthedocs.org/projects/simulai-toolkit/badge/?version=latest
    :target: https://simulai-toolkit.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
-.. image:: _static/coverage.svg
+.. image:: ../../assets/coverage.svg
    :target: ../../tests/
     
-.. image:: _static/logo.png
+.. image:: ../../assets/logo.png
 
 A Python package with data-driven pipelines for physics-informed machine learning.
 
-.. image:: _static/simulai_diagram.svg
+.. image:: ../../assets/simulai_diagram.svg
 
 The SimulAI toolkit provides easy access to state-of-the-art models and algorithms for physics-informed machine learning. Currently, it includes the following methods described in the literature:
 

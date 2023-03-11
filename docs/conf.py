@@ -13,8 +13,6 @@
 import os
 import sys
 
-import sphinx_theme
-
 sys.path.insert(0, os.path.abspath("../"))
 
 # -- Project information -----------------------------------------------------
@@ -51,15 +49,6 @@ html_context = {
 }
 
 
-intersphinx_mapping = {
-    "python": ("https://docs.python.org/3/", None),
-    "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
-}
-
-# Add any paths that contain templates here, relative to this directory.
-templates_path = ["_templates"]
-
-
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
@@ -74,13 +63,12 @@ source_suffix = [".rst", ".md"]
 
 # -- Options for HTML output -------------------------------------------------
 
-
 # -- Options for HTML output
 html_theme = 'sphinx_rtd_theme'
 
 
 # Below html_theme_options config depends on the theme.
-html_logo = "source/_static/logo.png"
+html_logo = "../assets/logo.png"
 
 
 html_theme_options = {"logo_only": True, "display_version": True}
