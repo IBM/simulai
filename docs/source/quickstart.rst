@@ -1,6 +1,5 @@
 Quick Start 
 ===========
-
 .. image:: https://zenodo.org/badge/561364034.svg
    :target: https://zenodo.org/badge/latestdoi/561364034
 .. image:: https://badge.fury.io/py/simulai-toolkit.svg
@@ -8,14 +7,14 @@ Quick Start
 .. image:: https://readthedocs.org/projects/simulai-toolkit/badge/?version=latest
    :target: https://simulai-toolkit.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
-.. image:: ../assets/coverage.svg
-   :target: tests/ 
+.. image:: _static/coverage.svg
+   :target: ../../tests/
     
-.. image:: ../assets/logo.png
+.. image:: _static/logo.png
 
 A Python package with data-driven pipelines for physics-informed machine learning.
 
-.. image:: ../assets/simulai_diagram.svg
+.. image:: _static/simulai_diagram.svg
 
 The SimulAI toolkit provides easy access to state-of-the-art models and algorithms for physics-informed machine learning. Currently, it includes the following methods described in the literature:
 
@@ -93,10 +92,40 @@ If you find SimulAI to be useful, please consider citing it in your published wo
       year = {2022},
     }
 
+or, via Zenodo: 
+
+.. code-block:: python
+
+    @software{joao_lucas_de_sousa_almeida_2023_7566603,
+          author       = {João Lucas de Sousa Almeida and
+                          Leonardo Martins and
+                          Tarık Kaan Koç},
+          title        = {IBM/simulai: 0.99.13},
+          month        = jan,
+          year         = 2023,
+          publisher    = {Zenodo},
+          version      = {0.99.13},
+          doi          = {10.5281/zenodo.7566603},
+          url          = {https://doi.org/10.5281/zenodo.7566603}
+        }
+
+Publications
+------------
+João Lucas de Sousa Almeida, Pedro Roberto Barbosa Rocha, Allan Moreira de Carvalho and Alberto Costa Nogueira Jr. A coupled Variational
+Encoder-Decoder - DeepONet surrogate model for the Rayleigh-Bénard convection problem. In When Machine Learning meets Dynamical Systems:
+Theory and Applications, AAAI, 2023.
+
+João Lucas S. Almeida, Arthur C. Pires, Klaus F. V. Cid, and Alberto C.
+Nogueira Jr. Non-intrusive operator inference for chaotic systems. IEEE Transactions on Artificial Intelligence, pages 1–14, 2022.
+
+Pedro Roberto Barbosa Rocha, Marcos Sebastião de Paula Gomes,
+Allan Moreira de Carvalho, João Lucas de Sousa Almeida and Alberto Costa
+Nogueira Jr. Data-driven reduced-order model for atmospheric CO2 dispersion. In AAAI 2022 Fall Symposium: The Role of AI in Responding to
+Climate Challenges, 2022.
+
 
 References
 ----------
-
 Jaeger, H., Haas, H. (2004).
 "Harnessing Nonlinearity: Predicting Chaotic Systems and Saving Energy in Wireless Communication,"
 *Science*, **304** (5667): 78–80.

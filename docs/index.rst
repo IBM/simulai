@@ -1,14 +1,18 @@
 Welcome to simulai's documentation!
 ===================================
 
+.. include:: source/quickstart.rst
+
 .. toctree::
    :maxdepth: 2
+   :hidden:
    :caption: Get Started
 
-   quickstart
+   source/quickstart
 
 .. toctree::
    :maxdepth: 2
+   :hidden:
    :caption: Sub Packages
 
    source/_package/simulai.math
@@ -22,7 +26,7 @@ Welcome to simulai's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :titlesonly:
+   :hidden:
    :caption: Sub Modules
 
    source/_modules/simulai.abstract

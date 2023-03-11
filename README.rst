@@ -5,14 +5,14 @@
 .. image:: https://readthedocs.org/projects/simulai-toolkit/badge/?version=latest
    :target: https://simulai-toolkit.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
-.. image:: assets/coverage.svg
-   :target: tests/ 
+.. image:: docs/source/_static/coverage.svg
+   :target: tests/
     
-.. image:: assets/logo.png
+.. image:: docs/source/_static/logo.png
 
 A Python package with data-driven pipelines for physics-informed machine learning.
 
-.. image:: assets/simulai_diagram.svg
+.. image:: docs/source/_static/simulai_diagram.svg
 
 The SimulAI toolkit provides easy access to state-of-the-art models and algorithms for physics-informed machine learning. Currently, it includes the following methods described in the literature:
 
@@ -86,6 +86,11 @@ License
 
 This software is licensed under Apache license 2.0. See `LICENSE <LICENSE>`_.
 
+Contributing code to SimulAI
+----------------------------
+
+If you are interested in directly contributing to this project, please see `CONTRIBUTING <https://github.com/IBM/simulai/blob/main/CONTRIBUTING.rst>`_.
+
 How to cite SimulAI in your publications
 ========================================
 
@@ -109,9 +114,7 @@ or, via Zenodo:
     @software{joao_lucas_de_sousa_almeida_2023_7566603,
           author       = {João Lucas de Sousa Almeida and
                           Leonardo Martins and
-                          Tarık Kaan Koç and
-                          John Bampton and
-                          IBM Open Source Bot},
+                          Tarık Kaan Koç},
           title        = {IBM/simulai: 0.99.13},
           month        = jan,
           year         = 2023,

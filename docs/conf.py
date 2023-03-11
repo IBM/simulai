@@ -22,9 +22,7 @@ sys.path.insert(0, os.path.abspath("../"))
 project = "simulai"
 copyright = "2023, IBM"
 author = "IBM"
-
-# The full version, including alpha/beta/rc tags
-release = "2022"
+version = "latest"
 
 # -- General configuration
 
@@ -43,8 +41,14 @@ suppress_warnings = ["autosectionlabel.*"]
 # Napoleon settings
 napoleon_numpy_docstring = True
 
-# Make sure the target is unique
-autosectionlabel_use_sections = False
+# html_context configuration for GitHub edit link
+html_context = {
+    "display_github": True,
+    "github_user": "promptslab",
+    "github_repo": "Promptify",
+    "github_version": "main",
+    "conf_py_path": "/docs/",
+}
 
 
 intersphinx_mapping = {
@@ -63,7 +67,6 @@ exclude_patterns = [
     "_build",
     "Thumbs.db",
     ".DS_Store",
-    "source/_templates/ISSUES_TEMPLATE.rst",
     "TODO/*",
 ]
 
@@ -73,16 +76,11 @@ source_suffix = [".rst", ".md"]
 
 
 # -- Options for HTML output
-# Stanford Theme
-html_theme = "stanford_theme"
-html_theme_path = [sphinx_theme.get_html_theme_path("stanford-theme")]
-
-# sphinx readthedocs theme
-# html_theme = 'sphinx_rtd_theme'
+html_theme = 'sphinx_rtd_theme'
 
 
 # Below html_theme_options config depends on the theme.
-html_logo = "../assets/logo.png"
+html_logo = "source/_static/logo.png"
 
 
 html_theme_options = {"logo_only": True, "display_version": True}
