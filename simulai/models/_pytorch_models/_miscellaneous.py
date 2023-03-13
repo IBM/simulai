@@ -231,7 +231,7 @@ class MoEPool(NetworkTemplate):
 
         return gating_weights_
 
-    @guarantee_device
+    #@guarantee_device
     def forward(
         self, input_data: Union[np.ndarray, torch.Tensor], **kwargs
     ) -> torch.Tensor:

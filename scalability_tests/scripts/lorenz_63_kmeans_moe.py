@@ -168,7 +168,7 @@ n_outputs = len(output_labels)
 
 lambda_1 = 0.0  # Penalty for the L¹ regularization (Lasso)
 lambda_2 = 1e-5  # Penalty factor for the L² regularization
-n_epochs = int(5e3)  # Maximum number of iterations for ADAM
+n_epochs = int(1e3)  # Maximum number of iterations for ADAM
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
 n_latent = 100
 
