@@ -20,17 +20,18 @@ import numpy as np
 
 from examples.utils.lorenz_solver import lorenz_solver
 from simulai.metrics import L2Norm
-from simulai.models import ImprovedDeepONet as DeepONet  # The DeepONet is residual
+from simulai.models import ImprovedDeepONet as DeepONet
+from simulai.models import MoEPool
 from simulai.optimization import Optimizer
 from simulai.regression import DenseNetwork
 from simulai.models import KMeansWrapper
+from simulai.io import IntersectingBatches
 
 def project_to_interval(interval, data):
     return interval[1] * (data - data.min()) / (data.max() - data.min()) + interval[0]
 
-
 parser = ArgumentParser(description="Reading input parameters")
-parser.add_argument("--data_path", type=str, help="Path to the dataset.")
+parser.add_argument("--data_path", type=str, help="Path to the dataset.", default='.')
 parser.add_argument("--device", type=str, help="Device to be used.")
 args = parser.parse_args()
 
