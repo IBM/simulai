@@ -18,8 +18,10 @@ import json
 import pickle
 import warnings
 from collections import OrderedDict
-
+from sklearn.cluster import KMeans
 import numpy as np
+from typing import Union
+import torch 
 
 from simulai.models import ModelMaker
 from simulai.parallel import PipelineMPI
@@ -1296,3 +1298,18 @@ class ModelPool:
         else:
             model_id_new = self._make_id(index)
         return self.model_instances_list[model_id_new]
+
+class KMeansWrapper:
+
+    def __init__(self, n_clusters:int=None, **kwargs) -> None:
+
+        self.kmeans = KMeans(n_clusters=n_clusters, **kwargs)
+
+    def fit(self, input_data:Union[torch.Tensor, np.ndarray]=None) -> None:
+
+        self.kmeans.fit(input_data)
+
+    def eval(self, input_data:Union[torch.Tensor, np.ndarray]=None) -> np.ndarray:
+
+        return self.kmeans.predict(input_data)[:, None]
+

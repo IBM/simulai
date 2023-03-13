@@ -25,4 +25,4 @@ elif engine == "numpy":
 else:
     raise Exception(f"Engine {engine} is not available.")
 
-from ._models import ModelPool
+from ._models import ModelPool, KMeansWrapper
