@@ -1309,7 +1309,8 @@ class KMeansWrapper:
 
         self.kmeans.fit(input_data)
 
-    def eval(self, input_data:Union[torch.Tensor, np.ndarray]=None) -> np.ndarray:
+    def forward(self, input_data:Union[torch.Tensor, np.ndarray]=None) -> np.ndarray:
 
         return self.kmeans.predict(input_data)
+
 

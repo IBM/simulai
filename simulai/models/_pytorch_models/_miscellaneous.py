@@ -153,7 +153,11 @@ class MoEPool(NetworkTemplate):
             ).to(self.device)
 
         else:
-            self.gating_network = gating_network.to(self.device)
+            try:
+                self.gating_network = gating_network.to(self.device)
+            except:
+                self.gating_network = gating_network
+                print(f"The object {self.gating_network} cannot be moved because is not a torch.nn.Module.")
 
         # Determining if the gating network is trainable or not
         if isinstance(self.gating_network, NetworkTemplate):
@@ -179,7 +183,9 @@ class MoEPool(NetworkTemplate):
             self.add_module(f"expert_{ii}", item)
 
         self.weights = sum([i.weights for i in self.experts_list], [])
-        self.weights += self.gating_network.weights
+
+        if self.is_gating_trainable is True:
+            self.weights += self.gating_network.weights
 
         self.output_size = self.experts_list[-1].output_size
 
