@@ -13,7 +13,7 @@
 #     limitations under the License.
 
 from typing import List, Union
-
+import warnings
 import numpy as np
 import torch
 
@@ -130,6 +130,7 @@ class MoEPool(NetworkTemplate):
         input_size: int = None,
         devices: Union[list, str] = None,
         binary_selection: bool = False,
+        hidden_size : Optional[int] = None,
     ) -> None:
         super(MoEPool, self).__init__()
 
@@ -140,8 +141,12 @@ class MoEPool(NetworkTemplate):
         self.experts_list = experts_list
         self.n_experts = len(experts_list)
         self.input_size = input_size
+        self.hidden_size = hidden_size
         self.binary_selection = binary_selection
         self.is_gating_trainable = None
+
+        if self.hidden_size == None:
+            warnings.warn("hidden_size is None. If you are using a convex model, as ConvexDenseNetwork, it is better to provide a value for it.")
 
         # Gating (classifier) network/object
         # The default gating network is a single-layer fully-connected network
