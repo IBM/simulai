@@ -206,7 +206,13 @@ class MoEPool(NetworkTemplate):
     # cluster for each sample in the batch
     def _get_weights_not_trainable(self, gating: torch.Tensor = None) -> torch.Tensor:
 
-        return gating
+        batches_size = gating.shape[0]
+
+        weights = torch.zeros(batches_size, self.n_experts)
+
+        weights[np.arange(batches_size).astype(int).tolist(), gating.astype(int).tolist()] = 1
+
+        return weights
 
     def gate(self, input_data: Union[np.ndarray, torch.Tensor]) -> torch.Tensor:
         gating = self.gating_network.forward(input_data=input_data)
