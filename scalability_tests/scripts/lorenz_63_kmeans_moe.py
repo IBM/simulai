@@ -20,7 +20,7 @@ import numpy as np
 
 from examples.utils.lorenz_solver import lorenz_solver
 from simulai.metrics import L2Norm
-from simulai.models import ImprovedDeepONet as DeepONet
+from simulai.models import DeepONet
 from simulai.models import MoEPool
 from simulai.optimization import Optimizer
 from simulai.regression import DenseNetwork
@@ -215,7 +215,7 @@ params = {"lambda_1": lambda_1, "lambda_2": lambda_2, "weights": maximum_values}
 
 # It prints a summary of the network features
 trunk_net.summary()
-branch_net.summary()
+#branch_net.summary()
 
 input_data = {"input_branch": branch_input_train, "input_trunk": trunk_input_train}
 
@@ -237,7 +237,7 @@ optimizer.fit(
     n_epochs=n_epochs,
     loss="wrmse",
     params=params,
-    device=device,
+    device="gpu",
 )
 
 approximated_data = lorenz_net.eval(
@@ -261,4 +261,4 @@ for ii in range(n_inputs):
     plt.show()
     plt.close()
 
-p
+
