@@ -18,7 +18,6 @@ import numpy as np
 
 from simulai.math.integration import RKF78
 
-
 class Pendulum:
     def __init__(self, k=1, u=None):
         self.k = k

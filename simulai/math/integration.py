@@ -429,9 +429,15 @@ class RKF78:
 
         while not stop_criterion:
 
+            if np.abs(dt_) > np.abs(t_f - t_i):
+                dt_ = t_f - t_i
+
+            if np.abs(t_i - t_f) < 1e-8:
+                stop_criterion = True
+
             twrk = t_i
 
-            sys.stdout.write("\r Time : {}, dt : {}".format(twrk, dt_))
+            sys.stdout.write("\r T_i : {}, dt : {}, T_f : {}".format(t_i, dt_, t_f))
             sys.stdout.flush()
 
             f_state = self.right_operator(initial_state.T)
@@ -464,18 +470,14 @@ class RKF78:
             if tconst > xerr: xerr = tconst
 
             # compute new step size
-
             dt_ = 0.8 * dt_ * (1.0 / xerr) ** (1.0 / 8)
 
             if (xerr > 1):
-            # reject current step
+                # Timestep rejected
                 t_i = twrk
                 initial_state = xwrk
-
-            if t_i >= t_f:
-                stop_criterion = True
-
-            solutions.append(initial_state[None, :])
+            else:
+                solutions.append(initial_state[None, :])
 
         return np.vstack(solutions)
 
