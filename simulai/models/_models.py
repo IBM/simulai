@@ -1310,7 +1310,11 @@ class KMeansWrapper:
         self.kmeans.fit(input_data)
 
     def forward(self, input_data:Union[torch.Tensor, np.ndarray]=None) -> np.ndarray:
-
-        return self.kmeans.predict(input_data)
+        if isinstance(input_data, torch.Tensor):
+            input_data_ = input_data.detach().cpu().numpy().astype("float64")
+        else:
+            input_data_ = input_data
+        
+        return self.kmeans.predict(input_data_)
 
 

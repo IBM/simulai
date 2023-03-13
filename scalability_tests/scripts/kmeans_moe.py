@@ -52,7 +52,8 @@ for i in range(n_clusters):
 moe_pool = MoEPool(experts_list=experts_list, gating_network=kmeans, input_size=3, devices="gpu")
 
 estimative = moe_pool.forward(input_data=lorenz_data)
-
+print(moe_pool)
+print(estimative.shape)
 
 
 

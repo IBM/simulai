@@ -18,7 +18,7 @@ import numpy as np
 import torch
 
 from simulai.regression import SLFNN, ConvexDenseNetwork
-from simulai.templates import NetworkTemplate
+from simulai.templates import NetworkTemplate, guarantee_device
 
 
 ############################
@@ -218,7 +218,7 @@ class MoEPool(NetworkTemplate):
 
         weights[np.arange(batches_size).astype(int).tolist(), gating.astype(int).tolist()] = 1
 
-        return weights
+        return weights.to(self.device)
 
     def gate(self, input_data: Union[np.ndarray, torch.Tensor]) -> torch.Tensor:
         gating = self.gating_network.forward(input_data=input_data)
@@ -226,6 +226,7 @@ class MoEPool(NetworkTemplate):
 
         return gating_weights_
 
+    @guarantee_device
     def forward(
         self, input_data: Union[np.ndarray, torch.Tensor], **kwargs
     ) -> torch.Tensor:
