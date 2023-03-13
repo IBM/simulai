@@ -7,8 +7,9 @@
    :alt: Documentation Status
 .. image:: assets/coverage.svg
    :target: tests/
-    
-.. image:: assets/logo.png
+
+..
+   .. image:: assets/logo.png
 
 A Python package with data-driven pipelines for physics-informed machine learning.
 
