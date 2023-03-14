@@ -46,7 +46,7 @@ rho = 28
 beta = 8 / 3
 beta_str = "8/3"
 sigma = 10
-n_clusters = 1
+n_clusters = 3
 Q = 100
 
 initial_state = np.array([1, 0, 0])[None, :]
@@ -211,9 +211,10 @@ branch_net = MoEPool(
 optimizer_config = {"lr": lr}
 
 # Maximum derivative magnitudes to be used as loss weights
-maximum_values = (1 / np.linalg.norm(output_train, n_inputs, axis=0)).tolist()
+#maximum_values = (1 / np.linalg.norm(output_train, n_inputs, axis=0)).tolist()
+maximum_values = [1, 1, 1]
 
-params = {"lambda_1": lambda_1, "lambda_2": lambda_2, "weights": maximum_values}
+params = {"lambda_1": lambda_1, "lambda_2": lambda_2, "weights": maximum_values, "relative": True}
 
 # It prints a summary of the network features
 trunk_net.summary()
@@ -267,6 +268,8 @@ l2_norm = L2Norm()
 error = 100 * l2_norm(
     data=approximated_data, reference_data=data_test, relative_norm=True
 )
+
+print(f"Approximation error: {error} %")
 
 for ii in range(n_inputs):
     plt.plot(t, approximated_data[:, ii], label="Approximated")
