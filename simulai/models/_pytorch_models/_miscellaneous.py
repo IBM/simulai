@@ -245,3 +245,7 @@ class MoEPool(NetworkTemplate):
         output = list(map(_forward, self.experts_list))
 
         return sum([g * o for g, o in zip(gating_weights, output)])
+
+    def summary(self) -> None:
+
+        print(self)

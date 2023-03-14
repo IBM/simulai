@@ -46,7 +46,8 @@ rho = 28
 beta = 8 / 3
 beta_str = "8/3"
 sigma = 10
-n_clusters = 5
+n_clusters = 1
+Q = 100
 
 initial_state = np.array([1, 0, 0])[None, :]
 lorenz_data, derivative_lorenz_data, time = lorenz_solver(
@@ -64,7 +65,9 @@ lorenz_data, derivative_lorenz_data, time = lorenz_solver(
 # The fraction of data used for training the model.
 train_fraction = 0.8
 delta_t = 0.25  # in seconds
+T_test = (1 - train_fraction)*T_max
 batching = "intersected"
+n_samples_train = int(train_fraction*lorenz_data.shape[0])
 
 # Fitting a K-Means wrapper
 kmeans = KMeansWrapper(n_clusters=n_clusters)
@@ -168,7 +171,7 @@ n_outputs = len(output_labels)
 
 lambda_1 = 0.0  # Penalty for the L¹ regularization (Lasso)
 lambda_2 = 1e-5  # Penalty factor for the L² regularization
-n_epochs = int(1e3)  # Maximum number of iterations for ADAM
+n_epochs = int(1e2)  # Maximum number of iterations for ADAM
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
 n_latent = 100
 
@@ -187,7 +190,6 @@ branch_config = {
     "activations": "tanh",
     "input_size": n_inputs,
     "output_size": n_latent * n_outputs,
-    "name": "branch_net",
 }
 
 # Instantiating and training the surrogate model
@@ -196,7 +198,7 @@ trunk_net = DenseNetwork(**trunk_config)
 # Instantiating experts
 experts_list = list()
 for c in range(n_clusters):
-    experts_list.append(DenseNetwork(**branch_config))
+    experts_list.append(DenseNetwork(**branch_config, name=f"branch_net_{c}"))
 
 branch_net = MoEPool(
     experts_list=experts_list,
@@ -215,7 +217,7 @@ params = {"lambda_1": lambda_1, "lambda_2": lambda_2, "weights": maximum_values}
 
 # It prints a summary of the network features
 trunk_net.summary()
-#branch_net.summary()
+branch_net.summary()
 
 input_data = {"input_branch": branch_input_train, "input_trunk": trunk_input_train}
 
@@ -240,21 +242,35 @@ optimizer.fit(
     device="gpu",
 )
 
-approximated_data = lorenz_net.eval(
-    trunk_data=trunk_input_test, branch_data=branch_input_test
-)
+# Extrapolation
+initial_state = branch_input_test[0, :]
+time = np.linspace(0, delta_t, Q)[:, None]
+current_state = initial_state
+
+approximation_list = list()
+for s in range(int(T_test/delta_t)+1):
+
+    branch_data  = np.tile(current_state[None, :], (Q, 1))    
+    approximated_data = lorenz_net.eval(
+        trunk_data=time, branch_data=branch_data
+    )
+    current_state = approximated_data[-1]
+    approximation_list.append(approximated_data)
+
+approximated_data = np.vstack(approximation_list)
+data_test = lorenz_data[n_samples_train:-1]
 
 t = dt * np.arange(approximated_data.shape[0])
 
 l2_norm = L2Norm()
 
 error = 100 * l2_norm(
-    data=approximated_data, reference_data=output_test, relative_norm=True
+    data=approximated_data, reference_data=data_test, relative_norm=True
 )
 
 for ii in range(n_inputs):
     plt.plot(t, approximated_data[:, ii], label="Approximated")
-    plt.plot(t, output_test[:, ii], label="Exact")
+    plt.plot(t, data_test[:, ii], label="Exact")
     plt.legend()
     plt.grid(True)
     plt.savefig(f"lorenz_deeponet_time_int_{ii}.png")
