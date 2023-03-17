@@ -477,7 +477,7 @@ class RKF78:
                 t_i = twrk
                 initial_state = xwrk
             else:
-                solutions.append(initial_state[None, :])
+                solutions.append(initial_state[None, :, 0])
 
         return np.vstack(solutions)
 
