@@ -1007,6 +1007,17 @@ class MinMaxEvaluation:
 
 class MemorySizeEval:
     def __init__(self, memory_tol_percent: float = 0.5) -> None:
+
+        """
+        It determine a size for the batches in order to respect some
+        used memory limit defined by the user 
+
+        Parameters
+        ----------
+        memory_tol_percent: float
+            Maximum fraction of the available RAM memory to be used.
+        """
+
         self.memory_tol_percent = memory_tol_percent
         self.size_default = np.array([0]).astype("float64").itemsize
         self.available_memory = None
@@ -1014,6 +1025,16 @@ class MemorySizeEval:
 
     @property
     def available_memory_in_GB(self) -> float:
+
+        """
+        It evaluated the maximum available memory in Gigabytes.
+
+        Returns
+        -------
+        float
+            The available memory in GB. 
+        """
+
         if self.available_memory is not None:
             return self.available_memory / (self.multiplier**3)
         else:
@@ -1024,6 +1045,25 @@ class MemorySizeEval:
     def __call__(
         self, max_batches: int = None, shape: Union[tuple, list] = None
     ) -> int:
+
+        """
+        It determines the maximum batch size based on the dataset size and 
+        memory availability.
+
+        Parameters
+        ----------
+        max_batches: int
+            An estimative of the number of batches to be used.
+        shape: Union[tuple, list]
+            The shape of the dataset which will be processed in a 
+            batchwise way.
+
+        Returns
+        -------
+        int
+            The maximum value for the batch considering the memory availability.
+        """
+
         self.available_memory = (
             self.memory_tol_percent * psutil.virtual_memory().available
         )
