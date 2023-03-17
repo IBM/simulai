@@ -14,7 +14,7 @@
 
 import copy
 import sys
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple, List, Union
 
 import dask.array as da
 import h5py
@@ -144,7 +144,7 @@ class L2Norm:
         data: Union[np.ndarray, h5py.Dataset] = None,
         reference_data: Union[np.ndarray, h5py.Dataset] = None,
         relative_norm: bool = False,
-        data_interval: list = None,
+        data_interval: List[int, int] = None,
         batch_size: int = 1,
     ) -> float:
 
@@ -223,7 +223,7 @@ class L2Norm:
         data: Union[np.ndarray, da.core.Array, h5py.Dataset] = None,
         reference_data: Union[np.ndarray, da.core.Array, h5py.Dataset] = None,
         relative_norm: bool = False,
-        data_interval: list = None,
+        data_interval: List[int, int] = None,
         batch_size: int = 1,
         ord: int = 2,
     ) -> float:
@@ -312,7 +312,7 @@ class SampleWiseErrorNorm:
     ):
         pass
 
-    def _aggregate_norm(self, norms, ord):
+    def _aggregate_norm(self, norms:List[float, ...]=None, ord:int=None):
         n = np.stack(norms, axis=0)
         if ord == 1:
             return np.sum(n, axis=0)
@@ -325,14 +325,14 @@ class SampleWiseErrorNorm:
 
     def __call__(
         self,
-        data=None,
-        reference_data=None,
-        relative_norm=False,
-        key=None,
-        data_interval=None,
-        batch_size=1,
-        ord=2,
-    ):
+        data:Union[np.ndarray, h5py.Dataset]=None,
+        reference_data:Union[np.ndarray, h5py.Dataset]=None,
+        relative_norm:bool=False,
+        key:str=None,
+        data_interval:List[int, int]=None,
+        batch_size:int=1,
+        ord:int=2,
+    ) -> None:
         """
 
         :param data: np.ndarray
@@ -424,7 +424,7 @@ class SampleWiseErrorNorm:
         return norm
 
 
-def _relative(norm, ref_norm):
+def _relative(norm:np.ndarray, ref_norm:np.ndarray) -> np.ndarray:
     ref_norm_zero = ref_norm == 0
     norm_zero = norm == 0
 
@@ -447,11 +447,11 @@ class FeatureWiseErrorNorm:
 
     def __call__(
         self,
-        data=None,
-        reference_data=None,
-        relative_norm=False,
-        key=None,
-        data_interval=None,
+        data:Union[np.ndarray, h5py.Dataset]=None,
+        reference_data:Union[np.ndarray, h5py.Dataset]=None,
+        relative_norm:bool=False,
+        key:str=None,
+        data_interval:List[int, int]=None,
         reference_data_interval=None,
         batch_size=1,
         ord=2,
@@ -793,7 +793,7 @@ class MeanEvaluation:
     def __call__(
         self,
         dataset: Union[np.ndarray, h5py.Dataset] = None,
-        data_interval: list = None,
+        data_interval: List[int, int] = None,
         batch_size: int = None,
         data_preparer: DataPreparer = None,
     ) -> np.ndarray:
@@ -869,7 +869,7 @@ class MinMaxEvaluation:
     def __call__(
         self,
         dataset: Union[np.ndarray, h5py.Dataset] = None,
-        data_interval: list = None,
+        data_interval: List[int, int] = None,
         batch_size: int = None,
         data_preparer: Optional[DataPreparer] = None,
         axis: int = -1,
@@ -946,7 +946,7 @@ class MinMaxEvaluation:
     def eval_h5(
         self,
         dataset: Union[h5py.Group, h5py.File] = None,
-        data_interval: list = None,
+        data_interval: List[int, int] = None,
         batch_size: int = None,
         data_preparer: DataPreparer = None,
         axis: int = -1,
