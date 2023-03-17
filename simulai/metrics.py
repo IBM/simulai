@@ -27,6 +27,36 @@ from simulai.batching import batchdomain_constructor
 from simulai.math.integration import RK4
 
 
+def _relative(norm:np.ndarray, ref_norm:np.ndarray) -> np.ndarray:
+
+    """
+    General usage relative norm.
+
+    Parameters:
+    -----------
+    norm : np.ndarray
+        The norm to be normalized.
+    ref_norm : np.ndarray
+        The norm to be used for normalization.
+
+    Returns:
+    --------
+    norm : np.ndarray
+        The normalized norm.
+    """
+
+    ref_norm_zero = ref_norm == 0
+    norm_zero = norm == 0
+
+    ref_not_zero = np.logical_not(ref_norm_zero)
+    norm[ref_not_zero] = norm[ref_not_zero] / ref_norm[ref_not_zero]
+
+    norm[ref_norm_zero] = np.inf
+    norm[norm_zero] = 0
+
+    return norm
+
+
 class ByPass:
     name = "no_metric"
 
@@ -144,7 +174,7 @@ class L2Norm:
         data: Union[np.ndarray, h5py.Dataset] = None,
         reference_data: Union[np.ndarray, h5py.Dataset] = None,
         relative_norm: bool = False,
-        data_interval: List[int, int] = None,
+        data_interval: List[int] = None,
         batch_size: int = 1,
     ) -> float:
 
@@ -223,7 +253,7 @@ class L2Norm:
         data: Union[np.ndarray, da.core.Array, h5py.Dataset] = None,
         reference_data: Union[np.ndarray, da.core.Array, h5py.Dataset] = None,
         relative_norm: bool = False,
-        data_interval: List[int, int] = None,
+        data_interval: List[int] = None,
         batch_size: int = 1,
         ord: int = 2,
     ) -> float:
@@ -309,10 +339,15 @@ class SampleWiseErrorNorm:
 
     def __init__(
         self,
-    ):
+    ) -> None:
         pass
 
-    def _aggregate_norm(self, norms:List[float, ...]=None, ord:int=None):
+    def _aggregate_norm(self, norms:List[float]=None, ord:int=None):
+
+        """
+        It stacks the list of norms (evaluated for multiple keys).
+        """
+
         n = np.stack(norms, axis=0)
         if ord == 1:
             return np.sum(n, axis=0)
@@ -329,7 +364,7 @@ class SampleWiseErrorNorm:
         reference_data:Union[np.ndarray, h5py.Dataset]=None,
         relative_norm:bool=False,
         key:str=None,
-        data_interval:List[int, int]=None,
+        data_interval:List[int]=None,
         batch_size:int=1,
         ord:int=2,
     ) -> None:
@@ -338,9 +373,9 @@ class SampleWiseErrorNorm:
 
         Parameters:
         -----------
-        data : np.ndarray
+        data : Union[np.ndarray, h5py.Dataset]
             The data to be used for assessing the norm.
-        reference_data : np.ndarray
+        reference_data : Union[np.ndarray, h5py.Dataset]
             The data to be used for comparison.
         relative_norm : bool
             Using relative norm or not ? (Dividing the error norm by the norm of reference_data)
@@ -441,37 +476,6 @@ class SampleWiseErrorNorm:
 
         return norm
 
-
-def _relative(norm:np.ndarray, ref_norm:np.ndarray) -> np.ndarray:
-    
-    """
-    realtive norm
-    
-    Parameters:
-    -----------
-    norm : np.ndarray
-        The norm to be normalized.
-    ref_norm : np.ndarray
-        The norm to be used for normalization.
-    
-    Returns:
-    --------
-    norm : np.ndarray
-        The normalized norm.
-    """
-
-    ref_norm_zero = ref_norm == 0
-    norm_zero = norm == 0
-
-    ref_not_zero = np.logical_not(ref_norm_zero)
-    norm[ref_not_zero] = norm[ref_not_zero] / ref_norm[ref_not_zero]
-
-    norm[ref_norm_zero] = np.inf
-    norm[norm_zero] = 0
-
-    return norm
-
-
 class FeatureWiseErrorNorm:
     """
     Feature-wise error norm for a dataset.
@@ -494,7 +498,7 @@ class FeatureWiseErrorNorm:
         reference_data:Union[np.ndarray, h5py.Dataset]=None,
         relative_norm:bool=False,
         key:str=None,
-        data_interval:List[int, int]=None,
+        data_interval:List[int]=None,
         reference_data_interval=None,
         batch_size=1,
         ord=2,
@@ -919,7 +923,7 @@ class MeanEvaluation:
     def __call__(
         self,
         dataset: Union[np.ndarray, h5py.Dataset] = None,
-        data_interval: List[int, int] = None,
+        data_interval: List[int] = None,
         batch_size: int = None,
         data_preparer: DataPreparer = None,
     ) -> np.ndarray:
@@ -995,7 +999,7 @@ class MinMaxEvaluation:
     def __call__(
         self,
         dataset: Union[np.ndarray, h5py.Dataset] = None,
-        data_interval: List[int, int] = None,
+        data_interval: List[int] = None,
         batch_size: int = None,
         data_preparer: Optional[DataPreparer] = None,
         axis: int = -1,
@@ -1072,7 +1076,7 @@ class MinMaxEvaluation:
     def eval_h5(
         self,
         dataset: Union[h5py.Group, h5py.File] = None,
-        data_interval: List[int, int] = None,
+        data_interval: List[int] = None,
         batch_size: int = None,
         data_preparer: DataPreparer = None,
         axis: int = -1,
@@ -1206,15 +1210,32 @@ class MemorySizeEval:
 
         return possible_batch_size
 
-
-# Cumulative error norm for time-series
 class CumulativeNorm:
     def __init__(self):
+
+        """
+        It evaluates cumulative error norms for time-series.
+        """
         pass
 
     def __call__(
         self, data: np.ndarray = None, reference_data: np.ndarray = None
     ) -> np.ndarray:
+
+        """
+        Parameters
+        ----------
+        data: np.ndarray
+            The data used for evaluating the norm. 
+        reference_data: np.ndarray
+            The reference data used as comparison.
+
+        Returns
+        -------
+        np.ndarray
+            The cumulative norm along axis 0 of data. 
+        """
+
         assert (
             len(data.shape) == len(reference_data.shape) == 2
         ), "The data and reference_data must be two-dimensional."
@@ -1230,11 +1251,32 @@ class CumulativeNorm:
 # Cumulative error norm for time-series
 class PointwiseError:
     def __init__(self):
+
+        """
+        It evaluates the difference between each entry of a 
+        data array and its corresponding entry in the reference data.
+        """
+
         pass
 
     def __call__(
         self, data: np.ndarray = None, reference_data: np.ndarray = None
     ) -> np.ndarray:
+
+        """
+        Parameters
+        ----------
+        data: np.ndarray
+            The data used for evaluating the norm. 
+        reference_data: np.ndarray
+            The reference data used as comparison.
+
+        Returns
+        -------
+        np.ndarray
+            The cumulative norm along axis 0 of data. 
+        """
+
         assert (
             len(data.shape) == len(reference_data.shape) == 2
         ), "The data and reference_data must be two-dimensional."
