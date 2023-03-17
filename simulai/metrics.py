@@ -334,11 +334,29 @@ class SampleWiseErrorNorm:
         ord:int=2,
     ) -> None:
         """
+        call method for the SampleWiseErrorNorm class
 
-        :param data: np.ndarray
-        :param reference_data: np.ndarray
-        :param relative_norm: bool
-        :return: None
+        Parameters:
+        -----------
+        data : np.ndarray
+            The data to be used for assessing the norm.
+        reference_data : np.ndarray
+            The data to be used for comparison.
+        relative_norm : bool
+            Using relative norm or not ? (Dividing the error norm by the norm of reference_data)
+        key : str
+            The key to be used for accessing the data.
+        data_interval : list
+            The interval along the samples axis to use for evaluating the norm.
+        batch_size : int
+            The maximum size of each mini-batch created for evaluating the norm.
+        ord : int
+            The order of the norm to be used
+        
+        Returns:
+        --------
+        norm : float
+            The overall norm for the dataset.
         """
 
         if data_interval is None:
@@ -425,6 +443,23 @@ class SampleWiseErrorNorm:
 
 
 def _relative(norm:np.ndarray, ref_norm:np.ndarray) -> np.ndarray:
+    
+    """
+    realtive norm
+    
+    Parameters:
+    -----------
+    norm : np.ndarray
+        The norm to be normalized.
+    ref_norm : np.ndarray
+        The norm to be used for normalization.
+    
+    Returns:
+    --------
+    norm : np.ndarray
+        The normalized norm.
+    """
+
     ref_norm_zero = ref_norm == 0
     norm_zero = norm == 0
 
@@ -438,6 +473,14 @@ def _relative(norm:np.ndarray, ref_norm:np.ndarray) -> np.ndarray:
 
 
 class FeatureWiseErrorNorm:
+    """
+    Feature-wise error norm for a dataset.
+    
+    Attributes:
+    -----------
+    name : str
+       The name of the class.
+    """
     name = "featurewiseerrornorm"
 
     def __init__(
@@ -578,12 +621,30 @@ class FeatureWiseErrorNorm:
 
 
 class DeterminationCoeff:
+    """
+    Determination coefficient (R^2) between data and reference data.
+    """
     def __init__(self) -> None:
         pass
 
     def __call__(
         self, data: np.ndarray = None, reference_data: np.ndarray = None
     ) -> float:
+        """
+        Call methoh to compute the determination coefficient.
+        
+        Parameters:
+        -----------
+        data : numpy.ndarray, optional
+            Data to compute the determination coefficient, by default None.
+        reference_data : numpy.ndarray, optional
+            Reference data to compute the determination coefficient, by default None.
+
+        Returns:
+        --------
+        determination_coeff : float
+            Determination coefficient between data and reference_data.
+        """
         self.mean = reference_data.mean(axis=0)
 
         assert isinstance(data, np.ndarray), "Error! data is not a ndarray: {}".format(
@@ -603,22 +664,87 @@ class DeterminationCoeff:
 
 
 class RosensteinKantz:
+    """
+    Rosenstein-Kantz algorithm to compute the Lyapunov exponent.
+    
+    Attributes:
+    -----------
+    name : str
+        Name of the algorithm.
+    """
     name = "lyapunov_exponent"
 
     def __init__(self, epsilon: float = None) -> None:
+        """
+        Initialize the Rosenstein-Kantz algorithm.
+        
+        Parameters:
+        -----------
+        epsilon : float, optional
+            Epsilon value to compute the neighborhood, by default None.
+        ref_index : int, optional
+            Reference index to compute the neighborhood, by default 30.
+        tau_amp : int, optional
+            Amplitude of the time shift, by default 30.
+        """
         self.ref_index = 30
         self.epsilon = epsilon
         self.tau_amp = 30
 
     def _neighborhood(self, v_ref: np.ndarray, v: np.ndarray) -> np.ndarray:
+        """
+        neighborhood function to compute the neighborhood of a given point.
+        
+        Parameters:
+        -----------
+        v_ref : numpy.ndarray
+            Reference point.
+        v : numpy.ndarray
+            Point to compute the neighborhood.
+        
+        Returns:
+        --------
+        v_epsilon : numpy.ndarray
+            Neighborhood of the point v.
+        """
         v_epsilon = np.where(np.abs(v - v_ref) <= self.epsilon)
 
         return v_epsilon
 
     def _reference_shift(self, v: np.ndarray, ref_index: int, shift: int) -> np.ndarray:
+        """
+        reference_shift function to compute the reference shift.
+
+        Parameters:
+        -----------
+        v : numpy.ndarray
+            Vector to compute the reference shift.
+        ref_index : int
+            Reference index.
+        shift : int
+            Shift to compute the reference shift.
+        
+        Returns:
+        --------
+        return : numpy.ndarray
+            Reference shift.
+        """
         return v[ref_index + shift]
 
     def __call__(self, data: np.ndarray = None) -> float:
+        """
+        Call method to compute the Lyapunov exponent. It is expected data to be an array with shape (n_timesteps, n_variables).
+        
+        Parameters:
+        -----------
+        data : numpy.ndarray, optional
+            Data to compute the Lyapunov exponent, by default None.
+        
+        Returns:
+        --------
+        return : float        
+            Lyapunov exponent. If the algorithm fails, it returns -1.
+        """
         # It is expected data to be an array with shape (n_timesteps, n_variables)
         n_timesteps = data.shape[0]
         n_variables = data.shape[1]
@@ -1123,8 +1249,10 @@ class PointwiseError:
         return filter_nan_inf
 
 
-# Evaluating the number of Lyapunov units using cumulative error norm
 class LyapunovUnits:
+    """
+    Class for computing the Lyapunov units of a time-series. The Lyapunov units are computed as the cumulative norm of the error between the data and the reference data.
+    """
     def __init__(
         self,
         lyapunov_unit: float = 1,
@@ -1132,6 +1260,20 @@ class LyapunovUnits:
         time_scale=1,
         norm_criteria="cumulative_norm",
     ):
+        """
+        Method for initializing the LyapunovUnits class.
+        
+        Parameters:
+        -----------
+        lyapunov_unit : float
+            The Lyapunov unit of the time-series.
+        tol : float
+            The tolerance for the Lyapunov units.
+        time_scale : float
+            The time scale of the time-series.
+        norm_criteria : str
+            The criteria for computing the norm. The options are "cumulative_norm" and "pointwise_error".
+        """
         self.lyapunov_unit = lyapunov_unit
         self.tol = tol
         self.time_scale = time_scale
@@ -1149,6 +1291,23 @@ class LyapunovUnits:
         reference_data: np.ndarray = None,
         relative_norm: bool = False,
     ) -> float:
+        """
+        Call method for the LyapunovUnits class.
+        
+        Parameters:
+        -----------
+        data : np.ndarray
+            The data to be evaluated.
+        reference_data : np.ndarray
+            The reference data.
+        relative_norm : bool
+            A boolean variable to define if the relative norm will be computed or not.
+        
+        Returns:
+        --------
+        respect : float
+            The Lyapunov units of the data.
+        """
         cumulative_norm = self.norm(
             data=data, reference_data=reference_data, relative_norm=relative_norm
         )
