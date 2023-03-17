@@ -17,6 +17,6 @@ class TestReshaper(TestCase):
 
         kmeans.fit(input_data=data)
 
-        clusters = kmeans.eval(input_data=data)
+        clusters = kmeans.forward(input_data=data)
 
         assert isinstance(clusters, np.ndarray)
