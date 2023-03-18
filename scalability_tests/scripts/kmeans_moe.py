@@ -1,7 +1,8 @@
 from itertools import groupby
-from sklearn.cluster import KMeans
+
 import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.cluster import KMeans
 
 from examples.utils.lorenz_solver import lorenz_solver
 from simulai.math.integration import LSODA, ClassWrapper
@@ -49,11 +50,10 @@ experts_list = list()
 for i in range(n_clusters):
     experts_list.append(DenseNetwork(**config))
 
-moe_pool = MoEPool(experts_list=experts_list, gating_network=kmeans, input_size=3, devices="gpu")
+moe_pool = MoEPool(
+    experts_list=experts_list, gating_network=kmeans, input_size=3, devices="gpu"
+)
 
 estimative = moe_pool.forward(input_data=lorenz_data)
 print(moe_pool)
 print(estimative.shape)
-
-
-

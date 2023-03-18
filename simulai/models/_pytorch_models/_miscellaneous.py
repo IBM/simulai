@@ -12,8 +12,9 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-from typing import List, Union, Optional
 import warnings
+from typing import List, Optional, Union
+
 import numpy as np
 import torch
 
@@ -130,7 +131,7 @@ class MoEPool(NetworkTemplate):
         input_size: int = None,
         devices: Union[list, str] = None,
         binary_selection: bool = False,
-        hidden_size : Optional[int] = None,
+        hidden_size: Optional[int] = None,
     ) -> None:
         super(MoEPool, self).__init__()
 
@@ -146,7 +147,9 @@ class MoEPool(NetworkTemplate):
         self.is_gating_trainable = None
 
         if self.hidden_size == None:
-            warnings.warn("hidden_size is None. If you are using a convex model, as ConvexDenseNetwork, it is better to provide a value for it.")
+            warnings.warn(
+                "hidden_size is None. If you are using a convex model, as ConvexDenseNetwork, it is better to provide a value for it."
+            )
 
         # Gating (classifier) network/object
         # The default gating network is a single-layer fully-connected network
@@ -162,7 +165,9 @@ class MoEPool(NetworkTemplate):
                 self.gating_network = gating_network.to(self.device)
             except:
                 self.gating_network = gating_network
-                print(f"The object {self.gating_network} cannot be moved because is not a torch.nn.Module.")
+                print(
+                    f"The object {self.gating_network} cannot be moved because is not a torch.nn.Module."
+                )
 
         # Determining if the gating network is trainable or not
         if isinstance(self.gating_network, NetworkTemplate):
@@ -194,7 +199,7 @@ class MoEPool(NetworkTemplate):
 
         self.output_size = self.experts_list[-1].output_size
 
-        # Selecting the method to be used for determining the 
+        # Selecting the method to be used for determining the
         # gating weights
         if self.is_gating_trainable is True:
             if self.binary_selection is True:
@@ -221,7 +226,9 @@ class MoEPool(NetworkTemplate):
 
         weights = torch.zeros(batches_size, self.n_experts)
 
-        weights[np.arange(batches_size).astype(int).tolist(), gating.astype(int).tolist()] = 1
+        weights[
+            np.arange(batches_size).astype(int).tolist(), gating.astype(int).tolist()
+        ] = 1
 
         return weights.to(self.device)
 
@@ -231,7 +238,7 @@ class MoEPool(NetworkTemplate):
 
         return gating_weights_
 
-    #@guarantee_device
+    # @guarantee_device
     def forward(
         self, input_data: Union[np.ndarray, torch.Tensor], **kwargs
     ) -> torch.Tensor:

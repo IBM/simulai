@@ -15,14 +15,23 @@
 from simulai import engine
 
 if engine == "pytorch":
-    from ._pytorch_models import (AutoencoderCNN, AutoencoderKoopman,
-                                  AutoencoderMLP, AutoencoderVariational,
-                                  DeepONet, FlexibleDeepONet, ImprovedDeepONet,
-                                  ImprovedDenseNetwork, MetaModel, ModelMaker,
-                                  MoEPool, ResDeepONet)
+    from ._pytorch_models import (
+        AutoencoderCNN,
+        AutoencoderKoopman,
+        AutoencoderMLP,
+        AutoencoderVariational,
+        DeepONet,
+        FlexibleDeepONet,
+        ImprovedDeepONet,
+        ImprovedDenseNetwork,
+        MetaModel,
+        ModelMaker,
+        MoEPool,
+        ResDeepONet,
+    )
 elif engine == "numpy":
     pass
 else:
     raise Exception(f"Engine {engine} is not available.")
 
-from ._models import ModelPool, KMeansWrapper
+from ._models import KMeansWrapper, ModelPool

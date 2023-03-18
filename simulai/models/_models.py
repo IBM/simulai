@@ -18,10 +18,11 @@ import json
 import pickle
 import warnings
 from collections import OrderedDict
-from sklearn.cluster import KMeans
-import numpy as np
 from typing import Union
-import torch 
+
+import numpy as np
+import torch
+from sklearn.cluster import KMeans
 
 from simulai.models import ModelMaker
 from simulai.parallel import PipelineMPI
@@ -1299,22 +1300,20 @@ class ModelPool:
             model_id_new = self._make_id(index)
         return self.model_instances_list[model_id_new]
 
-class KMeansWrapper:
 
-    def __init__(self, n_clusters:int=None, **kwargs) -> None:
+class KMeansWrapper:
+    def __init__(self, n_clusters: int = None, **kwargs) -> None:
 
         self.kmeans = KMeans(n_clusters=n_clusters, **kwargs)
 
-    def fit(self, input_data:Union[torch.Tensor, np.ndarray]=None) -> None:
+    def fit(self, input_data: Union[torch.Tensor, np.ndarray] = None) -> None:
 
         self.kmeans.fit(input_data)
 
-    def forward(self, input_data:Union[torch.Tensor, np.ndarray]=None) -> np.ndarray:
+    def forward(self, input_data: Union[torch.Tensor, np.ndarray] = None) -> np.ndarray:
         if isinstance(input_data, torch.Tensor):
             input_data_ = input_data.detach().cpu().numpy().astype("float64")
         else:
             input_data_ = input_data
-        
+
         return self.kmeans.predict(input_data_)
-
-

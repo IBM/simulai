@@ -14,7 +14,7 @@
 
 import copy
 import sys
-from typing import Optional, Tuple, List, Union
+from typing import List, Optional, Tuple, Union
 
 import dask.array as da
 import h5py
@@ -27,7 +27,7 @@ from simulai.batching import batchdomain_constructor
 from simulai.math.integration import RK4
 
 
-def _relative(norm:np.ndarray, ref_norm:np.ndarray) -> np.ndarray:
+def _relative(norm: np.ndarray, ref_norm: np.ndarray) -> np.ndarray:
 
     """
     General usage relative norm.
@@ -81,14 +81,14 @@ class L2Norm:
 
         mask: Union[str, float]
             A floating point number or string indicating which positions in
-            the dataset are not valid, it means, are missing data. 
+            the dataset are not valid, it means, are missing data.
         do_clean_data: bool
             It is necessary to execute a cleaning in the dataset (removing NaN and very large numbers)
             or not ?
         large_number: float
             Threshold for considering number as large numbers.
         default_data: float
-            The defulat data used for replacing NaN and large number when the 
+            The defulat data used for replacing NaN and large number when the
             option `do_clean_data` is `True`.
         """
 
@@ -107,7 +107,7 @@ class L2Norm:
         __________
 
         d : np.ndarray
-            The array to be cleaned. 
+            The array to be cleaned.
 
         Returns
         _______
@@ -150,7 +150,7 @@ class L2Norm:
         Parameters
         __________
 
-        data: np.ndarray 
+        data: np.ndarray
             The data to be evaluated in the norm.
         reference_data: np.ndarray
             the data to be used as comparison.
@@ -199,7 +199,7 @@ class L2Norm:
         _______
 
         float
-            The overall norm for the batch. 
+            The overall norm for the batch.
 
         """
         batches = batchdomain_constructor(data_interval, batch_size)
@@ -259,27 +259,27 @@ class L2Norm:
     ) -> float:
 
         """
-        It evaluates the norm error os a large dataset in a batchwise and lazzy way.
+         It evaluates the norm error os a large dataset in a batchwise and lazzy way.
 
-        Parameters
-        __________
+         Parameters
+         __________
 
-        data : Union[np.ndarray, da.core.Array, h5py.Dataset]
-            The data to be used for assessing the norm.
-        reference_data : Union[np.ndarray, da.core.Array, h5py.Dataset]
-            The data to be used for comparison.
-        relative_norm : bool
-            Using relative norm or not ? (Dividing the error norm by the norm of reference_data)
-       data_interval : list
-            The interval along the samples axis to use for evaluating the norm.
-        batch_size : int
-            The maximum size of each mini-batch created for evaluating the norm.
+         data : Union[np.ndarray, da.core.Array, h5py.Dataset]
+             The data to be used for assessing the norm.
+         reference_data : Union[np.ndarray, da.core.Array, h5py.Dataset]
+             The data to be used for comparison.
+         relative_norm : bool
+             Using relative norm or not ? (Dividing the error norm by the norm of reference_data)
+        data_interval : list
+             The interval along the samples axis to use for evaluating the norm.
+         batch_size : int
+             The maximum size of each mini-batch created for evaluating the norm.
 
-        Returns
-        _______
+         Returns
+         _______
 
-        float
-            The overall norm for the dataset.
+         float
+             The overall norm for the dataset.
 
         """
 
@@ -342,7 +342,7 @@ class SampleWiseErrorNorm:
     ) -> None:
         pass
 
-    def _aggregate_norm(self, norms:List[float]=None, ord:int=None):
+    def _aggregate_norm(self, norms: List[float] = None, ord: int = None):
 
         """
         It stacks the list of norms (evaluated for multiple keys).
@@ -360,13 +360,13 @@ class SampleWiseErrorNorm:
 
     def __call__(
         self,
-        data:Union[np.ndarray, h5py.Dataset]=None,
-        reference_data:Union[np.ndarray, h5py.Dataset]=None,
-        relative_norm:bool=False,
-        key:str=None,
-        data_interval:List[int]=None,
-        batch_size:int=1,
-        ord:int=2,
+        data: Union[np.ndarray, h5py.Dataset] = None,
+        reference_data: Union[np.ndarray, h5py.Dataset] = None,
+        relative_norm: bool = False,
+        key: str = None,
+        data_interval: List[int] = None,
+        batch_size: int = 1,
+        ord: int = 2,
     ) -> None:
         """
         call method for the SampleWiseErrorNorm class
@@ -387,7 +387,7 @@ class SampleWiseErrorNorm:
             The maximum size of each mini-batch created for evaluating the norm.
         ord : int
             The order of the norm to be used
-        
+
         Returns:
         --------
         norm : float
@@ -476,15 +476,17 @@ class SampleWiseErrorNorm:
 
         return norm
 
+
 class FeatureWiseErrorNorm:
     """
     Feature-wise error norm for a dataset.
-    
+
     Attributes:
     -----------
     name : str
        The name of the class.
     """
+
     name = "featurewiseerrornorm"
 
     def __init__(
@@ -494,11 +496,11 @@ class FeatureWiseErrorNorm:
 
     def __call__(
         self,
-        data:Union[np.ndarray, h5py.Dataset]=None,
-        reference_data:Union[np.ndarray, h5py.Dataset]=None,
-        relative_norm:bool=False,
-        key:str=None,
-        data_interval:List[int]=None,
+        data: Union[np.ndarray, h5py.Dataset] = None,
+        reference_data: Union[np.ndarray, h5py.Dataset] = None,
+        relative_norm: bool = False,
+        key: str = None,
+        data_interval: List[int] = None,
         reference_data_interval=None,
         batch_size=1,
         ord=2,
@@ -628,6 +630,7 @@ class DeterminationCoeff:
     """
     Determination coefficient (R^2) between data and reference data.
     """
+
     def __init__(self) -> None:
         pass
 
@@ -636,7 +639,7 @@ class DeterminationCoeff:
     ) -> float:
         """
         Call methoh to compute the determination coefficient.
-        
+
         Parameters:
         -----------
         data : numpy.ndarray, optional
@@ -670,18 +673,19 @@ class DeterminationCoeff:
 class RosensteinKantz:
     """
     Rosenstein-Kantz algorithm to compute the Lyapunov exponent.
-    
+
     Attributes:
     -----------
     name : str
         Name of the algorithm.
     """
+
     name = "lyapunov_exponent"
 
     def __init__(self, epsilon: float = None) -> None:
         """
         Initialize the Rosenstein-Kantz algorithm.
-        
+
         Parameters:
         -----------
         epsilon : float, optional
@@ -698,14 +702,14 @@ class RosensteinKantz:
     def _neighborhood(self, v_ref: np.ndarray, v: np.ndarray) -> np.ndarray:
         """
         neighborhood function to compute the neighborhood of a given point.
-        
+
         Parameters:
         -----------
         v_ref : numpy.ndarray
             Reference point.
         v : numpy.ndarray
             Point to compute the neighborhood.
-        
+
         Returns:
         --------
         v_epsilon : numpy.ndarray
@@ -727,7 +731,7 @@ class RosensteinKantz:
             Reference index.
         shift : int
             Shift to compute the reference shift.
-        
+
         Returns:
         --------
         return : numpy.ndarray
@@ -738,15 +742,15 @@ class RosensteinKantz:
     def __call__(self, data: np.ndarray = None) -> float:
         """
         Call method to compute the Lyapunov exponent. It is expected data to be an array with shape (n_timesteps, n_variables).
-        
+
         Parameters:
         -----------
         data : numpy.ndarray, optional
             Data to compute the Lyapunov exponent, by default None.
-        
+
         Returns:
         --------
-        return : float        
+        return : float
             Lyapunov exponent. If the algorithm fails, it returns -1.
         """
         # It is expected data to be an array with shape (n_timesteps, n_variables)
@@ -1140,7 +1144,7 @@ class MemorySizeEval:
 
         """
         It determine a size for the batches in order to respect some
-        used memory limit defined by the user 
+        used memory limit defined by the user
 
         Parameters
         ----------
@@ -1162,7 +1166,7 @@ class MemorySizeEval:
         Returns
         -------
         float
-            The available memory in GB. 
+            The available memory in GB.
         """
 
         if self.available_memory is not None:
@@ -1177,7 +1181,7 @@ class MemorySizeEval:
     ) -> int:
 
         """
-        It determines the maximum batch size based on the dataset size and 
+        It determines the maximum batch size based on the dataset size and
         memory availability.
 
         Parameters
@@ -1185,7 +1189,7 @@ class MemorySizeEval:
         max_batches: int
             An estimative of the number of batches to be used.
         shape: Union[tuple, list]
-            The shape of the dataset which will be processed in a 
+            The shape of the dataset which will be processed in a
             batchwise way.
 
         Returns
@@ -1210,6 +1214,7 @@ class MemorySizeEval:
 
         return possible_batch_size
 
+
 class CumulativeNorm:
     def __init__(self):
 
@@ -1226,14 +1231,14 @@ class CumulativeNorm:
         Parameters
         ----------
         data: np.ndarray
-            The data used for evaluating the norm. 
+            The data used for evaluating the norm.
         reference_data: np.ndarray
             The reference data used as comparison.
 
         Returns
         -------
         np.ndarray
-            The cumulative norm along axis 0 of data. 
+            The cumulative norm along axis 0 of data.
         """
 
         assert (
@@ -1253,7 +1258,7 @@ class PointwiseError:
     def __init__(self):
 
         """
-        It evaluates the difference between each entry of a 
+        It evaluates the difference between each entry of a
         data array and its corresponding entry in the reference data.
         """
 
@@ -1267,14 +1272,14 @@ class PointwiseError:
         Parameters
         ----------
         data: np.ndarray
-            The data used for evaluating the norm. 
+            The data used for evaluating the norm.
         reference_data: np.ndarray
             The reference data used as comparison.
 
         Returns
         -------
         np.ndarray
-            The cumulative norm along axis 0 of data. 
+            The cumulative norm along axis 0 of data.
         """
 
         assert (
@@ -1295,6 +1300,7 @@ class LyapunovUnits:
     """
     Class for computing the Lyapunov units of a time-series. The Lyapunov units are computed as the cumulative norm of the error between the data and the reference data.
     """
+
     def __init__(
         self,
         lyapunov_unit: float = 1,
@@ -1304,7 +1310,7 @@ class LyapunovUnits:
     ):
         """
         Method for initializing the LyapunovUnits class.
-        
+
         Parameters:
         -----------
         lyapunov_unit : float
@@ -1335,7 +1341,7 @@ class LyapunovUnits:
     ) -> float:
         """
         Call method for the LyapunovUnits class.
-        
+
         Parameters:
         -----------
         data : np.ndarray
@@ -1344,7 +1350,7 @@ class LyapunovUnits:
             The reference data.
         relative_norm : bool
             A boolean variable to define if the relative norm will be computed or not.
-        
+
         Returns:
         --------
         respect : float

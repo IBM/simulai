@@ -1,7 +1,9 @@
-import numpy as np
 from unittest import TestCase
 
+import numpy as np
+
 from simulai.models import KMeansWrapper
+
 
 class TestReshaper(TestCase):
     def setUp(self) -> None:

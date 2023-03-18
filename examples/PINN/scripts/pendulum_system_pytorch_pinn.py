@@ -26,8 +26,7 @@ from simulai.io import IntersectingBatches
 from simulai.metrics import L2Norm
 from simulai.models import DeepONet, ImprovedDeepONet
 from simulai.optimization import Optimizer
-from simulai.regression import (SLFNN, ConvexDenseNetwork, DenseNetwork,
-                                ResDenseNetwork)
+from simulai.regression import SLFNN, ConvexDenseNetwork, DenseNetwork, ResDenseNetwork
 from simulai.residuals import SymbolicOperator
 
 

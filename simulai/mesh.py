@@ -24,6 +24,7 @@ class StructuredMesh:
     """
     A class for generating structured meshes with a given dimensionality and boundary conditions.
     """
+
     def __init__(
         self, dim_bounds=None, dim_gdl=None, boundary_dim_gdl=None, dim_tags=None
     ):
@@ -143,7 +144,7 @@ class StructuredMesh:
 
     def _get_boundaries_curves(self, but=None):
         """
-        Returns a list of numpy arrays that represent the boundary curves for each 
+        Returns a list of numpy arrays that represent the boundary curves for each
         dimension of the mesh except for the one specified by the `but` parameter.
 
         Parameters
@@ -160,7 +161,7 @@ class StructuredMesh:
 
     def internal_product(self, vector):
         """
-        Computes the internal product of the given vector and the mesh, returning a list 
+        Computes the internal product of the given vector and the mesh, returning a list
         of tuples representing the resulting vectors.
 
         Parameters
@@ -238,7 +239,12 @@ class StructuredMesh:
         except Exception as e:
             print("An error occurred: ", e)
 
-    def map_to_element(self, points: np.ndarray, reference_interval: Tuple[float, float], el: np.ndarray) -> np.ndarray:
+    def map_to_element(
+        self,
+        points: np.ndarray,
+        reference_interval: Tuple[float, float],
+        el: np.ndarray,
+    ) -> np.ndarray:
         """
         Map a set of points from the reference interval to an element.
 
@@ -271,9 +277,13 @@ class StructuredMesh:
 
         return points_mapped
 
-    def map_to_boundary_element(self, points: Union[np.ndarray, Dict[str, np.ndarray]],
-                                reference_interval: Tuple[float, float],
-                                el: np.ndarray, tag: Optional[str] = None) -> np.ndarray:
+    def map_to_boundary_element(
+        self,
+        points: Union[np.ndarray, Dict[str, np.ndarray]],
+        reference_interval: Tuple[float, float],
+        el: np.ndarray,
+        tag: Optional[str] = None,
+    ) -> np.ndarray:
         """
         Map a set of points from the reference interval to the boundary of an element.
 

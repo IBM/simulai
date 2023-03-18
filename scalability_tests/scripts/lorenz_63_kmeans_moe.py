@@ -19,19 +19,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from examples.utils.lorenz_solver import lorenz_solver
+from simulai.io import IntersectingBatches
 from simulai.metrics import L2Norm
-from simulai.models import DeepONet
-from simulai.models import MoEPool
+from simulai.models import DeepONet, KMeansWrapper, MoEPool
 from simulai.optimization import Optimizer
 from simulai.regression import DenseNetwork
-from simulai.models import KMeansWrapper
-from simulai.io import IntersectingBatches
+
 
 def project_to_interval(interval, data):
     return interval[1] * (data - data.min()) / (data.max() - data.min()) + interval[0]
 
+
 parser = ArgumentParser(description="Reading input parameters")
-parser.add_argument("--data_path", type=str, help="Path to the dataset.", default='.')
+parser.add_argument("--data_path", type=str, help="Path to the dataset.", default=".")
 parser.add_argument("--device", type=str, help="Device to be used.")
 args = parser.parse_args()
 
@@ -65,9 +65,9 @@ lorenz_data, derivative_lorenz_data, time = lorenz_solver(
 # The fraction of data used for training the model.
 train_fraction = 0.8
 delta_t = 0.25  # in seconds
-T_test = (1 - train_fraction)*T_max
+T_test = (1 - train_fraction) * T_max
 batching = "intersected"
-n_samples_train = int(train_fraction*lorenz_data.shape[0])
+n_samples_train = int(train_fraction * lorenz_data.shape[0])
 
 # Fitting a K-Means wrapper
 kmeans = KMeansWrapper(n_clusters=n_clusters)
@@ -211,10 +211,15 @@ branch_net = MoEPool(
 optimizer_config = {"lr": lr}
 
 # Maximum derivative magnitudes to be used as loss weights
-#maximum_values = (1 / np.linalg.norm(output_train, n_inputs, axis=0)).tolist()
+# maximum_values = (1 / np.linalg.norm(output_train, n_inputs, axis=0)).tolist()
 maximum_values = [1, 1, 1]
 
-params = {"lambda_1": lambda_1, "lambda_2": lambda_2, "weights": maximum_values, "relative": True}
+params = {
+    "lambda_1": lambda_1,
+    "lambda_2": lambda_2,
+    "weights": maximum_values,
+    "relative": True,
+}
 
 # It prints a summary of the network features
 trunk_net.summary()
@@ -249,12 +254,10 @@ time = np.linspace(0, delta_t, Q)[:, None]
 current_state = initial_state
 
 approximation_list = list()
-for s in range(int(T_test/delta_t)+1):
+for s in range(int(T_test / delta_t) + 1):
 
-    branch_data  = np.tile(current_state[None, :], (Q, 1))    
-    approximated_data = lorenz_net.eval(
-        trunk_data=time, branch_data=branch_data
-    )
+    branch_data = np.tile(current_state[None, :], (Q, 1))
+    approximated_data = lorenz_net.eval(trunk_data=time, branch_data=branch_data)
     current_state = approximated_data[-1]
     approximation_list.append(approximated_data)
 
@@ -279,5 +282,3 @@ for ii in range(n_inputs):
     plt.savefig(f"lorenz_deeponet_time_int_{ii}.png")
     plt.show()
     plt.close()
-
-
