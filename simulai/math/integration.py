@@ -14,7 +14,7 @@
 
 import sys
 from typing import Tuple
-
+import copy
 import numpy as np
 from scipy.integrate import odeint
 
@@ -315,7 +315,7 @@ class RK4(ExplicitIntegrator):
 # Runge-Kutta 7[8]
 class RKF78:
 
-    def __init__(self, right_operator:callable=None, tetol:float=1e-4) -> None:
+    def __init__(self, right_operator:callable=None, tetol:float=1e-4, adaptive:bool=True) -> None:
 
         self.right_operator = right_operator
 
@@ -405,6 +405,7 @@ class RKF78:
         self.beta[12,11] = 1.0
 
         self.tetol = tetol
+        self.adaptive = adaptive
 
     def run(
         self, initial_state: np.ndarray = None, dt: float = None, n_eq:int = None, t_f : float = None,
@@ -417,30 +418,37 @@ class RKF78:
         dt_ = dt
         t_i = 0
 
-        f = np.zeros((n_eq,13))
+        f = np.zeros((n_eq,13)).astype(float)
 
-        xdot = np.zeros((n_eq,1))
+        xdot = np.zeros((n_eq,1)).astype(float)
 
-        xwrk = np.zeros((n_eq, 1))
+        xwrk = np.zeros((n_eq, 1)).astype(float)
 
         xwrk[:,0] = initial_state[:,0]
+        x = initial_state 
+        x = x.astype(float)
 
         solutions = list()
 
         while not stop_criterion:
 
+            twrk = t_i
+            xwrk[:, 0] = x[:, 0]
+
+            if t_i == t_f:
+                stop_criterion = True
+            else:
+                pass
+
             if np.abs(dt_) > np.abs(t_f - t_i):
                 dt_ = t_f - t_i
-
-            if np.abs(t_i - t_f) < 1e-8:
-                stop_criterion = True
-
-            twrk = t_i
+            else:
+                pass
 
             sys.stdout.write("\r T_i : {}, dt : {}, T_f : {}".format(t_i, dt_, t_f))
             sys.stdout.flush()
 
-            f_state = self.right_operator(initial_state.T)
+            f_state = self.right_operator(x.T)
 
             f_state_tra = np.transpose(f_state)
             f[:, 0] = f_state_tra
@@ -449,9 +457,9 @@ class RKF78:
 
                 for i in range(n_eq):
 
-                    initial_state[i,0] = xwrk[i,0] + dt_ * sum(self.beta[k, 0:k] * f[i, 0:k])
+                    x[i,0] = xwrk[i,0] + dt_ * sum(self.beta[k, 0:k] * f[i, 0:k])
                     t_i = twrk + self.alpha[k,0] * dt_
-                    xdot = self.right_operator(initial_state.T)
+                    xdot = self.right_operator(x.T)
                     xdot_tra = np.transpose(xdot)
                     f[:,k] = xdot_tra
 
@@ -460,24 +468,27 @@ class RKF78:
             for i in range(0, n_eq):
 
                 f_tra = np.transpose(f)
-                initial_state[i,0] = xwrk[i,0] + dt_ * sum(self.weights[:,0] * f_tra[:,i])
+                x[i,0] = xwrk[i,0] + dt_ * sum(self.weights[:,0] * f_tra[:,i])
 
                 # truncation error calculations
                 ter = abs((f[i, 0] + f[i, 10] - f[i, 11] - f[i, 12]) * self.weights[11,0] * dt_)
-                tol = abs(initial_state[i,0]) * self.tetol + self.tetol
+                tol = abs(x[i,0]) * self.tetol + self.tetol
                 tconst = ter / tol
 
             if tconst > xerr: xerr = tconst
 
-            # compute new step size
-            dt_ = 0.8 * dt_ * (1.0 / xerr) ** (1.0 / 8)
+            if self.adaptive:
+                # compute new step size
+                dt_ = 0.8 * dt_ * (1.0 / xerr) ** (1.0 / 8)
+            else:
+                pass
 
             if (xerr > 1):
                 # Timestep rejected
                 t_i = twrk
-                initial_state = xwrk
+                x = xwrk
             else:
-                solutions.append(initial_state[None, :, 0])
+                solutions.append(copy.copy(x[None, :, 0]))
 
         return np.vstack(solutions)
 
