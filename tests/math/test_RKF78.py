@@ -17,7 +17,6 @@ from unittest import TestCase
 import numpy as np
 
 from simulai.math.integration import RKF78
-
 class Pendulum:
     def __init__(self, k=1, u=None):
         self.k = k
@@ -44,6 +43,24 @@ class Pendulum:
     def __call__(self, data):
         return self.call(data)
 
+class LorenzSystem:
+
+    def __init__(self, sigma=10., beta=8/3, rho=28.):
+
+        self.sigma = sigma
+        self.beta = beta 
+        self.rho = rho
+
+    def __call__(self, data):
+
+        x = data[0, 0]
+        y = data[0, 1]
+        z = data[0, 2]
+
+        return np.array([self.sigma*(y - x),
+                         x*(self.rho - z) - y,
+                         x*y - self.beta*z])
+
 class TestRKF78Integrator(TestCase):
     def setUp(self) -> None:
         pass
@@ -58,11 +75,11 @@ class TestRKF78Integrator(TestCase):
         t = np.linspace(0, 10 * np.pi, N)
         dt = t[1] - t[0]
 
-        initial_state = np.array([0, 1])[None, :]
+        initial_state = np.array([1, 0, 0])[None, :]
 
-        pendulum = Pendulum(k=1)
-        integrator = RKF78(right_operator=pendulum)
-        output_array = integrator.run(initial_state=initial_state, t_f=10*np.pi, dt=1e-3, n_eq=2)
+        pendulum = LorenzSystem()
+        integrator = RKF78(right_operator=pendulum, adaptive=False)
+        output_array = integrator.run(initial_state=initial_state, t_f=10*np.pi, dt=1e-3, n_eq=3)
 
         print("Extrapolation concluded.")
 
