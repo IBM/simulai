@@ -315,7 +315,7 @@ class RK4(ExplicitIntegrator):
 # Runge-Kutta 7[8]
 class RKF78:
 
-    def __init__(self, right_operator:callable=None, tetol:float=1e-4, adaptive:bool=True) -> None:
+    def __init__(self, right_operator:callable=None, tetol:float=1e-4, adaptive:bool=True, C:float=0.8) -> None:
 
         self.right_operator = right_operator
 
@@ -405,6 +405,7 @@ class RKF78:
         self.beta[12,11] = 1.0
 
         self.tetol = tetol
+        self.C = C
         self.adaptive = adaptive
 
     def run(
@@ -479,7 +480,7 @@ class RKF78:
 
             if self.adaptive:
                 # compute new step size
-                dt_ = 0.8 * dt_ * (1.0 / xerr) ** (1.0 / 8)
+                dt_ = self.C * dt_ * (1.0 / xerr) ** (1.0 / 8)
             else:
                 pass
 

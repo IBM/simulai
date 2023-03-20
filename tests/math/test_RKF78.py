@@ -16,7 +16,9 @@ from unittest import TestCase
 
 import numpy as np
 
-from simulai.math.integration import RKF78
+from simulai.math.integration import RKF78, LSODA, ClassWrapper
+from simulai.metrics import L2Norm
+
 class Pendulum:
     def __init__(self, k=1, u=None):
         self.k = k
@@ -61,6 +63,9 @@ class LorenzSystem:
                          x*(self.rho - z) - y,
                          x*y - self.beta*z])
 
+    def eval(self, data):
+        return self.__call__(data)
+
 class TestRKF78Integrator(TestCase):
     def setUp(self) -> None:
         pass
@@ -77,14 +82,38 @@ class TestRKF78Integrator(TestCase):
 
         initial_state = np.array([1, 0, 0])[None, :]
 
-        pendulum = LorenzSystem()
-        integrator = RKF78(right_operator=pendulum, adaptive=False)
+        lorenz = LorenzSystem()
+        integrator = RKF78(right_operator=lorenz)
         output_array = integrator.run(initial_state=initial_state, t_f=10*np.pi, dt=1e-3, n_eq=3)
 
         print("Extrapolation concluded.")
 
         assert isinstance(
             output_array, np.ndarray
+        ), "The output of the integration must be a np.ndarray."
+
+    def test_integration_comparative(self):
+
+        N = 1000
+        t = np.linspace(0, 10 * np.pi, N)
+        dt = t[1] - t[0]
+
+        initial_state = np.array([1, 0, 0])[None, :]
+
+        lorenz = LorenzSystem()
+        integrator = RKF78(right_operator=lorenz, adaptive=False)
+        output_array_rkf78 = integrator.run(initial_state=initial_state, t_f=10*np.pi, dt=dt, n_eq=3)
+
+        integrator = LSODA(right_operator=ClassWrapper(lorenz))
+        output_array_lsoda = integrator.run(current_state=initial_state[0], t=np.arange(0, 10*np.pi, dt))
+
+        error = L2Norm()(data=output_array_rkf78[1:], reference_data=output_array_lsoda, relative_norm=True)
+        print(f"{100*error} %")
+
+        print("Extrapolation concluded.")
+
+        assert isinstance(
+            output_array_rkf78, np.ndarray
         ), "The output of the integration must be a np.ndarray."
 
 
