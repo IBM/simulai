@@ -83,7 +83,7 @@ class TestRKF78Integrator(TestCase):
         initial_state = np.array([1, 0, 0])[None, :]
 
         lorenz = LorenzSystem()
-        integrator = RKF78(right_operator=lorenz)
+        integrator = RKF78(right_operator=lorenz, adaptive=False)
         output_array = integrator.run(initial_state=initial_state, t_f=10*np.pi, dt=1e-3, n_eq=3)
 
         print("Extrapolation concluded.")

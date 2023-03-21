@@ -324,29 +324,36 @@ class RKF78:
         self.n_stages = 13
         self.n_stages_aux = 12
 
-        self.weights = np.zeros((self.n_stages, 1))
-        self.alpha = np.zeros((self.n_stages, 1))
         self.beta = np.zeros((self.n_stages, self.n_stages_aux))
 
-        self.weights[5,0] = 34.0 / 105
-        self.weights[6,0] = 9.0 / 35
-        self.weights[7,0] = self.weights[6,0]
-        self.weights[8,0] = 9.0 / 280
-        self.weights[9,0] = self.weights[8,0]
-        self.weights[11,0] = 41.0 / 840
-        self.weights[12,0] = self.weights[11,0]
+        self.ch = np.array([[0.        ],
+                            [0.        ],
+                            [0.        ],
+                            [0.        ],
+                            [0.        ],
+                            [34.0/105  ],
+                            [9.0/35    ],
+                            [9.0/35    ],
+                            [9.0/280   ],
+                            [9.0/280   ],
+                            [0.        ],
+                            [41.0/840  ],
+                            [41.0/840  ]])
 
-        self.alpha[1,0] = 2.0 / 27
-        self.alpha[2,0] = 1.0 / 9
-        self.alpha[3,0] = 1.0 / 6
-        self.alpha[4,0] = 5.0 / 12
-        self.alpha[5,0] = 0.5
-        self.alpha[6,0] = 5.0 / 6
-        self.alpha[7,0] = 1.0 / 6
-        self.alpha[8,0] = 2.0 / 3
-        self.alpha[9,0] = 1.0 / 3
-        self.alpha[10,0] = 1
-        self.alpha[12,0] = 1
+        self.alpha = np.array([[0.        ],
+                               [2.0/27    ],
+                               [1.0/9     ],
+                               [1.0/6     ],
+                               [5.0/12    ],
+                               [0.5       ],
+                               [5.0/6     ],
+                               [1.0/6     ],
+                               [2.0/3     ],
+                               [1.0/3     ],
+                               [1.        ],
+                               [0.        ],
+                               [1.        ]])
+
 
         self.beta[1,0] = 2.0 / 27
         self.beta[2,0] = 1.0 / 36
@@ -469,10 +476,10 @@ class RKF78:
             for i in range(0, n_eq):
 
                 f_tra = np.transpose(f)
-                x[i,0] = xwrk[i,0] + dt_ * sum(self.weights[:,0] * f_tra[:,i])
+                x[i,0] = xwrk[i,0] + dt_ * sum(self.ch[:,0] * f_tra[:,i])
 
                 # truncation error calculations
-                ter = abs((f[i, 0] + f[i, 10] - f[i, 11] - f[i, 12]) * self.weights[11,0] * dt_)
+                ter = abs((f[i, 0] + f[i, 10] - f[i, 11] - f[i, 12]) * self.ch[11,0] * dt_)
                 tol = abs(x[i,0]) * self.tetol + self.tetol
                 tconst = ter / tol
 
@@ -480,7 +487,7 @@ class RKF78:
 
             if self.adaptive:
                 # compute new step size
-                dt_ = self.C * dt_ * (1.0 / xerr) ** (1.0 / 8)
+                dt_ = self.C * dt_ * ((1.0 / xerr) ** (1.0 / 5))
             else:
                 pass
 
