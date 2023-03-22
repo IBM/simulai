@@ -12,9 +12,10 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
+import copy
 import sys
 from typing import Tuple
-import copy
+
 import numpy as np
 from scipy.integrate import odeint
 
@@ -292,7 +293,7 @@ class ExplicitIntegrator(Integral):
 class RK4(ExplicitIntegrator):
     name = "rk4_int"
 
-    def __init__(self, right_operator:callable=None) -> None:
+    def __init__(self, right_operator: callable = None) -> None:
         """
         Initialize a 4th-order Runge-Kutta time-integrator.
 
@@ -311,12 +312,17 @@ class RK4(ExplicitIntegrator):
 
         self.log_phrase += "Runge-Kutta 4th order "
 
+
 ### In construction
 # Runge-Kutta 7[8]
 class RKF78:
-
-    def __init__(self, right_operator:callable=None, tetol:float=1e-4, adaptive:bool=True, C:float=0.8) -> None:
-
+    def __init__(
+        self,
+        right_operator: callable = None,
+        tetol: float = 1e-4,
+        adaptive: bool = True,
+        C: float = 0.8,
+    ) -> None:
         self.right_operator = right_operator
 
         self.log_phrase = "Runge-Kutta 78"
@@ -326,99 +332,109 @@ class RKF78:
 
         self.beta = np.zeros((self.n_stages, self.n_stages_aux))
 
-        self.ch = np.array([[0.        ],
-                            [0.        ],
-                            [0.        ],
-                            [0.        ],
-                            [0.        ],
-                            [34.0/105  ],
-                            [9.0/35    ],
-                            [9.0/35    ],
-                            [9.0/280   ],
-                            [9.0/280   ],
-                            [0.        ],
-                            [41.0/840  ],
-                            [41.0/840  ]])
+        self.ch = np.array(
+            [
+                [0.0],
+                [0.0],
+                [0.0],
+                [0.0],
+                [0.0],
+                [34.0 / 105],
+                [9.0 / 35],
+                [9.0 / 35],
+                [9.0 / 280],
+                [9.0 / 280],
+                [0.0],
+                [41.0 / 840],
+                [41.0 / 840],
+            ]
+        )
 
-        self.alpha = np.array([[0.        ],
-                               [2.0/27    ],
-                               [1.0/9     ],
-                               [1.0/6     ],
-                               [5.0/12    ],
-                               [0.5       ],
-                               [5.0/6     ],
-                               [1.0/6     ],
-                               [2.0/3     ],
-                               [1.0/3     ],
-                               [1.        ],
-                               [0.        ],
-                               [1.        ]])
+        self.alpha = np.array(
+            [
+                [0.0],
+                [2.0 / 27],
+                [1.0 / 9],
+                [1.0 / 6],
+                [5.0 / 12],
+                [0.5],
+                [5.0 / 6],
+                [1.0 / 6],
+                [2.0 / 3],
+                [1.0 / 3],
+                [1.0],
+                [0.0],
+                [1.0],
+            ]
+        )
 
-
-        self.beta[1,0] = 2.0 / 27
-        self.beta[2,0] = 1.0 / 36
-        self.beta[3,0] = 1.0 / 24
-        self.beta[4,0] = 5.0 / 12
-        self.beta[5,0] = 0.05
-        self.beta[6,0] = -25.0 / 108
-        self.beta[7,0] = 31.0 / 300
-        self.beta[8,0] = 2.0
-        self.beta[9,0] = -91.0 / 108
-        self.beta[10,0] = 2383.0 / 4100
-        self.beta[11,0] = 3.0 / 205
-        self.beta[12,0] = -1777.0 / 4100
-        self.beta[2,1] = 1.0 / 12
-        self.beta[3,2] = 1.0 / 8
-        self.beta[4,2] = -25.0 / 16
-        self.beta[4,3] = - self.beta[4,2]
-        self.beta[5,3] = 0.25
-        self.beta[6,3] = 125.0 / 108
-        self.beta[8,3] = -53.0 / 6
-        self.beta[9,3] = 23.0 / 108
-        self.beta[10,3] = -341.0 / 164
-        self.beta[12,3] =self.beta[10,3]
-        self.beta[5,4] = 0.2
-        self.beta[6,4] = -65.0 / 27
-        self.beta[7,4] = 61.0 / 225
-        self.beta[8,4] = 704.0 / 45
-        self.beta[9,4] = -976.0 / 135
-        self.beta[10,4] = 4496.0 / 1025
-        self.beta[12,4] =self.beta[10,4]
-        self.beta[6,5] = 125.0 / 54
-        self.beta[7,5] = -2.0 / 9
-        self.beta[8,5] = -107.0 / 9
-        self.beta[9,5] = 311.0 / 54
-        self.beta[10,5] = -301.0 / 82
-        self.beta[11,5] = -6.0 / 41
-        self.beta[12,5] = -289.0 / 82
-        self.beta[7,6] = 13.0 / 900
-        self.beta[8,6] = 67.0 / 90
-        self.beta[9,6] = -19.0 / 60
-        self.beta[10,6] = 2133.0 / 4100
-        self.beta[11,6] = -3.0 / 205
-        self.beta[12,6] = 2193.0 / 4100
-        self.beta[8,7] = 3.0
-        self.beta[9,7] = 17.0 / 6
-        self.beta[10,7] = 45.0 / 82
-        self.beta[11,7] = -3.0 / 41
-        self.beta[12,7] = 51.0 / 82
-        self.beta[9,8] = -1.0 / 12
-        self.beta[10,8] = 45.0 / 164
-        self.beta[11,8] = 3.0 / 41
-        self.beta[12,8] = 33.0 / 164
-        self.beta[10,9] = 18.0 / 41
-        self.beta[11,9] = 6.0 / 41
-        self.beta[12,9] = 12.0 / 41
-        self.beta[12,11] = 1.0
+        self.beta[1, 0] = 2.0 / 27
+        self.beta[2, 0] = 1.0 / 36
+        self.beta[3, 0] = 1.0 / 24
+        self.beta[4, 0] = 5.0 / 12
+        self.beta[5, 0] = 0.05
+        self.beta[6, 0] = -25.0 / 108
+        self.beta[7, 0] = 31.0 / 300
+        self.beta[8, 0] = 2.0
+        self.beta[9, 0] = -91.0 / 108
+        self.beta[10, 0] = 2383.0 / 4100
+        self.beta[11, 0] = 3.0 / 205
+        self.beta[12, 0] = -1777.0 / 4100
+        self.beta[2, 1] = 1.0 / 12
+        self.beta[3, 2] = 1.0 / 8
+        self.beta[4, 2] = -25.0 / 16
+        self.beta[4, 3] = -self.beta[4, 2]
+        self.beta[5, 3] = 0.25
+        self.beta[6, 3] = 125.0 / 108
+        self.beta[8, 3] = -53.0 / 6
+        self.beta[9, 3] = 23.0 / 108
+        self.beta[10, 3] = -341.0 / 164
+        self.beta[12, 3] = self.beta[10, 3]
+        self.beta[5, 4] = 0.2
+        self.beta[6, 4] = -65.0 / 27
+        self.beta[7, 4] = 61.0 / 225
+        self.beta[8, 4] = 704.0 / 45
+        self.beta[9, 4] = -976.0 / 135
+        self.beta[10, 4] = 4496.0 / 1025
+        self.beta[12, 4] = self.beta[10, 4]
+        self.beta[6, 5] = 125.0 / 54
+        self.beta[7, 5] = -2.0 / 9
+        self.beta[8, 5] = -107.0 / 9
+        self.beta[9, 5] = 311.0 / 54
+        self.beta[10, 5] = -301.0 / 82
+        self.beta[11, 5] = -6.0 / 41
+        self.beta[12, 5] = -289.0 / 82
+        self.beta[7, 6] = 13.0 / 900
+        self.beta[8, 6] = 67.0 / 90
+        self.beta[9, 6] = -19.0 / 60
+        self.beta[10, 6] = 2133.0 / 4100
+        self.beta[11, 6] = -3.0 / 205
+        self.beta[12, 6] = 2193.0 / 4100
+        self.beta[8, 7] = 3.0
+        self.beta[9, 7] = 17.0 / 6
+        self.beta[10, 7] = 45.0 / 82
+        self.beta[11, 7] = -3.0 / 41
+        self.beta[12, 7] = 51.0 / 82
+        self.beta[9, 8] = -1.0 / 12
+        self.beta[10, 8] = 45.0 / 164
+        self.beta[11, 8] = 3.0 / 41
+        self.beta[12, 8] = 33.0 / 164
+        self.beta[10, 9] = 18.0 / 41
+        self.beta[11, 9] = 6.0 / 41
+        self.beta[12, 9] = 12.0 / 41
+        self.beta[12, 11] = 1.0
 
         self.tetol = tetol
         self.C = C
         self.adaptive = adaptive
 
     def run(
-        self, initial_state: np.ndarray = None, dt: float = None, n_eq:int = None, t_f : float = None,
+        self,
+        initial_state: np.ndarray = None,
+        dt: float = None,
+        n_eq: int = None,
+        t_f: float = None,
     ) -> np.ndarray:
-
         initial_state = initial_state.T
 
         stop_criterion = False
@@ -426,20 +442,19 @@ class RKF78:
         dt_ = dt
         t_i = 0
 
-        f = np.zeros((n_eq,13)).astype(float)
+        f = np.zeros((n_eq, 13)).astype(float)
 
-        xdot = np.zeros((n_eq,1)).astype(float)
+        xdot = np.zeros((n_eq, 1)).astype(float)
 
         xwrk = np.zeros((n_eq, 1)).astype(float)
 
-        xwrk[:,0] = initial_state[:,0]
-        x = initial_state 
+        xwrk[:, 0] = initial_state[:, 0]
+        x = initial_state
         x = x.astype(float)
 
         solutions = list()
 
         while not stop_criterion:
-
             twrk = t_i
             xwrk[:, 0] = x[:, 0]
 
@@ -462,28 +477,28 @@ class RKF78:
             f[:, 0] = f_state_tra
 
             for k in range(1, self.n_stages):
-
                 for i in range(n_eq):
-
-                    x[i,0] = xwrk[i,0] + dt_ * sum(self.beta[k, 0:k] * f[i, 0:k])
-                    t_i = twrk + self.alpha[k,0] * dt_
+                    x[i, 0] = xwrk[i, 0] + dt_ * sum(self.beta[k, 0:k] * f[i, 0:k])
+                    t_i = twrk + self.alpha[k, 0] * dt_
                     xdot = self.right_operator(x.T)
                     xdot_tra = np.transpose(xdot)
-                    f[:,k] = xdot_tra
+                    f[:, k] = xdot_tra
 
             xerr = self.tetol
 
             for i in range(0, n_eq):
-
                 f_tra = np.transpose(f)
-                x[i,0] = xwrk[i,0] + dt_ * sum(self.ch[:,0] * f_tra[:,i])
+                x[i, 0] = xwrk[i, 0] + dt_ * sum(self.ch[:, 0] * f_tra[:, i])
 
                 # truncation error calculations
-                ter = abs((f[i, 0] + f[i, 10] - f[i, 11] - f[i, 12]) * self.ch[11,0] * dt_)
-                tol = abs(x[i,0]) * self.tetol + self.tetol
+                ter = abs(
+                    (f[i, 0] + f[i, 10] - f[i, 11] - f[i, 12]) * self.ch[11, 0] * dt_
+                )
+                tol = abs(x[i, 0]) * self.tetol + self.tetol
                 tconst = ter / tol
 
-            if tconst > xerr: xerr = tconst
+            if tconst > xerr:
+                xerr = tconst
 
             if self.adaptive:
                 # compute new step size
@@ -491,7 +506,7 @@ class RKF78:
             else:
                 pass
 
-            if (xerr > 1):
+            if xerr > 1:
                 # Timestep rejected
                 t_i = twrk
                 x = xwrk
@@ -499,7 +514,6 @@ class RKF78:
                 solutions.append(copy.copy(x[None, :, 0]))
 
         return np.vstack(solutions)
-
 
 
 # Wrapper for using the SciPy LSODA (LSODA itself is a wrapper for ODEPACK)

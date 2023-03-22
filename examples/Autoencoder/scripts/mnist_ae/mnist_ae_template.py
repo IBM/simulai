@@ -1,5 +1,4 @@
 def model():
-
     from simulai.models import AutoencoderVariational
 
     autoencoder = AutoencoderVariational(

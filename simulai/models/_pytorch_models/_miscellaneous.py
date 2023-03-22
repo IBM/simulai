@@ -148,7 +148,8 @@ class MoEPool(NetworkTemplate):
 
         if self.hidden_size == None:
             warnings.warn(
-                "hidden_size is None. If you are using a convex model, as ConvexDenseNetwork, it is better to provide a value for it."
+                "hidden_size is None. If you are using a convex model, as ConvexDenseNetwork,"+
+                " it is better to provide a value for it."
             )
 
         # Gating (classifier) network/object
@@ -221,7 +222,6 @@ class MoEPool(NetworkTemplate):
     # clustering approach, which will return integers corresponding to the
     # cluster for each sample in the batch
     def _get_weights_not_trainable(self, gating: torch.Tensor = None) -> torch.Tensor:
-
         batches_size = gating.shape[0]
 
         weights = torch.zeros(batches_size, self.n_experts)
@@ -254,5 +254,4 @@ class MoEPool(NetworkTemplate):
         return sum([g * o for g, o in zip(gating_weights, output)])
 
     def summary(self) -> None:
-
         print(self)

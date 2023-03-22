@@ -28,7 +28,6 @@ from simulai.math.integration import RK4
 
 
 def _relative(norm: np.ndarray, ref_norm: np.ndarray) -> np.ndarray:
-
     """
     General usage relative norm.
 
@@ -74,7 +73,6 @@ class L2Norm:
         large_number: float = 1e15,
         default_data: float = 0.0,
     ) -> None:
-
         """
         Parameters
         __________
@@ -98,7 +96,6 @@ class L2Norm:
         self.default_data = default_data
 
     def _clean_nan_and_large_single(self, d: np.ndarray) -> np.ndarray:
-
         """
         It removes NaN and large numbers in an array and replaces those by
         a defualt value.
@@ -143,7 +140,6 @@ class L2Norm:
     def _clean_nan_and_large(
         self, data: np.ndarray, reference_data: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray]:
-
         """
         It removes NaN and large number of the input and the reference dataset.
 
@@ -177,7 +173,6 @@ class L2Norm:
         data_interval: List[int] = None,
         batch_size: int = 1,
     ) -> float:
-
         """
         It evaluates the error over a single dataset batch a time.
 
@@ -257,7 +252,6 @@ class L2Norm:
         batch_size: int = 1,
         ord: int = 2,
     ) -> float:
-
         """
          It evaluates the norm error os a large dataset in a batchwise and lazzy way.
 
@@ -343,7 +337,6 @@ class SampleWiseErrorNorm:
         pass
 
     def _aggregate_norm(self, norms: List[float] = None, ord: int = None):
-
         """
         It stacks the list of norms (evaluated for multiple keys).
         """
@@ -918,7 +911,6 @@ class PerturbationMethod:
 
 class MeanEvaluation:
     def __init__(self) -> None:
-
         """
         Evaluating mean for large dataset in batch-wise mode
         """
@@ -931,7 +923,6 @@ class MeanEvaluation:
         batch_size: int = None,
         data_preparer: DataPreparer = None,
     ) -> np.ndarray:
-
         """
         It evaluates the mean values of a h5py.Dataset (lazzy) or numpy.ndarray (on memory)
         object
@@ -991,7 +982,6 @@ class MeanEvaluation:
 
 class MinMaxEvaluation:
     def __init__(self) -> None:
-
         """
         Evaluating Minimum and Maximum values for large dataset in batch-wise mode
         """
@@ -1141,7 +1131,6 @@ class MinMaxEvaluation:
 
 class MemorySizeEval:
     def __init__(self, memory_tol_percent: float = 0.5) -> None:
-
         """
         It determine a size for the batches in order to respect some
         used memory limit defined by the user
@@ -1159,7 +1148,6 @@ class MemorySizeEval:
 
     @property
     def available_memory_in_GB(self) -> float:
-
         """
         It evaluated the maximum available memory in Gigabytes.
 
@@ -1179,7 +1167,6 @@ class MemorySizeEval:
     def __call__(
         self, max_batches: int = None, shape: Union[tuple, list] = None
     ) -> int:
-
         """
         It determines the maximum batch size based on the dataset size and
         memory availability.
@@ -1217,7 +1204,6 @@ class MemorySizeEval:
 
 class CumulativeNorm:
     def __init__(self):
-
         """
         It evaluates cumulative error norms for time-series.
         """
@@ -1226,7 +1212,6 @@ class CumulativeNorm:
     def __call__(
         self, data: np.ndarray = None, reference_data: np.ndarray = None
     ) -> np.ndarray:
-
         """
         Parameters
         ----------
@@ -1256,7 +1241,6 @@ class CumulativeNorm:
 # Cumulative error norm for time-series
 class PointwiseError:
     def __init__(self):
-
         """
         It evaluates the difference between each entry of a
         data array and its corresponding entry in the reference data.
@@ -1267,7 +1251,6 @@ class PointwiseError:
     def __call__(
         self, data: np.ndarray = None, reference_data: np.ndarray = None
     ) -> np.ndarray:
-
         """
         Parameters
         ----------
@@ -1367,7 +1350,6 @@ class LyapunovUnits:
 
 class MahalanobisDistance:
     def __init__(self, batchwise: bool = None) -> None:
-
         """
         It evaluates the Mahalanobis distance metric
 

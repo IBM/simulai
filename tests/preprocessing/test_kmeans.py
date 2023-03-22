@@ -10,7 +10,6 @@ class TestReshaper(TestCase):
         pass
 
     def test_kmeans(self):
-
         n_clusters = 5
 
         data = np.random.rand(1_000, 3)

@@ -1303,11 +1303,9 @@ class ModelPool:
 
 class KMeansWrapper:
     def __init__(self, n_clusters: int = None, **kwargs) -> None:
-
         self.kmeans = KMeans(n_clusters=n_clusters, **kwargs)
 
     def fit(self, input_data: Union[torch.Tensor, np.ndarray] = None) -> None:
-
         self.kmeans.fit(input_data)
 
     def forward(self, input_data: Union[torch.Tensor, np.ndarray] = None) -> np.ndarray:

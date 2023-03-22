@@ -255,7 +255,6 @@ current_state = initial_state
 
 approximation_list = list()
 for s in range(int(T_test / delta_t) + 1):
-
     branch_data = np.tile(current_state[None, :], (Q, 1))
     approximated_data = lorenz_net.eval(trunk_data=time, branch_data=branch_data)
     current_state = approximated_data[-1]
