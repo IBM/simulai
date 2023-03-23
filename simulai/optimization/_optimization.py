@@ -432,7 +432,7 @@ class Optimizer:
         # When using mini-batches, it is necessary to
         # determine the number of iterations for the outer optimization
         # loop
-        if n_batch_epochs < n_epochs:
+        if n_batch_epochs > n_epochs:
             n_epochs_global = 1
         else:
             n_epochs_global = int(math.ceil(n_epochs / n_batch_epochs))
