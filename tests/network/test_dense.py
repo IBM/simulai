@@ -157,7 +157,7 @@ class TestDenseNetwork(TestCase):
                 net = model_(activation=activation, architecture=architecture)
 
                 lr = 5e-5
-                n_epochs = 2_000
+                n_epochs = 2_00
                 n_train = 2_000
 
                 t_max = 10
@@ -199,7 +199,7 @@ class TestDenseNetwork(TestCase):
                     n_epochs=n_epochs,
                     loss="rmse",
                     params=params,
-                    batch_size=1_000,
+                    batch_size=1_00,
                     device=DEVICE,
                 )
 
