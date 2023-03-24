@@ -49,7 +49,7 @@ for i in range(0, n_times):
     )
     initial_state_test = approximated_data[-1]
 
-    eval_list.append(approximated_data)
+    eval_list.append(approximated_data[0])
 
 evaluation = np.vstack(eval_list) * np.array([1, 1e4, 1])
 time = np.linspace(0, n_times, evaluation.shape[0])
@@ -59,6 +59,8 @@ plt.plot(time, evaluation, label="Approximated")
 plt.xlabel("t (s)")
 plt.savefig("rober_approximation.png")
 plt.close()
+
+plt.figure(figsize=(15,6))
 
 for i in range(n_outputs):
     plt.plot(time, evaluation[:, i], label=f"s_{i+1}")
