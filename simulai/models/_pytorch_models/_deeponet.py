@@ -37,6 +37,7 @@ class DeepONet(NetworkTemplate):
         var_dim: int = 1,  # less effective than the output reshaping alternative
         devices: Union[str, list] = "cpu",
         product_type: str = None,
+        rescale_factors: np.ndarray = None,
         model_id=None,
     ) -> None:
         """
@@ -83,6 +84,18 @@ class DeepONet(NetworkTemplate):
         self.product_type = product_type
         self.model_id = model_id
         self.var_dim = var_dim
+
+        # Rescaling factors for the output
+        if rescale_factors is not None:
+            assert (
+                len(rescale_factors) == var_dim
+            ), "The number of rescaling factors must be equal to var_dim."
+            rescale_factors = torch.from_numpy(rescale_factors.astype("float32"))
+        else:
+            rescale_factors = torch.from_numpy(np.ones(self.var_dim).astype("float32"))
+
+        self.rescale_factors = rescale_factors.to(self.device)
+
 
         # Checking up whether the output of each subnetwork are in correct shape
         assert self._latent_dimension_is_correct(self.trunk_network.output_size), (
@@ -337,7 +350,7 @@ class DeepONet(NetworkTemplate):
 
         output = self._forward(output_trunk=output_trunk, output_branch=output_branch)
 
-        return output
+        return output * self.rescale_factors
 
     @guarantee_device
     def eval(
@@ -394,6 +407,7 @@ class ResDeepONet(DeepONet):
         var_dim: int = 1,  # less effective than the output reshaping alternative
         devices: Union[str, list] = "cpu",
         product_type: str = None,
+        rescale_factors: np.ndarray = None,
         residual: bool = True,
         multiply_by_trunk: bool = False,
         model_id=None,
@@ -433,6 +447,7 @@ class ResDeepONet(DeepONet):
             var_dim=var_dim,  # less effective than the output reshaping alternative
             devices=devices,
             product_type=product_type,
+            rescale_factors=rescale_factors,
             model_id=model_id,
         )
 
@@ -568,21 +583,11 @@ class ImprovedDeepONet(ResDeepONet):
             var_dim=var_dim,
             devices=devices,
             product_type=product_type,
+            rescale_factors=rescale_factors,
             residual=residual,
             multiply_by_trunk=multiply_by_trunk,
             model_id=model_id,
         )
-
-        # Rescaling factors for the output
-        if rescale_factors is not None:
-            assert (
-                len(rescale_factors) == var_dim
-            ), "The number of rescaling factors must be equal to var_dim."
-            rescale_factors = torch.from_numpy(rescale_factors.astype("float32"))
-        else:
-            rescale_factors = torch.from_numpy(np.ones(self.var_dim).astype("float32"))
-
-        self.rescale_factors = rescale_factors.to(self.device)
 
         self.encoder_trunk = encoder_trunk.to(self.device)
         self.encoder_branch = encoder_branch.to(self.device)
@@ -661,6 +666,7 @@ class FlexibleDeepONet(ResDeepONet):
         var_dim: int = 1,
         devices: Union[str, list] = "cpu",
         product_type: str = None,
+        rescale_factors: np.ndarray = None,
         residual: bool = False,
         multiply_by_trunk: bool = False,
         model_id=None,
@@ -695,6 +701,7 @@ class FlexibleDeepONet(ResDeepONet):
             var_dim=var_dim,
             devices=devices,
             product_type=product_type,
+            rescale_factors=rescale_factors,
             residual=residual,
             multiply_by_trunk=multiply_by_trunk,
             model_id=model_id,
@@ -734,7 +741,7 @@ class FlexibleDeepONet(ResDeepONet):
 
         output = self._forward(output_trunk=output_trunk, output_branch=output_branch)
 
-        return output
+        return output * self.rescale_factors
 
     @guarantee_device
     def eval_subnetwork(
