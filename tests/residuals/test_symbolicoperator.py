@@ -43,7 +43,40 @@ class TestSymbolicOperator(TestCase):
     def setUp(self) -> None:
         pass
 
+    @staticmethod
+    def function_expr(t):
+
+        return torch.cos(torch.sqrt(t) + 1 )/2
+
+    def test_symbolic_operator_ode_independent(self):
+
+        for token in ["sin", "cos", "sqrt"]:
+            f = f"D(u, t) - alpha*{token}(t)"
+
+            input_labels = ["t"]
+            output_labels = ["u"]
+
+            T = 1
+            t_interval = [0, T]
+
+            net = model(n_inputs=len(input_labels), n_outputs=len(output_labels))
+
+            residual = SymbolicOperator(
+                expressions=[f],
+                input_vars=input_labels,
+                constants={"alpha": 5},
+                output_vars=output_labels,
+                function=net,
+                engine="torch",
+            )
+
+            t = np.linspace(*t_interval)[:, None]
+
+            assert all([isinstance(item, torch.Tensor) for item in residual(t)])
+
+
     def test_symbolic_operator_ode(self):
+
         for token in ["sin", "cos", "sqrt"]:
             f = f"D(u, t) - alpha*{token}(u)"
 
