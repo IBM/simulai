@@ -76,10 +76,11 @@ lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
 
 def model():
+
     import numpy as np
 
-    from simulai.models import DeepONet
-    from simulai.regression import DenseNetwork
+    from simulai.regression import ConvexDenseNetwork
+    from simulai.models import DeepONet, ImprovedDenseNetwork
 
     n_latent = 100
     n_inputs_b = 3
@@ -104,9 +105,21 @@ def model():
         "name": "branch_net",
     }
 
+    encoder_u_trunk = SLFNN(input_size=n_inputs_t, output_size=100, activation="tanh")
+    encoder_v_trunk = SLFNN(input_size=n_inputs_t, output_size=100, activation="tanh")
+    encoder_u_branch = SLFNN(input_size=n_inputs_b, output_size=100, activation="tanh")
+    encoder_v_branch = SLFNN(input_size=n_inputs_b, output_size=100, activation="tanh")
+
     # Instantiating and training the surrogate model
-    trunk_net = DenseNetwork(**trunk_config)
-    branch_net = DenseNetwork(**branch_config)
+    trunk_net_dense = DenseNetwork(**trunk_config)
+    branch_net_dense = DenseNetwork(**branch_config)
+
+    trunk_net = ImprovedDenseNetwork(network=trunk_net_dense,
+                                     u_encoder=encoder_u_trunk, v_decoder=encoder_v_trunk)
+
+    branch_net = ImprovedDenseNetwork(network=branch_net_dense,
+                                     u_encoder=encoder_u_branch, v_decoder=encoder_v_branch)
+
 
     # It prints a summary of the network features
     trunk_net.summary()
