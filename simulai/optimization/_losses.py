@@ -529,6 +529,15 @@ class PIRMSELoss(LossBasics):
         self.mean_causality_weight = 0
 
         self.loss_states = {"pde": list(), "init": list(), "bound": list()}
+        self.loss_tags = list(self.loss_states.keys())
+        self.hybrid_data_pinn = False
+
+        self.losses_terms_indices = {
+                                     'pde': 0,
+                                     'init': 1,
+                                     'bound': 2,
+                                     'causality_weights': 3
+                                     }
 
     def _convert(
         self, input_data: Union[dict, np.ndarray] = None, device: str = None
@@ -667,6 +676,36 @@ class PIRMSELoss(LossBasics):
 
         return torch.ones(loss_tensor.shape[0])
 
+    def _filter_necessary_loss_terms(self, residual:SymbolicOperator=None):
+
+        tags = ["pde", "init"]
+        indices = [0, 1]
+
+        if not residual.g_expressions == None:
+            tags.append("bound")
+            indices.append(2)
+        else:
+            pass
+
+        if self.hybrid_data_pinn:
+            tags.append("data")
+            indices.append(3)
+        else:
+            pass
+
+        return tags, indices
+
+    def _losses_states_str(self, tags:List[str]=None):
+
+        losses_str = "\r"
+        for item in tags:
+            losses_str += f"{item}:{{}} "
+
+        if self.causality_parameter != None:
+            loss_str += "{{}}"
+
+        return losses_str
+
     @property
     def causality_weights_interval(self):
         warnings.warn("This implementation is still equal to the vanilla one.")
@@ -695,10 +734,21 @@ class PIRMSELoss(LossBasics):
         causality_parameter: float = None,
         use_mean: bool = True,
     ) -> callable:
+
         self.residual = residual
         self.grid_shape = grid_shape
         self.causality_parameter = causality_parameter
 
+        if isinstance(input_data, np.ndarray) == isinstance(target_data, np.ndarray) == True:
+            self.hybrid_data_pinn = True
+        else:
+            pass
+
+        loss_tags, loss_indices = self._filter_necessary_loss_terms(residual=residual)
+        loss_str = self._losses_states_str(tags=loss_tags)
+
+        # Boundary conditions are optional, since they are not
+        # defined in some cases, as ODE, for example. 
         if residual.g_expressions:
             boundary = self._boundary_penalisation
         else:
@@ -755,6 +805,7 @@ class PIRMSELoss(LossBasics):
             self.norm_evaluator = lambda ref: 1
 
         def closure():
+
             residual_approximation = self.residual_wrapper(input_data)
 
             boundary_approximation = boundary(
@@ -796,15 +847,20 @@ class PIRMSELoss(LossBasics):
 
             call_back = f", causality_weights: {self.causality_weights_interval}"
 
-            self.loss_states["pde"].append(float(pde.detach().data))
-            self.loss_states["init"].append(float(init.detach().data))
-            self.loss_states["bound"].append(float(bound.detach().data))
+            pde_detach = float(pde.detach().data)
+            init_detach = float(init.detach().data)
+            bound_detach = float(bound.detach().data)
+
+            self.loss_states["pde"].append(pde_detach)
+            self.loss_states["init"].append(init_detach)
+            self.loss_states["bound"].append(bound_detach)
+
+            losses_list = np.array([pde_detach, init_detach, bound_detach, call_back])
 
             sys.stdout.write(
-                ("\rpde: {}, init: {}, bound: {} {}").format(
-                    pde, init, bound, call_back
-                )
+                (loss_str).format(*losses_list[loss_indices])
             )
+
             sys.stdout.flush()
 
             _current_loss = loss
