@@ -24,25 +24,23 @@ from simulai.templates import (NetworkTemplate, as_tensor, autoencoder_auto,
 ########################################
 ### Some usual AutoEncoder architectures
 ########################################
-
-
 class AutoencoderMLP(NetworkTemplate):
-    r"""
+    """
     This is an implementation of a Fully-connected AutoEncoder as
-          Reduced Order Model;
+    Reduced Order Model;
 
-              A MLP autoencoder architecture consists of two stages:
-              --> Fully-connected encoder
-              --> Fully connected decoder
+    A MLP autoencoder architecture consists of two stages:
+    --> Fully-connected encoder
+    --> Fully connected decoder
 
-          SCHEME:
-                  |         |
-                  |  |   |  |
-          Z ->    |  | | |  |  -> Z_til
-                  |  |   |  |
-                  |         |
+    SCHEME:
+            |         |
+            |  |   |  |
+    Z ->    |  | | |  |  -> Z_til
+            |  |   |  |
+            |         |
 
-             ENCODER       DECODER
+    ENCODER       DECODER
     """
 
     def __init__(
@@ -57,6 +55,31 @@ class AutoencoderMLP(NetworkTemplate):
         devices: Union[str, list] = "cpu",
         name: str = None,
     ) -> None:
+        """
+        Initialize the AutoencoderMLP network
+
+        Parameters
+        ----------
+        encoder : DenseNetwork
+            The encoder network architecture.
+        decoder : DenseNetwork
+            The decoder network architecture.
+        input_dim : int, optional
+            The input dimensions of the data, by default None.
+        output_dim : int, optional
+            The output dimensions of the data, by default None.
+        latent_dim : int, optional
+            The dimensions of the latent space, by default None.
+        activation : Union[list, str], optional
+            The activation functions used by the network, by default None.
+        shallow : bool, optional
+            Whether the network should be shallow or not, by default False.
+        devices : Union[str, list], optional
+            The device(s) to be used for allocating subnetworks, by default "cpu".
+        name : str, optional
+            The name of the network, by default None.
+        """
+
         super(AutoencoderMLP, self).__init__(name=name)
 
         self.weights = list()
@@ -91,11 +114,8 @@ class AutoencoderMLP(NetworkTemplate):
 
     def summary(self) -> None:
         """
-
-        It prints the summary of the network architecture
-
+        Prints the summary of the network architecture
         """
-
         self.encoder.summary()
         self.decoder.summary()
 
@@ -103,16 +123,19 @@ class AutoencoderMLP(NetworkTemplate):
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
         """
+        Project the input dataset into the latent space.
 
-        Projecting the input dataset into the latent space
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The dataset to be projected, by default None.
 
-        :param input_data: the dataset to be projected
-        :type input_data: Union[np.ndarray, torch.Tensor]
-        :returns: the dataset projected over the latent space
-        :rtype: torch.Tensor
+        Returns
+        -------
+        torch.Tensor
+            The dataset projected over the latent space.
 
         """
-
         latent = self.encoder.forward(input_data=input_data)
 
         return latent
@@ -121,16 +144,19 @@ class AutoencoderMLP(NetworkTemplate):
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
         """
+        Reconstruct the latent dataset to the original one.
 
-        Reconstructing the latent dataset to the original one
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The dataset to be reconstructed, by default None.
 
-        :param input_data: the dataset to be reconstructed
-        :type input_data: Union[np.ndarray, torch.Tensor]
-        :returns: the dataset reconstructed
-        :rtype: torch.Tensor
+        Returns
+        -------
+        torch.Tensor
+            The dataset reconstructed.
 
         """
-
         reconstructed = self.decoder.forward(input_data=input_data)
 
         return reconstructed
@@ -139,16 +165,19 @@ class AutoencoderMLP(NetworkTemplate):
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
         """
+        Execute the complete projection/reconstruction pipeline.
 
-        Executing the complete projection/reconstruction pipeline
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input dataset, by default None.
 
-        :param input_data: the input dataset
-        :type input_data: Union[np.ndarray, torch.Tensor]
-        :returns: the dataset reconstructed
-        :rtype: torch.Tensor
+        Returns
+        -------
+        torch.Tensor
+            The dataset reconstructed.
 
         """
-
         latent = self.projection(input_data=input_data)
         reconstructed = self.reconstruction(input_data=latent)
 
@@ -158,22 +187,23 @@ class AutoencoderMLP(NetworkTemplate):
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> np.ndarray:
         """
+        Evaluate the projection of the input dataset into the latent space.
 
-        Projecting the input dataset into the latent space
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The dataset to be projected, by default None.
 
-        :param input_data: the dataset to be projected
-        :type input_data: Union[np.ndarray, torch.Tensor]
-        :returns: the dataset projected over the latent space
-        :rtype: np.ndarray
+        Returns
+        -------
+        np.ndarray
+            The dataset projected over the latent space.
 
         """
-
         return self.projection(input_data=input_data).detach().numpy()
 
-
-# Convolutional AutoEncoder
 class AutoencoderCNN(NetworkTemplate):
-    r"""
+    """
     This is an implementation of a convolutional autoencoder as Reduced Order Model.
     An autoencoder architecture consists of three stages:
 
@@ -209,6 +239,41 @@ class AutoencoderCNN(NetworkTemplate):
         devices: Union[str, list] = "cpu",
         name: str = None,
     ) -> None:
+        """
+        Initialize the AutoencoderCNN network.
+
+        Parameters
+        ----------
+        encoder : ConvolutionalNetwork, optional
+            The encoder network architecture, by default None.
+        bottleneck_encoder : Linear, optional
+            The bottleneck encoder network architecture, by default None.
+        bottleneck_decoder : Linear, optional
+            The bottleneck decoder network architecture, by default None.
+        decoder : ConvolutionalNetwork, optional
+            The decoder network architecture, by default None.
+        encoder_activation : str, optional
+            The activation function used by the encoder network, by default 'relu'.
+        input_dim : Tuple[int, ...], optional
+            The input dimensions of the data, by default None.
+        output_dim : Tuple[int, ...], optional
+            The output dimensions of the data, by default None.
+        latent_dim : int, optional
+            The dimensions of the latent space, by default None.
+        activation : Union[list, str], optional
+            The activation functions used by the network, by default None.
+        channels : int, optional
+            The number of channels of the convolutional layers, by default None.
+        case : str, optional
+            The type of convolutional encoder and decoder to be used, by default None.
+        shallow : bool, optional
+            Whether the network should be shallow or not, by default False.
+        devices : Union[str, list], optional
+            The device(s) to be used for allocating subnetworks, by default 'cpu'.
+        name : str, optional
+            The name of the network, by default None.
+        """
+
         super(AutoencoderCNN, self).__init__(name=name)
 
         self.weights = list()
@@ -272,18 +337,20 @@ class AutoencoderCNN(NetworkTemplate):
         input_shape: list = None,
     ) -> torch.Tensor:
         """
+        Prints the summary of the network architecture.
 
-        It prints the summary of the network architecture
+        Parameters
+        ----------
+        input_data : np.ndarray or torch.Tensor
+            The input dataset.
+        input_shape : list, optional
+            The shape of the input data.
 
-        :param input_data: the input dataset
-        :type input_data: Union[np.ndarray, torch.Tensor]
-        :param input_shape: the shape of the input data
-        :type input_shape: list
-        :returns: the dataset projected over the latent space
-        :rtype: torch.Tensor
-
+        Returns
+        -------
+        torch.Tensor
+            The dataset projected over the latent space.
         """
-
         if self.input_dim != None:
             input_shape = self.input_dim
         else:
@@ -335,13 +402,17 @@ class AutoencoderCNN(NetworkTemplate):
     @as_tensor
     def projection(self, input_data: Union[np.ndarray, torch.Tensor]) -> torch.Tensor:
         """
+        Project input dataset into the latent space.
 
-        Projecting the input dataset into the latent space
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor]
+            The dataset to be projected.
 
-        :param input_data: the dataset to be projected
-        :type input_data: Union[np.ndarray, torch.Tensor]
-        :returns: the dataset projected over the latent space
-        :rtype: torch.Tensor
+        Returns
+        -------
+        torch.Tensor
+            The dataset projected over the latent space.
 
         """
 
@@ -355,18 +426,21 @@ class AutoencoderCNN(NetworkTemplate):
 
         return latent
 
+
     @as_tensor
-    def reconstruction(
-        self, input_data: Union[torch.Tensor, np.ndarray]
-    ) -> torch.Tensor:
+    def reconstruction(self, input_data: Union[torch.Tensor, np.ndarray]) -> torch.Tensor:
         """
+        Reconstruct the latent dataset to the original one.
 
-        Reconstructing the latent dataset to the original one
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor]
+            The dataset to be reconstructed.
 
-        :param input_data: the dataset to be reconstructed
-        :type input_data: Union[np.ndarray, torch.Tensor]
-        :returns: the dataset reconstructed
-        :rtype: torch.Tensor
+        Returns
+        -------
+        torch.Tensor
+            The reconstructed dataset.
 
         """
 
@@ -374,9 +448,7 @@ class AutoencoderCNN(NetworkTemplate):
             self.bottleneck_decoder.forward(input_data=input_data)
         )
 
-        bottleneck_output = bottleneck_output.reshape(
-            (-1,) + self.before_flatten_dimension
-        )
+        bottleneck_output = bottleneck_output.reshape((-1,) + self.before_flatten_dimension)
 
         reconstructed = self.decoder.forward(input_data=bottleneck_output)
 
@@ -384,13 +456,17 @@ class AutoencoderCNN(NetworkTemplate):
 
     def forward(self, input_data: Union[np.ndarray, torch.Tensor]) -> torch.Tensor:
         """
+        Execute the complete projection/reconstruction pipeline.
 
-        Executing the complete projection/reconstruction pipeline
-        :param input_data: the input dataset
-        :type input_data: Union[np.ndarray, torch.Tensor]
-        :returns: the dataset reconstructed
-        :rtype: torch.Tensor
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor]
+            The input dataset.
 
+        Returns
+        -------
+        torch.Tensor
+            The reconstructed dataset.
         """
 
         latent = self.projection(input_data=input_data)
@@ -400,14 +476,17 @@ class AutoencoderCNN(NetworkTemplate):
 
     def eval(self, input_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
         """
+        Evaluate the autoencoder on the given dataset.
 
-        Projecting the input dataset into the latent space
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The dataset to be evaluated, by default None.
 
-        :param input_data: the dataset to be projected
-        :type input_data: Union[np.ndarray, torch.Tensor]
-        :returns: the dataset projected over the latent space
-        :rtype: np.ndarray
-
+        Returns
+        -------
+        np.ndarray
+            The dataset projected over the latent space.
         """
 
         if isinstance(input_data, np.ndarray):
@@ -419,13 +498,17 @@ class AutoencoderCNN(NetworkTemplate):
 
     def project(self, input_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
         """
+        Project the input dataset into the latent space.
 
-        Projecting the input dataset into the latent space
-        :param input_data: the dataset to be projected
-        :type input_data: Union[np.ndarray, torch.Tensor]
-        :returns: the dataset projected over the latent space
-        :rtype: np.ndarray
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The dataset to be projected, by default None.
 
+        Returns
+        -------
+        np.ndarray
+            The dataset projected over the latent space.
         """
 
         projected_data = self.projection(input_data=input_data)
@@ -436,48 +519,46 @@ class AutoencoderCNN(NetworkTemplate):
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> np.ndarray:
         """
+        Reconstructs the latent dataset to the original one.
 
-        Reconstructing the latent dataset to the original one
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The dataset to be reconstructed. If not provided, uses the original input data, by default None.
 
-        :param input_data: the dataset to be reconstructed
-        :type input_data: Union[np.ndarray, torch.Tensor]
-        :returns: the dataset reconstructed
-        :rtype: np.ndarray
+        Returns
+        -------
+        np.ndarray
+            The reconstructed dataset.
 
         """
-
         reconstructed_data = self.reconstruction(input_data=input_data)
-
         return reconstructed_data.cpu().detach().numpy()
 
 
 class AutoencoderKoopman(NetworkTemplate):
-    r"""
+    """
+    This is an implementation of a Koopman autoencoder as a Reduced Order Model.
 
-    This is an implementation of a Koopman autoencoder as
-
-    Reduced Order Model:
-    --------------------
     A Koopman autoencoder architecture consists of five stages:
-    --> The convolutional encoder [Optional]
-    --> Fully-connected encoder
-    --> Koopman operator
-    --> Fully connected decoder
-    --> The convolutional decoder [Optional]
+
+    * The convolutional encoder [Optional]
+    * Fully-connected encoder
+    * Koopman operator
+    * Fully connected decoder
+    * The convolutional decoder [Optional]
 
     SCHEME:
-                                         (Koopman OPERATOR)
-                                                  ^
-                                           |      |      |
-                                           |  |   |   |  |
+                                    (Koopman OPERATOR)
+                                             ^
+                                      |      |      |
+                                      |  |   |   |  |
     Z -> [Conv] -> [Conv] -> ... [Conv] -> |  | | - | |  | -> [Conv.T] -> [Conv.T] -> ... [Conv.T] -> Z_til
-                                           |  |       |  |
-                                           |             |
-
-                    ENCODER               DENSE BOTTLENECK           DECODER
-
+                                      |  |       |  | 
+                                      |             |
+                    
+                    ENCODER          DENSE BOTTLENECK        DECODER
     """
-
     def __init__(
         self,
         encoder: Union[ConvolutionalNetwork, DenseNetwork] = None,
@@ -496,6 +577,42 @@ class AutoencoderKoopman(NetworkTemplate):
         devices: Union[str, list] = "cpu",
         name: str = None,
     ) -> None:
+        """
+        Constructs a new instance of the Autoencoder
+        
+        Parameters
+        ----------
+        encoder : Union[ConvolutionalNetwork, DenseNetwork], optional
+            The encoder network. Defaults to None.
+        bottleneck_encoder : Optional[Union[Linear, DenseNetwork]], optional
+            The bottleneck encoder network. Defaults to None.
+        bottleneck_decoder : Optional[Union[Linear, DenseNetwork]], optional
+            The bottleneck decoder network. Defaults to None.
+        decoder : Union[ConvolutionalNetwork, DenseNetwork], optional
+            The decoder network. Defaults to None.
+        input_dim : Optional[Tuple[int, ...]], optional
+            The input dimensions. Used for automatic network generation. Defaults to None.
+        output_dim : Optional[Tuple[int, ...]], optional
+            The output dimensions. Used for automatic network generation. Defaults to None.
+        latent_dim : Optional[int], optional
+            The latent dimensions. Used for automatic network generation. Defaults to None.
+        activation : Optional[Union[list, str]], optional
+            The activation functions for each layer. Used for automatic network generation. Defaults to None.
+        channels : Optional[int], optional
+            The number of channels. Used for automatic network generation. Defaults to None.
+        case : Optional[str], optional
+            The type of problem. Used for automatic network generation. Defaults to None.
+        architecture : Optional[str], optional
+            The network architecture. Used for automatic network generation. Defaults to None.
+        shallow : Optional[bool], optional
+            Whether to use shallow or deep network. Used for automatic network generation. Defaults to False.
+        encoder_activation : str, optional
+            The activation function for the encoder. Defaults to "relu".
+        devices : Union[str, list], optional
+            The devices to use. Defaults to "cpu".
+        name : str, optional
+            The name of the autoencoder. Defaults to None.
+        """
         super(AutoencoderKoopman, self).__init__(name=name)
 
         self.weights = list()
@@ -645,6 +762,20 @@ class AutoencoderKoopman(NetworkTemplate):
     def _projection_with_bottleneck(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
+        """
+        Computes the projection of the input data onto the bottleneck encoder.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data. Defaults to None.
+
+        Returns
+        -------
+        torch.Tensor
+            The projected latent representation.
+
+        """
         btnk_input = self.encoder.forward(input_data=input_data)
 
         self.before_flatten_dimension = tuple(btnk_input.shape[1:])
@@ -659,6 +790,20 @@ class AutoencoderKoopman(NetworkTemplate):
     def _projection(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
+        """
+        Computes the projection of the input data onto the encoder.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data. Defaults to None.
+
+        Returns
+        -------
+        torch.Tensor
+            The projected latent representation.
+
+        """
         latent = self.encoder.forward(input_data=input_data)
 
         return latent
@@ -667,6 +812,20 @@ class AutoencoderKoopman(NetworkTemplate):
     def _reconstruction_with_bottleneck(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
+        """
+        Reconstructs the input data using the bottleneck decoder.
+
+        Parameters
+        ----------
+        input_data : Union[torch.Tensor, np.ndarray], optional
+            The input data. Defaults to None.
+
+        Returns
+        -------
+        torch.Tensor
+            The reconstructed data.
+
+        """
         bottleneck_output = self.encoder_activation(
             self.bottleneck_decoder.forward(input_data=input_data)
         )
@@ -683,35 +842,108 @@ class AutoencoderKoopman(NetworkTemplate):
     def _reconstruction(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
+        """
+        Reconstructs the input data using the decoder.
+
+        Parameters
+        ----------
+        input_data : Union[torch.Tensor, np.ndarray], optional
+            The input data. Defaults to None.
+
+        Returns
+        -------
+        torch.Tensor
+            The reconstructed data.
+
+        """
         reconstructed = self.decoder.forward(input_data=input_data)
 
         return reconstructed
 
-    # Evaluating the operation u^{u+m} = K^m u^{i}
     def latent_forward_m(
         self, input_data: Union[np.ndarray, torch.Tensor] = None, m: int = 1
     ) -> torch.Tensor:
+        """
+        Evaluates the operation u^{u+m} = K^m u^{i}
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data. Defaults to None.
+        m : int, optional
+            The number of Koopman iterations. Defaults to 1.
+
+        Returns
+        -------
+        torch.Tensor
+            The computed latent representation.
+
+        """
         return torch.matmul(input_data, torch.pow(self.K_op.T, m))
 
-    # Evaluating the operation u^{u+1} = K u^{i}
+
     def latent_forward(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
+        """
+        Evaluates the operation u^{u+1} = K u^{i}
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data. Defaults to None.
+
+        Returns
+        -------
+        torch.Tensor
+            The computed latent representation.
+
+        """
         return torch.matmul(input_data, self.K_op.T)
 
-    # Evaluating the operation Ũ = D(E(U))
+
     def reconstruction_forward(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
+        """
+        Evaluates the operation Ũ = D(E(U))
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data. Defaults to None.
+
+        Returns
+        -------
+        torch.Tensor
+            The reconstructed data.
+
+        """
         latent = self.projection(input_data=input_data)
         reconstructed = self.reconstruction(input_data=latent)
 
         return reconstructed
 
-    # Evaluating the operation Ũ_m = D(K^m E(U))
+
     def reconstruction_forward_m(
         self, input_data: Union[np.ndarray, torch.Tensor] = None, m: int = 1
     ) -> torch.Tensor:
+        """
+        Evaluates the operation Ũ_m = D(K^m E(U))
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data. Defaults to None.
+        m : int, optional
+            The number of Koopman iterations. Defaults to 1.
+
+        Returns
+        -------
+        torch.Tensor
+            The reconstructed data.
+
+        """
         latent = self.projection(input_data=input_data)
         latent_m = self.latent_forward_m(input_data=latent, m=m)
         reconstructed_m = self.reconstruction(input_data=latent_m)
@@ -721,6 +953,22 @@ class AutoencoderKoopman(NetworkTemplate):
     def predict(
         self, input_data: Union[np.ndarray, torch.Tensor] = None, n_steps: int = 1
     ) -> np.ndarray:
+        """
+        Predicts the reconstructed data for the input data after n_steps extrapolation in the latent space.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data. Defaults to None.
+        n_steps : int, optional
+            The number of extrapolations to perform. Defaults to 1.
+
+        Returns
+        -------
+        np.ndarray
+            The predicted reconstructed data.
+
+        """
         if isinstance(input_data, np.ndarray):
             input_data = torch.from_numpy(input_data.astype("float32"))
 
@@ -741,6 +989,20 @@ class AutoencoderKoopman(NetworkTemplate):
         return reconstructed_predictions.detach().numpy()
 
     def project(self, input_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
+        """
+        Projects the input data into the latent space.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data. Defaults to None.
+
+        Returns
+        -------
+        np.ndarray
+            The projected data.
+
+        """
         projected_data = self.projection(input_data=input_data)
 
         return projected_data.cpu().detach().numpy()
@@ -748,23 +1010,36 @@ class AutoencoderKoopman(NetworkTemplate):
     def reconstruct(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> np.ndarray:
+        """
+        Reconstructs the input data.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data. Defaults to None.
+
+        Returns
+        -------
+        np.ndarray
+            The reconstructed data.
+
+        """
         reconstructed_data = self.reconstruction(input_data=input_data)
 
         return reconstructed_data.cpu().detach().numpy()
 
 
+
 class AutoencoderVariational(NetworkTemplate):
     r"""
+    This is an implementation of a Koopman autoencoder as a reduced order model.
 
-    This is an implementation of a Koopman autoencoder as
-    Reduced Order Model;
-
-        A variational autoencoder architecture consists of five stages:
-        --> The convolutional encoder [Optional]
-        --> Fully-connected encoder
-        --> Gaussian noise
-        --> Fully connected decoder
-        --> The convolutional decoder [Optional]
+    A variational autoencoder architecture consists of five stages:
+    --> The convolutional encoder [Optional]
+    --> Fully-connected encoder
+    --> Gaussian noise
+    --> Fully connected decoder
+    --> The convolutional decoder [Optional]
 
     SCHEME:
                                                   Gaussian noise
@@ -776,9 +1051,7 @@ class AutoencoderVariational(NetworkTemplate):
                                            |             |
 
                    ENCODER               DENSE BOTTLENECK           DECODER
-
     """
-
     def __init__(
         self,
         encoder: Union[ConvolutionalNetwork, DenseNetwork] = None,
@@ -798,8 +1071,45 @@ class AutoencoderVariational(NetworkTemplate):
         devices: Union[str, list] = "cpu",
         name: str = None,
     ) -> None:
-        super(AutoencoderVariational, self).__init__(name=name)
+        """
+        Constructor method.
 
+        Parameters
+        ----------
+        encoder : Union[ConvolutionalNetwork, DenseNetwork], optional
+            The encoder network. Defaults to None.
+        bottleneck_encoder : Optional[Union[Linear, DenseNetwork]], optional
+            The bottleneck encoder network. Defaults to None.
+        bottleneck_decoder : Optional[Union[Linear, DenseNetwork]], optional
+            The bottleneck decoder network. Defaults to None.
+        decoder : Union[ConvolutionalNetwork, DenseNetwork], optional
+            The decoder network. Defaults to None.
+        encoder_activation : str, optional
+            The activation function to use in the encoder. Defaults to "relu".
+        input_dim : Optional[Tuple[int, ...]], optional
+            The input dimension of the data. Defaults to None.
+        output_dim : Optional[Tuple[int, ...]], optional
+            The output dimension of the data. Defaults to None.
+        latent_dim : Optional[int], optional
+            The size of the bottleneck layer. Defaults to None.
+        activation : Optional[Union[list, str]], optional
+            The activation function to use in the networks. Defaults to None.
+        channels : Optional[int], optional
+            The number of channels in the input data. Defaults to None.
+        case : Optional[str], optional
+            The name of the autoencoder variant. Defaults to None.
+        architecture : Optional[str], optional
+            The architecture of the networks. Defaults to None.
+        shallow : Optional[bool], optional
+            Whether to use a shallow network architecture. Defaults to False.
+        scale : float, optional
+            The scale of the initialization. Defaults to 1e-3.
+        devices : Union[str, list], optional
+            The device(s) to use for computation. Defaults to "cpu".
+        name : str, optional
+            The name of the autoencoder. Defaults to None.
+
+        """
         self.weights = list()
 
         # Determining the kind of device to be used for allocating the
@@ -897,6 +1207,39 @@ class AutoencoderVariational(NetworkTemplate):
         input_data: Union[np.ndarray, torch.Tensor] = None,
         input_shape: list = None,
     ) -> torch.Tensor:
+        """
+        Summarizes the overall architecture of the autoencoder and saves the content of the subnetworks to a dictionary.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            Input data to pass through the encoder, by default None
+        input_shape : list, optional
+            The shape of the input data if input_data is None, by default None
+
+        Returns
+        -------
+        torch.Tensor
+            The output of the autoencoder's decoder applied to the input data.
+
+        Raises
+        ------
+        Exception
+            If self.input_dim is not a tuple or an integer.
+
+        AssertionError
+            If input_shape is None when input_data is None.
+
+        Notes
+        -----
+        The summary method calls the `summary` method of each of the subnetworks and saves the content of the subnetworks to the overall architecture dictionary. If there is a bottleneck network, it is also summarized and saved to the architecture dictionary.
+
+        Examples
+        --------
+        >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
+        >>> input_data = np.random.rand(1, 28, 28, 1)
+        >>> output_data = autoencoder.summary(input_data=input_data)
+        """
         if self.input_dim != None:
             if type(self.input_dim) == tuple:
                 input_shape = list(self.input_dim)
@@ -974,6 +1317,29 @@ class AutoencoderVariational(NetworkTemplate):
     def _projection_with_bottleneck(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
+        """
+        Applies the encoder and bottleneck encoder to input data and returns the output.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to pass through the encoder, by default None
+
+        Returns
+        -------
+        torch.Tensor
+            The output of the bottleneck encoder applied to the input data.
+
+        Notes
+        -----
+        This function is used for projection of the input data into the bottleneck space.
+
+        Examples
+        --------
+        >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
+        >>> input_data = np.random.rand(1, 28, 28, 1)
+        >>> output_data = autoencoder._projection_with_bottleneck(input_data=input_data)
+        """
         btnk_input = self.encoder.forward(input_data=input_data)
 
         self.before_flatten_dimension = tuple(self.encoder.output_size[1:])
@@ -988,6 +1354,25 @@ class AutoencoderVariational(NetworkTemplate):
     def _projection(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
+        """
+        Applies the encoder to input data and returns the output.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to pass through the encoder, by default None
+
+        Returns
+        -------
+        torch.Tensor
+            The output of the encoder applied to the input data.
+
+        Examples
+        --------
+        >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
+        >>> input_data = np.random.rand(1, 28, 28, 1)
+        >>> output_data = autoencoder._projection(input_data=input_data)
+        """
         latent = self.encoder.forward(input_data=input_data)
 
         return latent
@@ -996,6 +1381,30 @@ class AutoencoderVariational(NetworkTemplate):
     def _reconstruction_with_bottleneck(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
+        """
+        Applies the bottleneck decoder and decoder to input data and returns the output.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to pass through the bottleneck decoder and decoder, by default None
+
+        Returns
+        -------
+        torch.Tensor
+            The output of the decoder applied to the bottleneck decoder's output.
+
+        Notes
+        -----
+        This function is used for reconstruction of the input data from the bottleneck space.
+
+        Examples
+        --------
+        >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
+        >>> input_data = np.random.rand(1, 28, 28, 1)
+        >>> bottleneck_output = autoencoder._projection_with_bottleneck(input_data=input_data)
+        >>> output_data = autoencoder._reconstruction_with_bottleneck(input_data=bottleneck_output)
+        """
         bottleneck_output = self.encoder_activation(
             (self.bottleneck_decoder.forward(input_data=input_data))
         )
@@ -1012,6 +1421,25 @@ class AutoencoderVariational(NetworkTemplate):
     def _reconstruction(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
+        """
+        Applies the decoder to input data and returns the output.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to pass through the decoder, by default None
+
+        Returns
+        -------
+        torch.Tensor
+            The output of the decoder applied to the input data.
+
+        Examples
+        --------
+        >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
+        >>> input_data = np.random.rand(1, 28, 28, 1)
+        >>> output_data = autoencoder._reconstruction(input_data=input_data)
+        """
         reconstructed = self.decoder.forward(input_data=input_data)
 
         return reconstructed
@@ -1019,6 +1447,27 @@ class AutoencoderVariational(NetworkTemplate):
     def Mu(
         self, input_data: Union[np.ndarray, torch.Tensor] = None, to_numpy: bool = False
     ) -> Union[np.ndarray, torch.Tensor]:
+        """
+        Computes the mean of the encoded input data.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to encode and compute the mean, by default None
+        to_numpy : bool, optional
+            If True, returns the result as a NumPy array, by default False
+
+        Returns
+        -------
+        Union[np.ndarray, torch.Tensor]
+            The mean of the encoded input data.
+
+        Examples
+        --------
+        >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
+        >>> input_data = np.random.rand(1, 28, 28, 1)
+        >>> mu = autoencoder.Mu(input_data=input_data)
+        """
         latent = self.projection(input_data=input_data)
 
         if to_numpy == True:
@@ -1029,6 +1478,27 @@ class AutoencoderVariational(NetworkTemplate):
     def Sigma(
         self, input_data: Union[np.ndarray, torch.Tensor] = None, to_numpy: bool = False
     ) -> Union[np.ndarray, torch.Tensor]:
+        """
+        Computes the standard deviation of the encoded input data.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to encode and compute the standard deviation, by default None
+        to_numpy : bool, optional
+            If True, returns the result as a NumPy array, by default False
+
+        Returns
+        -------
+        Union[np.ndarray, torch.Tensor]
+            The standard deviation of the encoded input data.
+
+        Examples
+        --------
+        >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
+        >>> input_data = np.random.rand(1, 28, 28, 1)
+        >>> sigma = autoencoder.Sigma(input_data=input_data)
+        """
         latent = self.projection(input_data=input_data)
 
         if to_numpy == True:
@@ -1042,6 +1512,29 @@ class AutoencoderVariational(NetworkTemplate):
         inv: bool = False,
         to_numpy: bool = False,
     ) -> Union[np.ndarray, torch.Tensor]:
+        """
+        Computes the covariance matrix of the encoded input data.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to encode and compute the covariance matrix, by default None
+        inv : bool, optional
+            If True, returns the inverse of the covariance matrix, by default False
+        to_numpy : bool, optional
+            If True, returns the result as a NumPy array, by default False
+
+        Returns
+        -------
+        Union[np.ndarray, torch.Tensor]
+            The covariance matrix (or its inverse) of the encoded input data.
+
+        Examples
+        --------
+        >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
+        >>> input_data = np.random.rand(1, 28, 28, 1)
+        >>> covariance = autoencoder.CoVariance(input_data=input_data)
+        """
         if inv == False:
             Sigma_inv = 1 / self.Sigma(input_data=input_data)
             covariance = torch.diag_embed(Sigma_inv)
@@ -1058,6 +1551,29 @@ class AutoencoderVariational(NetworkTemplate):
     def latent_gaussian_noisy(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
+        """
+        Generates a noisy latent representation of the input data.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to encode and generate a noisy latent representation, by default None
+
+        Returns
+        -------
+        torch.Tensor
+            A noisy latent representation of the input data.
+
+        Notes
+        -----
+        This function adds Gaussian noise to the mean and standard deviation of the encoded input data to generate a noisy latent representation.
+
+        Examples
+        --------
+        >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
+        >>> input_data = np.random.rand(1, 28, 28, 1)
+        >>> noisy_latent = autoencoder.latent_gaussian_noisy(input_data=input_data)
+        """
         self.mu = self.z_mean(input_data)
         self.log_v = self.z_log_var(input_data)
         eps = self.scale * torch.autograd.Variable(
@@ -1066,20 +1582,56 @@ class AutoencoderVariational(NetworkTemplate):
 
         return self.mu + torch.exp(self.log_v / 2.0) * eps
 
-    # Evaluating the operation Ũ = D(E(U))
     def reconstruction_forward(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
+        """
+        Applies the encoder, adds Gaussian noise to the encoded data, and then applies the decoder to generate a reconstructed output.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to pass through the autoencoder, by default None
+
+        Returns
+        -------
+        torch.Tensor
+            The reconstructed output of the autoencoder.
+
+        Examples
+        --------
+        >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
+        >>> input_data = np.random.rand(1, 28, 28, 1)
+        >>> reconstructed_data = autoencoder.reconstruction_forward(input_data=input_data)
+        """
         latent = self.projection(input_data=input_data)
         latent_noisy = self.latent_gaussian_noisy(input_data=latent)
         reconstructed = self.reconstruction(input_data=latent_noisy)
 
         return reconstructed
 
-    # Evaluating the operation Ũ = D(E(U))
     def reconstruction_eval(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
+        """
+        Applies the encoder, computes the mean of the encoded data, and then applies the decoder to generate a reconstructed output.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to pass through the autoencoder, by default None
+
+        Returns
+        -------
+        torch.Tensor
+            The reconstructed output of the autoencoder.
+
+        Examples
+        --------
+        >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
+        >>> input_data = np.random.rand(1, 28, 28, 1)
+        >>> reconstructed_data = autoencoder.reconstruction_eval(input_data=input_data)
+        """
         encoder_output = self.projection(input_data=input_data)
         latent = self.z_mean(encoder_output)
         reconstructed = self.reconstruction(input_data=latent)
@@ -1087,6 +1639,25 @@ class AutoencoderVariational(NetworkTemplate):
         return reconstructed
 
     def project(self, input_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
+        """
+        Projects the input data onto the autoencoder's latent space.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to project onto the autoencoder's latent space, by default None
+
+        Returns
+        -------
+        np.ndarray
+            The input data projected onto the autoencoder's latent space.
+
+        Examples
+        --------
+        >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
+        >>> input_data = np.random.rand(1, 28, 28, 1)
+        >>> projected_data = autoencoder.project(input_data=input_data)
+        """
         if isinstance(input_data, np.ndarray):
             input_data = torch.from_numpy(input_data.astype("float32"))
 
@@ -1099,6 +1670,25 @@ class AutoencoderVariational(NetworkTemplate):
     def reconstruct(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> np.ndarray:
+        """
+        Reconstructs the input data using the trained autoencoder.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to reconstruct, by default None
+
+        Returns
+        -------
+        np.ndarray
+            The reconstructed data.
+
+        Examples
+        --------
+        >>> autoencoder = Autoencoder(input_dim=(28, 28, 1))
+        >>> input_data = np.random.rand(1, 28, 28, 1)
+        >>> reconstructed_data = autoencoder.reconstruct(input_data=input_data)
+        """
         if isinstance(input_data, np.ndarray):
             input_data = torch.from_numpy(input_data.astype("float32"))
 
@@ -1109,6 +1699,25 @@ class AutoencoderVariational(NetworkTemplate):
         return reconstructed_data.cpu().detach().numpy()
 
     def eval(self, input_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
+        """
+        Reconstructs the input data using the mean of the encoded data.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to reconstruct, by default None
+
+        Returns
+        -------
+        np.ndarray
+            The reconstructed data.
+
+        Examples
+        --------
+        >>> autoencoder = Autoencoder(input_dim=(28, 28, 1))
+        >>> input_data = np.random.rand(1, 28, 28, 1)
+        >>> reconstructed_data = autoencoder.eval(input_data=input_data)
+        """
         if isinstance(input_data, np.ndarray):
             input_data = torch.from_numpy(input_data.astype("float32"))
 
