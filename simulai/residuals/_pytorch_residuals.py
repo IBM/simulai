@@ -58,6 +58,7 @@ class SymbolicOperator(torch.nn.Module):
         keys: str = None,
         inputs_key=None,
         constants: dict = None,
+        external_functions : callable = None,
         processing: str = "serial",
         device: str = "cpu",
         engine: str = "torch",
@@ -71,6 +72,7 @@ class SymbolicOperator(torch.nn.Module):
         self.engine = importlib.import_module(engine)
 
         self.constants = constants
+        self.external_functions = external_functions
         self.processing = processing
         self.periodic_bc_protected_key = "periodic"
 
