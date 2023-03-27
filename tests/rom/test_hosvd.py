@@ -19,7 +19,8 @@ import numpy as np
 from simulai.file import load_pkl
 from simulai.metrics import L2Norm
 from simulai.rom import HOSVD
-from simulai.special import Scattering, bidimensional_map_nonlin_3, time_function
+from simulai.special import (Scattering, bidimensional_map_nonlin_3,
+                             time_function)
 
 
 class TestHOSVDDecomposition(TestCase):

@@ -71,8 +71,8 @@ lambda_2 = 0.0  # Penalty factor for the L² regularization
 n_epochs = 300_000  # Maximum number of iterations for ADAM
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
-def model():
 
+def model():
     from simulai.models import FlexibleDeepONet
     from simulai.regression import DenseNetwork
 
@@ -97,7 +97,6 @@ def model():
         "output_size": 2 * n_inputs_t,
         "name": "trunk_net",
     }
-
 
     # Configuration for the fully-connected branch network
     branch_config = {
@@ -128,6 +127,7 @@ def model():
     branch_net.summary()
 
     return pendulum_net
+
 
 pendulum_net = model()
 

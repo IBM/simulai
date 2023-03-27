@@ -124,8 +124,8 @@ class ImprovedDenseNetwork(NetworkTemplate):
         return output
 
     def summary(self) -> None:
-
         print(self)
+
 
 # Mixture of Experts POC
 class MoEPool(NetworkTemplate):
@@ -153,8 +153,8 @@ class MoEPool(NetworkTemplate):
 
         if self.hidden_size == None:
             warnings.warn(
-                "hidden_size is None. If you are using a convex model, as ConvexDenseNetwork,"+
-                " it is better to provide a value for it."
+                "hidden_size is None. If you are using a convex model, as ConvexDenseNetwork,"
+                + " it is better to provide a value for it."
             )
 
         # Gating (classifier) network/object

@@ -76,11 +76,10 @@ lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
 
 def model():
-
     import numpy as np
 
-    from simulai.regression import ConvexDenseNetwork, SLFNN
     from simulai.models import DeepONet, ImprovedDenseNetwork
+    from simulai.regression import SLFNN, ConvexDenseNetwork
 
     n_latent = 100
     n_inputs_b = 3
@@ -114,11 +113,13 @@ def model():
     trunk_net_dense = ConvexDenseNetwork(**trunk_config)
     branch_net_dense = ConvexDenseNetwork(**branch_config)
 
-    trunk_net = ImprovedDenseNetwork(network=trunk_net_dense,
-                                     encoder_u=encoder_u_trunk, encoder_v=encoder_v_trunk)
+    trunk_net = ImprovedDenseNetwork(
+        network=trunk_net_dense, encoder_u=encoder_u_trunk, encoder_v=encoder_v_trunk
+    )
 
-    branch_net = ImprovedDenseNetwork(network=branch_net_dense,
-                                     encoder_u=encoder_u_branch, encoder_v=encoder_v_branch)
+    branch_net = ImprovedDenseNetwork(
+        network=branch_net_dense, encoder_u=encoder_u_branch, encoder_v=encoder_v_branch
+    )
 
     # It prints a summary of the network features
     trunk_net.summary()

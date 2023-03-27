@@ -20,7 +20,6 @@ import random
 from unittest import TestCase
 
 import numpy as np
-
 # import optuna
 import optuna
 
@@ -28,12 +27,10 @@ from simulai.models import ModelPool
 from simulai.regression import EchoStateNetwork
 from simulai.special import reservoir_generator
 from simulai.utilities import make_temp_directory
-from simulai.workflows import (
-    ObjectiveESNIndependent,
-    define_reservoir_configs_for_affine_training,
-    optuna_assess_best_solution_ESNIndependent,
-    optuna_objectiveESNIndependent,
-)
+from simulai.workflows import (ObjectiveESNIndependent,
+                               define_reservoir_configs_for_affine_training,
+                               optuna_assess_best_solution_ESNIndependent,
+                               optuna_objectiveESNIndependent)
 
 
 class TestModelPoolESN(TestCase):

@@ -60,13 +60,13 @@ plt.xlabel("t (s)")
 plt.savefig("rober_approximation.png")
 plt.close()
 
-plt.figure(figsize=(15,6))
+plt.figure(figsize=(15, 6))
 
 for i in range(n_outputs):
     plt.plot(time, evaluation[:, i], label=f"s_{i+1}")
     plt.xlabel("t (s)")
 
-plt.yticks(np.linspace(0,1,5))
+plt.yticks(np.linspace(0, 1, 5))
 plt.legend()
 plt.grid(True)
 plt.savefig(f"rober_approximation_custom.png")
