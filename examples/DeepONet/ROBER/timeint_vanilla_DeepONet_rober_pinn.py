@@ -79,7 +79,7 @@ def model():
 
     import numpy as np
 
-    from simulai.regression import ConvexDenseNetwork
+    from simulai.regression import ConvexDenseNetwork, SLFNN
     from simulai.models import DeepONet, ImprovedDenseNetwork
 
     n_latent = 100
@@ -111,19 +111,18 @@ def model():
     encoder_v_branch = SLFNN(input_size=n_inputs_b, output_size=100, activation="tanh")
 
     # Instantiating and training the surrogate model
-    trunk_net_dense = DenseNetwork(**trunk_config)
-    branch_net_dense = DenseNetwork(**branch_config)
+    trunk_net_dense = ConvexDenseNetwork(**trunk_config)
+    branch_net_dense = ConvexDenseNetwork(**branch_config)
 
     trunk_net = ImprovedDenseNetwork(network=trunk_net_dense,
-                                     u_encoder=encoder_u_trunk, v_decoder=encoder_v_trunk)
+                                     encoder_u=encoder_u_trunk, encoder_v=encoder_v_trunk)
 
     branch_net = ImprovedDenseNetwork(network=branch_net_dense,
-                                     u_encoder=encoder_u_branch, v_decoder=encoder_v_branch)
-
+                                     encoder_u=encoder_u_branch, encoder_v=encoder_v_branch)
 
     # It prints a summary of the network features
-    trunk_net.summary()
-    branch_net.summary()
+    #trunk_net.summary()
+    #branch_net.summary()
 
     rober_net = DeepONet(
         trunk_network=trunk_net,
