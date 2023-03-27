@@ -533,11 +533,11 @@ class PIRMSELoss(LossBasics):
         self.hybrid_data_pinn = False
 
         self.losses_terms_indices = {
-                                     'pde': 0,
-                                     'init': 1,
-                                     'bound': 2,
-                                     'causality_weights': 3
-                                     }
+            "pde": 0,
+            "init": 1,
+            "bound": 2,
+            "causality_weights": 3,
+        }
 
     def _convert(
         self, input_data: Union[dict, np.ndarray] = None, device: str = None
@@ -676,7 +676,7 @@ class PIRMSELoss(LossBasics):
 
         return torch.ones(loss_tensor.shape[0])
 
-    def _filter_necessary_loss_terms(self, residual:SymbolicOperator=None):
+    def _filter_necessary_loss_terms(self, residual: SymbolicOperator = None):
 
         tags = ["pde", "init"]
         indices = [0, 1]
@@ -695,7 +695,7 @@ class PIRMSELoss(LossBasics):
 
         return tags, indices
 
-    def _losses_states_str(self, tags:List[str]=None):
+    def _losses_states_str(self, tags: List[str] = None):
 
         losses_str = "\r"
         for item in tags:
@@ -739,7 +739,11 @@ class PIRMSELoss(LossBasics):
         self.grid_shape = grid_shape
         self.causality_parameter = causality_parameter
 
-        if isinstance(input_data, np.ndarray) == isinstance(target_data, np.ndarray) == True:
+        if (
+            isinstance(input_data, np.ndarray)
+            == isinstance(target_data, np.ndarray)
+            == True
+        ):
             self.hybrid_data_pinn = True
         else:
             pass
@@ -748,7 +752,7 @@ class PIRMSELoss(LossBasics):
         loss_str = self._losses_states_str(tags=loss_tags)
 
         # Boundary conditions are optional, since they are not
-        # defined in some cases, as ODE, for example. 
+        # defined in some cases, as ODE, for example.
         if residual.g_expressions:
             boundary = self._boundary_penalisation
         else:
@@ -857,9 +861,7 @@ class PIRMSELoss(LossBasics):
 
             losses_list = np.array([pde_detach, init_detach, bound_detach, call_back])
 
-            sys.stdout.write(
-                (loss_str).format(*losses_list[loss_indices])
-            )
+            sys.stdout.write((loss_str).format(*losses_list[loss_indices]))
 
             sys.stdout.flush()
 
