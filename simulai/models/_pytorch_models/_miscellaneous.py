@@ -78,6 +78,8 @@ class ImprovedDenseNetwork(NetworkTemplate):
         eu_os = encoder_u.output_size
         ev_os = encoder_v.output_size
 
+        self.output_size = network.output_size
+
         # Determining the kind of device to be used for allocating the
         # subnetworks used in the DeepONet model
         self.device = self._set_device(devices=devices)
@@ -121,6 +123,9 @@ class ImprovedDenseNetwork(NetworkTemplate):
 
         return output
 
+    def summary(self) -> None:
+
+        print(self)
 
 # Mixture of Experts POC
 class MoEPool(NetworkTemplate):

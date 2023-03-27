@@ -121,8 +121,8 @@ def model():
                                      encoder_u=encoder_u_branch, encoder_v=encoder_v_branch)
 
     # It prints a summary of the network features
-    #trunk_net.summary()
-    #branch_net.summary()
+    trunk_net.summary()
+    branch_net.summary()
 
     rober_net = DeepONet(
         trunk_network=trunk_net,
