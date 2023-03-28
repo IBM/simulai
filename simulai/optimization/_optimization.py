@@ -132,7 +132,6 @@ def _adjust_loss_function_to_model(
             + f" is not the recommended ({recommended_loss}). Please, redefine it."
         )
 
-
 # Wrapper for basic back-propagation optimization
 # algorithms
 class Optimizer:
@@ -225,7 +224,8 @@ class Optimizer:
             self.checkpoint_handler = self._checkpoint_handler
 
         else:
-            self.checkpoint_handler = self._by_pass_checkpoint_handler
+            self.checkpoint_params = dict()
+            self.checkpoint_handler = self._bypass_checkpoint_handler
 
 
         self.validation_score = np.inf
@@ -303,8 +303,9 @@ class Optimizer:
     # Doing nothing with lr
     def _bypass_lr_decay_handler(self, **kwargs):
         pass
+
     # Doing nothing to checkpoint
-    def _by_pass_checkpoint_handler(self, **kwargs):
+    def _bypass_checkpoint_handler(self, **kwargs):
         pass
 
     # When data is a NumPy array
@@ -393,14 +394,16 @@ class Optimizer:
     def _optimization_loop(
         self,
         n_epochs: int = None,
-        loss_function=None,
+        loss_function:callable=None,
+        op:NetworkTemplate=None,
         loss_states: dict = None,
-        validation_loss_function=None,
+        validation_loss_function:callable=None,
     ) -> None:
         for epoch in range(n_epochs):
             self.optimizer_instance.zero_grad()
             self.optimizer_instance.step(loss_function)
 
+            self.checkpoint_handler(model=op, epoch=epoch, **self.checkpoint_params)
             self.summary_writer(loss_states=loss_states, epoch=epoch)
 
     # Basic version of the mini-batch optimization loop
@@ -695,6 +698,7 @@ class Optimizer:
             self._optimization_loop(
                 n_epochs=n_epochs,
                 loss_function=loss_function,
+                op=op,
                 loss_states=loss_instance.loss_states,
                 validation_loss_function=validation_loss_function,
             )

@@ -29,13 +29,13 @@ class TestAutoencoder(TestCase):
         saver = SPFile(compact=False)
         saver.write(
             save_dir="/tmp",
-            name=f"autoencoder_{id(autoencoder)}",
+            name=f"autoencoder_test",
             model=autoencoder,
             template=model,
         )
 
         autoencoder_reload = saver.read(
-            model_path=os.path.join("/tmp", f"autoencoder_{id(autoencoder)}")
+            model_path=os.path.join("/tmp", f"autoencoder_test")
         )
 
         estimated_output = autoencoder_reload.eval(input_data=data)
