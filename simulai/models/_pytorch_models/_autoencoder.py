@@ -21,6 +21,7 @@ from simulai.regression import ConvolutionalNetwork, DenseNetwork, Linear
 from simulai.templates import (NetworkTemplate, as_tensor, autoencoder_auto,
                                cnn_autoencoder_auto, mlp_autoencoder_auto)
 
+
 ########################################
 ### Some usual AutoEncoder architectures
 ########################################
@@ -201,6 +202,7 @@ class AutoencoderMLP(NetworkTemplate):
 
         """
         return self.projection(input_data=input_data).detach().numpy()
+
 
 class AutoencoderCNN(NetworkTemplate):
     """
@@ -426,9 +428,10 @@ class AutoencoderCNN(NetworkTemplate):
 
         return latent
 
-
     @as_tensor
-    def reconstruction(self, input_data: Union[torch.Tensor, np.ndarray]) -> torch.Tensor:
+    def reconstruction(
+        self, input_data: Union[torch.Tensor, np.ndarray]
+    ) -> torch.Tensor:
         """
         Reconstruct the latent dataset to the original one.
 
@@ -448,7 +451,9 @@ class AutoencoderCNN(NetworkTemplate):
             self.bottleneck_decoder.forward(input_data=input_data)
         )
 
-        bottleneck_output = bottleneck_output.reshape((-1,) + self.before_flatten_dimension)
+        bottleneck_output = bottleneck_output.reshape(
+            (-1,) + self.before_flatten_dimension
+        )
 
         reconstructed = self.decoder.forward(input_data=bottleneck_output)
 
@@ -554,11 +559,12 @@ class AutoencoderKoopman(NetworkTemplate):
                                       |      |      |
                                       |  |   |   |  |
     Z -> [Conv] -> [Conv] -> ... [Conv] -> |  | | - | |  | -> [Conv.T] -> [Conv.T] -> ... [Conv.T] -> Z_til
-                                      |  |       |  | 
+                                      |  |       |  |
                                       |             |
-                    
+
                     ENCODER          DENSE BOTTLENECK        DECODER
     """
+
     def __init__(
         self,
         encoder: Union[ConvolutionalNetwork, DenseNetwork] = None,
@@ -579,7 +585,7 @@ class AutoencoderKoopman(NetworkTemplate):
     ) -> None:
         """
         Constructs a new instance of the Autoencoder
-        
+
         Parameters
         ----------
         encoder : Union[ConvolutionalNetwork, DenseNetwork], optional
@@ -881,7 +887,6 @@ class AutoencoderKoopman(NetworkTemplate):
         """
         return torch.matmul(input_data, torch.pow(self.K_op.T, m))
 
-
     def latent_forward(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
@@ -900,7 +905,6 @@ class AutoencoderKoopman(NetworkTemplate):
 
         """
         return torch.matmul(input_data, self.K_op.T)
-
 
     def reconstruction_forward(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
@@ -923,7 +927,6 @@ class AutoencoderKoopman(NetworkTemplate):
         reconstructed = self.reconstruction(input_data=latent)
 
         return reconstructed
-
 
     def reconstruction_forward_m(
         self, input_data: Union[np.ndarray, torch.Tensor] = None, m: int = 1
@@ -1029,7 +1032,6 @@ class AutoencoderKoopman(NetworkTemplate):
         return reconstructed_data.cpu().detach().numpy()
 
 
-
 class AutoencoderVariational(NetworkTemplate):
     r"""
     This is an implementation of a Koopman autoencoder as a reduced order model.
@@ -1052,6 +1054,7 @@ class AutoencoderVariational(NetworkTemplate):
 
                    ENCODER               DENSE BOTTLENECK           DECODER
     """
+
     def __init__(
         self,
         encoder: Union[ConvolutionalNetwork, DenseNetwork] = None,
