@@ -25,6 +25,7 @@ from torch.distributed.rpc import RRef
 
 from simulai.abstract import Dataset, Regression
 from simulai.templates import NetworkTemplate
+from simulai.file import SPFile
 
 # Basic built-in optimization toolkit for SimulAI
 
@@ -144,6 +145,7 @@ class Optimizer:
         lr_decay_scheduler_params: dict = None,
         params: dict = None,
         early_stopping_params: dict = None,
+        checkpoint_params: dict = None,
     ) -> None:
         if "n_samples" in list(params.keys()):
             self.n_samples = params.pop("n_samples")
@@ -155,6 +157,7 @@ class Optimizer:
 
         self.early_stopping = early_stopping
         self.early_stopping_params = early_stopping_params
+        self.checkpoint_params = checkpoint_params
 
         self.summary_writer = summary_writer
 
@@ -211,6 +214,20 @@ class Optimizer:
         else:
             self.lr_decay_handler = self._bypass_lr_decay_handler
 
+        # Using checkpoint or not
+        if self.checkpoint_params is not None:
+
+            if 'checkpoint_frequency' in self.checkpoint_params.keys():
+                self.checkpoint_frequency = self.checkpoint_params.pop("checkpoint_frequency")
+            else:
+                raise Exception("Checkpoint frequency not defined. Please give a value for it.")
+
+            self.checkpoint_handler = self._checkpoint_handler
+
+        else:
+            self.checkpoint_handler = self._by_pass_checkpoint_handler
+
+
         self.validation_score = np.inf
         self.awaited_steps = 0
         self.accuracy_str = ""
@@ -233,24 +250,10 @@ class Optimizer:
     def _exec_shuffling(self, size: int = None) -> torch.Tensor:
         return torch.randperm(size)
 
-    def _no_shuffling(self, size: int = None) -> torch.Tensor:
-        return torch.arange(size)
-
     def _summary_writer(self, loss_states: dict = None, epoch: int = None) -> None:
         for k, v in loss_states.items():
             loss = v[epoch]
             self.writer.add_scalar(k, loss, epoch)
-
-    def _bypass_summary_writer(self, **kwargs) -> None:
-        pass
-
-    # Doing nothing
-    def _bypass_stop_handler(self, **kwargs):
-        return False
-
-    # Doing nothing
-    def _bypass_lr_decay_handler(self, **kwargs):
-        pass
 
     # It handles early-stopping for the optimization loop
     def _early_stopping_handler(self, val_loss_function: callable = None) -> None:
@@ -276,6 +279,33 @@ class Optimizer:
     def _lr_decay_handler(self, epoch: int = None):
         if (epoch % self.decay_frequency == 0) and (epoch > 0):
             self.lr_decay_scheduler.step()
+
+    def _checkpoint_handler(self, save_dir: str = None, name: str = None,
+                            model: NetworkTemplate = None,
+                            template: callable=None, compact:bool=False, epoch:int=None) -> None:
+
+        if epoch % self.checkpoint_frequency == 0:
+
+            saver = SPFile(compact=compact)
+            saver.write(save_dir=save_dir, name=name, model=model, template=template)
+
+
+    def _no_shuffling(self, size: int = None) -> torch.Tensor:
+        return torch.arange(size)
+
+    def _bypass_summary_writer(self, **kwargs) -> None:
+        pass
+
+    # Doing nothing to early-stopping
+    def _bypass_stop_handler(self, **kwargs):
+        return False
+
+    # Doing nothing with lr
+    def _bypass_lr_decay_handler(self, **kwargs):
+        pass
+    # Doing nothing to checkpoint
+    def _by_pass_checkpoint_handler(self, **kwargs):
+        pass
 
     # When data is a NumPy array
     def _get_vector_data(
@@ -380,7 +410,7 @@ class Optimizer:
         n_epochs: int = None,
         batch_size: int = None,
         loss: Union[str, type] = None,
-        op=None,
+        op : NetworkTemplate = None,
         input_data: torch.Tensor = None,
         target_data: torch.Tensor = None,
         validation_data: Tuple[torch.Tensor] = None,
@@ -468,9 +498,12 @@ class Optimizer:
                     loss_states=loss_instance.loss_states, epoch=b_epoch
                 )
 
+                self.checkpoint_handler(model=op, epoch=b_epoch, **self.checkpoint_params)
+
                 self.lr_decay_handler(epoch=b_epoch)
 
                 stop_criterion = self.stop_handler(val_loss_function=val_loss_function)
+
 
                 b_epoch += 1
 
@@ -492,7 +525,7 @@ class Optimizer:
     @_convert_tensor_format
     def fit(
         self,
-        op=None,
+        op: NetworkTemplate = None,
         input_data: Union[dict, torch.Tensor, np.ndarray, callable] = None,
         target_data: Union[torch.Tensor, np.ndarray, callable] = None,
         validation_data: Tuple[Union[torch.Tensor, np.ndarray, callable]] = None,
