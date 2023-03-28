@@ -1110,6 +1110,8 @@ class AutoencoderVariational(NetworkTemplate):
             The name of the autoencoder. Defaults to None.
 
         """
+        super(AutoencoderVariational, self).__init__(name=name)
+
         self.weights = list()
 
         # Determining the kind of device to be used for allocating the
