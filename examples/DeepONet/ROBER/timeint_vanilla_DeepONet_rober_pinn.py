@@ -166,7 +166,11 @@ optimizer = Optimizer(
         "gamma": 0.9,
         "decay_frequency": 5_000,
     },
-    summary_writer=True,
+    checkpoint_params={"save_dir":save_path,
+       "name": "rober_deeponet",
+       "template":model,
+       "checkpoint_frequency":50_000},
+   summary_writer=True,
 )
 
 params = {
