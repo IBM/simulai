@@ -27,10 +27,10 @@ args = parser.parse_args()
 
 save_path = args.save_path
 
-initial_state_test = np.array([1, 0, 0])
+initial_state_test = np.array([0.6, 8e-5, 0.3])
 n_outputs = 3
 n_times = 500
-Q = 2
+Q = 1000
 
 # Testing to reload from disk
 saver = SPFile(compact=False)

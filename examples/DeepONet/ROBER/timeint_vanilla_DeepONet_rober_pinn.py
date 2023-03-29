@@ -31,9 +31,11 @@ from simulai.residuals import SymbolicOperator
 parser = ArgumentParser(description="Reading input parameters")
 
 parser.add_argument("--save_path", type=str, help="Save path", default="/tmp")
+parser.add_argument("--model_name", type=str, help="Modle name", default="rober_deeponet")
 args = parser.parse_args()
 
 save_path = args.save_path
+model_name = args.model_name 
 
 Q = 1_000
 N = int(5e4)
@@ -71,7 +73,7 @@ n_outputs = len(output_labels)
 
 lambda_1 = 0.0  # Penalty for the L¹ regularization (Lasso)
 lambda_2 = 0.0  # Penalty factor for the L² regularization
-n_epochs = 400_000  # Maximum number of iterations for ADAM
+n_epochs = 10_000 #400_000  # Maximum number of iterations for ADAM
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
 
@@ -167,9 +169,9 @@ optimizer = Optimizer(
         "decay_frequency": 5_000,
     },
     checkpoint_params={"save_dir":save_path,
-       "name": "rober_deeponet",
+       "name": model_name,
        "template":model,
-       "checkpoint_frequency":50_000},
+       "checkpoint_frequency":10_000},
    summary_writer=True,
 )
 
@@ -196,7 +198,7 @@ optimizer.fit(
 # Saving model
 print("Saving model.")
 saver = SPFile(compact=False)
-saver.write(save_dir=save_path, name="rober_deeponet", model=rober_net, template=model)
+saver.write(save_dir=save_path, name=model_name, model=rober_net, template=model)
 
 approximated_data = rober_net.eval(
     trunk_data=trunk_input_test, branch_data=branch_input_test
