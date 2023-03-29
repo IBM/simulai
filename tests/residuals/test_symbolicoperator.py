@@ -44,33 +44,38 @@ class TestSymbolicOperator(TestCase):
         pass
 
     @staticmethod
-    def function_expr(t):
+    def k1(t:torch.Tensor) -> torch.Tensor:
         return torch.cos(torch.sqrt(t) + 1) / 2
 
-    def test_symbolic_operator_ode_independent(self):
-        for token in ["sin", "cos", "sqrt"]:
-            f = f"D(u, t) - alpha*{token}(t)"
+    @staticmethod
+    def k2(t:torch.Tensor) -> torch.Tensor:
+        return 3*torch.exp(torch.sin(t))
 
-            input_labels = ["t"]
-            output_labels = ["u"]
+    def test_symbolic_external_functions(self):
 
-            T = 1
-            t_interval = [0, T]
+        f = f"D(u, t) - alpha*k2(t)*k1(t)"
 
-            net = model(n_inputs=len(input_labels), n_outputs=len(output_labels))
+        input_labels = ["t"]
+        output_labels = ["u"]
 
-            residual = SymbolicOperator(
-                expressions=[f],
-                input_vars=input_labels,
-                constants={"alpha": 5},
-                output_vars=output_labels,
-                function=net,
-                engine="torch",
-            )
+        T = 1
+        t_interval = [0, T]
 
-            t = np.linspace(*t_interval)[:, None]
+        net = model(n_inputs=len(input_labels), n_outputs=len(output_labels))
 
-            assert all([isinstance(item, torch.Tensor) for item in residual(t)])
+        residual = SymbolicOperator(
+            expressions=[f],
+            input_vars=input_labels,
+            constants={"alpha": 5},
+            external_functions={"k1": self.k1, "k2": self.k2},
+            output_vars=output_labels,
+            function=net,
+            engine="torch",
+        )
+
+        t = np.linspace(*t_interval)[:, None]
+
+        assert all([isinstance(item, torch.Tensor) for item in residual(t)])
 
     def test_symbolic_operator_ode(self):
         for token in ["sin", "cos", "sqrt"]:
