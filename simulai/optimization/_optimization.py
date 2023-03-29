@@ -24,8 +24,8 @@ from torch.distributed.optim import DistributedOptimizer
 from torch.distributed.rpc import RRef
 
 from simulai.abstract import Dataset, Regression
-from simulai.templates import NetworkTemplate
 from simulai.file import SPFile
+from simulai.templates import NetworkTemplate
 
 # Basic built-in optimization toolkit for SimulAI
 
@@ -132,6 +132,7 @@ def _adjust_loss_function_to_model(
             + f" is not the recommended ({recommended_loss}). Please, redefine it."
         )
 
+
 # Wrapper for basic back-propagation optimization
 # algorithms
 class Optimizer:
@@ -215,18 +216,20 @@ class Optimizer:
 
         # Using checkpoint or not
         if self.checkpoint_params is not None:
-
-            if 'checkpoint_frequency' in self.checkpoint_params.keys():
-                self.checkpoint_frequency = self.checkpoint_params.pop("checkpoint_frequency")
+            if "checkpoint_frequency" in self.checkpoint_params.keys():
+                self.checkpoint_frequency = self.checkpoint_params.pop(
+                    "checkpoint_frequency"
+                )
             else:
-                raise Exception("Checkpoint frequency not defined. Please give a value for it.")
+                raise Exception(
+                    "Checkpoint frequency not defined. Please give a value for it."
+                )
 
             self.checkpoint_handler = self._checkpoint_handler
 
         else:
             self.checkpoint_params = dict()
             self.checkpoint_handler = self._bypass_checkpoint_handler
-
 
         self.validation_score = np.inf
         self.awaited_steps = 0
@@ -280,15 +283,18 @@ class Optimizer:
         if (epoch % self.decay_frequency == 0) and (epoch > 0):
             self.lr_decay_scheduler.step()
 
-    def _checkpoint_handler(self, save_dir: str = None, name: str = None,
-                            model: NetworkTemplate = None,
-                            template: callable=None, compact:bool=False, epoch:int=None) -> None:
-
+    def _checkpoint_handler(
+        self,
+        save_dir: str = None,
+        name: str = None,
+        model: NetworkTemplate = None,
+        template: callable = None,
+        compact: bool = False,
+        epoch: int = None,
+    ) -> None:
         if epoch % self.checkpoint_frequency == 0:
-
             saver = SPFile(compact=compact)
             saver.write(save_dir=save_dir, name=name, model=model, template=template)
-
 
     def _no_shuffling(self, size: int = None) -> torch.Tensor:
         return torch.arange(size)
@@ -394,10 +400,10 @@ class Optimizer:
     def _optimization_loop(
         self,
         n_epochs: int = None,
-        loss_function:callable=None,
-        op:NetworkTemplate=None,
+        loss_function: callable = None,
+        op: NetworkTemplate = None,
         loss_states: dict = None,
-        validation_loss_function:callable=None,
+        validation_loss_function: callable = None,
     ) -> None:
         for epoch in range(n_epochs):
             self.optimizer_instance.zero_grad()
@@ -413,7 +419,7 @@ class Optimizer:
         n_epochs: int = None,
         batch_size: int = None,
         loss: Union[str, type] = None,
-        op : NetworkTemplate = None,
+        op: NetworkTemplate = None,
         input_data: torch.Tensor = None,
         target_data: torch.Tensor = None,
         validation_data: Tuple[torch.Tensor] = None,
@@ -501,12 +507,13 @@ class Optimizer:
                     loss_states=loss_instance.loss_states, epoch=b_epoch
                 )
 
-                self.checkpoint_handler(model=op, epoch=b_epoch, **self.checkpoint_params)
+                self.checkpoint_handler(
+                    model=op, epoch=b_epoch, **self.checkpoint_params
+                )
 
                 self.lr_decay_handler(epoch=b_epoch)
 
                 stop_criterion = self.stop_handler(val_loss_function=val_loss_function)
-
 
                 b_epoch += 1
 

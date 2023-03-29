@@ -31,11 +31,13 @@ from simulai.residuals import SymbolicOperator
 parser = ArgumentParser(description="Reading input parameters")
 
 parser.add_argument("--save_path", type=str, help="Save path", default="/tmp")
-parser.add_argument("--model_name", type=str, help="Modle name", default="rober_deeponet")
+parser.add_argument(
+    "--model_name", type=str, help="Modle name", default="rober_deeponet"
+)
 args = parser.parse_args()
 
 save_path = args.save_path
-model_name = args.model_name 
+model_name = args.model_name
 
 Q = 1_000
 N = int(5e4)
@@ -73,7 +75,7 @@ n_outputs = len(output_labels)
 
 lambda_1 = 0.0  # Penalty for the L¹ regularization (Lasso)
 lambda_2 = 0.0  # Penalty factor for the L² regularization
-n_epochs = 10_000 #400_000  # Maximum number of iterations for ADAM
+n_epochs = 10_000  # 400_000  # Maximum number of iterations for ADAM
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
 
@@ -154,7 +156,7 @@ residual = SymbolicOperator(
 
 # Maximum derivative magnitudes to be used as loss weights
 penalties = [1, 1e6, 1]
-batch_size = 10_000
+batch_size = 400_000
 
 optimizer_config = {"lr": lr}
 
@@ -168,11 +170,13 @@ optimizer = Optimizer(
         "gamma": 0.9,
         "decay_frequency": 5_000,
     },
-    checkpoint_params={"save_dir":save_path,
-       "name": model_name,
-       "template":model,
-       "checkpoint_frequency":10_000},
-   summary_writer=True,
+    checkpoint_params={
+        "save_dir": save_path,
+        "name": model_name,
+        "template": model,
+        "checkpoint_frequency": 10_000,
+    },
+    summary_writer=True,
 )
 
 params = {

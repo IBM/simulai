@@ -677,7 +677,6 @@ class PIRMSELoss(LossBasics):
         return torch.ones(loss_tensor.shape[0])
 
     def _filter_necessary_loss_terms(self, residual: SymbolicOperator = None):
-
         tags = ["pde", "init"]
         indices = [0, 1]
 
@@ -696,7 +695,6 @@ class PIRMSELoss(LossBasics):
         return tags, indices
 
     def _losses_states_str(self, tags: List[str] = None):
-
         losses_str = "\r"
         for item in tags:
             losses_str += f"{item}:{{}} "
@@ -734,7 +732,6 @@ class PIRMSELoss(LossBasics):
         causality_parameter: float = None,
         use_mean: bool = True,
     ) -> callable:
-
         self.residual = residual
         self.grid_shape = grid_shape
         self.causality_parameter = causality_parameter
@@ -809,7 +806,6 @@ class PIRMSELoss(LossBasics):
             self.norm_evaluator = lambda ref: 1
 
         def closure():
-
             residual_approximation = self.residual_wrapper(input_data)
 
             boundary_approximation = boundary(

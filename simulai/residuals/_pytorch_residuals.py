@@ -58,7 +58,7 @@ class SymbolicOperator(torch.nn.Module):
         keys: str = None,
         inputs_key=None,
         constants: dict = None,
-        external_functions : callable = None,
+        external_functions: callable = None,
         processing: str = "serial",
         device: str = "cpu",
         engine: str = "torch",

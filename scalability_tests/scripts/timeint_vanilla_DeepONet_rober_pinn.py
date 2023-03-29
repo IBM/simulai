@@ -169,11 +169,13 @@ optimizer = Optimizer(
         "gamma": 0.9,
         "decay_frequency": 5_000,
     },
-    checkpoint_params={"save_dir":save_path,
-       "name": "rober_deeponet",
-       "template":model,
-       "checkpoint_frequency":50_000},
-   summary_writer=True,
+    checkpoint_params={
+        "save_dir": save_path,
+        "name": "rober_deeponet",
+        "template": model,
+        "checkpoint_frequency": 50_000,
+    },
+    summary_writer=True,
 )
 
 params = {
@@ -204,4 +206,10 @@ approximated_data = rober_net.eval(
     trunk_data=trunk_input_test, branch_data=branch_input_test
 )
 
+model_reload = saver.read(model_path=os.path.join(save_path, "rober_deeponet"))
 
+approximated_data_ = model_reload.eval(
+    trunk_data=trunk_input_test, branch_data=branch_input_test
+)
+
+assert np.allclose(approximated_data, approximated_data_)
