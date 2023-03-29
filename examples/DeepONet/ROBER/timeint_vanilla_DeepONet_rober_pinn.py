@@ -75,7 +75,7 @@ n_outputs = len(output_labels)
 
 lambda_1 = 0.0  # Penalty for the L¹ regularization (Lasso)
 lambda_2 = 0.0  # Penalty factor for the L² regularization
-n_epochs = 10_000  # 400_000  # Maximum number of iterations for ADAM
+n_epochs = 200_000  # Maximum number of iterations for ADAM
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
 
@@ -156,7 +156,7 @@ residual = SymbolicOperator(
 
 # Maximum derivative magnitudes to be used as loss weights
 penalties = [1, 1e6, 1]
-batch_size = 400_000
+batch_size = 10_000
 
 optimizer_config = {"lr": lr}
 
@@ -197,6 +197,7 @@ optimizer.fit(
     params=params,
     device="gpu",
     batch_size=batch_size,
+    use_jit=True,
 )
 
 # Saving model
