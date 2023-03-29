@@ -58,7 +58,7 @@ class SymbolicOperator(torch.nn.Module):
         keys: str = None,
         inputs_key=None,
         constants: dict = None,
-        external_functions: callable = None,
+        external_functions: dict = dict(),
         processing: str = "serial",
         device: str = "cpu",
         engine: str = "torch",
@@ -152,6 +152,7 @@ class SymbolicOperator(torch.nn.Module):
             gradient_function = gradient
 
         subs = {self.diff_symbol.name: gradient_function}
+        subs.update(self.external_functions)
         subs.update(self.protected_funcs_subs)
 
         for expr in self.expressions:
