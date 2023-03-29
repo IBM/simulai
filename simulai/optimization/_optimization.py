@@ -545,6 +545,7 @@ class Optimizer:
         batch_size: int = None,
         device: str = "cpu",
         distributed: bool = False,
+        use_jit: bool = False,
     ) -> None:
         # Verifying if the params dictionary contains Physics-informed
         # attributes
@@ -554,6 +555,13 @@ class Optimizer:
         _adjust_loss_function_to_model(
             model=op, loss=loss, physics_informed=self.is_physics_informed
         )
+
+        # Trying to use the PyTorch JIT compilation
+        if use_jit:
+            try:
+                op = torch.compile(op)
+            except AttributeError:
+                pass
 
         # When using inputs with the format h5py.Dataset
         if callable(input_data) and callable(target_data):
