@@ -421,11 +421,15 @@ class Optimizer:
         validation_loss_function: callable = None,
     ) -> None:
         for epoch in range(n_epochs):
+
             self.optimizer_instance.zero_grad()
             self.optimizer_instance.step(loss_function)
 
             self.checkpoint_handler(model=op, epoch=epoch, **self.checkpoint_params)
+
             self.summary_writer(loss_states=loss_states, epoch=epoch)
+
+            self.lr_decay_handler(epoch=epoch)
 
     # Basic version of the mini-batch optimization loop
     # TODO It could be parallelized
