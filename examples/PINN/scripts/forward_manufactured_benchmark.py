@@ -13,7 +13,7 @@
 #     limitations under the License.
 
 import os
-
+import torch
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -36,6 +36,7 @@ n = 1_000
 T_max = 0.5
 omega = 40
 mu = 0.25
+pi = np.pi
 
 time_train = (np.random.rand(n) * T_max)[:, None]
 time_eval = np.linspace(0, T_max, N)[:, None]
@@ -48,8 +49,12 @@ def dataset(t: np.ndarray = None) -> np.ndarray:
 u_data = dataset(t=time_eval)
 u_data_ext = dataset(t=time_ext)
 
+def k1(t:torch.Tensor) -> torch.Tensor:
+
+    return 2*(t-mu)*torch.cos(omega*pi*t)
+
 # The expression we aim at minimizing
-f = "D(u, t) - 2*(t - mu)*cos(omega*pi*t) + omega*pi*((t - mu)**2)*sin(omega*pi*t)"
+f = "D(u, t) - k1(t) + omega*pi*((t - mu)**2)*sin(omega*pi*t)"
 
 input_labels = ["t"]
 output_labels = ["u"]
@@ -99,6 +104,7 @@ residual = SymbolicOperator(
     output_vars=["u"],
     function=net,
     constants={"omega": omega, "mu": mu},
+    external_functions={"k1": k1},
     engine="torch",
 )
 
