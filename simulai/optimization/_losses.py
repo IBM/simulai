@@ -528,7 +528,7 @@ class PIRMSELoss(LossBasics):
         self.min_causality_weight = self.tol
         self.mean_causality_weight = 0
 
-        self.loss_states = {"pde": list(), "init": list(), "bound": list()}
+        self.loss_states = {"pde": list(), "init": list(), "bound": list(), "extra_data": list()}
         self.loss_tags = list(self.loss_states.keys())
         self.hybrid_data_pinn = False
 
@@ -536,7 +536,8 @@ class PIRMSELoss(LossBasics):
             "pde": 0,
             "init": 1,
             "bound": 2,
-            "causality_weights": 3,
+            "extra_data": 3,
+            "causality_weights": 4,
         }
 
     def _convert(
@@ -628,6 +629,38 @@ class PIRMSELoss(LossBasics):
 
         return residual_loss
 
+    def _extra_data(self, input_data:torch.Tensor=None, target_data:torch.Tensor=None) -> torch.Tensor:
+
+        # Evaluating data for the initial condition
+        output_tilde = self.operator(input_data=input_data)
+
+        # Evaluating loss approximation for extra data
+        data_loss = self._data_loss(
+            output_tilde=output_tilde, target_data_tensor=target_data
+        )
+
+        return data_loss
+
+    def _boundary_penalisation(
+        self, boundary_input: dict = None, residual: SymbolicOperator = None
+    ) -> List[torch.Tensor]:
+        """
+
+        It applies the boundary conditions
+
+        :param boundary_input: a dictionary containing the coordinates of the boundaries
+        :type boundary_input:dict
+        :param residual: a symbolic expression for the boundary condition
+        :type residual: SymbolicOperator
+        :returns: the evaluation of each boundary condition
+        :rtype: list
+
+        """
+        return [
+            residual.eval_expression(k, boundary_input[k])
+            for k in boundary_input.keys()
+        ]
+
     def _no_boundary_penalisation(
         self, boundary_input: dict = None, residual: object = None
     ) -> List[torch.Tensor]:
@@ -650,26 +683,10 @@ class PIRMSELoss(LossBasics):
 
         return torch.Tensor([0.0])
 
+    def _no_extra_data(self, input_data:torch.Tensor=None,
+        target_data:torch.Tensor=None) -> torch.Tensor:
 
-    def _boundary_penalisation(
-        self, boundary_input: dict = None, residual: SymbolicOperator = None
-    ) -> List[torch.Tensor]:
-        """
-
-        It applies the boundary conditions
-
-        :param boundary_input: a dictionary containing the coordinates of the boundaries
-        :type boundary_input:dict
-        :param residual: a symbolic expression for the boundary condition
-        :type residual: SymbolicOperator
-        :returns: the evaluation of each boundary condition
-        :rtype: list
-
-        """
-        return [
-            residual.eval_expression(k, boundary_input[k])
-            for k in boundary_input.keys()
-        ]
+        return torch.Tensor([0.0])
 
     def _no_residual_wrapper(self, input_data: torch.Tensor = None) -> torch.Tensor:
         return self.residual(input_data)
@@ -699,7 +716,7 @@ class PIRMSELoss(LossBasics):
             pass
 
         if self.hybrid_data_pinn:
-            tags.append("data")
+            tags.append("extra_data")
             indices.append(3)
         else:
             pass
@@ -806,6 +823,15 @@ class PIRMSELoss(LossBasics):
             initial_input, initial_state, device=device
         )
 
+        # Preparing extra data, when necessary
+        if self.hybrid_data_pinn:
+            input_data, target_data = self._to_tensor(
+                input_data, target_data, device=device
+            )
+            self.extra_data = self._extra_data
+        else:
+            self.extra_data = self._no_extra_data
+
         if use_mean == True:
             self.loss_evaluator = lambda res: torch.mean(torch.square((res)))
         else:
@@ -821,26 +847,36 @@ class PIRMSELoss(LossBasics):
             self.norm_evaluator = lambda ref: 1
 
         def closure():
+
+            # Executing the symbolic residual evaluation
             residual_approximation = self.residual_wrapper(input_data)
 
+            # Boundary, if appliable 
             boundary_approximation = boundary(
                 boundary_input=boundary_input, residual=residual
             )
 
+            # Evaluating data for the initial condition
             initial_output_tilde = self.operator(input_data=initial_input)
 
+            # Evaluating loss function for residual
             residual_loss = self._residual_loss(
                 residual_approximation=residual_approximation, weights=weights
             )
 
+            # Evaluating loss for the boundary approaximation, if appliable
             boundary_loss = self._residual_loss(
                 residual_approximation=boundary_approximation,
                 weights=boundary_penalties,
             )
 
+            # Evaluating loss approximation for initial condition
             initial_data_loss = self._data_loss(
                 output_tilde=initial_output_tilde, target_data_tensor=initial_state
             )
+
+            # Evaluating extra data loss, when appliable
+            extra_data = self.extra_data(input_data=input_data, target_data=target_data)
 
             # L² and L¹ regularization term
             weights_l2 = self.operator.weights_l2
@@ -855,7 +891,8 @@ class PIRMSELoss(LossBasics):
             init = initial_data_loss
             bound = sum(boundary_loss)
 
-            loss = pde + initial_penalty * init + bound + l2_reg + l1_reg
+            # Overall loss function
+            loss = pde + initial_penalty * init + bound + extra_data + l2_reg + l1_reg
 
             # Back-propagation
             loss.backward()
@@ -865,10 +902,12 @@ class PIRMSELoss(LossBasics):
             pde_detach = float(pde.detach().data)
             init_detach = float(init.detach().data)
             bound_detach = float(bound.detach().data)
+            extra_data_detach = float(extra_data.detach().data)
 
             self.loss_states["pde"].append(pde_detach)
             self.loss_states["init"].append(init_detach)
             self.loss_states["bound"].append(bound_detach)
+            self.loss_states["extra_data"].append(extra_data_detach)
 
             losses_list = np.array([pde_detach, init_detach, bound_detach, call_back])
 
