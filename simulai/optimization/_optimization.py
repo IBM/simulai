@@ -231,6 +231,20 @@ class Optimizer:
             self.checkpoint_params = dict()
             self.checkpoint_handler = self._bypass_checkpoint_handler
 
+        overwrite_savepoint = lambda epoch: ""
+        not_overwrite_savepoint = lambda epoch: f"_ckp_epoch_{epoch}"
+
+        # Rules for overwritting or not checkpoints
+        if "overwrite" in self.checkpoint_params.keys():
+            overwrite = self.checkpoint_params.pop("overwrite")
+
+            if overwrite == True:
+                self.overwrite_rule = overwrite_savepoint
+            else:
+                self.overwrite_rule = not_overwrite_savepoint
+        else:
+            self.overwrite_rule = overwrite_savepoint
+
         self.validation_score = np.inf
         self.awaited_steps = 0
         self.accuracy_str = ""
@@ -293,8 +307,9 @@ class Optimizer:
         epoch: int = None,
     ) -> None:
         if epoch % self.checkpoint_frequency == 0:
+            tag = self.overwrite_rule(epoch)
             saver = SPFile(compact=compact)
-            saver.write(save_dir=save_dir, name=name, model=model, template=template)
+            saver.write(save_dir=save_dir, name=name+tag, model=model, template=template)
 
     def _no_shuffling(self, size: int = None) -> torch.Tensor:
         return torch.arange(size)
