@@ -639,6 +639,18 @@ class PIRMSELoss(LossBasics):
 
         return [torch.Tensor([0.0]) for k in boundary_input.keys()]
 
+    def _no_boundary(
+        self, boundary_input: dict = None, residual: object = None
+    ) -> List[torch.Tensor]:
+        """
+
+        It is used for cases where there are not boundaries
+
+        """
+
+        return torch.Tensor([0.0])
+
+
     def _boundary_penalisation(
         self, boundary_input: dict = None, residual: SymbolicOperator = None
     ) -> List[torch.Tensor]:
@@ -718,8 +730,8 @@ class PIRMSELoss(LossBasics):
         residual: callable = None,
         initial_input: Union[dict, torch.Tensor] = None,
         initial_state: Union[dict, torch.Tensor] = None,
-        boundary_input: list = None,
-        boundary_penalties: list = None,
+        boundary_input: dict = None,
+        boundary_penalties: list = [1],
         initial_penalty: float = 1,
         axis: int = -1,
         relative: bool = False,
@@ -753,7 +765,10 @@ class PIRMSELoss(LossBasics):
         if residual.g_expressions:
             boundary = self._boundary_penalisation
         else:
-            boundary = self._no_boundary_penalisation
+            if boundary_input == None:
+                boundary = self._no_boundary
+            else:
+                boundary = self._no_boundary_penalisation
 
         if weights is None:
             weights = len(residual.output_names) * [1]
