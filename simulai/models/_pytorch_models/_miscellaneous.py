@@ -59,15 +59,17 @@ class ImprovedDenseNetwork(NetworkTemplate):
         It uses auxiliary encoder networks in order to enrich
         the hidden spaces
 
-        :param network: a convex dense network (it supports convex sum operations in the hidden spaces)
-        :type: ConvexDenseNetwork
-        :param encoder_u: first auxiliary encoder
-        :type encoder_u: NetworkTemplate
-        :param: encoder_v: second_auxiliary encoder
-        :type encoder_u: NetworkTemplate
-        :param devices: devices in which the model will be executed
-        :type devices: str
-        :return: nothing
+        Parameters
+        ----------
+
+        network: ConvexDenseNetwork
+            A convex dense network (it supports convex sum operations in the hidden spaces).
+        encoder_u: NetworkTemplate
+            First auxiliary encoder.
+        encode_v: NetworkTemplate
+            Second auxiliary encoder.
+        devices: str
+            Devices in which the model will be executed.
 
         """
 
@@ -106,12 +108,22 @@ class ImprovedDenseNetwork(NetworkTemplate):
     def forward(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
+
         """
 
-        :param input_data: input dataset
-        :type input_data: Union[np.ndarray, torch.Tensor]
-        :return: operation evaluated over the input data
-        :rtype: torch.Tensor
+        Forward step
+
+        Parameters
+        ----------
+
+        input_data: Union[np.ndarray, torch.Tensor] 
+            Input dataset.
+
+        Returns
+        -------
+
+        torch.Tensor
+            The output after the network evaluation.
 
         """
 
@@ -124,6 +136,11 @@ class ImprovedDenseNetwork(NetworkTemplate):
         return output
 
     def summary(self) -> None:
+
+        """
+        It prints a general view of the architecture.
+        """
+
         print(self)
 
 
@@ -132,13 +149,38 @@ class MoEPool(NetworkTemplate):
     def __init__(
         self,
         experts_list: List[NetworkTemplate],
-        gating_network: [NetworkTemplate, callable] = None,
+        gating_network: Union[NetworkTemplate, callable] = None,
         input_size: int = None,
         devices: Union[list, str] = None,
         binary_selection: bool = False,
         hidden_size: Optional[int] = None,
     ) -> None:
         super(MoEPool, self).__init__()
+
+        """
+        Mixture of Experts
+
+        Parameters
+        ----------
+
+        experts_list: List[NetworkTemplate]
+            The list of neural networks used as experts. 
+        gating_network: Union[NetworkTemplate, callable]
+            Network or callable operation used for predicting
+            weights associated to the experts.
+        input_size: int
+            The number of dimensions of the input.
+        devices: Union[list, str]
+            Device ("gpu" or "cpu") or list of devices in which
+            the model is placed.
+        binary_selection: bool
+            The weights will be forced to be binary or not.
+        hidden_size: Optional[int]
+            If information about the experts hidden size is required, which occurs, 
+            for instance, when they are ConvexDenseNetwork objects,
+            it is necessary to define this argument.
+
+        """
 
         # Determining the kind of device to be used for allocating the
         # subnetworks used in the DeepONet model
@@ -216,17 +258,72 @@ class MoEPool(NetworkTemplate):
             self.get_weights = self._get_weights_not_trainable
 
     def _get_weights_bypass(self, gating: torch.Tensor = None) -> torch.Tensor:
+
+        """
+        When the gating weights are trainable and no post-processing operation
+        is applied over them.
+
+        Parameters
+        ----------
+
+        gating: torch.Tensor
+            The output of the gating operation.  
+
+        Returns
+        -------
+
+        torch.Tensor:
+            The binary weights based on the clusters. 
+
+        """
+
         return gating
 
     def _get_weights_binary(self, gating: torch.Tensor = None) -> torch.Tensor:
+
+        """
+        Even when the gating weights are trainable, they can be forced to became
+        binary.
+
+        Parameters
+        ----------
+
+        gating: torch.Tensor
+            The output of the gating operation.  
+
+        Returns
+        -------
+
+        torch.Tensor:
+            The binary weights based on the clusters. 
+
+        """
+
         maxs = torch.max(gating, dim=1).values[:, None]
 
         return torch.where(gating == maxs, 1, 0).to(self.device)
 
-    # When the gating process is not trainable, it is considered some kind of
-    # clustering approach, which will return integers corresponding to the
-    # cluster for each sample in the batch
     def _get_weights_not_trainable(self, gating: torch.Tensor = None) -> torch.Tensor:
+
+        """
+        When the gating process is not trainable, it is considered some kind of
+        clustering approach, which will return integers corresponding to the
+        cluster for each sample in the batch
+
+        Parameters
+        ----------
+
+        gating: torch.Tensor
+            The output of the gating operation.  
+
+        Returns
+        -------
+
+        torch.Tensor:
+            The binary weights based on the clusters. 
+
+        """
+
         batches_size = gating.shape[0]
 
         weights = torch.zeros(batches_size, self.n_experts)
@@ -238,6 +335,25 @@ class MoEPool(NetworkTemplate):
         return weights.to(self.device)
 
     def gate(self, input_data: Union[np.ndarray, torch.Tensor]) -> torch.Tensor:
+
+        """
+        Gating (routing) the input, it means, attributing a weight for the output of 
+        each expert, which will be used for the allreduce operation executed on top
+        of the MoE model. 
+
+        Parameters
+        ----------
+
+        input_data: Union[np.ndarray, torch.Tensor]
+            The input data that will be gated and distributed among the experts.
+
+        Returns
+        -------
+
+        torch.Tensor
+            The penalties used for weighting the input distributed among the experts. 
+        """
+
         gating = self.gating_network.forward(input_data=input_data)
         gating_weights_ = self.get_weights(gating=gating)
 
@@ -247,6 +363,25 @@ class MoEPool(NetworkTemplate):
     def forward(
         self, input_data: Union[np.ndarray, torch.Tensor], **kwargs
     ) -> torch.Tensor:
+
+        """
+        Forward method
+
+        Parameters
+        ----------
+
+        input_data: Union[np.ndarray, torch.Tensor]
+            Data to be evaluated using the MoE object.
+        kwargs: dict
+            Used for bypassing arguments not defined in this model.
+
+        Returns
+        -------
+
+        torch.Tensor
+            The output of the MoE evaluation. 
+        """
+
         gating_weights_ = self.gate(input_data=input_data)
 
         gating_weights = torch.split(gating_weights_, 1, dim=1)
@@ -259,4 +394,9 @@ class MoEPool(NetworkTemplate):
         return sum([g * o for g, o in zip(gating_weights, output)])
 
     def summary(self) -> None:
+
+        """
+        It prints a general view of the architecture.
+        """
+
         print(self)

@@ -148,6 +148,7 @@ class TestAllencahnPINN(TestCase):
                 "residual": residual,
                 "initial_input": data_boundary_t0,
                 "initial_state": u_init,
+                "weights_residual": [1],
                 "boundary_input": {
                     "periodic_u": [data_boundary_xL, data_boundary_x0],
                     "periodic_du": [data_boundary_xL, data_boundary_x0],
