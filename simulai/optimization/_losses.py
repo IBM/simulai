@@ -749,12 +749,15 @@ class PIRMSELoss(LossBasics):
         initial_state: Union[dict, torch.Tensor] = None,
         boundary_input: dict = None,
         boundary_penalties: list = [1],
+        extra_input_data: Union[dict, torch.Tensor] = None,
+        extra_target_data: Union[dict, torch.Tensor] = None,
         initial_penalty: float = 1,
         axis: int = -1,
         relative: bool = False,
         lambda_1: float = 0.0,
         lambda_2: float = 0.0,
         weights=None,
+        weights_residual=None,
         device: str = "cpu",
         causality_preserving: bool = False,
         grid_shape: Tuple[int] = None,
@@ -766,8 +769,8 @@ class PIRMSELoss(LossBasics):
         self.causality_parameter = causality_parameter
 
         if (
-            isinstance(input_data, np.ndarray)
-            == isinstance(target_data, np.ndarray)
+            isinstance(extra_input_data, np.ndarray)
+            == isinstance(extra_target_data, np.ndarray)
             == True
         ):
             self.hybrid_data_pinn = True
@@ -825,8 +828,8 @@ class PIRMSELoss(LossBasics):
 
         # Preparing extra data, when necessary
         if self.hybrid_data_pinn:
-            input_data, target_data = self._to_tensor(
-                input_data, target_data, device=device
+            extra_input_data, extra_target_data = self._to_tensor(
+                extra_input_data, extra_target_data, device=device
             )
             self.extra_data = self._extra_data
         else:
@@ -861,7 +864,7 @@ class PIRMSELoss(LossBasics):
 
             # Evaluating loss function for residual
             residual_loss = self._residual_loss(
-                residual_approximation=residual_approximation, weights=weights
+                residual_approximation=residual_approximation, weights=weights_residual
             )
 
             # Evaluating loss for the boundary approaximation, if appliable
@@ -876,7 +879,7 @@ class PIRMSELoss(LossBasics):
             )
 
             # Evaluating extra data loss, when appliable
-            extra_data = self.extra_data(input_data=input_data, target_data=target_data)
+            extra_data = self.extra_data(input_data=extra_input_data, target_data=extra_target_data)
 
             # L² and L¹ regularization term
             weights_l2 = self.operator.weights_l2
@@ -909,7 +912,7 @@ class PIRMSELoss(LossBasics):
             self.loss_states["bound"].append(bound_detach)
             self.loss_states["extra_data"].append(extra_data_detach)
 
-            losses_list = np.array([pde_detach, init_detach, bound_detach, call_back])
+            losses_list = np.array([pde_detach, init_detach, bound_detach, extra_data_detach, call_back])
 
             sys.stdout.write((loss_str).format(*losses_list[loss_indices]))
 

@@ -26,7 +26,6 @@ from torch.autograd.functional import jacobian
 from simulai.io import MakeTensor
 from simulai.tokens import D
 
-
 class SymbolicOperator(torch.nn.Module):
     """
     The SymbolicOperatorClass is a class that constructs tensor operators using symbolic expressions written in PyTorch.

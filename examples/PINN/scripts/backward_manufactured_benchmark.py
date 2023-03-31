@@ -41,6 +41,7 @@ pi = np.pi
 time_train = (np.random.rand(n) * T_max)[:, None]
 time_eval = np.linspace(0, T_max, N)[:, None]
 time_ext = np.linspace(T_max, T_max + 0.5, N)[:, None]
+indices = np.random.choice(N, n, replace=False)
 
 def dataset(t: np.ndarray = None) -> np.ndarray:
     return (t - mu) ** 2 * np.cos(omega * np.pi * t)
@@ -48,6 +49,9 @@ def dataset(t: np.ndarray = None) -> np.ndarray:
 # Datasets used for comparison
 u_data = dataset(t=time_eval)
 u_data_ext = dataset(t=time_ext)
+
+time_extra_train = time_eval[indices]
+u_extra_train = u_data[indices]
 
 def k1(t:torch.Tensor) -> torch.Tensor:
 
@@ -62,7 +66,7 @@ output_labels = ["u"]
 n_inputs = len(input_labels)
 n_outputs = len(output_labels)
 
-n_epochs = 10_000  # Maximum number of iterations for ADAM
+n_epochs = 50_000  # Maximum number of iterations for ADAM
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
 def model():
@@ -103,7 +107,7 @@ residual = SymbolicOperator(
     input_vars=["t"],
     output_vars=["u"],
     function=net,
-    constants={"omega": omega, "mu": mu},
+    constants={"omega": omega, "mu": torch.nn.parameter.Parameter(torch.Tensor([1.]))},
     external_functions={"k1": k1},
     engine="torch",
 )
@@ -112,6 +116,8 @@ params = {
     "residual": residual,
     "initial_input": np.array([0])[:, None],
     "initial_state": u_data[0],
+    "extra_input_data": time_extra_train[:, None],
+    "extra_target_data": u_extra_train[:, None],
     "weights_residual": [1],
     "initial_penalty": 1,
 }
