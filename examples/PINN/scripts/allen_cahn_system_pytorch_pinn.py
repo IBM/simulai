@@ -163,6 +163,7 @@ class TestAllencahnPINN:
                 "periodic_du": [data_boundary_xL, data_boundary_x0],
             },
             "boundary_penalties": [1, 1],
+            "weights_residual": [1],
             "initial_penalty": 100,
         }
 
