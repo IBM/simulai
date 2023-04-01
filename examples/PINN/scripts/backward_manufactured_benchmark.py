@@ -66,7 +66,7 @@ output_labels = ["u"]
 n_inputs = len(input_labels)
 n_outputs = len(output_labels)
 
-n_epochs = 50_000  # Maximum number of iterations for ADAM
+n_epochs = 5_000  # Maximum number of iterations for ADAM
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
 def model():
@@ -107,7 +107,8 @@ residual = SymbolicOperator(
     input_vars=["t"],
     output_vars=["u"],
     function=net,
-    constants={"omega": omega, "mu": torch.nn.parameter.Parameter(torch.Tensor([1.]))},
+    constants={"omega": omega, "mu":
+               torch.Tensor([1.0])},
     external_functions={"k1": k1},
     engine="torch",
 )

@@ -20,11 +20,36 @@ import sympy
 import torch
 from sympy import sympify
 from sympy.parsing.sympy_parser import parse_expr
+import torch
+from torch.nn.parameter import Parameter
 from torch.autograd import grad
 from torch.autograd.functional import jacobian
 
 from simulai.io import MakeTensor
 from simulai.tokens import D
+
+class AdjustableParameter:
+
+    def __init__(self, initial_value:float=1.0) -> None:
+
+        """
+        Template for defining adjustable parameters. AdjustableParameter is 
+        an unknown parameter which can be estimated via gradient descent.
+
+        Parameters
+        ----------
+
+        initial_value: float
+            A value for initializing the parameter. The value will
+            be updated along the optimization process. 
+        """
+
+        self.value_ = Parameter(torch.Tensor([initial_value]))[0]
+
+    @property
+    def value(self) -> torch.Tensor:
+
+        return self.value_
 
 class SymbolicOperator(torch.nn.Module):
     """
