@@ -264,7 +264,10 @@ class SymbolicOperator(torch.nn.Module):
                 else:
                     raise Exception("It is necessary to define a constants dict.")
         else:
-            expr_ = expr
+            if self.constants is not None:
+                expr_ = expr.subs(self.constants)
+            else:
+                pass
 
         return expr_
 

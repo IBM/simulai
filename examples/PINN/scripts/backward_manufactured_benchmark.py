@@ -27,7 +27,6 @@ from simulai.optimization import Optimizer
 from simulai.regression import DenseNetwork
 from simulai.residuals import SymbolicOperator, AdjustableParameter
 
-
 # This is a very basic script for exploring the PDE solving via
 # feedforward fully-connected neural networks
 
