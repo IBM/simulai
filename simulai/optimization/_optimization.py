@@ -252,6 +252,41 @@ class Optimizer:
         self.loss_states = None
         self.is_physics_informed = False
 
+    def _verify_GPU_memory_availability(self, device: str = None):
+
+        total = torch.cuda.get_device_properties(device).total_memory
+        reserved = torch.cuda.memory_reserved(device)
+        allocated = torch.cuda.memory_allocated(device)
+
+        return total - reserved - allocated
+
+    def _try_to_transfer_to_GPU(self, data : Union[dict, torch.Tensor], device:str=None) -> None:
+
+        available_GPU_memory = self._verify_GPU_memory_availability(device=device)
+
+        if isinstance(data, dict):
+            data_size = sum([t.element_size()*t.nelement() for t in data.values()])
+
+            if data_size < available_GPU_memory:
+                data_ = {k:t.to(device) for k, t in data.items()}
+                print("Data transferred to GPU.")
+            else:
+                print("It was not possible to move data to GPU: insufficient memory.")
+
+        elif isinstance(data, torch.Tensor):
+            data_size = data.element_size()*data.nelement() 
+
+            if data_size < available_GPU_memory:
+                print("Data transferred to GPU.")
+                data_ = data.to(device)
+            else:
+                print("It was not possible to move data to GPU: insufficient memory.")
+
+        else:
+            pass
+
+        return data_
+
     def _get_lr_decay(self) -> Union[callable, None]:
         if self.lr_decay_scheduler_params is not None:
             name = self.lr_decay_scheduler_params.pop("name")
@@ -566,6 +601,9 @@ class Optimizer:
         distributed: bool = False,
         use_jit: bool = False,
     ) -> None:
+
+        device_label = device
+
         # Verifying if the params dictionary contains Physics-informed
         # attributes
         if "residual" in params:
@@ -666,6 +704,14 @@ class Optimizer:
             self.lr_decay_scheduler = lr_scheduler_class(
                 self.optimizer_instance, **self.lr_decay_scheduler_params
             )
+        else:
+            pass
+
+        # If GPU is being used, try to completely allocate the dataset there. 
+        if device_label == "gpu":
+            input_data = self._try_to_transfer_to_GPU(data=input_data, device=device)
+            target_data = self._try_to_transfer_to_GPU(data=target_data, device=device)
+
         else:
             pass
 
