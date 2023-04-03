@@ -608,8 +608,6 @@ class Optimizer:
         use_jit: bool = False,
     ) -> None:
 
-        device_label = device
-
         # Verifying if the params dictionary contains Physics-informed
         # attributes
         if "residual" in params:
@@ -660,16 +658,18 @@ class Optimizer:
             pass
 
         # Configuring the device to be used during the fitting process
+        device_label = device
         if device == "gpu":
             if not torch.cuda.is_available():
                 print("Warning: There is no GPU available, using CPU instead.")
                 device = "cpu"
+                device_label = "cpu"
             else:
                 try:
                     device = "cuda:" + os.environ["LOCAL_RANK"]
                 except KeyError:
                     device = "cuda"
-
+                device_label = "gpu"
                 print("Using GPU.")
         elif device == "cpu":
             print("Using CPU.")
