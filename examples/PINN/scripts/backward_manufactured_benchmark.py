@@ -106,8 +106,8 @@ residual = SymbolicOperator(
     input_vars=["t"],
     output_vars=["u"],
     function=net,
-    constants={"omega": omega, "mu":
-               AdjustableParameter(initial_value=0.5).value},
+    constants={"omega": omega},
+    trainable_parameters={"mu": AdjustableParameter(initial_value=0.5).value},
     external_functions={"k1": k1},
     engine="torch",
 )
