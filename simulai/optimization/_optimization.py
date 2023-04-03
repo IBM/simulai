@@ -623,6 +623,14 @@ class Optimizer:
 
             extra_parameters = self._seek_by_extra_trainable_parameters(residual=params["residual"]) 
 
+            if use_jit:
+                try:
+                    params["residual"] = torch.compile(params["residual"])
+                except AttributeError:
+                    pass
+            else:
+                pass
+
         _adjust_loss_function_to_model(
             model=op, loss=loss, physics_informed=self.is_physics_informed
         )
