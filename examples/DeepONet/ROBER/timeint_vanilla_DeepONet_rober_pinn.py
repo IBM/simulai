@@ -175,6 +175,7 @@ optimizer = Optimizer(
         "name": model_name,
         "template": model,
         "checkpoint_frequency": 10_000,
+        "overwrite": False,
     },
     summary_writer=True,
 )
