@@ -26,6 +26,7 @@ from torch.distributed.rpc import RRef
 from simulai.abstract import Dataset, Regression
 from simulai.file import SPFile
 from simulai.templates import NetworkTemplate
+from simulai.residuals import SymbolicOperator
 
 # Basic built-in optimization toolkit for SimulAI
 
@@ -272,7 +273,7 @@ class Optimizer:
                 print("Data transferred to GPU.")
                 return data_
             else:
-                
+
                 print("It was not possible to move data to GPU: insufficient memory.")
                 print(f"{available_GPU_memory} < {data_size}, in bytes")
                 return data
@@ -292,6 +293,13 @@ class Optimizer:
         else:
             return data
 
+    def _seek_by_extra_trainable_parameters(self, residual:SymbolicOperator=None) -> Union[list, None]:
+        if hasattr(residual, "constants"):
+            extra_parameters = [c for c in residual.constants.values() if isinstance(c, torch.Tensor)] 
+            print("There are extra trainable parameters.")
+            return extra_parameters
+        else:
+            return None
 
     def _get_lr_decay(self) -> Union[callable, None]:
         if self.lr_decay_scheduler_params is not None:
@@ -613,6 +621,8 @@ class Optimizer:
         if "residual" in params:
             self.is_physics_informed = True
 
+            extra_parameters = self._seek_by_extra_trainable_parameters(residual=params["residual"]) 
+
         _adjust_loss_function_to_model(
             model=op, loss=loss, physics_informed=self.is_physics_informed
         )
@@ -685,6 +695,9 @@ class Optimizer:
             for param in op.parameters():
                 optimizer_params.append(RRef(param))
 
+            if extra_parameters is not None:
+                optimizer_params += extra_parameters
+
             self.optimizer_instance = DistributedOptimizer(
                 self.optim_class, optimizer_params, **self.params
             )
@@ -700,7 +713,11 @@ class Optimizer:
                 except AttributeError:
                     pass
 
-            self.optimizer_instance = self.optim_class(op.parameters(), **self.params)
+            if extra_parameters is not None:
+                optimizer_params = list(op.parameters()) + extra_parameters
+                self.optimizer_instance = self.optim_class(optimizer_params, **self.params)
+            else:
+                self.optimizer_instance = self.optim_class(op.parameters(), **self.params)
 
         # Configuring LR decay, when necessary
         lr_scheduler_class = self._get_lr_decay()

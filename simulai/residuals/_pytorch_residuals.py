@@ -44,12 +44,8 @@ class AdjustableParameter:
             be updated along the optimization process. 
         """
 
-        self.value_ = Parameter(torch.Tensor([initial_value]))[0]
+        self.value = Parameter(torch.Tensor([initial_value]))
 
-    @property
-    def value(self) -> torch.Tensor:
-
-        return self.value_
 
 class SymbolicOperator(torch.nn.Module):
     """

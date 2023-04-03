@@ -25,7 +25,7 @@ os.environ["engine"] = "pytorch"
 from simulai.metrics import L2Norm
 from simulai.optimization import Optimizer
 from simulai.regression import DenseNetwork
-from simulai.residuals import SymbolicOperator
+from simulai.residuals import SymbolicOperator, AdjustableParameter
 
 
 # This is a very basic script for exploring the PDE solving via
@@ -108,7 +108,7 @@ residual = SymbolicOperator(
     output_vars=["u"],
     function=net,
     constants={"omega": omega, "mu":
-               torch.Tensor([1.0])},
+               AdjustableParameter(initial_value=0.5).value},
     external_functions={"k1": k1},
     engine="torch",
 )
