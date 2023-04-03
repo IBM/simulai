@@ -575,13 +575,6 @@ class Optimizer:
             model=op, loss=loss, physics_informed=self.is_physics_informed
         )
 
-        # Trying to use the PyTorch JIT compilation
-        if use_jit:
-            try:
-                op = torch.compile(op)
-            except AttributeError:
-                pass
-
         # When using inputs with the format h5py.Dataset
         if callable(input_data) and callable(target_data):
             assert batch_size, (
@@ -655,6 +648,13 @@ class Optimizer:
         else:
             # Guaranteeing the correct operator placement when using a single device
             op = op.to(device)
+
+            # Trying to use the PyTorch JIT compilation
+            if use_jit:
+                try:
+                    op = torch.compile(op)
+                except AttributeError:
+                    pass
 
             self.optimizer_instance = self.optim_class(op.parameters(), **self.params)
 
