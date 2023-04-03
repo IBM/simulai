@@ -270,22 +270,28 @@ class Optimizer:
             if data_size < available_GPU_memory:
                 data_ = {k:t.to(device) for k, t in data.items()}
                 print("Data transferred to GPU.")
+                return data_
             else:
+                
                 print("It was not possible to move data to GPU: insufficient memory.")
+                print(f"{available_GPU_memory} < {data_size}, in bytes")
+                return data
 
         elif isinstance(data, torch.Tensor):
             data_size = data.element_size()*data.nelement() 
 
             if data_size < available_GPU_memory:
-                print("Data transferred to GPU.")
                 data_ = data.to(device)
+                print("Data transferred to GPU.")
+                return data_
             else:
+
                 print("It was not possible to move data to GPU: insufficient memory.")
-
+                print(f"{available_GPU_memory} < {data_size}, in bytes")
+                return data
         else:
-            pass
+            return data
 
-        return data_
 
     def _get_lr_decay(self) -> Union[callable, None]:
         if self.lr_decay_scheduler_params is not None:
