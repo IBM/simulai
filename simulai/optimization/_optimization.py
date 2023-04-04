@@ -134,7 +134,6 @@ def _adjust_loss_function_to_model(
             + f" is not the recommended ({recommended_loss}). Please, redefine it."
         )
 
-
 # Wrapper for basic back-propagation optimization
 # algorithms
 class Optimizer:
@@ -296,7 +295,8 @@ class Optimizer:
 
     def _seek_by_extra_trainable_parameters(self, residual:SymbolicOperator=None) -> Union[list, None]:
         if hasattr(residual, "constants"):
-            extra_parameters = [c for c in residual.trainable_parameters.values() if isinstance(c, Parameter)] 
+            extra_parameters = [c for c in residual.trainable_parameters.values()
+                                if isinstance(c, Parameter)] 
             print("There are extra trainable parameters.")
             return extra_parameters
         else:

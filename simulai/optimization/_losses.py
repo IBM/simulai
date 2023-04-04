@@ -912,7 +912,8 @@ class PIRMSELoss(LossBasics):
             self.loss_states["bound"].append(bound_detach)
             self.loss_states["extra_data"].append(extra_data_detach)
 
-            losses_list = np.array([pde_detach, init_detach, bound_detach, extra_data_detach, call_back])
+            losses_list = np.array([pde_detach, init_detach, bound_detach,
+                                    extra_data_detach, call_back])
 
             sys.stdout.write((loss_str).format(*losses_list[loss_indices]))
 
