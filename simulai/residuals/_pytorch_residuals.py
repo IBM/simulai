@@ -28,25 +28,6 @@ from torch.autograd.functional import jacobian
 from simulai.io import MakeTensor
 from simulai.tokens import D
 
-class AdjustableParameter:
-
-    def __init__(self, initial_value:float=1.0) -> None:
-
-        """
-        Template for defining adjustable parameters. AdjustableParameter is 
-        an unknown parameter which can be estimated via gradient descent.
-
-        Parameters
-        ----------
-
-        initial_value: float
-            A value for initializing the parameter. The value will
-            be updated along the optimization process. 
-        """
-
-        self.value = Parameter(torch.Tensor([initial_value]))
-
-
 class SymbolicOperator(torch.nn.Module):
     """
     The SymbolicOperatorClass is a class that constructs tensor operators using symbolic expressions written in PyTorch.
@@ -93,6 +74,13 @@ class SymbolicOperator(torch.nn.Module):
         self.engine = importlib.import_module(engine)
 
         self.constants = constants
+
+        if trainable_parameters is not None:
+            self.trainable_parameters = trainable_parameters 
+
+        else:
+            self.trainable_parameters = dict()
+
         self.external_functions = external_functions
         self.processing = processing
         self.periodic_bc_protected_key = "periodic"
@@ -131,11 +119,6 @@ class SymbolicOperator(torch.nn.Module):
         self.input_vars = [self._parse_variable(var=var) for var in input_vars]
         self.output_vars = [self._parse_variable(var=var) for var in output_vars]
 
-        if trainable_parameters is not None:
-            #self.trainable_parameters = {k: Parameter(torch.tensor(v)) for k, v in trainable_parameters.items()}
-            self.trainable_parameters = trainable_parameters 
-        else:
-            self.trainable_parameters = dict()
 
         self.input_names = [var.name for var in self.input_vars]
         self.output_names = [var.name for var in self.output_vars]
@@ -179,18 +162,26 @@ class SymbolicOperator(torch.nn.Module):
             gradient_function = gradient
 
         subs = {self.diff_symbol.name: gradient_function}
-        subs.update(self.trainable_parameters)
         subs.update(self.external_functions)
         subs.update(self.protected_funcs_subs)
 
         for expr in self.expressions:
-            f_expr = sympy.lambdify(self.all_vars, expr, subs)
+
+            if not callable(expr):
+                f_expr = sympy.lambdify(self.all_vars, expr, subs)
+            else:
+                f_expr = expr
 
             self.f_expressions.append(f_expr)
 
         if self.auxiliary_expressions is not None:
+
             for key, expr in self.auxiliary_expressions.items():
-                g_expr = sympy.lambdify(self.all_vars, expr, subs)
+
+                if not callable(expr):
+                    g_expr = sympy.lambdify(self.all_vars, expr, subs)
+                else:
+                    g_expr = expr
 
                 self.g_expressions[key] = g_expr
 
@@ -261,7 +252,8 @@ class SymbolicOperator(torch.nn.Module):
 
                 if self.constants is not None:
                     expr_ = expr_.subs(self.constants)
-
+                if self.trainable_parameters is not None:
+                    expr_ = expr_.subs(self.trainable_parameters)
             except ValueError:
                 if self.constants is not None:
                     _expr = expr
@@ -271,6 +263,8 @@ class SymbolicOperator(torch.nn.Module):
                     expr_ = parse_expr(_expr, evaluate=0)
                 else:
                     raise Exception("It is necessary to define a constants dict.")
+        elif callable(expr):
+            expr_ = expr
         else:
             if self.constants is not None:
                 expr_ = expr.subs(self.constants)
@@ -620,3 +614,40 @@ class SymbolicOperator(torch.nn.Module):
             return self.forward(input_data=inputs)
 
         return jacobian(inner, inputs)
+
+def diff(feature:torch.Tensor, param:torch.Tensor) -> torch.Tensor:
+
+    """
+    Calculates the gradient of the given feature with respect to the given parameter.
+
+    Parameters
+    ----------
+    feature : torch.Tensor
+        Tensor with the input feature.
+    param : torch.Tensor
+        Tensor with the parameter to calculate the gradient with respect to.
+
+    Returns
+    -------
+    grad_ : torch.Tensor
+        Tensor with the gradient of the feature with respect to the given parameter.
+
+    Examples
+    --------
+    >>> feature = torch.tensor([1, 2, 3], dtype=torch.float32)
+    >>> param = torch.tensor([2, 3, 4], dtype=torch.float32)
+    >>> gradient(feature, param)
+    tensor([1., 1., 1.], grad_fn=<AddBackward0>)
+    """
+    grad_ = grad(
+        feature,
+        param,
+        grad_outputs=torch.ones_like(feature),
+        create_graph=True,
+        allow_unused=True,
+        retain_graph=True,
+    )
+
+    return grad_[0]
+
+
