@@ -618,6 +618,7 @@ class Optimizer:
 
         # Verifying if the params dictionary contains Physics-informed
         # attributes
+        extra_parameters = None
         if "residual" in params:
             self.is_physics_informed = True
 
