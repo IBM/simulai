@@ -135,6 +135,33 @@ class ImprovedDenseNetwork(NetworkTemplate):
 
         return output
 
+    @guarantee_device
+    def eval(
+        self, input_data: Union[np.ndarray, torch.Tensor] = None
+    ) -> np.ndarray:
+
+        """
+
+        Forward step
+
+        Parameters
+        ----------
+
+        input_data: Union[np.ndarray, torch.Tensor] 
+            Input dataset.
+
+        Returns
+        -------
+
+        torch.Tensor
+            The output after the network evaluation.
+
+        """
+
+        output = self.forward(input_data=input_data)
+
+        return output.detach().numpy()
+ 
     def summary(self) -> None:
 
         """

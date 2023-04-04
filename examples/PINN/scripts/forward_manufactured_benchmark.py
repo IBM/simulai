@@ -135,6 +135,8 @@ error = 100 * l2_norm(
     data=approximated_data, reference_data=u_data, relative_norm=True
 )
 
+print(f"Approximation error: {error} %")
+
 for ii in range(n_outputs):
     plt.plot(time_eval, approximated_data, label="Approximated")
     plt.plot(time_eval, u_data, label="Exact")
@@ -143,4 +145,3 @@ for ii in range(n_outputs):
     plt.legend()
     plt.show()
 
-    print(f"Approximation error for the derivatives: {error} %")

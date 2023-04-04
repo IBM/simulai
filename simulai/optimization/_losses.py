@@ -522,6 +522,7 @@ class PIRMSELoss(LossBasics):
         self.loss_evaluator = None
         self.residual = None
         self.tol = 1e-25
+        self.device = None
 
         self.axis_loss_evaluator = lambda res: torch.mean(torch.square((res)), dim=1)
 
@@ -670,7 +671,7 @@ class PIRMSELoss(LossBasics):
 
         """
 
-        return [torch.Tensor([0.0]) for k in boundary_input.keys()]
+        return [torch.Tensor([0.0]).to(self.device) for k in boundary_input.keys()]
 
     def _no_boundary(
         self, boundary_input: dict = None, residual: object = None
@@ -681,12 +682,12 @@ class PIRMSELoss(LossBasics):
 
         """
 
-        return torch.Tensor([0.0])
+        return torch.Tensor([0.0]).to(self.device)
 
     def _no_extra_data(self, input_data:torch.Tensor=None,
         target_data:torch.Tensor=None) -> torch.Tensor:
 
-        return torch.Tensor([0.0])
+        return torch.Tensor([0.0]).to(self.device)
 
     def _no_residual_wrapper(self, input_data: torch.Tensor = None) -> torch.Tensor:
         return self.residual(input_data)
@@ -767,6 +768,8 @@ class PIRMSELoss(LossBasics):
         self.residual = residual
         self.grid_shape = grid_shape
         self.causality_parameter = causality_parameter
+
+        self.device = device
 
         if (
             isinstance(extra_input_data, np.ndarray)
