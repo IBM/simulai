@@ -17,6 +17,6 @@ from simulai import engine
 assert engine is not None, "The variable engine was not defined."
 
 if engine == "pytorch":
-    from ._pytorch_residuals import SymbolicOperator, AdjustableParameter
+    from ._pytorch_residuals import SymbolicOperator, diff
 else:
     print(f"The engine {engine} does not support symbolic operations.")
