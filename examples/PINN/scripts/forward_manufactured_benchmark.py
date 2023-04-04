@@ -85,7 +85,7 @@ def model():
     encoder_v = SLFNN(input_size=1, output_size=50, activation="tanh")
 
     net = ImprovedDenseNetwork(
-        network=densenet, encoder_u=encoder_u, encoder_v=encoder_v
+        network=densenet, encoder_u=encoder_u, encoder_v=encoder_v, devices="gpu",
     )
 
    # It prints a summary of the network features
@@ -106,6 +106,7 @@ residual = SymbolicOperator(
     constants={"omega": omega, "mu": mu},
     external_functions={"k1": k1},
     engine="torch",
+    device="gpu",
 )
 
 params = {
@@ -122,6 +123,7 @@ optimizer.fit(
     n_epochs=n_epochs,
     loss="pirmse",
     params=params,
+    device="gpu"
 )
 
 # Evaluation in training dataset
