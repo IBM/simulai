@@ -160,7 +160,7 @@ class ImprovedDenseNetwork(NetworkTemplate):
 
         output = self.forward(input_data=input_data)
 
-        return output.detach().numpy()
+        return output.detach().cpu().numpy()
  
     def summary(self) -> None:
 
