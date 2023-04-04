@@ -132,7 +132,10 @@ class SymbolicOperator(torch.nn.Module):
         self.output_vars = [self._parse_variable(var=var) for var in output_vars]
 
         if trainable_parameters is not None:
-            self.trainable_parameters = [self._parse_variable(var) for var in trainable_parameters.keys()]
+            #self.trainable_parameters = {k: Parameter(torch.tensor(v)) for k, v in trainable_parameters.items()}
+            self.trainable_parameters = trainable_parameters 
+        else:
+            self.trainable_parameters = dict()
 
         self.input_names = [var.name for var in self.input_vars]
         self.output_names = [var.name for var in self.output_vars]
@@ -176,11 +179,9 @@ class SymbolicOperator(torch.nn.Module):
             gradient_function = gradient
 
         subs = {self.diff_symbol.name: gradient_function}
+        subs.update(self.trainable_parameters)
         subs.update(self.external_functions)
         subs.update(self.protected_funcs_subs)
-
-        if self.trainable_parameters is not None:
-            self.all_vars += list(self.trainable_parameters.keys())
 
         for expr in self.expressions:
             f_expr = sympy.lambdify(self.all_vars, expr, subs)
