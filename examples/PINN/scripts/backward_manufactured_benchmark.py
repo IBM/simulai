@@ -16,6 +16,7 @@ import os
 import torch
 import matplotlib.pyplot as plt
 import numpy as np
+from torch.nn.parameter import Parameter
 
 # In order to execute this script, it is necessary to
 # set the environment variable engine as "pytorch" before initializing
@@ -25,7 +26,7 @@ os.environ["engine"] = "pytorch"
 from simulai.metrics import L2Norm
 from simulai.optimization import Optimizer
 from simulai.regression import DenseNetwork
-from simulai.residuals import SymbolicOperator, AdjustableParameter
+from simulai.residuals import SymbolicOperator, diff
 
 # This is a very basic script for exploring the PDE solving via
 # feedforward fully-connected neural networks
@@ -52,12 +53,28 @@ u_data_ext = dataset(t=time_ext)
 time_extra_train = time_eval[indices]
 u_extra_train = u_data[indices]
 
-def k1(t:torch.Tensor) -> torch.Tensor:
+def k1(t:torch.Tensor, mu) -> torch.Tensor:
 
     return 2*(t-mu)*torch.cos(omega*pi*t)
 
-# The expression we aim at minimizing
-f = "D(u, t) - k1(t) + omega*pi*((t - mu)**2)*sin(omega*pi*t)"
+class MyExpression(torch.nn.Module):
+
+    def __init__(self):
+
+        super(MyExpression, self).__init__()
+
+        self.mu = Parameter(torch.tensor(0.5)) 
+
+    def forward(self, u, t):
+
+        # The expression we aim at minimizing
+        du_dt = diff(u, t)
+
+        f = du_dt - k1(t, self.mu) + omega*pi*((t - self.mu)**2)*torch.sin(omega*pi*t)
+
+        return f
+
+expression = MyExpression()
 
 input_labels = ["t"]
 output_labels = ["u"]
@@ -65,7 +82,7 @@ output_labels = ["u"]
 n_inputs = len(input_labels)
 n_outputs = len(output_labels)
 
-n_epochs = 5_000  # Maximum number of iterations for ADAM
+n_epochs = 10_000  # Maximum number of iterations for ADAM
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
 def model():
@@ -102,12 +119,12 @@ optimizer_config = {"lr": lr}
 optimizer = Optimizer("adam", params=optimizer_config)
 
 residual = SymbolicOperator(
-    expressions=[f],
+    expressions=[expression],
     input_vars=["t"],
     output_vars=["u"],
     function=net,
-    constants={"omega": omega, "mu":
-               AdjustableParameter(initial_value=0.5).value},
+    constants={"omega": omega},
+    trainable_parameters={'mu': expression.mu},
     external_functions={"k1": k1},
     engine="torch",
 )
@@ -138,6 +155,8 @@ l2_norm = L2Norm()
 error = 100 * l2_norm(
     data=approximated_data, reference_data=u_data, relative_norm=True
 )
+
+print(f"he parameter 'mu' was estimated as {expression.mu}")
 
 for ii in range(n_outputs):
     plt.plot(time_eval, approximated_data, label="Approximated")

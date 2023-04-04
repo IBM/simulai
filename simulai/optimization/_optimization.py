@@ -22,6 +22,7 @@ import numpy as np
 import torch
 from torch.distributed.optim import DistributedOptimizer
 from torch.distributed.rpc import RRef
+from torch.nn.parameter import Parameter
 
 from simulai.abstract import Dataset, Regression
 from simulai.file import SPFile
@@ -132,7 +133,6 @@ def _adjust_loss_function_to_model(
             f"The loss function used for this case ({loss})"
             + f" is not the recommended ({recommended_loss}). Please, redefine it."
         )
-
 
 # Wrapper for basic back-propagation optimization
 # algorithms
@@ -295,7 +295,8 @@ class Optimizer:
 
     def _seek_by_extra_trainable_parameters(self, residual:SymbolicOperator=None) -> Union[list, None]:
         if hasattr(residual, "constants"):
-            extra_parameters = [c for c in residual.constants.values() if isinstance(c, torch.Tensor)] 
+            extra_parameters = [c for c in residual.trainable_parameters.values()
+                                if isinstance(c, Parameter)] 
             print("There are extra trainable parameters.")
             return extra_parameters
         else:
