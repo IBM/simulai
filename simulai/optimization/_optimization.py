@@ -26,8 +26,8 @@ from torch.nn.parameter import Parameter
 
 from simulai.abstract import Dataset, Regression
 from simulai.file import SPFile
-from simulai.templates import NetworkTemplate
 from simulai.residuals import SymbolicOperator
+from simulai.templates import NetworkTemplate
 
 # Basic built-in optimization toolkit for SimulAI
 
@@ -134,6 +134,7 @@ def _adjust_loss_function_to_model(
             + f" is not the recommended ({recommended_loss}). Please, redefine it."
         )
 
+
 # Wrapper for basic back-propagation optimization
 # algorithms
 class Optimizer:
@@ -232,6 +233,8 @@ class Optimizer:
             self.checkpoint_params = dict()
             self.checkpoint_handler = self._bypass_checkpoint_handler
 
+        # When checkpoints are used, it is possible to overwrite them or
+        # creating multiple checkpoints in different states
         overwrite_savepoint = lambda epoch: ""
         not_overwrite_savepoint = lambda epoch: f"_ckp_epoch_{epoch}"
 
@@ -254,49 +257,52 @@ class Optimizer:
         self.is_physics_informed = False
 
     def _verify_GPU_memory_availability(self, device: str = None):
-
         total = torch.cuda.get_device_properties(device).total_memory
         reserved = torch.cuda.memory_reserved(device)
         allocated = torch.cuda.memory_allocated(device)
 
         return total - reserved - allocated
 
-    def _try_to_transfer_to_GPU(self, data : Union[dict, torch.Tensor], device:str=None) -> None:
-
+    def _try_to_transfer_to_GPU(
+        self, data: Union[dict, torch.Tensor], device: str = None
+    ) -> None:
         available_GPU_memory = self._verify_GPU_memory_availability(device=device)
 
         if isinstance(data, dict):
-            data_size = sum([t.element_size()*t.nelement() for t in data.values()])
+            data_size = sum([t.element_size() * t.nelement() for t in data.values()])
 
             if data_size < available_GPU_memory:
-                data_ = {k:t.to(device) for k, t in data.items()}
+                data_ = {k: t.to(device) for k, t in data.items()}
                 print("Data transferred to GPU.")
                 return data_
             else:
-
                 print("It was not possible to move data to GPU: insufficient memory.")
                 print(f"{available_GPU_memory} < {data_size}, in bytes")
                 return data
 
         elif isinstance(data, torch.Tensor):
-            data_size = data.element_size()*data.nelement() 
+            data_size = data.element_size() * data.nelement()
 
             if data_size < available_GPU_memory:
                 data_ = data.to(device)
                 print("Data transferred to GPU.")
                 return data_
             else:
-
                 print("It was not possible to move data to GPU: insufficient memory.")
                 print(f"{available_GPU_memory} < {data_size}, in bytes")
                 return data
         else:
             return data
 
-    def _seek_by_extra_trainable_parameters(self, residual:SymbolicOperator=None) -> Union[list, None]:
+    def _seek_by_extra_trainable_parameters(
+        self, residual: SymbolicOperator = None
+    ) -> Union[list, None]:
         if hasattr(residual, "constants"):
-            extra_parameters = [c for c in residual.trainable_parameters.values()
-                                if isinstance(c, Parameter)] 
+            extra_parameters = [
+                c
+                for c in residual.trainable_parameters.values()
+                if isinstance(c, Parameter)
+            ]
             print("There are extra trainable parameters.")
             return extra_parameters
         else:
@@ -359,7 +365,9 @@ class Optimizer:
         if epoch % self.checkpoint_frequency == 0:
             tag = self.overwrite_rule(epoch)
             saver = SPFile(compact=compact)
-            saver.write(save_dir=save_dir, name=name+tag, model=model, template=template)
+            saver.write(
+                save_dir=save_dir, name=name + tag, model=model, template=template
+            )
 
     def _no_shuffling(self, size: int = None) -> torch.Tensor:
         return torch.arange(size)
@@ -471,7 +479,6 @@ class Optimizer:
         validation_loss_function: callable = None,
     ) -> None:
         for epoch in range(n_epochs):
-
             self.optimizer_instance.zero_grad()
             self.optimizer_instance.step(loss_function)
 
@@ -616,14 +623,15 @@ class Optimizer:
         distributed: bool = False,
         use_jit: bool = False,
     ) -> None:
-
         # Verifying if the params dictionary contains Physics-informed
         # attributes
         extra_parameters = None
         if "residual" in params:
             self.is_physics_informed = True
 
-            extra_parameters = self._seek_by_extra_trainable_parameters(residual=params["residual"]) 
+            extra_parameters = self._seek_by_extra_trainable_parameters(
+                residual=params["residual"]
+            )
 
             if use_jit:
                 try:
@@ -725,9 +733,13 @@ class Optimizer:
 
             if extra_parameters is not None:
                 optimizer_params = list(op.parameters()) + extra_parameters
-                self.optimizer_instance = self.optim_class(optimizer_params, **self.params)
+                self.optimizer_instance = self.optim_class(
+                    optimizer_params, **self.params
+                )
             else:
-                self.optimizer_instance = self.optim_class(op.parameters(), **self.params)
+                self.optimizer_instance = self.optim_class(
+                    op.parameters(), **self.params
+                )
 
         # Configuring LR decay, when necessary
         lr_scheduler_class = self._get_lr_decay()
@@ -740,7 +752,7 @@ class Optimizer:
         else:
             pass
 
-        # If GPU is being used, try to completely allocate the dataset there. 
+        # If GPU is being used, try to completely allocate the dataset there.
         if device_label == "gpu":
             input_data = self._try_to_transfer_to_GPU(data=input_data, device=device)
             target_data = self._try_to_transfer_to_GPU(data=target_data, device=device)

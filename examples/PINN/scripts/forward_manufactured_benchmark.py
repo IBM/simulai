@@ -13,9 +13,10 @@
 #     limitations under the License.
 
 import os
-import torch
+
 import matplotlib.pyplot as plt
 import numpy as np
+import torch
 
 # In order to execute this script, it is necessary to
 # set the environment variable engine as "pytorch" before initializing
@@ -26,7 +27,6 @@ from simulai.metrics import L2Norm
 from simulai.optimization import Optimizer
 from simulai.regression import DenseNetwork
 from simulai.residuals import SymbolicOperator
-
 
 # This is a very basic script for exploring the PDE solving via
 # feedforward fully-connected neural networks
@@ -42,16 +42,19 @@ time_train = (np.random.rand(n) * T_max)[:, None]
 time_eval = np.linspace(0, T_max, N)[:, None]
 time_ext = np.linspace(T_max, T_max + 0.5, N)[:, None]
 
+
 def dataset(t: np.ndarray = None) -> np.ndarray:
     return (t - mu) ** 2 * np.cos(omega * np.pi * t)
+
 
 # Datasets used for comparison
 u_data = dataset(t=time_eval)
 u_data_ext = dataset(t=time_ext)
 
-def k1(t:torch.Tensor) -> torch.Tensor:
 
-    return 2*(t-mu)*torch.cos(omega*pi*t)
+def k1(t: torch.Tensor) -> torch.Tensor:
+    return 2 * (t - mu) * torch.cos(omega * pi * t)
+
 
 # The expression we aim at minimizing
 f = "D(u, t) - k1(t) + omega*pi*((t - mu)**2)*sin(omega*pi*t)"
@@ -65,10 +68,10 @@ n_outputs = len(output_labels)
 n_epochs = 10_000  # Maximum number of iterations for ADAM
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
-def model():
 
-    from simulai.regression import SLFNN, ConvexDenseNetwork
+def model():
     from simulai.models import ImprovedDenseNetwork
+    from simulai.regression import SLFNN, ConvexDenseNetwork
 
     # Configuration for the fully-connected network
     config = {
@@ -79,19 +82,23 @@ def model():
         "name": "net",
     }
 
-    #Instantiating and training the surrogate model
+    # Instantiating and training the surrogate model
     densenet = ConvexDenseNetwork(**config)
     encoder_u = SLFNN(input_size=1, output_size=50, activation="tanh")
     encoder_v = SLFNN(input_size=1, output_size=50, activation="tanh")
 
     net = ImprovedDenseNetwork(
-        network=densenet, encoder_u=encoder_u, encoder_v=encoder_v, devices="gpu",
+        network=densenet,
+        encoder_u=encoder_u,
+        encoder_v=encoder_v,
+        devices="gpu",
     )
 
-   # It prints a summary of the network features
+    # It prints a summary of the network features
     net.summary()
 
     return net
+
 
 net = model()
 
@@ -123,7 +130,7 @@ optimizer.fit(
     n_epochs=n_epochs,
     loss="pirmse",
     params=params,
-    device="gpu"
+    device="gpu",
 )
 
 # Evaluation in training dataset
@@ -131,9 +138,7 @@ approximated_data = net.eval(input_data=time_eval)
 
 l2_norm = L2Norm()
 
-error = 100 * l2_norm(
-    data=approximated_data, reference_data=u_data, relative_norm=True
-)
+error = 100 * l2_norm(data=approximated_data, reference_data=u_data, relative_norm=True)
 
 print(f"Approximation error: {error} %")
 
@@ -144,4 +149,3 @@ for ii in range(n_outputs):
     plt.ylabel(f"{output_labels[ii]}")
     plt.legend()
     plt.show()
-
