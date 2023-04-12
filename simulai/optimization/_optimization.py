@@ -447,16 +447,16 @@ class Optimizer:
                 mod_items_lower = [item.lower() for item in mod_items]
 
                 if optimizer in mod_items_lower:
-                    print(f"Optimizer {optimizer} found in {optim_module}.")
+                    print(f"Optimizer {optimizer} found in {optim_module.__name__}.")
                     optimizer_name = mod_items[mod_items_lower.index(optimizer)]
 
                     return getattr(optim_module, optimizer_name)
 
                 else:
-                    print(f"Optimizer {optimizer} not found in {optim_module}.")
+                    print(f"Optimizer {optimizer} not found in {optim_module.__name__}.")
         except:
             raise Exception(
-                f"There is no correspondent to {optimizer} in any know optimization module."
+                f"There is no correspondent to {optimizer} in any known optimization module."
             )
 
     # Getting up loss function from the correspondent module
