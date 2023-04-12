@@ -44,15 +44,14 @@ class TestSymbolicOperator(TestCase):
         pass
 
     @staticmethod
-    def k1(t:torch.Tensor) -> torch.Tensor:
+    def k1(t: torch.Tensor) -> torch.Tensor:
         return torch.cos(torch.sqrt(t) + 1) / 2
 
     @staticmethod
-    def k2(t:torch.Tensor) -> torch.Tensor:
-        return 3*torch.exp(torch.sin(t))
+    def k2(t: torch.Tensor) -> torch.Tensor:
+        return 3 * torch.exp(torch.sin(t))
 
     def test_symbolic_external_functions(self):
-
         f = f"D(u, t) - alpha*k2(t)*k1(t)"
 
         input_labels = ["t"]

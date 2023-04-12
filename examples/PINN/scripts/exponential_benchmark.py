@@ -34,34 +34,25 @@ from simulai.residuals import SymbolicOperator
 N = 10_000
 n = 1_000
 T_max = 1
-omega = 40
-mu = 0.25
+mu = 40
 pi = np.pi
 
 time_train = (np.random.rand(n) * T_max)[:, None]
 time_eval = np.linspace(0, T_max, N)[:, None]
 time_ext = np.linspace(T_max, T_max + 0.5, N)[:, None]
 
-
-def dataset(t: np.ndarray = None) -> np.ndarray:
-    return (t - mu) ** 2 * np.cos(omega * np.pi * t)
-
-def dataset_2(t: np.ndarray = None) -> np.ndarray:
-    return np.sin(omega * np.pi * t)
+def dataset(t):
+    return np.exp(-t)
 
 # Datasets used for comparison
-u_data = dataset_2(t=time_eval)
-u_data_ext = dataset_2(t=time_ext)
+u_data = dataset(t=mu*time_eval)
+#u_data_ext = dataset(t=time_ext)
 
 def k1(t: torch.Tensor) -> torch.Tensor:
     return 2 * (t - mu) * torch.cos(omega * pi * t)
 
-def k2(t: torch.Tensor) -> torch.Tensor:
-    return torch.sin(omega * pi * t)
-
 # The expression we aim at minimizing
-#f = "D(u, t) - k1(t) + omega*pi*((t - mu)**2)*sin(omega*pi*t)"
-f = "u - k2(t)"
+f = "D(u, t) + mu*u"
 
 input_labels = ["t"]
 output_labels = ["u"]
@@ -69,9 +60,8 @@ output_labels = ["u"]
 n_inputs = len(input_labels)
 n_outputs = len(output_labels)
 
-n_epochs = 20_000  # Maximum number of iterations for ADAM
+n_epochs = 5_000  # Maximum number of iterations for ADAM
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
-
 
 def model():
     from simulai.models import ImprovedDenseNetwork
@@ -80,7 +70,7 @@ def model():
     # Configuration for the fully-connected network
     config = {
         "layers_units": [50, 50, 50],
-        "activations": "tanh",
+        "activations": "elu",
         "input_size": 1,
         "output_size": 1,
         "name": "net",
@@ -88,8 +78,8 @@ def model():
 
     # Instantiating and training the surrogate model
     densenet = ConvexDenseNetwork(**config)
-    encoder_u = SLFNN(input_size=1, output_size=50, activation="tanh")
-    encoder_v = SLFNN(input_size=1, output_size=50, activation="tanh")
+    encoder_u = SLFNN(input_size=1, output_size=50, activation="elu")
+    encoder_v = SLFNN(input_size=1, output_size=50, activation="elu")
 
     net = ImprovedDenseNetwork(
         network=densenet,
@@ -99,7 +89,7 @@ def model():
     )
 
     # It prints a summary of the network features
-    net.summary()
+    densenet.summary()
 
     return net
 
@@ -113,9 +103,8 @@ residual = SymbolicOperator(
     expressions=[f],
     input_vars=["t"],
     output_vars=["u"],
+    constants = {'mu': mu},
     function=net,
-    constants={"omega": omega, "mu": mu},
-    external_functions={"k1": k1, "k2": k2},
     engine="torch",
     device="gpu",
 )
@@ -123,9 +112,9 @@ residual = SymbolicOperator(
 params = {
     "residual": residual,
     "initial_input": np.array([0])[:, None],
-    "initial_state": u_data[0],
+    "initial_state": np.array([1]),
     "weights_residual": [1],
-    "initial_penalty": 1,
+    "initial_penalty": 1000,
 }
 
 optimizer.fit(
@@ -147,8 +136,8 @@ error = 100 * l2_norm(data=approximated_data, reference_data=u_data, relative_no
 print(f"Approximation error: {error} %")
 
 for ii in range(n_outputs):
-    plt.plot(time_eval, approximated_data, label="Approximated")
-    plt.plot(time_eval, u_data, label="Exact")
+    plt.plot(40*time_eval, approximated_data, label="Approximated")
+    plt.plot(40*time_eval, u_data, label="Exact")
     plt.xlabel("t")
     plt.ylabel(f"{output_labels[ii]}")
     plt.legend()

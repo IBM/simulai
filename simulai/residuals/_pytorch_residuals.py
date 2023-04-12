@@ -20,13 +20,13 @@ import sympy
 import torch
 from sympy import sympify
 from sympy.parsing.sympy_parser import parse_expr
-import torch
-from torch.nn.parameter import Parameter
 from torch.autograd import grad
 from torch.autograd.functional import jacobian
+from torch.nn.parameter import Parameter
 
 from simulai.io import MakeTensor
 from simulai.tokens import D
+
 
 class SymbolicOperator(torch.nn.Module):
     """
@@ -76,7 +76,7 @@ class SymbolicOperator(torch.nn.Module):
         self.constants = constants
 
         if trainable_parameters is not None:
-            self.trainable_parameters = trainable_parameters 
+            self.trainable_parameters = trainable_parameters
 
         else:
             self.trainable_parameters = dict()
@@ -85,7 +85,7 @@ class SymbolicOperator(torch.nn.Module):
         self.processing = processing
         self.periodic_bc_protected_key = "periodic"
 
-        self.protected_funcs = ["cos", "sin", "sqrt"]
+        self.protected_funcs = ["cos", "sin", "sqrt", "exp"]
         self.protected_operators = ["L", "Div", "Identity", "Kronecker"]
 
         self.protected_funcs_subs = self._construct_protected_functions()
@@ -118,7 +118,6 @@ class SymbolicOperator(torch.nn.Module):
 
         self.input_vars = [self._parse_variable(var=var) for var in input_vars]
         self.output_vars = [self._parse_variable(var=var) for var in output_vars]
-
 
         self.input_names = [var.name for var in self.input_vars]
         self.output_names = [var.name for var in self.output_vars]
@@ -166,7 +165,6 @@ class SymbolicOperator(torch.nn.Module):
         subs.update(self.protected_funcs_subs)
 
         for expr in self.expressions:
-
             if not callable(expr):
                 f_expr = sympy.lambdify(self.all_vars, expr, subs)
             else:
@@ -175,9 +173,7 @@ class SymbolicOperator(torch.nn.Module):
             self.f_expressions.append(f_expr)
 
         if self.auxiliary_expressions is not None:
-
             for key, expr in self.auxiliary_expressions.items():
-
                 if not callable(expr):
                     g_expr = sympy.lambdify(self.all_vars, expr, subs)
                 else:
@@ -615,8 +611,8 @@ class SymbolicOperator(torch.nn.Module):
 
         return jacobian(inner, inputs)
 
-def diff(feature:torch.Tensor, param:torch.Tensor) -> torch.Tensor:
 
+def diff(feature: torch.Tensor, param: torch.Tensor) -> torch.Tensor:
     """
     Calculates the gradient of the given feature with respect to the given parameter.
 
@@ -649,5 +645,3 @@ def diff(feature:torch.Tensor, param:torch.Tensor) -> torch.Tensor:
     )
 
     return grad_[0]
-
-

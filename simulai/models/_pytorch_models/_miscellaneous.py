@@ -108,7 +108,6 @@ class ImprovedDenseNetwork(NetworkTemplate):
     def forward(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
-
         """
 
         Forward step
@@ -116,7 +115,7 @@ class ImprovedDenseNetwork(NetworkTemplate):
         Parameters
         ----------
 
-        input_data: Union[np.ndarray, torch.Tensor] 
+        input_data: Union[np.ndarray, torch.Tensor]
             Input dataset.
 
         Returns
@@ -136,10 +135,7 @@ class ImprovedDenseNetwork(NetworkTemplate):
         return output
 
     @guarantee_device
-    def eval(
-        self, input_data: Union[np.ndarray, torch.Tensor] = None
-    ) -> np.ndarray:
-
+    def eval(self, input_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
         """
 
         Forward step
@@ -147,7 +143,7 @@ class ImprovedDenseNetwork(NetworkTemplate):
         Parameters
         ----------
 
-        input_data: Union[np.ndarray, torch.Tensor] 
+        input_data: Union[np.ndarray, torch.Tensor]
             Input dataset.
 
         Returns
@@ -161,9 +157,8 @@ class ImprovedDenseNetwork(NetworkTemplate):
         output = self.forward(input_data=input_data)
 
         return output.detach().cpu().numpy()
- 
-    def summary(self) -> None:
 
+    def summary(self) -> None:
         """
         It prints a general view of the architecture.
         """
@@ -285,7 +280,6 @@ class MoEPool(NetworkTemplate):
             self.get_weights = self._get_weights_not_trainable
 
     def _get_weights_bypass(self, gating: torch.Tensor = None) -> torch.Tensor:
-
         """
         When the gating weights are trainable and no post-processing operation
         is applied over them.
@@ -294,20 +288,19 @@ class MoEPool(NetworkTemplate):
         ----------
 
         gating: torch.Tensor
-            The output of the gating operation.  
+            The output of the gating operation.
 
         Returns
         -------
 
         torch.Tensor:
-            The binary weights based on the clusters. 
+            The binary weights based on the clusters.
 
         """
 
         return gating
 
     def _get_weights_binary(self, gating: torch.Tensor = None) -> torch.Tensor:
-
         """
         Even when the gating weights are trainable, they can be forced to became
         binary.
@@ -316,13 +309,13 @@ class MoEPool(NetworkTemplate):
         ----------
 
         gating: torch.Tensor
-            The output of the gating operation.  
+            The output of the gating operation.
 
         Returns
         -------
 
         torch.Tensor:
-            The binary weights based on the clusters. 
+            The binary weights based on the clusters.
 
         """
 
@@ -331,7 +324,6 @@ class MoEPool(NetworkTemplate):
         return torch.where(gating == maxs, 1, 0).to(self.device)
 
     def _get_weights_not_trainable(self, gating: torch.Tensor = None) -> torch.Tensor:
-
         """
         When the gating process is not trainable, it is considered some kind of
         clustering approach, which will return integers corresponding to the
@@ -341,13 +333,13 @@ class MoEPool(NetworkTemplate):
         ----------
 
         gating: torch.Tensor
-            The output of the gating operation.  
+            The output of the gating operation.
 
         Returns
         -------
 
         torch.Tensor:
-            The binary weights based on the clusters. 
+            The binary weights based on the clusters.
 
         """
 
@@ -362,11 +354,10 @@ class MoEPool(NetworkTemplate):
         return weights.to(self.device)
 
     def gate(self, input_data: Union[np.ndarray, torch.Tensor]) -> torch.Tensor:
-
         """
-        Gating (routing) the input, it means, attributing a weight for the output of 
+        Gating (routing) the input, it means, attributing a weight for the output of
         each expert, which will be used for the allreduce operation executed on top
-        of the MoE model. 
+        of the MoE model.
 
         Parameters
         ----------
@@ -378,7 +369,7 @@ class MoEPool(NetworkTemplate):
         -------
 
         torch.Tensor
-            The penalties used for weighting the input distributed among the experts. 
+            The penalties used for weighting the input distributed among the experts.
         """
 
         gating = self.gating_network.forward(input_data=input_data)
@@ -390,7 +381,6 @@ class MoEPool(NetworkTemplate):
     def forward(
         self, input_data: Union[np.ndarray, torch.Tensor], **kwargs
     ) -> torch.Tensor:
-
         """
         Forward method
 
@@ -406,7 +396,7 @@ class MoEPool(NetworkTemplate):
         -------
 
         torch.Tensor
-            The output of the MoE evaluation. 
+            The output of the MoE evaluation.
         """
 
         gating_weights_ = self.gate(input_data=input_data)
@@ -421,7 +411,6 @@ class MoEPool(NetworkTemplate):
         return sum([g * o for g, o in zip(gating_weights, output)])
 
     def summary(self) -> None:
-
         """
         It prints a general view of the architecture.
         """

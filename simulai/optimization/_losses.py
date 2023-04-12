@@ -529,7 +529,12 @@ class PIRMSELoss(LossBasics):
         self.min_causality_weight = self.tol
         self.mean_causality_weight = 0
 
-        self.loss_states = {"pde": list(), "init": list(), "bound": list(), "extra_data": list()}
+        self.loss_states = {
+            "pde": list(),
+            "init": list(),
+            "bound": list(),
+            "extra_data": list(),
+        }
         self.loss_tags = list(self.loss_states.keys())
         self.hybrid_data_pinn = False
 
@@ -630,8 +635,9 @@ class PIRMSELoss(LossBasics):
 
         return residual_loss
 
-    def _extra_data(self, input_data:torch.Tensor=None, target_data:torch.Tensor=None) -> torch.Tensor:
-
+    def _extra_data(
+        self, input_data: torch.Tensor = None, target_data: torch.Tensor = None
+    ) -> torch.Tensor:
         # Evaluating data for the initial condition
         output_tilde = self.operator(input_data=input_data)
 
@@ -684,9 +690,9 @@ class PIRMSELoss(LossBasics):
 
         return torch.Tensor([0.0]).to(self.device)
 
-    def _no_extra_data(self, input_data:torch.Tensor=None,
-        target_data:torch.Tensor=None) -> torch.Tensor:
-
+    def _no_extra_data(
+        self, input_data: torch.Tensor = None, target_data: torch.Tensor = None
+    ) -> torch.Tensor:
         return torch.Tensor([0.0]).to(self.device)
 
     def _no_residual_wrapper(self, input_data: torch.Tensor = None) -> torch.Tensor:
@@ -780,6 +786,14 @@ class PIRMSELoss(LossBasics):
         else:
             pass
 
+        # When no weight is provided, they are 
+        # set to the default choice
+        if weights is None:
+            weights = len(residual.output_names) * [1]
+
+        if weights_residual is None:
+            weights_residual = len(residual.output_names) * [1]
+
         loss_tags, loss_indices = self._filter_necessary_loss_terms(residual=residual)
         loss_str = self._losses_states_str(tags=loss_tags)
 
@@ -792,9 +806,6 @@ class PIRMSELoss(LossBasics):
                 boundary = self._no_boundary
             else:
                 boundary = self._no_boundary_penalisation
-
-        if weights is None:
-            weights = len(residual.output_names) * [1]
 
         if causality_preserving:
             assert isinstance(self.grid_shape, tuple), (
@@ -853,11 +864,10 @@ class PIRMSELoss(LossBasics):
             self.norm_evaluator = lambda ref: 1
 
         def closure():
-
             # Executing the symbolic residual evaluation
             residual_approximation = self.residual_wrapper(input_data)
 
-            # Boundary, if appliable 
+            # Boundary, if appliable
             boundary_approximation = boundary(
                 boundary_input=boundary_input, residual=residual
             )
@@ -882,7 +892,9 @@ class PIRMSELoss(LossBasics):
             )
 
             # Evaluating extra data loss, when appliable
-            extra_data = self.extra_data(input_data=extra_input_data, target_data=extra_target_data)
+            extra_data = self.extra_data(
+                input_data=extra_input_data, target_data=extra_target_data
+            )
 
             # L² and L¹ regularization term
             weights_l2 = self.operator.weights_l2
@@ -915,8 +927,9 @@ class PIRMSELoss(LossBasics):
             self.loss_states["bound"].append(bound_detach)
             self.loss_states["extra_data"].append(extra_data_detach)
 
-            losses_list = np.array([pde_detach, init_detach, bound_detach,
-                                    extra_data_detach, call_back])
+            losses_list = np.array(
+                [pde_detach, init_detach, bound_detach, extra_data_detach, call_back]
+            )
 
             sys.stdout.write((loss_str).format(*losses_list[loss_indices]))
 

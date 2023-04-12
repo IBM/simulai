@@ -13,9 +13,10 @@
 #     limitations under the License.
 
 import os
-import torch
+
 import matplotlib.pyplot as plt
 import numpy as np
+import torch
 from torch.nn.parameter import Parameter
 
 # In order to execute this script, it is necessary to
@@ -43,8 +44,10 @@ time_eval = np.linspace(0, T_max, N)[:, None]
 time_ext = np.linspace(T_max, T_max + 0.5, N)[:, None]
 indices = np.random.choice(N, n, replace=False)
 
+
 def dataset(t: np.ndarray = None) -> np.ndarray:
     return (t - mu) ** 2 * np.cos(omega * np.pi * t)
+
 
 # Datasets used for comparison
 u_data = dataset(t=time_eval)
@@ -53,26 +56,29 @@ u_data_ext = dataset(t=time_ext)
 time_extra_train = time_eval[indices]
 u_extra_train = u_data[indices]
 
-def k1(t:torch.Tensor, mu) -> torch.Tensor:
 
-    return 2*(t-mu)*torch.cos(omega*pi*t)
+def k1(t: torch.Tensor, mu) -> torch.Tensor:
+    return 2 * (t - mu) * torch.cos(omega * pi * t)
+
 
 class MyExpression(torch.nn.Module):
-
     def __init__(self):
-
         super(MyExpression, self).__init__()
 
-        self.mu = Parameter(torch.tensor(0.5)) 
+        self.mu = Parameter(torch.tensor(0.5))
 
     def forward(self, u, t):
-
         # The expression we aim at minimizing
         du_dt = diff(u, t)
 
-        f = du_dt - k1(t, self.mu) + omega*pi*((t - self.mu)**2)*torch.sin(omega*pi*t)
+        f = (
+            du_dt
+            - k1(t, self.mu)
+            + omega * pi * ((t - self.mu) ** 2) * torch.sin(omega * pi * t)
+        )
 
         return f
+
 
 expression = MyExpression()
 
@@ -85,10 +91,10 @@ n_outputs = len(output_labels)
 n_epochs = 20_000  # Maximum number of iterations for ADAM
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
-def model():
 
-    from simulai.regression import SLFNN, ConvexDenseNetwork
+def model():
     from simulai.models import ImprovedDenseNetwork
+    from simulai.regression import SLFNN, ConvexDenseNetwork
 
     # Configuration for the fully-connected network
     config = {
@@ -99,7 +105,7 @@ def model():
         "name": "net",
     }
 
-    #Instantiating and training the surrogate model
+    # Instantiating and training the surrogate model
     densenet = ConvexDenseNetwork(**config)
     encoder_u = SLFNN(input_size=1, output_size=50, activation="tanh")
     encoder_v = SLFNN(input_size=1, output_size=50, activation="tanh")
@@ -108,10 +114,11 @@ def model():
         network=densenet, encoder_u=encoder_u, encoder_v=encoder_v, devices="gpu"
     )
 
-   # It prints a summary of the network features
+    # It prints a summary of the network features
     net.summary()
 
     return net
+
 
 net = model()
 
@@ -124,7 +131,7 @@ residual = SymbolicOperator(
     output_vars=["u"],
     function=net,
     constants={"omega": omega},
-    trainable_parameters={'mu': expression.mu},
+    trainable_parameters={"mu": expression.mu},
     external_functions={"k1": k1},
     engine="torch",
     device="gpu",
@@ -154,9 +161,7 @@ approximated_data = net.eval(input_data=time_eval)
 
 l2_norm = L2Norm()
 
-error = 100 * l2_norm(
-    data=approximated_data, reference_data=u_data, relative_norm=True
-)
+error = 100 * l2_norm(data=approximated_data, reference_data=u_data, relative_norm=True)
 
 print(f"he parameter 'mu' was estimated as {expression.mu}")
 
