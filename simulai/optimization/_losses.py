@@ -786,6 +786,14 @@ class PIRMSELoss(LossBasics):
         else:
             pass
 
+        # When no weight is provided, they are 
+        # set to the default choice
+        if weights is None:
+            weights = len(residual.output_names) * [1]
+
+        if weights_residual is None:
+            weights_residual = len(residual.output_names) * [1]
+
         loss_tags, loss_indices = self._filter_necessary_loss_terms(residual=residual)
         loss_str = self._losses_states_str(tags=loss_tags)
 
@@ -798,9 +806,6 @@ class PIRMSELoss(LossBasics):
                 boundary = self._no_boundary
             else:
                 boundary = self._no_boundary_penalisation
-
-        if weights is None:
-            weights = len(residual.output_names) * [1]
 
         if causality_preserving:
             assert isinstance(self.grid_shape, tuple), (
