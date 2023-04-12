@@ -82,7 +82,7 @@ output_labels = ["u"]
 n_inputs = len(input_labels)
 n_outputs = len(output_labels)
 
-n_epochs = 10_000  # Maximum number of iterations for ADAM
+n_epochs = 20_000  # Maximum number of iterations for ADAM
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
 def model():
@@ -105,7 +105,7 @@ def model():
     encoder_v = SLFNN(input_size=1, output_size=50, activation="tanh")
 
     net = ImprovedDenseNetwork(
-        network=densenet, encoder_u=encoder_u, encoder_v=encoder_v
+        network=densenet, encoder_u=encoder_u, encoder_v=encoder_v, devices="gpu"
     )
 
    # It prints a summary of the network features
@@ -127,6 +127,7 @@ residual = SymbolicOperator(
     trainable_parameters={'mu': expression.mu},
     external_functions={"k1": k1},
     engine="torch",
+    device="gpu",
 )
 
 params = {
@@ -145,6 +146,7 @@ optimizer.fit(
     n_epochs=n_epochs,
     loss="pirmse",
     params=params,
+    device="gpu", 
 )
 
 # Evaluation in training dataset
