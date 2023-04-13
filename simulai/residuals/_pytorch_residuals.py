@@ -501,6 +501,13 @@ class SymbolicOperator(torch.nn.Module):
 
         # The non-periodic cases
         else:
+
+            constructor = MakeTensor(
+                input_names=self.input_names, output_names=self.output_names
+            )
+
+            inputs_list = constructor(input_data=inputs_list, device=self.device)
+
             output = self.function.forward(input_data=inputs_list)
 
             outputs_list = torch.split(output, 1, dim=-1)
