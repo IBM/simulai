@@ -303,7 +303,7 @@ class Optimizer:
                 for c in residual.trainable_parameters.values()
                 if isinstance(c, Parameter)
             ]
-            if c:
+            if extra_parameters:
                 print("There are extra trainable parameters.")
             return extra_parameters
         else:
