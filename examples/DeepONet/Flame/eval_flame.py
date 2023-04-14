@@ -27,37 +27,38 @@ args = parser.parse_args()
 
 save_path = args.save_path
 
-initial_state_test = np.array([0.6, 8e-5, 0.3])
-n_outputs = 3
-n_times = 500
+initial_state_test = np.array([1e-3])
+n_outputs = 1
+Delta_t = 0.05
+n_times = int(2/(initial_state_test[0]*Delta_t))
 Q = 1000
 
 # Testing to reload from disk
 saver = SPFile(compact=False)
-rober_net = saver.read(model_path=save_path)
+flame_net = saver.read(model_path=save_path)
 
 branch_input_test = np.tile(initial_state_test[None, :], (Q, 1))
-trunk_input_test = np.linspace(0, 1, Q)[:, None]
+trunk_input_test = np.linspace(0, Delta_t, Q)[:, None]
 
 eval_list = list()
 
-for i in range(0, n_times):
+for i in range(0, 2):
     branch_input_test = np.tile(initial_state_test[None, :], (Q, 1))
 
-    approximated_data = rober_net.eval(
+    approximated_data = flame_net.eval(
         trunk_data=trunk_input_test, branch_data=branch_input_test
     )
     initial_state_test = approximated_data[-1]
 
-    eval_list.append(approximated_data[0])
+    eval_list.append(approximated_data)
 
-evaluation = np.vstack(eval_list) * np.array([1, 1e4, 1])
+evaluation = np.vstack(eval_list)
 time = np.linspace(0, n_times, evaluation.shape[0])
 
 np.save("evaluation.npy", evaluation)
 plt.plot(time, evaluation, label="Approximated")
 plt.xlabel("t (s)")
-plt.savefig("rober_approximation.png")
+plt.savefig("flame_approximation.png")
 plt.close()
 
 plt.figure(figsize=(15, 6))
@@ -69,4 +70,4 @@ for i in range(n_outputs):
 plt.yticks(np.linspace(0, 1, 5))
 plt.legend()
 plt.grid(True)
-plt.savefig(f"rober_approximation_custom.png")
+plt.savefig(f"flame_approximation_custom.png")

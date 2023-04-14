@@ -36,10 +36,9 @@ model_name = args.model_name
 
 Q = 1_000
 N = int(5e4)
+Delta_t = 1
 
-initial_state_test = np.array([1e-3])
-
-t_intv = [0, 1]
+t_intv = [0, Delta_t]
 u_intv = np.stack([[0], [1]], axis=0)
 
 # The expression we aim at minimizing
@@ -51,9 +50,6 @@ U_u = np.random.uniform(low=u_intv[0], high=u_intv[1], size=(N, 1))
 branch_input_train = np.tile(U_u[:, None, :], (1, Q, 1)).reshape(N * Q, -1)
 trunk_input_train = np.tile(U_t[:, None], (N, 1))
 
-branch_input_test = np.tile(initial_state_test[None, :], (Q, 1))
-trunk_input_test = np.sort(U_t[:, None], axis=0)
-
 initial_states = U_u
 
 input_labels = ["t"]
@@ -64,7 +60,7 @@ n_outputs = len(output_labels)
 
 lambda_1 = 0.0  # Penalty for the L¹ regularization (Lasso)
 lambda_2 = 0.0  # Penalty factor for the L² regularization
-n_epochs = 20_000  # Maximum number of iterations for ADAM
+n_epochs = 200_000  # Maximum number of iterations for ADAM
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
 def model():
@@ -195,20 +191,16 @@ saver.write(save_dir=save_path, name=model_name, model=flame_net, template=model
 
 initial_state_test = np.array([1e-3])
 n_outputs = 1
-n_times = 2
+n_times = int(2/(initial_state_test[0]*Delta_t))
 Q = 1000
 
-# Testing to reload from disk
-saver = SPFile(compact=False)
-flame_net = saver.read(model_path=save_path)
-
 branch_input_test = np.tile(initial_state_test[None, :], (Q, 1))
-trunk_input_test = np.linspace(0, 1, Q)[:, None]
+trunk_input_test = np.linspace(0, Delta_t, Q)[:, None]
 
 eval_list = list()
 
 for i in range(0, n_times):
-    branch_in:put_test = np.tile(initial_state_test[None, :], (Q, 1))
+    branch_input_test = np.tile(initial_state_test[None, :], (Q, 1))
 
     approximated_data = flame_net.eval(
         trunk_data=trunk_input_test, branch_data=branch_input_test
@@ -217,8 +209,8 @@ for i in range(0, n_times):
 
     eval_list.append(approximated_data[0])
 
-evaluation = np.vstack(eval_list) * np.array([1, 1e4, 1])
-time = np.linspace(0, n_times, evaluation.shape[0])
+evaluation = np.vstack(eval_list)
+time = np.linspace(0, n_times*Delta_t, evaluation.shape[0])
 
 np.save("evaluation.npy", evaluation)
 plt.plot(time, evaluation, label="Approximated")
@@ -229,7 +221,7 @@ plt.close()
 plt.figure(figsize=(15, 6))
 
 for i in range(n_outputs):
-    plt.plot(time, evaluation[:, i], label=f"s_{i+1}")
+    plt.plot(time, evaluation[:, i], label=f"u")
     plt.xlabel("t (s)")
 
 plt.yticks(np.linspace(0, 1, 5))
