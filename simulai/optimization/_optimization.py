@@ -17,11 +17,11 @@ import math
 import os
 from functools import reduce
 from typing import List, Tuple, Union
+import warnings
 
 import numpy as np
 import torch
-from torch.distributed.optim import DistributedOptimizer
-from torch.distributed.rpc import RRef
+
 from torch.nn.parameter import Parameter
 
 from simulai.abstract import Dataset, Regression
@@ -710,6 +710,10 @@ class Optimizer:
 
         # In a multi-device execution, the optimizer must be properly instantiated to execute distributed tasks.
         if distributed == True:
+
+            from torch.distributed.optim import DistributedOptimizer
+            from torch.distributed.rpc import RRef
+
             optimizer_params = list()
             for param in op.parameters():
                 optimizer_params.append(RRef(param))
