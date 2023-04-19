@@ -63,7 +63,7 @@ Using Tensorboard
 
 Examples
 --------
-Additionally, you can refer to examples in the `respective folder. <https://github.com/IBM/simulai/blob/main/AUTHORS.rst>`_.
+Additionally, you can refer to examples in the `respective folder. <https://github.com/IBM/simulai/blob/main/examples>`_.
 
 License
 -------
