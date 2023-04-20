@@ -122,7 +122,7 @@ class SymbolicOperator(torch.nn.Module):
         self.input_names = [var.name for var in self.input_vars]
         self.output_names = [var.name for var in self.output_vars]
         self.keys = keys
-        self.inputs_key = inputs_key
+        self.inputs_key = self._parse_inputs_key(inputs_key=inputs_key)
         self.all_vars = self.input_vars + self.output_vars
 
         if self.inputs_key is not None:
@@ -220,6 +220,49 @@ class SymbolicOperator(torch.nn.Module):
         }
 
         return protected_operators
+
+    def _parse_inputs_key(self, inputs_key:str=None) -> dict:
+
+        sep = "+"
+        inx = ":"
+
+        try:
+            split_components = inputs_key.split(sep)
+        except ValueError:
+            split_components = inputs_key
+
+        keys_dict = dict()
+        for s in split_components:
+            try:
+                key, index = s.split(inx)
+
+                if not key in keys_dict:
+                    keys_dict[key] = list()
+                    keys_dict[key].append(int(index))
+
+                else:
+                    keys_dict[key].append(int(index))
+            except ValueError:
+                keys_dict[s] = -1
+
+        return keys_dict
+
+    def _collect_data_from_inputs_list(self, inputs_list:dict=None) -> list:
+
+        data = list()
+        for k, v in self.inputs_key.items():
+
+            if v == -1:
+                if inputs_list[k].shape[1] == 1:
+                    data_ = [inputs_list[k]]
+                else:
+                    data_ = list(torch.split(inputs_list[k], 1, dim=1))
+            else:
+                data_ = [inputs_list[k][:, i:i+1] for i in v]
+
+            data += data_
+
+        return data
 
     def _parse_expression(self, expr=Union[sympy.Expr, str]) -> sympy.Expr:
         """
@@ -394,15 +437,15 @@ class SymbolicOperator(torch.nn.Module):
             inputs = {key: value for key, value in zip(self.input_names, inputs_list)}
 
         elif type(inputs_list) is dict:
-            inputs_list = [
-                inputs_list[self.inputs_key]
-            ]  # TODO It it not generic the enough
 
             assert (
                 self.inputs_key is not None
             ), "If inputs_list is dict, \
-                                                 it is necessary to provide\
-                                                 a key."
+                it is necessary to provide\
+                a key."
+
+            inputs_list = self._collect_data_from_inputs_list(inputs_list=inputs_list)
+
             inputs = {key: value for key, value in zip(self.input_names, inputs_list)}
         else:
             raise Exception(
