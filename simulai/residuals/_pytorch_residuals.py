@@ -13,7 +13,7 @@
 #     limitations under the License.
 
 import importlib
-from typing import List, Union
+from typing import List, Union, Dict
 
 import numpy as np
 import sympy
@@ -122,7 +122,12 @@ class SymbolicOperator(torch.nn.Module):
         self.input_names = [var.name for var in self.input_vars]
         self.output_names = [var.name for var in self.output_vars]
         self.keys = keys
-        self.inputs_key = self._parse_inputs_key(inputs_key=inputs_key)
+
+        if inputs_key != None:
+            self.inputs_key = self._parse_inputs_key(inputs_key=inputs_key)
+        else:
+            self.inputs_key = inputs_key
+
         self.all_vars = self.input_vars + self.output_vars
 
         if self.inputs_key is not None:
@@ -223,8 +228,13 @@ class SymbolicOperator(torch.nn.Module):
 
     def _parse_inputs_key(self, inputs_key:str=None) -> dict:
 
-        sep = "+"
+        # Sentences separator: '|'
+        sep = "|"
+        # Index identifier: ':'
         inx = ":"
+
+        # Removing possible spaces in the inputs_key string
+        inputs_key = inputs_key.replace(' ', '')
 
         try:
             split_components = inputs_key.split(sep)
