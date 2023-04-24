@@ -15,7 +15,9 @@
 import importlib
 import math
 import os
+import copy
 from functools import reduce
+from collections import OrderedDict
 from typing import List, Tuple, Union
 import warnings
 
@@ -838,118 +840,134 @@ class Optimizer:
 class ScipyInterface:
     def __init__(
         self,
-        fun: Regression = None,
+        fun: NetworkTemplate = None,
         optimizer: str = None,
-        optimizer_config: dict = None,
+        optimizer_config: dict = dict(),
         loss: callable = None,
         loss_config: dict = None,
-        jac: callable = None,
+        device:str="cpu",
     ) -> None:
+
+        # Configuring the device to be used during the fitting process
+        device_label = device
+        if device == "gpu":
+            if not torch.cuda.is_available():
+                print("Warning: There is no GPU available, using CPU instead.")
+                device = "cpu"
+                device_label = "cpu"
+            else:
+                try:
+                    device = "cuda:" + os.environ["LOCAL_RANK"]
+                except KeyError:
+                    device = "cuda"
+                device_label = "gpu"
+                print("Using GPU.")
+        elif device == "cpu":
+            print("Using CPU.")
+        else:
+            raise Exception(f"The device must be cpu or gpu, but received: {device}")
+
+        self.device = device
         self.engine = "scipy.optimize"
         self.engine_module = importlib.import_module(self.engine)
-        self.alternative_method = "minimize"
-        self.optimizer_config = dict()
+        self.minimization_method = "minimize"
 
-        optimizer = getattr(self.engine_module, optimizer, None)
-        if optimizer is not None:
-            self.optimizer = optimizer
-        else:
-            self.optimizer = getattr(self.engine_module, self.alternative_method)
-            self.optimizer_config["method"] = optimizer
+        self.optimizer = getattr(self.engine_module, self.minimization_method)
 
-        self.optimizer_config = optimizer_config
+        self.optimizer_config = optimizer_config or dict()
+        self.optimizer_config["method"] = optimizer
+
         self.fun = fun
         self.loss = loss
-        self.jac = jac
         self.loss_config = loss_config or dict()
 
-        # The neural networks objects have operators as the form of 'layers' or 'operators'
-        layers = getattr(fun, "layers", None) or getattr(fun, "operators", None)
-        assert (
-            layers is not None
-        ), f"The layers object must be list but received {type(layers)}"
-        sub_types = sum(
-            [[(f"{op.name}", "weights"), (f"{op.name}", "bias")] for op in layers], []
-        )
+        self.operators_names = list(self.fun.state_dict().keys())
 
-        self.operators_names = [
-            ii for ii in sub_types if type(reduce(getattr, ii, fun)) is np.ndarray
-        ]
+        self.operators_shapes = OrderedDict({k:list(v.shape) for k,v in self.fun.state_dict().items()})
 
-        self.operators_shapes = [list(item.shape) for item in self.operators_list]
+        self.state_0 = copy.deepcopy(self.fun.state_dict())
 
-        intervals = np.cumsum([0] + [np.prod(shape) for shape in self.operators_shapes])
+        intervals = np.cumsum([0] + [np.prod(shape) for shape in self.operators_shapes.values()])
 
         self.operators_intervals = [
             intervals[i : i + 2].tolist() for i in range(len(intervals) - 1)
         ]
 
-        if self.jac is not None:
-            self.optimizer_config["jac"] = self.jac
-
-    @property
-    def layers(self) -> list:
-        return getattr(self.fun, "layers", None) or getattr(self.fun, "operators", None)
-
-    @property
-    def operators_list(self) -> list:
-        return [
-            ii
-            for ii in sum([[layer.weights, layer.bias] for layer in self.layers], [])
-            if type(ii) is np.ndarray
-        ]
+        self.optimizer_config["jac"] = self._jac
 
     def _stack_and_convert_parameters(
         self, parameters: List[Union[torch.Tensor, np.ndarray]]
     ) -> np.ndarray:
-        if type(parameters[0]) == torch.Tensor:
-            return np.hstack(
-                [
-                    param.detach().numpy().astype("float64").flatten()
-                    for param in parameters
-                ]
-            )
 
-        elif type(parameters[0]) == np.ndarray:
-            return np.hstack([param.flatten() for param in parameters])
-        else:
-            raise Exception(f"Type {type(parameters)} not accepted for parameters.")
+        return np.hstack(
+            [
+                param.detach().numpy().astype("float64").flatten()
+                for param in parameters.values()
+            ]
+        )
 
     def _update_and_set_parameters(self, parameters: np.ndarray) -> None:
+
         operators = [
-            parameters[slice(*interval)].reshape(shape)
-            for interval, shape in zip(self.operators_intervals, self.operators_shapes)
+            torch.from_numpy(
+                            parameters[slice(*interval)].reshape(shape).astype("float32")
+                            ).to(self.device)
+            for interval, shape in zip(self.operators_intervals, self.operators_shapes.values())
         ]
 
-        for opi, op in enumerate(operators):
-            parent, child = self.operators_names[opi]
-            setattr(getattr(self.fun, parent), child, op)
+        for opi, parameter in enumerate(self.fun.parameters()):
+
+             parameter.data = operators[opi]
+
+    def _exec_kwargs_forward(self, input_data:dict=None):
+
+        return self.fun.forward(**input_data)
+
+    def _exec_forward(self, input_data:Union[np.ndarray, torch.Tensor]=None):
+
+        return self.fun.forward(input_data=input_data)
 
     def _fun(self, parameters) -> Union[np.ndarray, float]:
+
         self._update_and_set_parameters(parameters)
 
-        approximation = self.fun.forward(**self.input_data)
+        approximation = self.exec_forward(input_data=self.input_data)
 
-        loss = self.loss(approximation, self.target_data, self.fun, **self.loss_config)
+        loss = self.closure()
 
         return loss
 
     def _jac(self, parameters) -> np.ndarray:
-        return self.jac(self.input_data)
+
+        loss = self._fun(parameters)
+
+        grads = [ v.grad.detach().cpu().numpy() for v in self.fun.parameters() ]
+
+        gradients = np.hstack([ v.flatten() for v, shape 
+                               in zip(grads, list(self.operators_shapes.values())) ])
+
+        return gradients.astype("float64")
 
     def fit(
         self,
         input_data: Union[dict, torch.Tensor, np.ndarray] = None,
         target_data: Union[torch.Tensor, np.ndarray] = None,
     ) -> None:
-        parameters_0 = self._stack_and_convert_parameters(self.operators_list)
+        parameters_0 = self._stack_and_convert_parameters(self.state_0)
+
+        print(f"\nStarting ScipyInterface with method: {self.optimizer}\n")
+
+        if isinstance(input_data, dict):
+            self.exec_forward = self._exec_kwargs_forward
+        else:
+            self.exec_forward = self._exec_forward
 
         self.input_data = input_data
+
         self.target_data = target_data
 
-        if len(self.optimizer_config) != 0:
-            solution = self.optimizer(self._fun, parameters_0, **self.optimizer_config)
-        else:
-            solution = self.optimizer(self._fun, parameters_0)
+        self.closure = self.loss(self.input_data, self.target_data, self.fun, **self.loss_config)
+
+        solution = self.optimizer(self._fun, parameters_0, **self.optimizer_config)
 
         self._update_and_set_parameters(solution.x)
