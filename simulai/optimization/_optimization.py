@@ -846,6 +846,7 @@ class ScipyInterface:
         loss: callable = None,
         loss_config: dict = None,
         device:str="cpu",
+        jac:str=None,
     ) -> None:
 
         # Configuring the device to be used during the fitting process
@@ -893,7 +894,10 @@ class ScipyInterface:
             intervals[i : i + 2].tolist() for i in range(len(intervals) - 1)
         ]
 
-        self.optimizer_config["jac"] = self._jac
+        if jac:
+            self.optimizer_config["jac"] = jac
+        else:
+           self.optimizer_config["jac"] = True
 
     def _stack_and_convert_parameters(
         self, parameters: List[Union[torch.Tensor, np.ndarray]]
@@ -933,20 +937,16 @@ class ScipyInterface:
 
         approximation = self.exec_forward(input_data=self.input_data)
 
+        self.closure = self.loss(self.input_data, self.target_data, self.fun, **self.loss_config)
+
         loss = self.closure()
-
-        return loss
-
-    def _jac(self, parameters) -> np.ndarray:
-
-        loss = self._fun(parameters)
 
         grads = [ v.grad.detach().cpu().numpy() for v in self.fun.parameters() ]
 
         gradients = np.hstack([ v.flatten() for v, shape 
                                in zip(grads, list(self.operators_shapes.values())) ])
 
-        return gradients.astype("float64")
+        return loss.detach().cpu().numpy().astype("float64")[0], gradients.astype("float64")
 
     def fit(
         self,
@@ -955,7 +955,7 @@ class ScipyInterface:
     ) -> None:
         parameters_0 = self._stack_and_convert_parameters(self.state_0)
 
-        print(f"\nStarting ScipyInterface with method: {self.optimizer}\n")
+        print(f"\nStarting ScipyInterface with method: {self.optimizer_config['method']}\n")
 
         if isinstance(input_data, dict):
             self.exec_forward = self._exec_kwargs_forward
