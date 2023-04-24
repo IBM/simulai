@@ -64,7 +64,7 @@ output_labels = ["u"]
 n_inputs = len(input_labels)
 n_outputs = len(output_labels)
 
-n_epochs = 10_000  # Maximum number of iterations for ADAM
+n_epochs = 2_000  # Maximum number of iterations for ADAM
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
 
@@ -119,7 +119,7 @@ params = {
     "residual": residual,
     "initial_input": np.array([0])[:, None],
     "initial_state": u_data[0],
-    "weights_residual": [1],
+    "weights_residual": [100],
     "initial_penalty": 1,
 }
 

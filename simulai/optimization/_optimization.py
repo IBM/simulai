@@ -934,7 +934,7 @@ class ScipyInterface:
 
         approximation = self.exec_forward(input_data=self.input_data)
 
-        loss = self.loss(self.input_data, self.target_data, self.fun, **self.loss_config)()
+        loss = self.closure()
 
         return loss
 
@@ -966,6 +966,8 @@ class ScipyInterface:
         self.input_data = input_data
 
         self.target_data = target_data
+
+        self.closure = self.loss(self.input_data, self.target_data, self.fun, **self.loss_config)
 
         if len(self.optimizer_config) != 0:
             solution = self.optimizer(self._fun, parameters_0, **self.optimizer_config)
