@@ -435,6 +435,7 @@ class ConvNetworkTemplate(NetworkTemplate):
         # a pooling ou a sampling
         self.before_conv_tag = ""
         self.after_conv_tag = ""
+        self.batch_norm_tag = ""
 
         self.samples_dim = None
 
@@ -461,6 +462,8 @@ class ConvNetworkTemplate(NetworkTemplate):
         before_conv_layers = list()
         conv_layers = list()
         after_conv_layers = list()
+        batch_norm_layers = list()
+
         weights = list()
 
         # Configuring each layer
@@ -520,6 +523,29 @@ class ConvNetworkTemplate(NetworkTemplate):
             else:
                 after_conv_layer_ll = torch.nn.Identity()
 
+            # If a post-conv operation is defined, instantiate it
+            if self.batch_norm_tag in layer_config:
+                assert type(layer_config[self.batch_norm_tag]) == dict, (
+                    f"If the argument {self.batch_norm_tag}"
+                    f" is present, it must be dict,"
+                    f" but received {type(self.batch_norm_tag)}"
+                )
+
+                batch_norm_layer_config = layer_config.pop(self.batch_norm_tag)
+
+                type_ = batch_norm_layer_config.pop("type")
+                batch_norm_layer_ll_template = self._get_operation(
+                    operation=type_, is_activation=False
+                )
+
+                batch_norm_layer_ll = batch_norm_layer_ll_template(
+                    **batch_norm_layer_config
+                )
+
+            # By contrast, it must be an identity operation
+            else:
+                batch_norm_layer_ll = torch.nn.Identity()
+
             args = [layer_config.pop(arg) for arg in self.args]
 
             # The convolution layer itself
@@ -528,15 +554,18 @@ class ConvNetworkTemplate(NetworkTemplate):
             before_conv_layers.append(before_conv_layer_ll)
             conv_layers.append(conv_layer_ll)
             after_conv_layers.append(after_conv_layer_ll)
+            batch_norm_layers.append(batch_norm_layer_ll)
 
             # Setting up the individual modules to the global one
             self.add_module(self.name + "_before_conv_" + str(ll), before_conv_layer_ll)
             self.add_module(self.name + "_" + str(ll), conv_layer_ll)
             self.add_module(self.name + "_after_conv_" + str(ll), after_conv_layer_ll)
+            self.add_module(self.name + "_batch_norm_" + str(ll), batch_norm_layer_ll)
 
             weights.append(conv_layer_ll.weight)
+            weights.append(batch_norm_layer_ll.weight)
 
-        return before_conv_layers, conv_layers, after_conv_layers, weights
+        return before_conv_layers, conv_layers, after_conv_layers, batch_norm_layers, weights
 
     def _corrrect_first_dim(self, shapes: list = None) -> list:
         shapes[0] = None
@@ -550,14 +579,16 @@ class ConvNetworkTemplate(NetworkTemplate):
         conv: list = None,
         act: list = None,
         after_conv: list = None,
+        batch_norm: list = None,
     ) -> list:
         merged_list = list()
 
-        for h, i, j, k in zip(before_conv, conv, act, after_conv):
+        for h, i, j, k, l in zip(before_conv, conv, act, batch_norm, after_conv):
             merged_list.append(h)
             merged_list.append(i)
             merged_list.append(j)
             merged_list.append(k)
+            merged_list.append(l)
 
         return merged_list
 

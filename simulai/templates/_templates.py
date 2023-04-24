@@ -64,7 +64,7 @@ class NetworkInstanceGen:
     """
 
     def __init__(
-        self, architecture: str, dim: str = None, shallow: bool = False
+        self, architecture: str, dim: str = None, shallow: bool = False, use_batch_norm: bool = True,
     ) -> None:
         self.shallow = shallow
 
@@ -89,6 +89,8 @@ class NetworkInstanceGen:
         self.divisor = 2
         self.multiplier = 2
 
+        self.use_batch_norm = use_batch_norm
+
         # It is still hard-coded
         self.interp_tag = {"1d": "linear", "2d": "bicubic", "3d": "trilinear"}
 
@@ -99,6 +101,7 @@ class NetworkInstanceGen:
 
             self.after_conv = "maxpool" + self.dim
             self.before_conv = "upsample"
+            self.batch_norm = "batchnorm" + self.dim
 
             ### CNN specificities
             # Default number of channels used for the first layer of a convolutional
@@ -199,6 +202,14 @@ class NetworkInstanceGen:
             },
         }
 
+        if self.use_batch_norm:
+            batch_norm_input = {
+                            "type" : self.batch_norm,
+                            "num_features" : channels_out,  
+                               }
+
+            layer_input["batch_norm"] = batch_norm_input
+
         return layer_input
 
     def _gen_cnn_layer_reduce_dimensionality(
@@ -219,6 +230,14 @@ class NetworkInstanceGen:
                 "stride": self.pool_stride,
             },
         }
+
+        if self.use_batch_norm:
+            batch_norm_input = {
+                            "type" : self.batch_norm,
+                            "num_features" : channels_out,  
+                               }
+
+            layer_input["batch_norm"] = batch_norm_input
 
         return layer_input
 
