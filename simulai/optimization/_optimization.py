@@ -871,11 +871,10 @@ class ScipyInterface:
         self.engine = "scipy.optimize"
         self.engine_module = importlib.import_module(self.engine)
         self.minimization_method = "minimize"
-        self.optimizer_config = dict()
 
         self.optimizer = getattr(self.engine_module, self.minimization_method)
 
-        self.optimizer_config = optimizer_config
+        self.optimizer_config = optimizer_config or dict()
         self.optimizer_config["method"] = optimizer
 
         self.fun = fun
@@ -969,9 +968,6 @@ class ScipyInterface:
 
         self.closure = self.loss(self.input_data, self.target_data, self.fun, **self.loss_config)
 
-        if len(self.optimizer_config) != 0:
-            solution = self.optimizer(self._fun, parameters_0, **self.optimizer_config)
-        else:
-            solution = self.optimizer(self._fun, parameters_0)
+        solution = self.optimizer(self._fun, parameters_0, **self.optimizer_config)
 
         self._update_and_set_parameters(solution.x)
