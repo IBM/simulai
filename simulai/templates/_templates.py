@@ -64,7 +64,11 @@ class NetworkInstanceGen:
     """
 
     def __init__(
-        self, architecture: str, dim: str = None, shallow: bool = False
+        self,
+        architecture: str,
+        dim: str = None,
+        shallow: bool = False,
+        use_batch_norm: bool = False,
     ) -> None:
         self.shallow = shallow
 
@@ -89,6 +93,8 @@ class NetworkInstanceGen:
         self.divisor = 2
         self.multiplier = 2
 
+        self.use_batch_norm = use_batch_norm
+
         # It is still hard-coded
         self.interp_tag = {"1d": "linear", "2d": "bicubic", "3d": "trilinear"}
 
@@ -99,6 +105,7 @@ class NetworkInstanceGen:
 
             self.after_conv = "maxpool" + self.dim
             self.before_conv = "upsample"
+            self.batch_norm = "batchnorm" + self.dim
 
             ### CNN specificities
             # Default number of channels used for the first layer of a convolutional
@@ -199,6 +206,14 @@ class NetworkInstanceGen:
             },
         }
 
+        if self.use_batch_norm:
+            batch_norm_input = {
+                "type": self.batch_norm,
+                "num_features": channels_out,
+            }
+
+            layer_input["batch_norm"] = batch_norm_input
+
         return layer_input
 
     def _gen_cnn_layer_reduce_dimensionality(
@@ -219,6 +234,14 @@ class NetworkInstanceGen:
                 "stride": self.pool_stride,
             },
         }
+
+        if self.use_batch_norm:
+            batch_norm_input = {
+                "type": self.batch_norm,
+                "num_features": channels_out,
+            }
+
+            layer_input["batch_norm"] = batch_norm_input
 
         return layer_input
 
@@ -424,6 +447,7 @@ def cnn_autoencoder_auto(
     activation: str = None,
     channels: int = None,
     case: str = None,
+    use_batch_norm: bool = False,
     shallow: bool = False,
     name: str = None,
 ) -> Tuple[NetworkTemplate, ...]:
@@ -454,7 +478,9 @@ def cnn_autoencoder_auto(
 
     last_channels = output_dim[1]
 
-    autogen_cnn = NetworkInstanceGen(architecture="cnn", dim=case)
+    autogen_cnn = NetworkInstanceGen(
+        architecture="cnn", dim=case, use_batch_norm=use_batch_norm
+    )
     autogen_dense = NetworkInstanceGen(architecture="dense", shallow=shallow)
 
     # Default choice for the model name
@@ -509,6 +535,7 @@ def autoencoder_auto(
     channels: int = None,
     architecture: str = None,
     shallow: bool = False,
+    use_batch_norm: bool = False,
     case: str = None,
     name: str = None,
 ) -> Tuple[Union[NetworkTemplate, None], ...]:
@@ -533,6 +560,7 @@ def autoencoder_auto(
             channels=channels,
             case=case,
             shallow=shallow,
+            use_batch_norm=use_batch_norm,
             name=name,
         )
 

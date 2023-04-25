@@ -54,6 +54,7 @@ class ConvolutionalNetwork(ConvNetworkTemplate):
         # a pooling ou a sampling
         self.before_conv_tag = "before_conv"
         self.after_conv_tag = "after_conv"
+        self.batch_norm_tag = "batch_norm"
 
         self.default_last_activation = last_activation
         self.layers_config = layers
@@ -80,6 +81,7 @@ class ConvolutionalNetwork(ConvNetworkTemplate):
             self.before_conv_layers,
             self.conv_layers,
             self.after_conv_layers,
+            self.batch_norm_layers,
             self.weights,
         ) = self._setup_layers(layers_config=self.layers_config)
 
@@ -87,6 +89,7 @@ class ConvolutionalNetwork(ConvNetworkTemplate):
             before_conv=self.before_conv_layers,
             conv=self.conv_layers,
             act=self.activations,
+            batch_norm=self.batch_norm_layers,
             after_conv=self.after_conv_layers,
         )
 
@@ -151,6 +154,7 @@ class ResConvolutionalNetwork(ConvNetworkTemplate):
                 before_conv_layers,
                 conv_layers,
                 after_conv_layers,
+                batch_norm_layers,
                 weights,
             ) = self._setup_layers(layers_config=stage)
             activations_, activations_str = self._setup_activations(
@@ -161,6 +165,7 @@ class ResConvolutionalNetwork(ConvNetworkTemplate):
                 before_conv=before_conv_layers,
                 conv=conv_layers,
                 act=activations_,
+                batch_norm=batch_norm_layers,
                 after_conv=after_conv_layers,
             )
 

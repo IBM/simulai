@@ -342,6 +342,7 @@ class AutoencoderCNN(NetworkTemplate):
         self,
         input_data: Union[np.ndarray, torch.Tensor] = None,
         input_shape: list = None,
+        verbose: bool = True,
     ) -> torch.Tensor:
         """
         Prints the summary of the network architecture.
@@ -358,53 +359,60 @@ class AutoencoderCNN(NetworkTemplate):
         torch.Tensor
             The dataset projected over the latent space.
         """
-        if self.input_dim != None:
-            input_shape = self.input_dim
+
+        if verbose == True:
+            if self.input_dim != None:
+                input_shape = self.input_dim
+            else:
+                pass
+
+            self.encoder.summary(
+                input_data=input_data, input_shape=input_shape, device=self.device
+            )
+
+            if isinstance(input_data, np.ndarray):
+                btnk_input = self.encoder.forward(input_data=input_data)
+            else:
+                assert (
+                    input_shape
+                ), "It is necessary to have input_shape when input_data is None."
+                input_shape = self.encoder.input_size
+                input_shape[0] = 1
+
+                input_data = torch.ones(input_shape).to(self.device)
+
+                btnk_input = self.encoder.forward(input_data=input_data)
+
+            before_flatten_dimension = tuple(btnk_input.shape[1:])
+            btnk_input = btnk_input.reshape((-1, np.prod(btnk_input.shape[1:])))
+
+            latent = self.bottleneck_encoder.forward(input_data=btnk_input)
+
+            self.bottleneck_encoder.summary()
+            self.bottleneck_decoder.summary()
+
+            bottleneck_output = self.encoder_activation(
+                self.bottleneck_decoder.forward(input_data=latent)
+            )
+
+            bottleneck_output = bottleneck_output.reshape(
+                (-1, *before_flatten_dimension)
+            )
+
+            self.decoder.summary(input_data=bottleneck_output, device=self.device)
+
+            # Saving the content of the subnetworks to the overall architecture dictionary
+            self.shapes_dict.update({"encoder": self.encoder.shapes_dict})
+            self.shapes_dict.update(
+                {"bottleneck_encoder": self.bottleneck_encoder.shapes_dict}
+            )
+            self.shapes_dict.update(
+                {"bottleneck_decoder": self.bottleneck_decoder.shapes_dict}
+            )
+            self.shapes_dict.update({"decoder": self.decoder.shapes_dict})
+
         else:
-            pass
-
-        self.encoder.summary(
-            input_data=input_data, input_shape=input_shape, device=self.device
-        )
-
-        if isinstance(input_data, np.ndarray):
-            btnk_input = self.encoder.forward(input_data=input_data)
-        else:
-            assert (
-                input_shape
-            ), "It is necessary to have input_shape when input_data is None."
-            input_shape = self.encoder.input_size
-            input_shape[0] = 1
-
-            input_data = torch.ones(input_shape).to(self.device)
-
-            btnk_input = self.encoder.forward(input_data=input_data)
-
-        before_flatten_dimension = tuple(btnk_input.shape[1:])
-        btnk_input = btnk_input.reshape((-1, np.prod(btnk_input.shape[1:])))
-
-        latent = self.bottleneck_encoder.forward(input_data=btnk_input)
-
-        self.bottleneck_encoder.summary()
-        self.bottleneck_decoder.summary()
-
-        bottleneck_output = self.encoder_activation(
-            self.bottleneck_decoder.forward(input_data=latent)
-        )
-
-        bottleneck_output = bottleneck_output.reshape((-1, *before_flatten_dimension))
-
-        self.decoder.summary(input_data=bottleneck_output, device=self.device)
-
-        # Saving the content of the subnetworks to the overall architecture dictionary
-        self.shapes_dict.update({"encoder": self.encoder.shapes_dict})
-        self.shapes_dict.update(
-            {"bottleneck_encoder": self.bottleneck_encoder.shapes_dict}
-        )
-        self.shapes_dict.update(
-            {"bottleneck_decoder": self.bottleneck_decoder.shapes_dict}
-        )
-        self.shapes_dict.update({"decoder": self.decoder.shapes_dict})
+            print(self)
 
     @as_tensor
     def projection(self, input_data: Union[np.ndarray, torch.Tensor]) -> torch.Tensor:
@@ -584,6 +592,7 @@ class AutoencoderKoopman(NetworkTemplate):
         case: Optional[str] = None,
         architecture: Optional[str] = None,
         shallow: Optional[bool] = False,
+        use_batch_norm: Optional[bool] = False,
         encoder_activation: str = "relu",
         devices: Union[str, list] = "cpu",
         name: str = None,
@@ -653,6 +662,7 @@ class AutoencoderKoopman(NetworkTemplate):
                 architecture=architecture,
                 case=case,
                 shallow=shallow,
+                use_batch_norm=use_batch_norm,
             )
 
         self.encoder = encoder.to(self.device)
@@ -715,59 +725,66 @@ class AutoencoderKoopman(NetworkTemplate):
         self,
         input_data: Union[np.ndarray, torch.Tensor] = None,
         input_shape: list = None,
+        verbose: bool = True,
     ) -> torch.Tensor:
-        if self.input_dim != None:
-            input_shape = list(self.input_dim)
+        if verbose == True:
+            if self.input_dim != None:
+                input_shape = list(self.input_dim)
+            else:
+                pass
+
+            self.encoder.summary(
+                input_data=input_data, input_shape=input_shape, device=self.device
+            )
+
+            self.before_flatten_dimension = tuple(self.encoder.output_size[1:])
+
+            if isinstance(input_data, np.ndarray):
+                btnk_input = self.encoder.forward(input_data=input_data)
+            else:
+                assert (
+                    input_shape
+                ), "It is necessary to have input_shape when input_data is None."
+                input_shape = self.encoder.input_size
+                input_shape[0] = 1
+
+                input_data = torch.ones(input_shape).to(self.device)
+
+                btnk_input = self.encoder.forward(input_data=input_data)
+
+            before_flatten_dimension = tuple(btnk_input.shape[1:])
+            btnk_input = btnk_input.reshape((-1, np.prod(btnk_input.shape[1:])))
+
+            latent = self.bottleneck_encoder.forward(input_data=btnk_input)
+
+            self.bottleneck_encoder.summary()
+
+            print(f"The Koopman Operator has shape: {self.K_op.shape} ")
+
+            self.bottleneck_decoder.summary()
+
+            bottleneck_output = self.encoder_activation(
+                self.bottleneck_decoder.forward(input_data=latent)
+            )
+
+            bottleneck_output = bottleneck_output.reshape(
+                (-1, *before_flatten_dimension)
+            )
+
+            self.decoder.summary(input_data=bottleneck_output, device=self.device)
+
+            # Saving the content of the subnetworks to the overall architecture dictionary
+            self.shapes_dict.update({"encoder": self.encoder.shapes_dict})
+            self.shapes_dict.update(
+                {"bottleneck_encoder": self.bottleneck_encoder.shapes_dict}
+            )
+            self.shapes_dict.update(
+                {"bottleneck_decoder": self.bottleneck_decoder.shapes_dict}
+            )
+            self.shapes_dict.update({"decoder": self.decoder.shapes_dict})
+
         else:
-            pass
-
-        self.encoder.summary(
-            input_data=input_data, input_shape=input_shape, device=self.device
-        )
-
-        self.before_flatten_dimension = tuple(self.encoder.output_size[1:])
-
-        if isinstance(input_data, np.ndarray):
-            btnk_input = self.encoder.forward(input_data=input_data)
-        else:
-            assert (
-                input_shape
-            ), "It is necessary to have input_shape when input_data is None."
-            input_shape = self.encoder.input_size
-            input_shape[0] = 1
-
-            input_data = torch.ones(input_shape).to(self.device)
-
-            btnk_input = self.encoder.forward(input_data=input_data)
-
-        before_flatten_dimension = tuple(btnk_input.shape[1:])
-        btnk_input = btnk_input.reshape((-1, np.prod(btnk_input.shape[1:])))
-
-        latent = self.bottleneck_encoder.forward(input_data=btnk_input)
-
-        self.bottleneck_encoder.summary()
-
-        print(f"The Koopman Operator has shape: {self.K_op.shape} ")
-
-        self.bottleneck_decoder.summary()
-
-        bottleneck_output = self.encoder_activation(
-            self.bottleneck_decoder.forward(input_data=latent)
-        )
-
-        bottleneck_output = bottleneck_output.reshape((-1, *before_flatten_dimension))
-
-        self.decoder.summary(input_data=bottleneck_output, device=self.device)
-
-        # Saving the content of the subnetworks to the overall architecture dictionary
-        self.shapes_dict.update({"encoder": self.encoder.shapes_dict})
-        self.shapes_dict.update(
-            {"bottleneck_encoder": self.bottleneck_encoder.shapes_dict}
-        )
-        self.shapes_dict.update(
-            {"bottleneck_decoder": self.bottleneck_decoder.shapes_dict}
-        )
-        self.shapes_dict.update({"decoder": self.decoder.shapes_dict})
+            print(self)
 
     @as_tensor
     def _projection_with_bottleneck(
@@ -1074,6 +1091,7 @@ class AutoencoderVariational(NetworkTemplate):
         channels: Optional[int] = None,
         case: Optional[str] = None,
         architecture: Optional[str] = None,
+        use_batch_norm: Optional[bool] = False,
         shallow: Optional[bool] = False,
         scale: float = 1e-3,
         devices: Union[str, list] = "cpu",
@@ -1147,6 +1165,7 @@ class AutoencoderVariational(NetworkTemplate):
                 architecture=architecture,
                 case=case,
                 shallow=shallow,
+                use_batch_norm=use_batch_norm,
                 name=self.name,
             )
 
@@ -1216,6 +1235,7 @@ class AutoencoderVariational(NetworkTemplate):
         self,
         input_data: Union[np.ndarray, torch.Tensor] = None,
         input_shape: list = None,
+        verbose: bool = True,
     ) -> torch.Tensor:
         """
         Summarizes the overall architecture of the autoencoder and saves the content of the subnetworks to a dictionary.
@@ -1250,78 +1270,83 @@ class AutoencoderVariational(NetworkTemplate):
         >>> input_data = np.random.rand(1, 28, 28, 1)
         >>> output_data = autoencoder.summary(input_data=input_data)
         """
-        if self.input_dim != None:
-            if type(self.input_dim) == tuple:
-                input_shape = list(self.input_dim)
-            elif type(self.input_dim) == int:
-                input_shape = [None, self.input_dim]
+
+        if verbose == True:
+            if self.input_dim != None:
+                if type(self.input_dim) == tuple:
+                    input_shape = list(self.input_dim)
+                elif type(self.input_dim) == int:
+                    input_shape = [None, self.input_dim]
+                else:
+                    raise Exception(
+                        f"input_dim is expected to be tuple or int, but received {type(self.input_dim)}"
+                    )
             else:
-                raise Exception(
-                    f"input_dim is expected to be tuple or int, but received {type(self.input_dim)}"
+                pass
+
+            self.encoder.summary(
+                input_data=input_data, input_shape=input_shape, device=self.device
+            )
+
+            if type(self.encoder.output_size) == tuple:
+                self.before_flatten_dimension = tuple(self.encoder.output_size[1:])
+                input_shape = self.encoder.input_size
+            elif type(self.encoder.output_size) == int:
+                input_shape = [None, self.encoder.input_size]
+            else:
+                pass
+
+            if isinstance(input_data, np.ndarray):
+                btnk_input = self.encoder.forward(input_data=input_data)
+            else:
+                assert (
+                    input_shape
+                ), "It is necessary to have input_shape when input_data is None."
+
+                input_shape[0] = 1
+
+                input_data = torch.ones(input_shape).to(self.device)
+
+                btnk_input = self.encoder.forward(input_data=input_data)
+
+            before_flatten_dimension = tuple(btnk_input.shape[1:])
+            btnk_input = btnk_input.reshape((-1, np.prod(btnk_input.shape[1:])))
+
+            # Bottleneck networks is are optional
+            if self.there_is_bottleneck:
+                latent = self.bottleneck_encoder.forward(input_data=btnk_input)
+
+                self.bottleneck_encoder.summary()
+                self.bottleneck_decoder.summary()
+
+                bottleneck_output = self.encoder_activation(
+                    self.bottleneck_decoder.forward(input_data=latent)
                 )
+
+                bottleneck_output = bottleneck_output.reshape(
+                    (-1, *before_flatten_dimension)
+                )
+            else:
+                bottleneck_output = btnk_input
+
+            self.decoder.summary(input_data=bottleneck_output, device=self.device)
+
+            # Saving the content of the subnetworks to the overall architecture dictionary
+            self.shapes_dict.update({"encoder": self.encoder.shapes_dict})
+
+            # Bottleneck networks is are optional
+            if self.there_is_bottleneck:
+                self.shapes_dict.update(
+                    {"bottleneck_encoder": self.bottleneck_encoder.shapes_dict}
+                )
+                self.shapes_dict.update(
+                    {"bottleneck_decoder": self.bottleneck_decoder.shapes_dict}
+                )
+
+            self.shapes_dict.update({"decoder": self.decoder.shapes_dict})
+
         else:
-            pass
-
-        self.encoder.summary(
-            input_data=input_data, input_shape=input_shape, device=self.device
-        )
-
-        if type(self.encoder.output_size) == tuple:
-            self.before_flatten_dimension = tuple(self.encoder.output_size[1:])
-            input_shape = self.encoder.input_size
-        elif type(self.encoder.output_size) == int:
-            input_shape = [None, self.encoder.input_size]
-        else:
-            pass
-
-        if isinstance(input_data, np.ndarray):
-            btnk_input = self.encoder.forward(input_data=input_data)
-        else:
-            assert (
-                input_shape
-            ), "It is necessary to have input_shape when input_data is None."
-
-            input_shape[0] = 1
-
-            input_data = torch.ones(input_shape).to(self.device)
-
-            btnk_input = self.encoder.forward(input_data=input_data)
-
-        before_flatten_dimension = tuple(btnk_input.shape[1:])
-        btnk_input = btnk_input.reshape((-1, np.prod(btnk_input.shape[1:])))
-
-        # Bottleneck networks is are optional
-        if self.there_is_bottleneck:
-            latent = self.bottleneck_encoder.forward(input_data=btnk_input)
-
-            self.bottleneck_encoder.summary()
-            self.bottleneck_decoder.summary()
-
-            bottleneck_output = self.encoder_activation(
-                self.bottleneck_decoder.forward(input_data=latent)
-            )
-
-            bottleneck_output = bottleneck_output.reshape(
-                (-1, *before_flatten_dimension)
-            )
-        else:
-            bottleneck_output = btnk_input
-
-        self.decoder.summary(input_data=bottleneck_output, device=self.device)
-
-        # Saving the content of the subnetworks to the overall architecture dictionary
-        self.shapes_dict.update({"encoder": self.encoder.shapes_dict})
-
-        # Bottleneck networks is are optional
-        if self.there_is_bottleneck:
-            self.shapes_dict.update(
-                {"bottleneck_encoder": self.bottleneck_encoder.shapes_dict}
-            )
-            self.shapes_dict.update(
-                {"bottleneck_decoder": self.bottleneck_decoder.shapes_dict}
-            )
-
-        self.shapes_dict.update({"decoder": self.decoder.shapes_dict})
+            print(self)
 
     @as_tensor
     def _projection_with_bottleneck(

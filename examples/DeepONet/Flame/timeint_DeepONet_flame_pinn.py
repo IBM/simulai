@@ -63,8 +63,8 @@ lambda_2 = 0.0  # Penalty factor for the L² regularization
 n_epochs = 200_000  # Maximum number of iterations for ADAM
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
-def model():
 
+def model():
     import numpy as np
 
     from simulai.models import DeepONet, ImprovedDenseNetwork
@@ -191,7 +191,7 @@ saver.write(save_dir=save_path, name=model_name, model=flame_net, template=model
 
 initial_state_test = np.array([1e-3])
 n_outputs = 1
-n_times = int(2/(initial_state_test[0]*Delta_t))
+n_times = int(2 / (initial_state_test[0] * Delta_t))
 Q = 1000
 
 branch_input_test = np.tile(initial_state_test[None, :], (Q, 1))
@@ -210,7 +210,7 @@ for i in range(0, n_times):
     eval_list.append(approximated_data[0])
 
 evaluation = np.vstack(eval_list)
-time = np.linspace(0, n_times*Delta_t, evaluation.shape[0])
+time = np.linspace(0, n_times * Delta_t, evaluation.shape[0])
 
 np.save("evaluation.npy", evaluation)
 plt.plot(time, evaluation, label="Approximated")

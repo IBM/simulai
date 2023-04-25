@@ -12,18 +12,17 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
+import copy
 import importlib
 import math
 import os
-import copy
-from functools import reduce
-from collections import OrderedDict
-from typing import List, Tuple, Union
 import warnings
+from collections import OrderedDict
+from functools import reduce
+from typing import List, Tuple, Union
 
 import numpy as np
 import torch
-
 from torch.nn.parameter import Parameter
 
 from simulai.abstract import Dataset, Regression
@@ -456,7 +455,9 @@ class Optimizer:
                     return getattr(optim_module, optimizer_name)
 
                 else:
-                    print(f"Optimizer {optimizer} not found in {optim_module.__name__}.")
+                    print(
+                        f"Optimizer {optimizer} not found in {optim_module.__name__}."
+                    )
         except:
             raise Exception(
                 f"There is no correspondent to {optimizer} in any known optimization module."
@@ -712,7 +713,6 @@ class Optimizer:
 
         # In a multi-device execution, the optimizer must be properly instantiated to execute distributed tasks.
         if distributed == True:
-
             from torch.distributed.optim import DistributedOptimizer
             from torch.distributed.rpc import RRef
 
@@ -845,10 +845,9 @@ class ScipyInterface:
         optimizer_config: dict = dict(),
         loss: callable = None,
         loss_config: dict = None,
-        device:str="cpu",
-        jac:str=None,
+        device: str = "cpu",
+        jac: str = None,
     ) -> None:
-
         # Configuring the device to be used during the fitting process
         device_label = device
         if device == "gpu":
@@ -884,11 +883,15 @@ class ScipyInterface:
 
         self.operators_names = list(self.fun.state_dict().keys())
 
-        self.operators_shapes = OrderedDict({k:list(v.shape) for k,v in self.fun.state_dict().items()})
+        self.operators_shapes = OrderedDict(
+            {k: list(v.shape) for k, v in self.fun.state_dict().items()}
+        )
 
         self.state_0 = copy.deepcopy(self.fun.state_dict())
 
-        intervals = np.cumsum([0] + [np.prod(shape) for shape in self.operators_shapes.values()])
+        intervals = np.cumsum(
+            [0] + [np.prod(shape) for shape in self.operators_shapes.values()]
+        )
 
         self.operators_intervals = [
             intervals[i : i + 2].tolist() for i in range(len(intervals) - 1)
@@ -897,12 +900,11 @@ class ScipyInterface:
         if jac:
             self.optimizer_config["jac"] = jac
         else:
-           self.optimizer_config["jac"] = True
+            self.optimizer_config["jac"] = True
 
     def _stack_and_convert_parameters(
         self, parameters: List[Union[torch.Tensor, np.ndarray]]
     ) -> np.ndarray:
-
         return np.hstack(
             [
                 param.detach().numpy().astype("float64").flatten()
@@ -911,42 +913,47 @@ class ScipyInterface:
         )
 
     def _update_and_set_parameters(self, parameters: np.ndarray) -> None:
-
         operators = [
             torch.from_numpy(
-                            parameters[slice(*interval)].reshape(shape).astype("float32")
-                            ).to(self.device)
-            for interval, shape in zip(self.operators_intervals, self.operators_shapes.values())
+                parameters[slice(*interval)].reshape(shape).astype("float32")
+            ).to(self.device)
+            for interval, shape in zip(
+                self.operators_intervals, self.operators_shapes.values()
+            )
         ]
 
         for opi, parameter in enumerate(self.fun.parameters()):
+            parameter.data = operators[opi]
 
-             parameter.data = operators[opi]
-
-    def _exec_kwargs_forward(self, input_data:dict=None):
-
+    def _exec_kwargs_forward(self, input_data: dict = None):
         return self.fun.forward(**input_data)
 
-    def _exec_forward(self, input_data:Union[np.ndarray, torch.Tensor]=None):
-
+    def _exec_forward(self, input_data: Union[np.ndarray, torch.Tensor] = None):
         return self.fun.forward(input_data=input_data)
 
     def _fun(self, parameters) -> Union[np.ndarray, float]:
-
         self._update_and_set_parameters(parameters)
 
         approximation = self.exec_forward(input_data=self.input_data)
 
-        self.closure = self.loss(self.input_data, self.target_data, self.fun, **self.loss_config)
+        self.closure = self.loss(
+            self.input_data, self.target_data, self.fun, **self.loss_config
+        )
 
         loss = self.closure()
 
-        grads = [ v.grad.detach().cpu().numpy() for v in self.fun.parameters() ]
+        grads = [v.grad.detach().cpu().numpy() for v in self.fun.parameters()]
 
-        gradients = np.hstack([ v.flatten() for v, shape 
-                               in zip(grads, list(self.operators_shapes.values())) ])
+        gradients = np.hstack(
+            [
+                v.flatten()
+                for v, shape in zip(grads, list(self.operators_shapes.values()))
+            ]
+        )
 
-        return loss.detach().cpu().numpy().astype("float64")[0], gradients.astype("float64")
+        return loss.detach().cpu().numpy().astype("float64")[0], gradients.astype(
+            "float64"
+        )
 
     def fit(
         self,
@@ -955,7 +962,9 @@ class ScipyInterface:
     ) -> None:
         parameters_0 = self._stack_and_convert_parameters(self.state_0)
 
-        print(f"\nStarting ScipyInterface with method: {self.optimizer_config['method']}\n")
+        print(
+            f"\nStarting ScipyInterface with method: {self.optimizer_config['method']}\n"
+        )
 
         if isinstance(input_data, dict):
             self.exec_forward = self._exec_kwargs_forward
@@ -966,7 +975,9 @@ class ScipyInterface:
 
         self.target_data = target_data
 
-        self.closure = self.loss(self.input_data, self.target_data, self.fun, **self.loss_config)
+        self.closure = self.loss(
+            self.input_data, self.target_data, self.fun, **self.loss_config
+        )
 
         solution = self.optimizer(self._fun, parameters_0, **self.optimizer_config)
 

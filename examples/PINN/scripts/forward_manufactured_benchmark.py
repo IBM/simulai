@@ -46,21 +46,26 @@ time_ext = np.linspace(T_max, T_max + 0.5, N)[:, None]
 def dataset(t: np.ndarray = None) -> np.ndarray:
     return (t - mu) ** 2 * np.cos(omega * np.pi * t)
 
+
 def dataset_2(t: np.ndarray = None) -> np.ndarray:
     return np.sin(omega * np.pi * t)
+
 
 # Datasets used for comparison
 u_data = dataset_2(t=time_eval)
 u_data_ext = dataset_2(t=time_ext)
 
+
 def k1(t: torch.Tensor) -> torch.Tensor:
     return 2 * (t - mu) * torch.cos(omega * pi * t)
+
 
 def k2(t: torch.Tensor) -> torch.Tensor:
     return torch.sin(omega * pi * t)
 
+
 # The expression we aim at minimizing
-#f = "D(u, t) - k1(t) + omega*pi*((t - mu)**2)*sin(omega*pi*t)"
+# f = "D(u, t) - k1(t) + omega*pi*((t - mu)**2)*sin(omega*pi*t)"
 f = "u - k2(t)"
 
 input_labels = ["t"]
