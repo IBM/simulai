@@ -459,6 +459,7 @@ class ConvNetworkTemplate(NetworkTemplate):
         )
 
     def _setup_layers(self, layers_config: dict = None) -> (list, list, list):
+
         before_conv_layers = list()
         conv_layers = list()
         after_conv_layers = list()
@@ -563,11 +564,14 @@ class ConvNetworkTemplate(NetworkTemplate):
             self.add_module(self.name + "_batch_norm_" + str(ll), batch_norm_layer_ll)
 
             weights.append(conv_layer_ll.weight)
-            weights.append(batch_norm_layer_ll.weight)
+
+            # Batch normalization also has trainable paramters
+            if not isinstance(batch_norm_layer_ll, torch.nn.Identity):
+                weights.append(batch_norm_layer_ll.weight)
 
         return before_conv_layers, conv_layers, after_conv_layers, batch_norm_layers, weights
 
-    def _corrrect_first_dim(self, shapes: list = None) -> list:
+    def _correct_first_dim(self, shapes: list = None) -> list:
         shapes[0] = None
 
         return shapes
@@ -631,8 +635,8 @@ class ConvNetworkTemplate(NetworkTemplate):
             output_tensor_before_conv = self.before_conv_layers[layer_id](input_tensor_)
 
             if hasattr(self.after_conv_layers[layer_id], "_get_name"):
-                input_shape = self._corrrect_first_dim(list(input_tensor_.shape))
-                output_shape = self._corrrect_first_dim(
+                input_shape = self._correct_first_dim(list(input_tensor_.shape))
+                output_shape = self._correct_first_dim(
                     list(output_tensor_before_conv.shape)
                 )
 
@@ -643,10 +647,10 @@ class ConvNetworkTemplate(NetworkTemplate):
             # Applying  convolution operations
             output_tensor_conv = self.conv_layers[layer_id](output_tensor_before_conv)
 
-            input_shape = self._corrrect_first_dim(
+            input_shape = self._correct_first_dim(
                 list(output_tensor_before_conv.shape)
             )
-            output_shape = self._corrrect_first_dim(list(output_tensor_conv.shape))
+            output_shape = self._correct_first_dim(list(output_tensor_conv.shape))
 
             shapes_dict[f"{self.conv_layers[layer_id]._get_name()}_{layer_id}"] = {
                 "Input shape": input_shape,
@@ -661,8 +665,8 @@ class ConvNetworkTemplate(NetworkTemplate):
 
             # Applying operations before convolution
             if hasattr(self.after_conv_layers[layer_id], "_get_name"):
-                input_shape = self._corrrect_first_dim(list(output_tensor_conv.shape))
-                output_shape = self._corrrect_first_dim(
+                input_shape = self._correct_first_dim(list(output_tensor_conv.shape))
+                output_shape = self._correct_first_dim(
                     list(output_tensor_after_conv.shape)
                 )
 

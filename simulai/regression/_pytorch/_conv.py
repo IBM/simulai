@@ -30,7 +30,6 @@ def channels_dim(method):
 
     return inside
 
-
 # High-level class for assembling different kinds of convolutional networks
 class ConvolutionalNetwork(ConvNetworkTemplate):
     name = "conv"
@@ -154,6 +153,7 @@ class ResConvolutionalNetwork(ConvNetworkTemplate):
                 before_conv_layers,
                 conv_layers,
                 after_conv_layers,
+                batch_norm_layers,
                 weights,
             ) = self._setup_layers(layers_config=stage)
             activations_, activations_str = self._setup_activations(
@@ -164,6 +164,7 @@ class ResConvolutionalNetwork(ConvNetworkTemplate):
                 before_conv=before_conv_layers,
                 conv=conv_layers,
                 act=activations_,
+                batch_norm=batch_norm_layers,
                 after_conv=after_conv_layers,
             )
 

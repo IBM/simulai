@@ -64,7 +64,7 @@ class NetworkInstanceGen:
     """
 
     def __init__(
-        self, architecture: str, dim: str = None, shallow: bool = False, use_batch_norm: bool = True,
+        self, architecture: str, dim: str = None, shallow: bool = False, use_batch_norm: bool = False,
     ) -> None:
         self.shallow = shallow
 
@@ -443,6 +443,7 @@ def cnn_autoencoder_auto(
     activation: str = None,
     channels: int = None,
     case: str = None,
+    use_batch_norm: bool = False,
     shallow: bool = False,
     name: str = None,
 ) -> Tuple[NetworkTemplate, ...]:
@@ -473,7 +474,7 @@ def cnn_autoencoder_auto(
 
     last_channels = output_dim[1]
 
-    autogen_cnn = NetworkInstanceGen(architecture="cnn", dim=case)
+    autogen_cnn = NetworkInstanceGen(architecture="cnn", dim=case, use_batch_norm=use_batch_norm)
     autogen_dense = NetworkInstanceGen(architecture="dense", shallow=shallow)
 
     # Default choice for the model name
@@ -528,6 +529,7 @@ def autoencoder_auto(
     channels: int = None,
     architecture: str = None,
     shallow: bool = False,
+    use_batch_norm: bool = False,
     case: str = None,
     name: str = None,
 ) -> Tuple[Union[NetworkTemplate, None], ...]:
@@ -552,6 +554,7 @@ def autoencoder_auto(
             channels=channels,
             case=case,
             shallow=shallow,
+            use_batch_norm=use_batch_norm,
             name=name,
         )
 
