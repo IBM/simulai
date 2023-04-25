@@ -13,7 +13,7 @@
 #     limitations under the License.
 
 import importlib
-from typing import List, Union, Dict
+from typing import Dict, List, Union
 
 import numpy as np
 import sympy
@@ -226,15 +226,14 @@ class SymbolicOperator(torch.nn.Module):
 
         return protected_operators
 
-    def _parse_inputs_key(self, inputs_key:str=None) -> dict:
-
+    def _parse_inputs_key(self, inputs_key: str = None) -> dict:
         # Sentences separator: '|'
         sep = "|"
         # Index identifier: ':'
         inx = ":"
 
         # Removing possible spaces in the inputs_key string
-        inputs_key = inputs_key.replace(' ', '')
+        inputs_key = inputs_key.replace(" ", "")
 
         try:
             split_components = inputs_key.split(sep)
@@ -257,18 +256,16 @@ class SymbolicOperator(torch.nn.Module):
 
         return keys_dict
 
-    def _collect_data_from_inputs_list(self, inputs_list:dict=None) -> list:
-
+    def _collect_data_from_inputs_list(self, inputs_list: dict = None) -> list:
         data = list()
         for k, v in self.inputs_key.items():
-
             if v == -1:
                 if inputs_list[k].shape[1] == 1:
                     data_ = [inputs_list[k]]
                 else:
                     data_ = list(torch.split(inputs_list[k], 1, dim=1))
             else:
-                data_ = [inputs_list[k][:, i:i+1] for i in v]
+                data_ = [inputs_list[k][:, i : i + 1] for i in v]
 
             data += data_
 
@@ -447,7 +444,6 @@ class SymbolicOperator(torch.nn.Module):
             inputs = {key: value for key, value in zip(self.input_names, inputs_list)}
 
         elif type(inputs_list) is dict:
-
             assert (
                 self.inputs_key is not None
             ), "If inputs_list is dict, \
