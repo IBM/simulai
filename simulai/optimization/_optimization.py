@@ -899,8 +899,10 @@ class ScipyInterface:
 
         if jac:
             self.optimizer_config["jac"] = jac
+            self.objective = self._fun_num
         else:
             self.optimizer_config["jac"] = True
+            self.objective = self._fun
 
     def _stack_and_convert_parameters(
         self, parameters: List[Union[torch.Tensor, np.ndarray]]
@@ -931,6 +933,18 @@ class ScipyInterface:
 
     def _exec_forward(self, input_data: Union[np.ndarray, torch.Tensor] = None):
         return self.fun.forward(input_data=input_data)
+
+    def _fun_num(self, parameters:np.ndarray) -> Tuple[float]:
+
+        self._update_and_set_parameters(parameters)
+
+        self.closure = self.loss(
+            self.input_data, self.target_data, **self.loss_config
+        )
+
+        loss = self.closure()
+
+        return loss.detach().cpu().numpy().astype("float64")
 
     def _fun(self, parameters:np.ndarray) -> Tuple[float, np.ndarray]:
 
@@ -979,6 +993,6 @@ class ScipyInterface:
             self.input_data, self.target_data, self.fun, **self.loss_config
         )
 
-        solution = self.optimizer(self._fun, parameters_0, **self.optimizer_config)
+        solution = self.optimizer(self.objective, parameters_0, **self.optimizer_config)
 
         self._update_and_set_parameters(solution.x)

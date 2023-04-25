@@ -147,6 +147,7 @@ optimizer_lbfgs = ScipyInterface(
     optimizer="L-BFGS-B",
     loss=loss_instance,
     loss_config=params,
+    jac='3-point',
     optimizer_config={
         "options": {
             "maxiter": 50000,
