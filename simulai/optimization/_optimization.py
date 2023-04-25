@@ -923,6 +923,7 @@ class ScipyInterface:
         ]
 
         for opi, parameter in enumerate(self.fun.parameters()):
+            operators[opi].requires_grad = True
             parameter.data = operators[opi]
 
     def _exec_kwargs_forward(self, input_data: dict = None):
@@ -931,13 +932,12 @@ class ScipyInterface:
     def _exec_forward(self, input_data: Union[np.ndarray, torch.Tensor] = None):
         return self.fun.forward(input_data=input_data)
 
-    def _fun(self, parameters) -> Union[np.ndarray, float]:
+    def _fun(self, parameters:np.ndarray) -> Tuple[float, np.ndarray]:
+
         self._update_and_set_parameters(parameters)
 
-        approximation = self.exec_forward(input_data=self.input_data)
-
         self.closure = self.loss(
-            self.input_data, self.target_data, self.fun, **self.loss_config
+            self.input_data, self.target_data, **self.loss_config
         )
 
         loss = self.closure()
@@ -951,7 +951,7 @@ class ScipyInterface:
             ]
         )
 
-        return loss.detach().cpu().numpy().astype("float64")[0], gradients.astype(
+        return loss.detach().cpu().numpy().astype("float64"), gradients.astype(
             "float64"
         )
 
