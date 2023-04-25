@@ -153,7 +153,7 @@ optimizer.fit(
     n_epochs=n_epochs,
     loss="pirmse",
     params=params,
-    device="gpu", 
+    device="gpu",
 )
 
 # Evaluation in training dataset

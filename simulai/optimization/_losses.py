@@ -786,7 +786,7 @@ class PIRMSELoss(LossBasics):
         else:
             pass
 
-        # When no weight is provided, they are 
+        # When no weight is provided, they are
         # set to the default choice
         if weights is None:
             weights = len(residual.output_names) * [1]

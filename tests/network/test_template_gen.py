@@ -316,6 +316,26 @@ class TestAutoGenNet(TestCase):
 
         assert estimated_data.shape == input_data.shape
 
+    def test_autoencoder_batch_norm(self) -> None:
+        from simulai.models import AutoencoderVariational
+
+        input_data = np.random.rand(100, 1, 64, 128)
+
+        autoencoder = AutoencoderVariational(
+            input_dim=(None, 1, 64, 128),
+            latent_dim=8,
+            activation="tanh",
+            architecture="cnn",
+            case="2d",
+            use_batch_norm=True,
+        )
+
+        estimated_data = autoencoder.eval(input_data=input_data)
+
+        autoencoder.summary(verbose=False)
+
+        assert estimated_data.shape == input_data.shape
+
     def test_autoencoder_rectangle_shallow(self) -> None:
         from simulai.models import AutoencoderVariational
 

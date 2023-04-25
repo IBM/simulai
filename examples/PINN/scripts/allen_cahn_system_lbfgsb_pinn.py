@@ -176,13 +176,13 @@ class TestAllencahnPINN:
             device="gpu",
         )
 
-        from simulai.optimization import ScipyInterface
-        from simulai.optimization import PIRMSELoss
+        from simulai.optimization import PIRMSELoss, ScipyInterface
 
         loss_instance = PIRMSELoss(operator=net)
 
-        optimizer_lbfgs = ScipyInterface(fun=net, optimizer='L-BFGS-B',
-                                         loss=loss_instance, loss_config=params) 
+        optimizer_lbfgs = ScipyInterface(
+            fun=net, optimizer="L-BFGS-B", loss=loss_instance, loss_config=params
+        )
 
         optimizer_lbfgs.fit(input_data=data)
 

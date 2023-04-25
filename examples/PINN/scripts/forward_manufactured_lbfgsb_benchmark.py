@@ -41,21 +41,26 @@ time_ext = np.linspace(T_max, T_max + 0.5, N)[:, None]
 def dataset(t: np.ndarray = None) -> np.ndarray:
     return (t - mu) ** 2 * np.cos(omega * np.pi * t)
 
+
 def dataset_2(t: np.ndarray = None) -> np.ndarray:
     return np.sin(omega * np.pi * t)
+
 
 # Datasets used for comparison
 u_data = dataset_2(t=time_eval)
 u_data_ext = dataset_2(t=time_ext)
 
+
 def k1(t: torch.Tensor) -> torch.Tensor:
     return 2 * (t - mu) * torch.cos(omega * pi * t)
+
 
 def k2(t: torch.Tensor) -> torch.Tensor:
     return torch.sin(omega * pi * t)
 
+
 # The expression we aim at minimizing
-#f = "D(u, t) - k1(t) + omega*pi*((t - mu)**2)*sin(omega*pi*t)"
+# f = "D(u, t) - k1(t) + omega*pi*((t - mu)**2)*sin(omega*pi*t)"
 f = "u - k2(t)"
 
 input_labels = ["t"]
@@ -133,20 +138,26 @@ optimizer.fit(
 )
 
 
-from simulai.optimization import ScipyInterface
-from simulai.optimization import PIRMSELoss
+from simulai.optimization import PIRMSELoss, ScipyInterface
 
 loss_instance = PIRMSELoss(operator=net)
 
-optimizer_lbfgs = ScipyInterface(fun=net, optimizer='L-BFGS-B',
-                                 loss=loss_instance, loss_config=params, optimizer_config={'options':{
-                                                                         'maxiter': 50000,
-                                                                         'maxfun': 50000,
-                                                                         'maxcor': 50,
-                                                                         'maxls': 50,
-                                                                         'ftol': 1.0*np.finfo(float).eps,
-                                                                         'eps': 1e-6
-                                                                        }}) 
+optimizer_lbfgs = ScipyInterface(
+    fun=net,
+    optimizer="L-BFGS-B",
+    loss=loss_instance,
+    loss_config=params,
+    optimizer_config={
+        "options": {
+            "maxiter": 50000,
+            "maxfun": 50000,
+            "maxcor": 50,
+            "maxls": 50,
+            "ftol": 1.0 * np.finfo(float).eps,
+            "eps": 1e-6,
+        }
+    },
+)
 
 optimizer_lbfgs.fit(input_data=time_train)
 

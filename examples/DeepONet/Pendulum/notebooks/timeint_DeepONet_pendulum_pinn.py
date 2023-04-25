@@ -23,16 +23,15 @@
 
 
 import os
+
 import matplotlib.pyplot as plt
 import numpy as np
-
-
-# In[3]:
-
 
 from simulai.file import SPFile
 from simulai.optimization import Optimizer
 from simulai.residuals import SymbolicOperator
+
+# In[3]:
 
 
 # #### Basic configuration
@@ -40,7 +39,7 @@ from simulai.residuals import SymbolicOperator
 # In[4]:
 
 
-save_path = '.'
+save_path = "."
 
 
 # In[5]:
@@ -69,7 +68,7 @@ s_intv = np.stack([[-3, -3], [3, 3]], axis=0)
 #     \frac{d\,s_1}{d\,t} = s_2\\
 #     \frac{d\,s_2}{d\,t} = \frac{-b\,s_2}{m} - \frac{g\,sin(s_1)}{L}
 # $$
-# 
+#
 
 # In[8]:
 
@@ -287,7 +286,6 @@ saver.write(
 
 from scipy.integrate import odeint
 
-
 # #### Pendulum numerical solver
 
 # In[ ]:
@@ -339,7 +337,6 @@ pendulum_net = saver.read(model_path=save_path)
 
 
 for j in range(N + 1):
-    
     exact_data = solver.run(U_s[j], t)
 
     initial_state_test = U_s[j]
@@ -405,4 +402,3 @@ for j in range(N + 1):
         plt.ylim(1.5 * exact_data[:, 1].min(), 1.5 * exact_data[:, 1].max())
         plt.savefig(f"{model_name}_s2_time_int_{j}.png")
         plt.close()
-

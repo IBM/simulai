@@ -501,7 +501,6 @@ class SymbolicOperator(torch.nn.Module):
 
         # The non-periodic cases
         else:
-
             constructor = MakeTensor(
                 input_names=self.input_names, output_names=self.output_names
             )

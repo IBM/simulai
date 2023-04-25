@@ -30,7 +30,7 @@ save_path = args.save_path
 initial_state_test = np.array([1e-3])
 n_outputs = 1
 Delta_t = 0.05
-n_times = int(2/(initial_state_test[0]*Delta_t))
+n_times = int(2 / (initial_state_test[0] * Delta_t))
 Q = 1000
 
 # Testing to reload from disk
