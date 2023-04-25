@@ -361,7 +361,6 @@ class AutoencoderCNN(NetworkTemplate):
         """
 
         if verbose == True:
-
             if self.input_dim != None:
                 input_shape = self.input_dim
             else:
@@ -396,7 +395,9 @@ class AutoencoderCNN(NetworkTemplate):
                 self.bottleneck_decoder.forward(input_data=latent)
             )
 
-            bottleneck_output = bottleneck_output.reshape((-1, *before_flatten_dimension))
+            bottleneck_output = bottleneck_output.reshape(
+                (-1, *before_flatten_dimension)
+            )
 
             self.decoder.summary(input_data=bottleneck_output, device=self.device)
 
@@ -591,7 +592,7 @@ class AutoencoderKoopman(NetworkTemplate):
         case: Optional[str] = None,
         architecture: Optional[str] = None,
         shallow: Optional[bool] = False,
-        use_batch_norm:Optional[bool] = False,
+        use_batch_norm: Optional[bool] = False,
         encoder_activation: str = "relu",
         devices: Union[str, list] = "cpu",
         name: str = None,
@@ -726,9 +727,7 @@ class AutoencoderKoopman(NetworkTemplate):
         input_shape: list = None,
         verbose: bool = True,
     ) -> torch.Tensor:
-
         if verbose == True:
-
             if self.input_dim != None:
                 input_shape = list(self.input_dim)
             else:
@@ -768,7 +767,9 @@ class AutoencoderKoopman(NetworkTemplate):
                 self.bottleneck_decoder.forward(input_data=latent)
             )
 
-            bottleneck_output = bottleneck_output.reshape((-1, *before_flatten_dimension))
+            bottleneck_output = bottleneck_output.reshape(
+                (-1, *before_flatten_dimension)
+            )
 
             self.decoder.summary(input_data=bottleneck_output, device=self.device)
 
@@ -1271,7 +1272,6 @@ class AutoencoderVariational(NetworkTemplate):
         """
 
         if verbose == True:
-
             if self.input_dim != None:
                 if type(self.input_dim) == tuple:
                     input_shape = list(self.input_dim)

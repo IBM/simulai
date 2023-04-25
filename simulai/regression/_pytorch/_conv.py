@@ -30,6 +30,7 @@ def channels_dim(method):
 
     return inside
 
+
 # High-level class for assembling different kinds of convolutional networks
 class ConvolutionalNetwork(ConvNetworkTemplate):
     name = "conv"

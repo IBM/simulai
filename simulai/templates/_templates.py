@@ -64,7 +64,11 @@ class NetworkInstanceGen:
     """
 
     def __init__(
-        self, architecture: str, dim: str = None, shallow: bool = False, use_batch_norm: bool = False,
+        self,
+        architecture: str,
+        dim: str = None,
+        shallow: bool = False,
+        use_batch_norm: bool = False,
     ) -> None:
         self.shallow = shallow
 
@@ -204,9 +208,9 @@ class NetworkInstanceGen:
 
         if self.use_batch_norm:
             batch_norm_input = {
-                            "type" : self.batch_norm,
-                            "num_features" : channels_out,  
-                               }
+                "type": self.batch_norm,
+                "num_features": channels_out,
+            }
 
             layer_input["batch_norm"] = batch_norm_input
 
@@ -233,9 +237,9 @@ class NetworkInstanceGen:
 
         if self.use_batch_norm:
             batch_norm_input = {
-                            "type" : self.batch_norm,
-                            "num_features" : channels_out,  
-                               }
+                "type": self.batch_norm,
+                "num_features": channels_out,
+            }
 
             layer_input["batch_norm"] = batch_norm_input
 
@@ -474,7 +478,9 @@ def cnn_autoencoder_auto(
 
     last_channels = output_dim[1]
 
-    autogen_cnn = NetworkInstanceGen(architecture="cnn", dim=case, use_batch_norm=use_batch_norm)
+    autogen_cnn = NetworkInstanceGen(
+        architecture="cnn", dim=case, use_batch_norm=use_batch_norm
+    )
     autogen_dense = NetworkInstanceGen(architecture="dense", shallow=shallow)
 
     # Default choice for the model name

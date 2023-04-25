@@ -41,15 +41,19 @@ time_train = (np.random.rand(n) * T_max)[:, None]
 time_eval = np.linspace(0, T_max, N)[:, None]
 time_ext = np.linspace(T_max, T_max + 0.5, N)[:, None]
 
+
 def dataset(t):
     return np.exp(-t)
 
+
 # Datasets used for comparison
-u_data = dataset(t=mu*time_eval)
-#u_data_ext = dataset(t=time_ext)
+u_data = dataset(t=mu * time_eval)
+# u_data_ext = dataset(t=time_ext)
+
 
 def k1(t: torch.Tensor) -> torch.Tensor:
     return 2 * (t - mu) * torch.cos(omega * pi * t)
+
 
 # The expression we aim at minimizing
 f = "D(u, t) + mu*u"
@@ -62,6 +66,7 @@ n_outputs = len(output_labels)
 
 n_epochs = 5_000  # Maximum number of iterations for ADAM
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
+
 
 def model():
     from simulai.models import ImprovedDenseNetwork
@@ -103,7 +108,7 @@ residual = SymbolicOperator(
     expressions=[f],
     input_vars=["t"],
     output_vars=["u"],
-    constants = {'mu': mu},
+    constants={"mu": mu},
     function=net,
     engine="torch",
     device="gpu",
@@ -136,8 +141,8 @@ error = 100 * l2_norm(data=approximated_data, reference_data=u_data, relative_no
 print(f"Approximation error: {error} %")
 
 for ii in range(n_outputs):
-    plt.plot(40*time_eval, approximated_data, label="Approximated")
-    plt.plot(40*time_eval, u_data, label="Exact")
+    plt.plot(40 * time_eval, approximated_data, label="Approximated")
+    plt.plot(40 * time_eval, u_data, label="Exact")
     plt.xlabel("t")
     plt.ylabel(f"{output_labels[ii]}")
     plt.legend()

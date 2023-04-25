@@ -459,7 +459,6 @@ class ConvNetworkTemplate(NetworkTemplate):
         )
 
     def _setup_layers(self, layers_config: dict = None) -> (list, list, list):
-
         before_conv_layers = list()
         conv_layers = list()
         after_conv_layers = list()
@@ -569,7 +568,13 @@ class ConvNetworkTemplate(NetworkTemplate):
             if not isinstance(batch_norm_layer_ll, torch.nn.Identity):
                 weights.append(batch_norm_layer_ll.weight)
 
-        return before_conv_layers, conv_layers, after_conv_layers, batch_norm_layers, weights
+        return (
+            before_conv_layers,
+            conv_layers,
+            after_conv_layers,
+            batch_norm_layers,
+            weights,
+        )
 
     def _correct_first_dim(self, shapes: list = None) -> list:
         shapes[0] = None
@@ -647,9 +652,7 @@ class ConvNetworkTemplate(NetworkTemplate):
             # Applying  convolution operations
             output_tensor_conv = self.conv_layers[layer_id](output_tensor_before_conv)
 
-            input_shape = self._correct_first_dim(
-                list(output_tensor_before_conv.shape)
-            )
+            input_shape = self._correct_first_dim(list(output_tensor_before_conv.shape))
             output_shape = self._correct_first_dim(list(output_tensor_conv.shape))
 
             shapes_dict[f"{self.conv_layers[layer_id]._get_name()}_{layer_id}"] = {
