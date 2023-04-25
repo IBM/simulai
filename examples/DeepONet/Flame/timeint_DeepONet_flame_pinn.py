@@ -36,13 +36,13 @@ model_name = args.model_name
 
 Q = 1_000
 N = int(5e4)
-Delta_t = 1
+Delta_t = 0.01
 
 t_intv = [0, Delta_t]
 u_intv = np.stack([[0], [1]], axis=0)
 
 # The expression we aim at minimizing
-f_u = "D(u, t) - u**2 + u**3"
+f_u = "D(u, t) - (2/u0)*(u**2 + u**3)"
 
 U_t = np.random.uniform(low=t_intv[0], high=t_intv[1], size=Q)
 U_u = np.random.uniform(low=u_intv[0], high=u_intv[1], size=(N, 1))
@@ -52,7 +52,7 @@ trunk_input_train = np.tile(U_t[:, None], (N, 1))
 
 initial_states = U_u
 
-input_labels = ["t"]
+input_labels = ["t", "u0"]
 output_labels = ["u"]
 
 n_inputs = len(input_labels)
@@ -133,7 +133,7 @@ residual = SymbolicOperator(
     input_vars=input_labels,
     output_vars=output_labels,
     function=flame_net,
-    inputs_key="input_trunk",
+    inputs_key="input_trunk|input_branch:0",
     device="gpu",
     engine="torch",
 )
@@ -191,7 +191,7 @@ saver.write(save_dir=save_path, name=model_name, model=flame_net, template=model
 
 initial_state_test = np.array([1e-3])
 n_outputs = 1
-n_times = int(2 / (initial_state_test[0] * Delta_t))
+n_times = 1 #int(2 / (initial_state_test[0] * Delta_t))
 Q = 1000
 
 branch_input_test = np.tile(initial_state_test[None, :], (Q, 1))
