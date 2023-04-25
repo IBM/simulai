@@ -925,8 +925,7 @@ class ScipyInterface:
         ]
 
         for opi, parameter in enumerate(self.fun.parameters()):
-            operators[opi].requires_grad = True
-            parameter.data = operators[opi]
+            parameter = Parameter(data=operators[opi], requires_grad=True)
 
     def _exec_kwargs_forward(self, input_data: dict = None):
         return self.fun.forward(**input_data)
@@ -948,6 +947,7 @@ class ScipyInterface:
 
     def _fun(self, parameters:np.ndarray) -> Tuple[float, np.ndarray]:
 
+        # Setting the new values for the model parameters
         self._update_and_set_parameters(parameters)
 
         self.closure = self.loss(
