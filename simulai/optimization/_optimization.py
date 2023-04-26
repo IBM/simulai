@@ -52,14 +52,14 @@ def _convert_tensor_format(method):
             input_data_ = input_data
 
         elif isinstance(input_data, np.ndarray):
-            input_data_ = torch.from_numpy(input_data.astype("float32"))
+            input_data_ = torch.from_numpy(input_data.astype(np.float32))
 
         elif isinstance(input_data, dict):
             input_data_ = dict()
 
             for key, item in input_data.items():
                 if type(item) == np.ndarray:
-                    input_data_[key] = torch.from_numpy(item.astype("float32"))
+                    input_data_[key] = torch.from_numpy(item.astype(np.float32))
 
                 else:
                     input_data_[key] = item
@@ -70,14 +70,14 @@ def _convert_tensor_format(method):
             )
 
         if isinstance(target_data, np.ndarray):
-            target_data_ = torch.from_numpy(target_data.astype("float32"))
+            target_data_ = torch.from_numpy(target_data.astype(np.float32))
         else:
             target_data_ = target_data
 
         if validation_data is not None:
             if isinstance(validation_data[0], np.ndarray):
                 validation_data_ = tuple(
-                    [torch.from_numpy(j.astype("float32")) for j in validation_data]
+                    [torch.from_numpy(j.astype(np.float32)) for j in validation_data]
                 )
             else:
                 validation_data_ = validation_data
@@ -909,7 +909,7 @@ class ScipyInterface:
     ) -> np.ndarray:
         return np.hstack(
             [
-                param.detach().numpy().astype("float64").flatten()
+                param.detach().numpy().astype(np.float64).flatten()
                 for param in parameters.values()
             ]
         )
@@ -917,7 +917,7 @@ class ScipyInterface:
     def _update_and_set_parameters(self, parameters: np.ndarray) -> None:
         operators = [
             torch.from_numpy(
-                parameters[slice(*interval)].reshape(shape).astype("float32")
+                parameters[slice(*interval)].reshape(shape).astype(np.float32)
             ).to(self.device)
             for interval, shape in zip(
                 self.operators_intervals, self.operators_shapes.values()
@@ -925,7 +925,7 @@ class ScipyInterface:
         ]
 
         for opi, parameter in enumerate(self.fun.parameters()):
-            parameter = Parameter(data=operators[opi], requires_grad=True)
+            parameter.data.copy_(operators[opi])
 
     def _exec_kwargs_forward(self, input_data: dict = None):
         return self.fun.forward(**input_data)
@@ -937,24 +937,22 @@ class ScipyInterface:
 
         self._update_and_set_parameters(parameters)
 
-        self.closure = self.loss(
+        closure = self.loss(
             self.input_data, self.target_data, **self.loss_config
         )
+        loss = closure()[0]
 
-        loss = self.closure()
-
-        return loss.detach().cpu().numpy().astype("float64")
+        return loss.detach().cpu().numpy().astype(np.float64)
 
     def _fun(self, parameters:np.ndarray) -> Tuple[float, np.ndarray]:
 
         # Setting the new values for the model parameters
         self._update_and_set_parameters(parameters)
 
-        self.closure = self.loss(
+        closure = self.loss(
             self.input_data, self.target_data, **self.loss_config
         )
-
-        loss = self.closure()
+        loss = closure()[0]
 
         grads = [v.grad.detach().cpu().numpy() for v in self.fun.parameters()]
 
@@ -965,8 +963,8 @@ class ScipyInterface:
             ]
         )
 
-        return loss.detach().cpu().numpy().astype("float64"), gradients.astype(
-            "float64"
+        return loss.detach().cpu().numpy().astype(np.float64), gradients.astype(
+            np.float64
         )
 
     def fit(
@@ -990,7 +988,7 @@ class ScipyInterface:
         self.target_data = target_data
 
         self.closure = self.loss(
-            self.input_data, self.target_data, self.fun, **self.loss_config
+            self.input_data, self.target_data, **self.loss_config
         )
 
         solution = self.optimizer(self.objective, parameters_0, **self.optimizer_config)

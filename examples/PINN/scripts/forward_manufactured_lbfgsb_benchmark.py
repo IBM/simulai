@@ -61,7 +61,7 @@ def k2(t: torch.Tensor) -> torch.Tensor:
 
 # The expression we aim at minimizing
 # f = "D(u, t) - k1(t) + omega*pi*((t - mu)**2)*sin(omega*pi*t)"
-f = "u - k2(t)"
+f = "D(u, t) - k2(t)"
 
 input_labels = ["t"]
 output_labels = ["u"]
