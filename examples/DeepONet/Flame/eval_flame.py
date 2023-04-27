@@ -27,10 +27,10 @@ args = parser.parse_args()
 
 save_path = args.save_path
 
-initial_state_test = np.array([1e-3])
+initial_state_test = np.array([1e-2])
 n_outputs = 1
-Delta_t = 0.05
-n_times = int(2 / (initial_state_test[0] * Delta_t))
+Delta_t = 0.01
+n_times = int(1 / Delta_t)
 Q = 1000
 
 # Testing to reload from disk
@@ -42,7 +42,7 @@ trunk_input_test = np.linspace(0, Delta_t, Q)[:, None]
 
 eval_list = list()
 
-for i in range(0, 2):
+for i in range(0, n_times):
     branch_input_test = np.tile(initial_state_test[None, :], (Q, 1))
 
     approximated_data = flame_net.eval(

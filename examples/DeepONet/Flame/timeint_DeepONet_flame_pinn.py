@@ -42,7 +42,7 @@ t_intv = [0, Delta_t]
 u_intv = np.stack([[0], [1]], axis=0)
 
 # The expression we aim at minimizing
-f_u = "D(u, t) - (2/u0)*(u**2 + u**3)"
+f_u = "D(u, t) - (2/u0)*(u**2 - u**3)"
 
 U_t = np.random.uniform(low=t_intv[0], high=t_intv[1], size=Q)
 U_u = np.random.uniform(low=u_intv[0], high=u_intv[1], size=(N, 1))
@@ -188,7 +188,7 @@ optimizer.fit(
 print("Saving model.")
 saver = SPFile(compact=False)
 saver.write(save_dir=save_path, name=model_name, model=flame_net, template=model)
-
+"""
 initial_state_test = np.array([1e-3])
 n_outputs = 1
 n_times = 1 #int(2 / (initial_state_test[0] * Delta_t))
@@ -228,3 +228,4 @@ plt.yticks(np.linspace(0, 1, 5))
 plt.legend()
 plt.grid(True)
 plt.savefig(f"flame_approximation_custom.png")
+"""
