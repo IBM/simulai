@@ -188,44 +188,4 @@ optimizer.fit(
 print("Saving model.")
 saver = SPFile(compact=False)
 saver.write(save_dir=save_path, name=model_name, model=flame_net, template=model)
-"""
-initial_state_test = np.array([1e-3])
-n_outputs = 1
-n_times = 1 #int(2 / (initial_state_test[0] * Delta_t))
-Q = 1000
 
-branch_input_test = np.tile(initial_state_test[None, :], (Q, 1))
-trunk_input_test = np.linspace(0, Delta_t, Q)[:, None]
-
-eval_list = list()
-
-for i in range(0, n_times):
-    branch_input_test = np.tile(initial_state_test[None, :], (Q, 1))
-
-    approximated_data = flame_net.eval(
-        trunk_data=trunk_input_test, branch_data=branch_input_test
-    )
-    initial_state_test = approximated_data[-1]
-
-    eval_list.append(approximated_data[0])
-
-evaluation = np.vstack(eval_list)
-time = np.linspace(0, n_times * Delta_t, evaluation.shape[0])
-
-np.save("evaluation.npy", evaluation)
-plt.plot(time, evaluation, label="Approximated")
-plt.xlabel("t (s)")
-plt.savefig("flame_approximation.png")
-plt.close()
-
-plt.figure(figsize=(15, 6))
-
-for i in range(n_outputs):
-    plt.plot(time, evaluation[:, i], label=f"u")
-    plt.xlabel("t (s)")
-
-plt.yticks(np.linspace(0, 1, 5))
-plt.legend()
-plt.grid(True)
-plt.savefig(f"flame_approximation_custom.png")
-"""
