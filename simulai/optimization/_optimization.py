@@ -933,25 +933,19 @@ class ScipyInterface:
     def _exec_forward(self, input_data: Union[np.ndarray, torch.Tensor] = None):
         return self.fun.forward(input_data=input_data)
 
-    def _fun_num(self, parameters:np.ndarray) -> Tuple[float]:
-
+    def _fun_num(self, parameters: np.ndarray) -> Tuple[float]:
         self._update_and_set_parameters(parameters)
 
-        closure = self.loss(
-            self.input_data, self.target_data, **self.loss_config
-        )
+        closure = self.loss(self.input_data, self.target_data, **self.loss_config)
         loss = closure()[0]
 
         return loss.detach().cpu().numpy().astype(np.float64)
 
-    def _fun(self, parameters:np.ndarray) -> Tuple[float, np.ndarray]:
-
+    def _fun(self, parameters: np.ndarray) -> Tuple[float, np.ndarray]:
         # Setting the new values for the model parameters
         self._update_and_set_parameters(parameters)
 
-        closure = self.loss(
-            self.input_data, self.target_data, **self.loss_config
-        )
+        closure = self.loss(self.input_data, self.target_data, **self.loss_config)
         loss = closure()[0]
 
         grads = [v.grad.detach().cpu().numpy() for v in self.fun.parameters()]
@@ -987,9 +981,7 @@ class ScipyInterface:
 
         self.target_data = target_data
 
-        self.closure = self.loss(
-            self.input_data, self.target_data, **self.loss_config
-        )
+        self.closure = self.loss(self.input_data, self.target_data, **self.loss_config)
 
         solution = self.optimizer(self.objective, parameters_0, **self.optimizer_config)
 

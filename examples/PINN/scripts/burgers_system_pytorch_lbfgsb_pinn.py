@@ -137,25 +137,27 @@ params = {
     "initial_penalty": 10,
 }
 
-optimizer.fit(
-    op=net, input_data=data, n_epochs=n_epochs, loss="pirmse", params=params
-)
+optimizer.fit(op=net, input_data=data, n_epochs=n_epochs, loss="pirmse", params=params)
 
 from simulai.optimization import PIRMSELoss, ScipyInterface
 
 loss_instance = PIRMSELoss(operator=net)
 
 optimizer_lbfgs = ScipyInterface(
-    fun=net, optimizer="L-BFGS-B",
-    optimizer_config={'options':{
-             'maxiter': 50000,
-             'maxfun': 50000,
-             'maxcor': 50,
-             'maxls': 50,
-             'ftol': 1.0*np.finfo(float).eps,
-             'eps': 1e-6
-            }},
-    loss=loss_instance, loss_config=params
+    fun=net,
+    optimizer="L-BFGS-B",
+    optimizer_config={
+        "options": {
+            "maxiter": 50000,
+            "maxfun": 50000,
+            "maxcor": 50,
+            "maxls": 50,
+            "ftol": 1.0 * np.finfo(float).eps,
+            "eps": 1e-6,
+        }
+    },
+    loss=loss_instance,
+    loss_config=params,
 )
 
 optimizer_lbfgs.fit(input_data=data)

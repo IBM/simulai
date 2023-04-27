@@ -23,49 +23,53 @@ LinkTree: https://linktr.ee/spogis
 
 """    Import Python Libraries    """
 
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 from scipy.integrate import solve_ivp
 
 """    Global Variables    """
 
 u0 = 0.01
 
-Simulated_Time = 2/u0            
+Simulated_Time = 2 / u0
 
 """    Differential Equations    """
 
-def model(t, y):
-  u =  y[0]
-  
-  dudt = (u**2 - u**3)
 
-  return [dudt]
+def model(t, y):
+    u = y[0]
+
+    dudt = u**2 - u**3
+
+    return [dudt]
+
 
 """     Initial Conditions    """
 
 Initial_Conditions = [u0]
 
 # In order to use on Plots
-Variable_Names= ['u']
+Variable_Names = ["u"]
 
 """     Solve ODE       """
 
 t_eval = np.linspace(0, Simulated_Time, num=500, endpoint=True)
 
-sol = solve_ivp(model, [0, Simulated_Time], Initial_Conditions, method = 'LSODA', t_eval=t_eval)
+sol = solve_ivp(
+    model, [0, Simulated_Time], Initial_Conditions, method="LSODA", t_eval=t_eval
+)
 
 """     Generating a More Usable Dataset    """
 
 t = np.transpose(sol.t)
 y = np.transpose(sol.y)
 
-df_time = pd.DataFrame({'Time':t})
+df_time = pd.DataFrame({"Time": t})
 
-df_num_sol = pd.DataFrame(y , columns = Variable_Names)
+df_num_sol = pd.DataFrame(y, columns=Variable_Names)
 
-Results = pd.concat([df_time,df_num_sol], axis=1)
+Results = pd.concat([df_time, df_num_sol], axis=1)
 
 """     Export Results for PINN Performance Evaluation    """
 
@@ -73,30 +77,30 @@ Results.to_csv("Fire.csv", index=False)
 
 """     Plot Results    """
 
-i=0
+i = 0
 for Names in Variable_Names:
-  plt.figure(i)
-  plt.plot(Results['Time'],Results[Names])
-  plt.title(Names)
-  plt.xlabel('Time')
-  plt.ylabel(Names)
-  i=i+1
+    plt.figure(i)
+    plt.plot(Results["Time"], Results[Names])
+    plt.title(Names)
+    plt.xlabel("Time")
+    plt.ylabel(Names)
+    i = i + 1
 
 """     Calculate and Plot Derivatives   """
 
-dudt = np.gradient(Results['u'], Results['Time'])
+dudt = np.gradient(Results["u"], Results["Time"])
 
 plt.figure(i)
-plt.plot(Results['Time'],dudt)
-plt.title('dudt')
-plt.xlabel('Time')
-plt.ylabel('dudt')
-i=i+1
+plt.plot(Results["Time"], dudt)
+plt.title("dudt")
+plt.xlabel("Time")
+plt.ylabel("dudt")
+i = i + 1
 
-d2udt2 = np.gradient(np.gradient(Results['u'], Results['Time']),Results['Time'])
+d2udt2 = np.gradient(np.gradient(Results["u"], Results["Time"]), Results["Time"])
 
 plt.figure(i)
-plt.plot(Results['Time'],d2udt2)
-plt.title('d2udt2')
-plt.xlabel('Time')
-plt.ylabel('d2udt2')
+plt.plot(Results["Time"], d2udt2)
+plt.title("d2udt2")
+plt.xlabel("Time")
+plt.ylabel("d2udt2")

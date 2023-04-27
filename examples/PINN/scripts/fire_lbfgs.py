@@ -40,23 +40,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from simulai.optimization import Optimizer, PIRMSELoss, ScipyInterface
 from simulai.residuals import SymbolicOperator
-from simulai.optimization import Optimizer
-from simulai.optimization import ScipyInterface
-from simulai.optimization import PIRMSELoss
-
 
 """    Variables    """
-N = 200                         # Number of Evaluation steps
-n = 200                         # Number of Training steps
-u0 = 0.01                       # Initial Flame Size
-t_max = 2/u0                    # Total Simulated TIme
-intervals = 200                 # Number of Steps (Sequential PINNs)
-delta_t = t_max/intervals       # PINNs Evaluation Time
+N = 200  # Number of Evaluation steps
+n = 200  # Number of Training steps
+u0 = 0.01  # Initial Flame Size
+t_max = 2 / u0  # Total Simulated TIme
+intervals = 200  # Number of Steps (Sequential PINNs)
+delta_t = t_max / intervals  # PINNs Evaluation Time
 
-state_t=u0                      # Initial Condition
+state_t = u0  # Initial Condition
 
-"""    The expression we aim at minimizing    """    
+"""    The expression we aim at minimizing    """
 f = "D(u, t) - (u**2 - u**3)"
 
 input_labels = ["t"]
@@ -66,6 +63,7 @@ n_inputs = len(input_labels)
 n_outputs = len(output_labels)
 
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
+
 
 def model():
     from simulai.models import ImprovedDenseNetwork
@@ -112,19 +110,18 @@ residual = SymbolicOperator(
     device="gpu",
 )
 
-time_plot = np.empty((0,1), dtype=float)
-approximated_data_plot = np.empty((0,1), dtype=float)
-time_eval_plot = np.empty((0,1), dtype=float)
+time_plot = np.empty((0, 1), dtype=float)
+approximated_data_plot = np.empty((0, 1), dtype=float)
+time_eval_plot = np.empty((0, 1), dtype=float)
 
 ### A partir daqui rodamos os deltas de tempo
-for i in range (1, int(intervals), 1):
-
+for i in range(1, int(intervals), 1):
     time_train = np.linspace(0, delta_t, n)[:, None]
-    time_eval  = np.linspace(0, delta_t, n)[:, None]
-    
+    time_eval = np.linspace(0, delta_t, n)[:, None]
+
     # Simple model of flame growth
     initial_state = np.array([state_t])
-    
+
     params = {
         "residual": residual,
         "initial_input": np.array([0])[:, None],
@@ -132,13 +129,13 @@ for i in range (1, int(intervals), 1):
         "weights_residual": [1],
         "initial_penalty": 1e10,
     }
-    
+
     # Reduce Epochs for sequential PINNs
     n_epochs_ini = 5_000  # Maximum number of iterations for ADAM
-    n_epochs_iter = n_epochs_ini/i
+    n_epochs_iter = n_epochs_ini / i
     n_epochs_min = 500
     n_epochs = int(max(n_epochs_iter, n_epochs_min))
-    
+
     # First Evaluation With ADAM Optimizer
     optimizer.fit(
         op=net,
@@ -148,7 +145,7 @@ for i in range (1, int(intervals), 1):
         params=params,
         device="gpu",
     )
-    
+
     # Seccond Evaluation With L-BFGS-B
     loss_instance = PIRMSELoss(operator=net)
 
@@ -164,33 +161,34 @@ for i in range (1, int(intervals), 1):
                 "maxcor": 50,
                 "maxls": 50,
                 "ftol": 1.0 * np.finfo(float).eps,
-                "eps": 1e-6,}
-            },
-        )
-    
+                "eps": 1e-6,
+            }
+        },
+    )
+
     optimizer_lbfgs.fit(input_data=time_train)
-    
-    #Evaluation in training dataset
+
+    # Evaluation in training dataset
     approximated_data = net.eval(input_data=time_eval)
-    
+
     # Get Last PINN Value and Update as Initial Condition for the Next PINN
-    state_t = approximated_data[-1] 
-    
-    time_eval_plot  = np.linspace((i-1)*delta_t, i*delta_t, N)[:, None]
-    time_plot = np.vstack((time_plot,time_eval_plot))
+    state_t = approximated_data[-1]
+
+    time_eval_plot = np.linspace((i - 1) * delta_t, i * delta_t, N)[:, None]
+    time_plot = np.vstack((time_plot, time_eval_plot))
     approximated_data_plot = np.vstack((approximated_data_plot, approximated_data))
-    
-    # Plot Results 
+
+    # Plot Results
     plt.plot(time_plot, approximated_data_plot, label="Approximated")
     plt.xlabel("t")
     plt.legend()
     plt.ylim([0.0, 1.1])
     plt.show()
 
-# Compare PINN and EDO Results        
-ODE_Results = pd.read_csv('Fire.csv')
+# Compare PINN and EDO Results
+ODE_Results = pd.read_csv("Fire.csv")
 plt.plot(time_plot, approximated_data_plot, label="PINN")
-plt.plot(ODE_Results['Time'], ODE_Results['u'], label="ODE")
+plt.plot(ODE_Results["Time"], ODE_Results["u"], label="ODE")
 plt.xlabel("t")
 plt.legend()
 plt.ylim([0.0, 1.1])

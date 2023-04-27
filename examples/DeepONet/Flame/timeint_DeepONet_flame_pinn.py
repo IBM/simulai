@@ -188,4 +188,3 @@ optimizer.fit(
 print("Saving model.")
 saver = SPFile(compact=False)
 saver.write(save_dir=save_path, name=model_name, model=flame_net, template=model)
-
