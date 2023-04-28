@@ -785,7 +785,6 @@ class PIRMSELoss(LossBasics):
             # Back-propagation
             loss.backward()
 
-
             pde_detach = float(pde.detach().data)
             init_detach = float(init.detach().data)
             bound_detach = float(bound.detach().data)
@@ -831,7 +830,6 @@ class OPIRMSELoss(LossBasics):
             "pde": list(),
             "init": list(),
             "bound": list(),
-            "extra_data": list(),
         }
 
         self.loss_tags = list(self.loss_states.keys())
@@ -841,8 +839,7 @@ class OPIRMSELoss(LossBasics):
             "pde": 0,
             "init": 1,
             "bound": 2,
-            "extra_data": 3,
-            "causality_weights": 4,
+            "causality_weights": 3,
         }
 
     def _convert(
@@ -1065,11 +1062,16 @@ class OPIRMSELoss(LossBasics):
             self.loss_states["init"].append(float(init.detach().data))
             self.loss_states["bound"].append(float(bound.detach().data))
 
-            sys.stdout.write(
-                ("\rpde: {}, init: {}, bound: {} {}").format(
-                    pde, init, bound, call_back
-                )
+            pde_detach = float(pde.detach().data)
+            init_detach = float(init.detach().data)
+            bound_detach = float(bound.detach().data)
+
+            losses_list = np.array(
+                [pde_detach, init_detach, bound_detach, call_back]
             )
+
+            sys.stdout.write((loss_str).format(*losses_list[loss_indices]))
+
             sys.stdout.flush()
 
         return closure
