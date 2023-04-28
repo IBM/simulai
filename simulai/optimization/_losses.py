@@ -611,7 +611,7 @@ class PIRMSELoss(LossBasics):
         for item in tags:
             losses_str += f"{item}:{{}} "
 
-        if self.causality_parameter != None:
+        if self.causality_preserving != None:
             loss_str += "{{}}"
 
         return losses_str
