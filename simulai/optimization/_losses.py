@@ -684,9 +684,11 @@ class PIRMSELoss(LossBasics):
 
         if self.causality_preserving:
 
+            call_back = f", causality_weights: {self.causality_weights_interval}"
             self.residual_wrapper = self._causality_preserving_residual_wrapper
 
         else:
+
             self.residual_wrapper = self._no_residual_wrapper
 
         l1_reg_multiplication = self._exec_multiplication_in_regularization(
@@ -781,7 +783,6 @@ class PIRMSELoss(LossBasics):
             # Back-propagation
             loss.backward()
 
-            call_back = f", causality_weights: {self.causality_weights_interval}"
 
             pde_detach = float(pde.detach().data)
             init_detach = float(init.detach().data)
@@ -934,9 +935,11 @@ class OPIRMSELoss(LossBasics):
 
         if self.causality_preserving:
 
+            call_back = f", causality_weights: {self.causality_weights_interval}"
             self.residual_wrapper = self._causality_preserving_residual_wrapper
 
         else:
+
             self.residual_wrapper = self._no_residual_wrapper
 
         l1_reg_multiplication = self._exec_multiplication_in_regularization(
@@ -1006,8 +1009,6 @@ class OPIRMSELoss(LossBasics):
 
             # Back-propagation
             loss.backward()
-
-            call_back = f", causality_weights: {self.causality_weights_interval}"
 
             self.loss_states["pde"].append(float(loss.detach().data))
             self.loss_states["init"].append(float(init.detach().data))
