@@ -163,6 +163,7 @@ class RMSELoss(LossBasics):
         )
 
         def closure():
+
             output_tilde = self.operator.forward(**input_data)
 
             data_loss = self._data_loss(
@@ -588,11 +589,17 @@ class PIRMSELoss(LossBasics):
 
         return self.causality_preserving(self.residual(input_data))
 
+    @property
+    def causality_weights_interval(self):
+        warnings.warn("This implementation is still equal to the vanilla one.")
+
+        return self.min_causality_weight, self.mean_causality_weight
+
     def _filter_necessary_loss_terms(self, residual: SymbolicOperator = None):
         tags = ["pde", "init"]
         indices = [0, 1]
 
-        if not residual.g_expressions == None:
+        if residual.g_expressions:
             tags.append("bound")
             indices.append(2)
         else:
@@ -615,12 +622,6 @@ class PIRMSELoss(LossBasics):
             loss_str += "{{}}"
 
         return losses_str
-
-    @property
-    def causality_weights_interval(self):
-        warnings.warn("This implementation is still equal to the vanilla one.")
-
-        return self.min_causality_weight, self.mean_causality_weight
 
     def __call__(
         self,
@@ -732,6 +733,7 @@ class PIRMSELoss(LossBasics):
             self.norm_evaluator = lambda ref: 1
 
         def closure():
+
             # Executing the symbolic residual evaluation
             residual_approximation = self.residual_wrapper(input_data)
 
@@ -825,7 +827,23 @@ class OPIRMSELoss(LossBasics):
         self.min_causality_weight = self.tol
         self.mean_causality_weight = 0
 
-        self.loss_states = {"pde": list(), "init": list(), "bound": list()}
+        self.loss_states = {
+            "pde": list(),
+            "init": list(),
+            "bound": list(),
+            "extra_data": list(),
+        }
+
+        self.loss_tags = list(self.loss_states.keys())
+        self.hybrid_data_pinn = False
+
+        self.losses_terms_indices = {
+            "pde": 0,
+            "init": 1,
+            "bound": 2,
+            "extra_data": 3,
+            "causality_weights": 4,
+        }
 
     def _convert(
         self, input_data: Union[dict, np.ndarray] = None, device: str = None
@@ -892,6 +910,35 @@ class OPIRMSELoss(LossBasics):
 
         return self.min_causality_weight, self.mean_causality_weight
 
+    def _filter_necessary_loss_terms(self, residual: SymbolicOperator = None):
+        tags = ["pde", "init"]
+        indices = [0, 1]
+
+        if residual.g_expressions:
+            tags.append("bound")
+            indices.append(2)
+        else:
+            pass
+
+        if self.hybrid_data_pinn:
+            tags.append("extra_data")
+            indices.append(3)
+        else:
+            pass
+
+        return tags, indices
+
+    def _losses_states_str(self, tags: List[str] = None):
+        losses_str = "\r"
+        for item in tags:
+            losses_str += f"{item}:{{}} "
+
+        if self.causality_preserving != None:
+            loss_str += "{{}}"
+
+        return losses_str
+
+
     def __call__(
         self,
         input_data: Union[dict, torch.Tensor] = None,
@@ -923,6 +970,9 @@ class OPIRMSELoss(LossBasics):
 
         if weights_residual is None:
             weights_residual = len(residual.output_names) * [1]
+
+        loss_tags, loss_indices = self._filter_necessary_loss_terms(residual=residual)
+        loss_str = self._losses_states_str(tags=loss_tags)
 
         if residual.g_expressions:
             boundary = self._boundary_penalisation
@@ -969,6 +1019,7 @@ class OPIRMSELoss(LossBasics):
             self.norm_evaluator = lambda ref: 1
 
         def closure():
+
             residual_approximation = self.residual_wrapper(input_data)
 
             boundary_approximation = boundary(
@@ -1115,6 +1166,7 @@ class KAERMSELoss(LossBasics):
             self.norm_evaluator = lambda ref: 1
 
         def closure():
+
             output_tilde = self.operator.reconstruction_forward(**input_data)
 
             latent_space_ = self.operator.projection(**input_data)
@@ -1309,6 +1361,7 @@ class VAERMSELoss(LossBasics):
             self.norm_evaluator = lambda ref: 1
 
         def closure():
+
             output_tilde = self.operator.reconstruction_forward(**input_data)
 
             data_loss = self._data_loss(
