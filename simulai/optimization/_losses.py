@@ -405,13 +405,10 @@ class PIRMSELoss(LossBasics):
         self.operator = operator
         self.loss_evaluator = None
         self.residual = None
-        self.tol = 1e-25
+        self.tol = 1e-15
         self.device = None
 
         self.axis_loss_evaluator = lambda res: torch.mean(torch.square((res)), dim=1)
-
-        self.min_causality_weight = self.tol
-        self.mean_causality_weight = 0
 
         self.loss_states = {
             "pde": list(),
@@ -589,12 +586,6 @@ class PIRMSELoss(LossBasics):
 
         return self.causality_preserving(self.residual(input_data))
 
-    @property
-    def causality_weights_interval(self):
-        warnings.warn("This implementation is still equal to the vanilla one.")
-
-        return self.min_causality_weight, self.mean_causality_weight
-
     def _filter_necessary_loss_terms(self, residual: SymbolicOperator = None):
         tags = ["pde", "init"]
         indices = [0, 1]
@@ -617,9 +608,6 @@ class PIRMSELoss(LossBasics):
         losses_str = "\r"
         for item in tags:
             losses_str += f"{item}:{{}} "
-
-        if self.causality_preserving != None:
-            loss_str += "{{}}"
 
         return losses_str
 
@@ -685,7 +673,7 @@ class PIRMSELoss(LossBasics):
 
         if self.causality_preserving:
 
-            call_back = f", causality_weights: {self.causality_weights_interval}"
+            call_back = f", causality_weights: {self.causality_preserving.call_back}"
             self.residual_wrapper = self._causality_preserving_residual_wrapper
 
         else:
@@ -702,7 +690,7 @@ class PIRMSELoss(LossBasics):
         if type(input_data) is dict:
             try:
                 input_data = input_data["input_data"]
-            except:
+            except Exception:
                 pass
 
         initial_input, initial_state = self._to_tensor(
@@ -796,10 +784,11 @@ class PIRMSELoss(LossBasics):
             self.loss_states["extra_data"].append(extra_data_detach)
 
             losses_list = np.array(
-                [pde_detach, init_detach, bound_detach, extra_data_detach, call_back]
+                [pde_detach, init_detach, bound_detach, extra_data_detach]
             )
 
-            sys.stdout.write((loss_str).format(*losses_list[loss_indices]))
+            sys.stdout.write((loss_str).format(*losses_list[loss_indices]) +
+                             call_back)
 
             sys.stdout.flush()
 
