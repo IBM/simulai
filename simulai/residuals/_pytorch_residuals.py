@@ -315,7 +315,7 @@ class SymbolicOperator(torch.nn.Module):
             if self.constants is not None:
                 expr_ = expr.subs(self.constants)
             else:
-                pass
+                expr_ = expr
 
         return expr_
 
