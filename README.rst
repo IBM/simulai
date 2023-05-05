@@ -14,7 +14,7 @@ SimulAI
 ..
    .. image:: assets/logo.png
 
-A Python package with data-driven pipelines for physics-informed machine learning.
+An extensible Python package with data-driven pipelines for physics-informed machine learning.
 
 .. image:: assets/simulai_diagram.svg
 

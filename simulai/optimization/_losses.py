@@ -13,7 +13,7 @@
 #     limitations under the License.
 
 import sys
-from typing import List, Tuple, Union, Callable
+from typing import Callable, List, Tuple, Union
 
 import numpy as np
 import torch
@@ -162,7 +162,6 @@ class RMSELoss(LossBasics):
         )
 
         def closure():
-
             output_tilde = self.operator.forward(**input_data)
 
             data_loss = self._data_loss(
@@ -354,7 +353,6 @@ class WRMSELoss(LossBasics):
         self.data_loss_wrapper = self._no_data_loss_wrapper
 
         def closure():
-
             output_tilde = self.operator.forward(**input_data)
 
             data_losses = self.data_loss_wrapper(
@@ -581,7 +579,6 @@ class PIRMSELoss(LossBasics):
     def _causality_preserving_residual_wrapper(
         self, input_data: torch.Tensor = None
     ) -> List:
-
         return self.causality_preserving(self.residual(input_data))
 
     def _filter_necessary_loss_terms(self, residual: SymbolicOperator = None):
@@ -632,7 +629,6 @@ class PIRMSELoss(LossBasics):
         causality_preserving: Callable = None,
         use_mean: bool = True,
     ) -> Callable:
-
         self.residual = residual
 
         self.device = device
@@ -670,12 +666,10 @@ class PIRMSELoss(LossBasics):
                 boundary = self._no_boundary_penalisation
 
         if self.causality_preserving:
-
             call_back = f", causality_weights: {self.causality_preserving.call_back}"
             self.residual_wrapper = self._causality_preserving_residual_wrapper
 
         else:
-
             self.residual_wrapper = self._no_residual_wrapper
 
         l1_reg_multiplication = self._exec_multiplication_in_regularization(
@@ -719,7 +713,6 @@ class PIRMSELoss(LossBasics):
             self.norm_evaluator = lambda ref: 1
 
         def closure():
-
             # Executing the symbolic residual evaluation
             residual_approximation = self.residual_wrapper(input_data)
 
@@ -785,8 +778,7 @@ class PIRMSELoss(LossBasics):
                 [pde_detach, init_detach, bound_detach, extra_data_detach]
             )
 
-            sys.stdout.write((loss_str).format(*losses_list[loss_indices]) +
-                             call_back)
+            sys.stdout.write((loss_str).format(*losses_list[loss_indices]) + call_back)
 
             sys.stdout.flush()
 
@@ -884,12 +876,10 @@ class OPIRMSELoss(LossBasics):
     def _causality_preserving_residual_wrapper(
         self, input_data: torch.Tensor = None
     ) -> List:
-
         return self.causality_preserving(self.residual(input_data))
 
     @property
     def causality_weights_interval(self):
-
         return self.min_causality_weight, self.mean_causality_weight
 
     def _filter_necessary_loss_terms(self, residual: SymbolicOperator = None):
@@ -920,7 +910,6 @@ class OPIRMSELoss(LossBasics):
 
         return losses_str
 
-
     def __call__(
         self,
         input_data: Union[dict, torch.Tensor] = None,
@@ -942,7 +931,6 @@ class OPIRMSELoss(LossBasics):
         causality_preserving: Callable = None,
         use_mean: bool = True,
     ) -> Callable:
-
         self.residual = residual
 
         self.causality_preserving = causality_preserving
@@ -966,12 +954,10 @@ class OPIRMSELoss(LossBasics):
             weights = len(residual.output_names) * [1]
 
         if self.causality_preserving:
-
             call_back = f", causality_weights: {self.causality_weights_interval}"
             self.residual_wrapper = self._causality_preserving_residual_wrapper
 
         else:
-
             self.residual_wrapper = self._no_residual_wrapper
 
         l1_reg_multiplication = self._exec_multiplication_in_regularization(
@@ -1001,7 +987,6 @@ class OPIRMSELoss(LossBasics):
             self.norm_evaluator = lambda ref: 1
 
         def closure():
-
             residual_approximation = self.residual_wrapper(input_data)
 
             boundary_approximation = boundary(
@@ -1051,9 +1036,7 @@ class OPIRMSELoss(LossBasics):
             init_detach = float(init.detach().data)
             bound_detach = float(bound.detach().data)
 
-            losses_list = np.array(
-                [pde_detach, init_detach, bound_detach, call_back]
-            )
+            losses_list = np.array([pde_detach, init_detach, bound_detach, call_back])
 
             sys.stdout.write((loss_str).format(*losses_list[loss_indices]))
 
@@ -1153,7 +1136,6 @@ class KAERMSELoss(LossBasics):
             self.norm_evaluator = lambda ref: 1
 
         def closure():
-
             output_tilde = self.operator.reconstruction_forward(**input_data)
 
             latent_space_ = self.operator.projection(**input_data)
@@ -1348,7 +1330,6 @@ class VAERMSELoss(LossBasics):
             self.norm_evaluator = lambda ref: 1
 
         def closure():
-
             output_tilde = self.operator.reconstruction_forward(**input_data)
 
             data_loss = self._data_loss(
