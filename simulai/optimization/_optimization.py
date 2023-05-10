@@ -887,7 +887,7 @@ class ScipyInterface:
             {k: list(v.shape) for k, v in self.fun.state_dict().items()}
         )
 
-        self.state_0 = copy.deepcopy(self.fun.state_dict())
+        self.state_0 = self.fun.state_dict()
 
         intervals = np.cumsum(
             [0] + [np.prod(shape) for shape in self.operators_shapes.values()]
@@ -915,6 +915,7 @@ class ScipyInterface:
         )
 
     def _update_and_set_parameters(self, parameters: np.ndarray) -> None:
+
         operators = [
             torch.from_numpy(
                 parameters[slice(*interval)].reshape(shape).astype(np.float32)
@@ -937,7 +938,7 @@ class ScipyInterface:
         self._update_and_set_parameters(parameters)
 
         closure = self.loss(self.input_data, self.target_data, **self.loss_config)
-        loss = closure()[0]
+        loss = closure()
 
         return loss.detach().cpu().numpy().astype(np.float64)
 
@@ -946,7 +947,7 @@ class ScipyInterface:
         self._update_and_set_parameters(parameters)
 
         closure = self.loss(self.input_data, self.target_data, **self.loss_config)
-        loss = closure()[0]
+        loss = closure()
 
         grads = [v.grad.detach().cpu().numpy() for v in self.fun.parameters()]
 
