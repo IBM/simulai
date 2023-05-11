@@ -23,6 +23,7 @@ from simulai.optimization import Optimizer
 from simulai.regression import DenseNetwork
 from simulai.residuals import SymbolicOperator
 
+torch.set_default_dtype(torch.float64)
 # This is a very basic script for exploring the PDE solving via
 # feedforward fully-connected neural networks
 
@@ -137,8 +138,6 @@ optimizer.fit(
     device="gpu",
 )
 
-torch.set_default_dtype(torch.float64)
-net = net.to(torch.float64)
 
 from simulai.optimization import PIRMSELoss, ScipyInterface
 

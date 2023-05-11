@@ -19,6 +19,8 @@
 # Author: Joao Lucas S. Almeida <joao.lucas.sousa.almeida@ibm.com>
 
 import os
+import numpy as np
+import torch 
 
 engine_var = os.environ.get("engine")
 
@@ -28,3 +30,12 @@ else:
     engine = "pytorch"
 
 __version__ = "1.3"
+
+# Determining global dtype for data structures
+TENSOR_DTYPE = torch.get_default_dtype()
+
+if TENSOR_DTYPE == torch.float32:
+    ARRAY_DTYPE = np.float32
+else:
+    ARRAY_DTYPE = np.float64
+
