@@ -904,6 +904,12 @@ class ScipyInterface:
             self.optimizer_config["jac"] = True
             self.objective = self._fun
 
+        # Determining default type
+        if torch.get_default_dtype() == torch.float32:
+            self.default_dtype = np.float32
+        else:
+            self.default_dtype = np.float64
+
     def _stack_and_convert_parameters(
         self, parameters: List[Union[torch.Tensor, np.ndarray]]
     ) -> np.ndarray:
@@ -918,7 +924,7 @@ class ScipyInterface:
 
         operators = [
             torch.from_numpy(
-                parameters[slice(*interval)].reshape(shape).astype(np.float32)
+                parameters[slice(*interval)].reshape(shape).astype(self.default_dtype)
             ).to(self.device)
             for interval, shape in zip(
                 self.operators_intervals, self.operators_shapes.values()

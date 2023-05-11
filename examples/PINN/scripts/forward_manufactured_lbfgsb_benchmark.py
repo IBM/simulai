@@ -137,6 +137,8 @@ optimizer.fit(
     device="gpu",
 )
 
+torch.set_default_dtype(torch.float64)
+net = net.to(torch.float64)
 
 from simulai.optimization import PIRMSELoss, ScipyInterface
 
