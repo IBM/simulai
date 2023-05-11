@@ -36,6 +36,8 @@ TENSOR_DTYPE = torch.get_default_dtype()
 
 if TENSOR_DTYPE == torch.float32:
     ARRAY_DTYPE = np.float32
+elif TENSOR_DTYPE == torch.float64:
+    ARRAY_DTYPE = np.float64
 else:
     ARRAY_DTYPE = np.float64
 

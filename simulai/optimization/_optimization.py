@@ -25,6 +25,7 @@ import numpy as np
 import torch
 from torch.nn.parameter import Parameter
 
+from simulai import ARRAY_DTYPE
 from simulai.abstract import Dataset, Regression
 from simulai.file import SPFile
 from simulai.residuals import SymbolicOperator
@@ -52,14 +53,14 @@ def _convert_tensor_format(method):
             input_data_ = input_data
 
         elif isinstance(input_data, np.ndarray):
-            input_data_ = torch.from_numpy(input_data.astype(np.float32))
+            input_data_ = torch.from_numpy(input_data.astype(ARRAY_DTYPE))
 
         elif isinstance(input_data, dict):
             input_data_ = dict()
 
             for key, item in input_data.items():
                 if type(item) == np.ndarray:
-                    input_data_[key] = torch.from_numpy(item.astype(np.float32))
+                    input_data_[key] = torch.from_numpy(item.astype(ARRAY_DTYPE))
 
                 else:
                     input_data_[key] = item
@@ -70,14 +71,14 @@ def _convert_tensor_format(method):
             )
 
         if isinstance(target_data, np.ndarray):
-            target_data_ = torch.from_numpy(target_data.astype(np.float32))
+            target_data_ = torch.from_numpy(target_data.astype(ARRAY_DTYPE))
         else:
             target_data_ = target_data
 
         if validation_data is not None:
             if isinstance(validation_data[0], np.ndarray):
                 validation_data_ = tuple(
-                    [torch.from_numpy(j.astype(np.float32)) for j in validation_data]
+                    [torch.from_numpy(j.astype(ARRAY_DTYPE)) for j in validation_data]
                 )
             else:
                 validation_data_ = validation_data

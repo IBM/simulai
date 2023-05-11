@@ -39,6 +39,8 @@ The problem can be solved over a duration of time that is inversely proportional
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import torch 
+torch.set_default_dtype(torch.float64)
 
 from simulai.optimization import Optimizer, PIRMSELoss, ScipyInterface
 from simulai.residuals import SymbolicOperator
@@ -48,7 +50,7 @@ N = 200  # Number of Evaluation steps
 n = 200  # Number of Training steps
 u0 = 0.01  # Initial Flame Size
 t_max = 2 / u0  # Total Simulated TIme
-intervals = 200  # Number of Steps (Sequential PINNs)
+intervals = 50  # Number of Steps (Sequential PINNs)
 delta_t = t_max / intervals  # PINNs Evaluation Time
 
 state_t = u0  # Initial Condition
@@ -127,7 +129,7 @@ for i in range(1, int(intervals), 1):
         "initial_input": np.array([0])[:, None],
         "initial_state": initial_state,
         "weights_residual": [1],
-        "initial_penalty": 1e10,
+        "initial_penalty": 1,
     }
 
     # Reduce Epochs for sequential PINNs
