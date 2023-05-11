@@ -22,6 +22,7 @@ import torch
 from numpy.lib import recfunctions
 from torch import Tensor
 
+from simulai import ARRAY_DTYPE
 from simulai.abstract import DataPreparer, Dataset
 from simulai.batching import batchdomain_constructor, indices_batchdomain_constructor
 from simulai.metrics import MemorySizeEval
@@ -2141,7 +2142,7 @@ class MakeTensor:
         """
 
         if type(input_data) == np.ndarray:
-            input_data = torch.from_numpy(input_data.astype("float32"))
+            input_data = torch.from_numpy(input_data.astype(ARRAY_DTYPE))
 
             inputs_list = self._make_tensor(input_data=input_data, device=device)
 

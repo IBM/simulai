@@ -627,7 +627,7 @@ class ConvNetworkTemplate(NetworkTemplate):
             pass
 
         if isinstance(input_data, np.ndarray):
-            input_data = torch.from_numpy(input_data.astype("float32")).to(device)
+            input_data = torch.from_numpy(input_data.astype(ARRAY_DTYPE)).to(device)
 
         else:
             pass
