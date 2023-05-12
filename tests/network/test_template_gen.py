@@ -16,7 +16,9 @@ import os
 from unittest import TestCase
 
 import numpy as np
-import torch
+from tests.config import configure_dtype
+torch = configure_dtype()
+
 from utils import configure_device
 
 DEVICE = configure_device()

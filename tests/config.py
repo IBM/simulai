@@ -19,20 +19,22 @@
 # Author: Joao Lucas S. Almeida <joao.lucas.sousa.almeida@ibm.com>
 
 import os
-import numpy as np
 import torch 
 
-test_dtype_var = os.environ.get("TEST_DTYPE")
+def configure_dtype():
 
-if test_dtype_var is not None:
-    test_dtype = getattr(torch, test_dtype_var)
-else:
-    test_dtype = torch.float32
+    test_dtype_var = os.environ.get("TEST_DTYPE")
 
-torch.set_default_dtype(test_dtype)
+    if test_dtype_var is not None:
+        test_dtype = getattr(torch, test_dtype_var)
+    else:
+        test_dtype = torch.float32
 
-print(f"Using dtype {test_dtype} in tests.")
+    torch.set_default_dtype(test_dtype)
+
+    print(f"Using dtype {test_dtype} in tests.")
+
+    return torch
 
 
 
-_
