@@ -17,6 +17,7 @@ from typing import Optional, Tuple, Union
 import numpy as np
 import torch
 
+from simulai import ARRAY_DTYPE
 from simulai.regression import ConvolutionalNetwork, DenseNetwork, Linear
 from simulai.templates import (
     NetworkTemplate,
@@ -508,7 +509,7 @@ class AutoencoderCNN(NetworkTemplate):
         """
 
         if isinstance(input_data, np.ndarray):
-            input_data = torch.from_numpy(input_data.astype("float32"))
+            input_data = torch.from_numpy(input_data.astype(ARRAY_DTYPE))
 
         input_data = input_data.to(self.device)
 
@@ -995,7 +996,7 @@ class AutoencoderKoopman(NetworkTemplate):
 
         """
         if isinstance(input_data, np.ndarray):
-            input_data = torch.from_numpy(input_data.astype("float32"))
+            input_data = torch.from_numpy(input_data.astype(ARRAY_DTYPE))
 
         predictions = list()
         latent = self.projection(input_data=input_data)
@@ -1694,7 +1695,7 @@ class AutoencoderVariational(NetworkTemplate):
         >>> projected_data = autoencoder.project(input_data=input_data)
         """
         if isinstance(input_data, np.ndarray):
-            input_data = torch.from_numpy(input_data.astype("float32"))
+            input_data = torch.from_numpy(input_data.astype(ARRAY_DTYPE))
 
         input_data = input_data.to(self.device)
 
@@ -1725,7 +1726,7 @@ class AutoencoderVariational(NetworkTemplate):
         >>> reconstructed_data = autoencoder.reconstruct(input_data=input_data)
         """
         if isinstance(input_data, np.ndarray):
-            input_data = torch.from_numpy(input_data.astype("float32"))
+            input_data = torch.from_numpy(input_data.astype(ARRAY_DTYPE))
 
         input_data = input_data.to(self.device)
 
@@ -1754,7 +1755,7 @@ class AutoencoderVariational(NetworkTemplate):
         >>> reconstructed_data = autoencoder.eval(input_data=input_data)
         """
         if isinstance(input_data, np.ndarray):
-            input_data = torch.from_numpy(input_data.astype("float32"))
+            input_data = torch.from_numpy(input_data.astype(ARRAY_DTYPE))
 
         input_data = input_data.to(self.device)
 

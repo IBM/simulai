@@ -21,7 +21,7 @@ torch = configure_dtype()
 
 from utils import configure_device
 
-
+from simulai import ARRAY_DTYPE
 from simulai.file import SPFile
 from simulai.optimization import Optimizer
 
@@ -37,8 +37,8 @@ def generate_data(
     input_data = np.random.rand(n_samples, n_inputs, vector_size)
     output_data = np.random.rand(n_samples, n_outputs)
 
-    return torch.from_numpy(input_data.astype("float32")), torch.from_numpy(
-        output_data.astype("float32")
+    return torch.from_numpy(input_data.astype(ARRAY_DTYPE)), torch.from_numpy(
+        output_data.astype(ARRAY_DTYPE)
     )
 
 
