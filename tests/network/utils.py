@@ -7,7 +7,8 @@ def configure_device():
     if not simulai_network_gpu:
         device = "cpu"
     else:
-        import torch
+        from tests.config import configure_dtype
+        torch = configure_dtype()
 
         if not torch.cuda.is_available():
             raise Exception("There is no gpu available to execute the tests.")

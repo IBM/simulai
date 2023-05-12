@@ -16,6 +16,9 @@ from unittest import TestCase
 
 import numpy as np
 
+from tests.config import configure_dtype
+torch = configure_dtype()
+
 from simulai.optimization import Optimizer
 from simulai.residuals import SymbolicOperator
 

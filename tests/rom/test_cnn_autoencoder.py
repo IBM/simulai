@@ -3,6 +3,9 @@ from unittest import TestCase
 
 import numpy as np
 
+from tests.config import configure_dtype
+torch = configure_dtype()
+
 from simulai.file import SPFile
 from simulai.optimization import Optimizer
 

@@ -16,11 +16,14 @@ import os
 from unittest import TestCase
 
 import numpy as np
-import torch
+from tests.config import configure_dtype
+torch = configure_dtype()
+
 from utils import configure_device
 
 DEVICE = configure_device()
 
+from simulai import ARRAY_DTYPE
 
 def generate_data_2d(
     n_samples: int = None,
@@ -31,8 +34,8 @@ def generate_data_2d(
     input_data = np.random.rand(n_samples, n_inputs, *image_size)
     output_data = np.random.rand(n_samples, n_outputs)
 
-    return torch.from_numpy(input_data.astype("float32")), torch.from_numpy(
-        output_data.astype("float32")
+    return torch.from_numpy(input_data.astype(ARRAY_DTYPE)), torch.from_numpy(
+        output_data.astype(ARRAY_DTYPE)
     )
 
 
@@ -45,8 +48,8 @@ def generate_data_1d(
     input_data = np.random.rand(n_samples, n_inputs, vector_size)
     output_data = np.random.rand(n_samples, n_outputs)
 
-    return torch.from_numpy(input_data.astype("float32")), torch.from_numpy(
-        output_data.astype("float32")
+    return torch.from_numpy(input_data.astype(ARRAY_DTYPE)), torch.from_numpy(
+        output_data.astype(ARRAY_DTYPE)
     )
 
 
