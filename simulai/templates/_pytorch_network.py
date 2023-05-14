@@ -21,7 +21,7 @@ import torch
 from torch.nn.parameter import Parameter
 
 import simulai.activations as simulact
-
+from simulai import ARRAY_DTYPE
 
 # Template for a generic neural network
 class NetworkTemplate(torch.nn.Module):
@@ -263,14 +263,14 @@ class NetworkTemplate(torch.nn.Module):
         for ll, layer in enumerate(self.layers_map):
             self.layers[ll].weight = Parameter(
                 data=torch.from_numpy(
-                    parameters[self.stitch_idx[layer[0]]].astype("float32")
+                    parameters[self.stitch_idx[layer[0]]].astype(ARRAY_DTYPE)
                 ),
                 requires_grad=True,
             )
 
             self.layers[ll].bias = Parameter(
                 data=torch.from_numpy(
-                    parameters[self.stitch_idx[layer[1]]].astype("float32")
+                    parameters[self.stitch_idx[layer[1]]].astype(ARRAY_DTYPE)
                 ),
                 requires_grad=True,
             )
@@ -345,7 +345,7 @@ def as_tensor(method):
             return method(self, input_data, **kwargs)
 
         elif isinstance(input_data, np.ndarray):
-            input_data_ = torch.from_numpy(input_data.astype("float32"))
+            input_data_ = torch.from_numpy(input_data.astype(ARRAY_DTYPE))
 
             return method(self, input_data_, **kwargs)
 
@@ -384,7 +384,7 @@ def as_array(method):
 def guarantee_device(method):
     def inside(self, **kwargs) -> callable:
         kwargs_ = {
-            key: torch.from_numpy(value.astype("float32")).to(self.device)
+            key: torch.from_numpy(value.astype(ARRAY_DTYPE)).to(self.device)
             for key, value in kwargs.items()
             if isinstance(value, np.ndarray) == True
         }
@@ -627,7 +627,7 @@ class ConvNetworkTemplate(NetworkTemplate):
             pass
 
         if isinstance(input_data, np.ndarray):
-            input_data = torch.from_numpy(input_data.astype("float32")).to(device)
+            input_data = torch.from_numpy(input_data.astype(ARRAY_DTYPE)).to(device)
 
         else:
             pass

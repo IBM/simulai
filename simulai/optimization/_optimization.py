@@ -25,6 +25,7 @@ import numpy as np
 import torch
 from torch.nn.parameter import Parameter
 
+from simulai import ARRAY_DTYPE
 from simulai.abstract import Dataset, Regression
 from simulai.file import SPFile
 from simulai.residuals import SymbolicOperator
@@ -52,14 +53,14 @@ def _convert_tensor_format(method):
             input_data_ = input_data
 
         elif isinstance(input_data, np.ndarray):
-            input_data_ = torch.from_numpy(input_data.astype(np.float32))
+            input_data_ = torch.from_numpy(input_data.astype(ARRAY_DTYPE))
 
         elif isinstance(input_data, dict):
             input_data_ = dict()
 
             for key, item in input_data.items():
                 if type(item) == np.ndarray:
-                    input_data_[key] = torch.from_numpy(item.astype(np.float32))
+                    input_data_[key] = torch.from_numpy(item.astype(ARRAY_DTYPE))
 
                 else:
                     input_data_[key] = item
@@ -70,14 +71,14 @@ def _convert_tensor_format(method):
             )
 
         if isinstance(target_data, np.ndarray):
-            target_data_ = torch.from_numpy(target_data.astype(np.float32))
+            target_data_ = torch.from_numpy(target_data.astype(ARRAY_DTYPE))
         else:
             target_data_ = target_data
 
         if validation_data is not None:
             if isinstance(validation_data[0], np.ndarray):
                 validation_data_ = tuple(
-                    [torch.from_numpy(j.astype(np.float32)) for j in validation_data]
+                    [torch.from_numpy(j.astype(ARRAY_DTYPE)) for j in validation_data]
                 )
             else:
                 validation_data_ = validation_data
@@ -887,7 +888,7 @@ class ScipyInterface:
             {k: list(v.shape) for k, v in self.fun.state_dict().items()}
         )
 
-        self.state_0 = copy.deepcopy(self.fun.state_dict())
+        self.state_0 = self.fun.state_dict()
 
         intervals = np.cumsum(
             [0] + [np.prod(shape) for shape in self.operators_shapes.values()]
@@ -904,6 +905,12 @@ class ScipyInterface:
             self.optimizer_config["jac"] = True
             self.objective = self._fun
 
+        # Determining default type
+        if torch.get_default_dtype() == torch.float32:
+            self.default_dtype = np.float32
+        else:
+            self.default_dtype = np.float64
+
     def _stack_and_convert_parameters(
         self, parameters: List[Union[torch.Tensor, np.ndarray]]
     ) -> np.ndarray:
@@ -915,9 +922,10 @@ class ScipyInterface:
         )
 
     def _update_and_set_parameters(self, parameters: np.ndarray) -> None:
+
         operators = [
             torch.from_numpy(
-                parameters[slice(*interval)].reshape(shape).astype(np.float32)
+                parameters[slice(*interval)].reshape(shape).astype(self.default_dtype)
             ).to(self.device)
             for interval, shape in zip(
                 self.operators_intervals, self.operators_shapes.values()
@@ -937,7 +945,7 @@ class ScipyInterface:
         self._update_and_set_parameters(parameters)
 
         closure = self.loss(self.input_data, self.target_data, **self.loss_config)
-        loss = closure()[0]
+        loss = closure()
 
         return loss.detach().cpu().numpy().astype(np.float64)
 
@@ -946,7 +954,7 @@ class ScipyInterface:
         self._update_and_set_parameters(parameters)
 
         closure = self.loss(self.input_data, self.target_data, **self.loss_config)
-        loss = closure()[0]
+        loss = closure()
 
         grads = [v.grad.detach().cpu().numpy() for v in self.fun.parameters()]
 
