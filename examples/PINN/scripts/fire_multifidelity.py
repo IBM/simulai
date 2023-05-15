@@ -296,10 +296,13 @@ if train == "yes":
         #plt.ylim([0.0, 1.1])
         #plt.show()
 
+        # Initializing the nest sub-model using the current one
         net_ = model()
         state_dict = net.state_dict()
         net_.load_state_dict(state_dict)
 
+        # Storing the current network in the multifidelity
+        # model
         multi_net.set_network(net=net, index=i)
 
     saver = SPFile(compact=False)
