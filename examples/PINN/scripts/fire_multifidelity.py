@@ -62,7 +62,7 @@ state_t = u0  # Initial Condition
 # Will we train from scratch or restore a 
 # pre-trained model from disk ?
 parser = ArgumentParser(description="Reading input parameters")
-parser.add_argument("--train", type=bool, help="Training new model or restoring from disk", default="yes")
+parser.add_argument("--train", type=str, help="Training new model or restoring from disk", default="yes")
 args = parser.parse_args()
 
 train = args.train
