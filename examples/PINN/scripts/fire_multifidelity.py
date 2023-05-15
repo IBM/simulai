@@ -296,7 +296,7 @@ if train == "yes":
         #plt.ylim([0.0, 1.1])
         #plt.show()
 
-        # Initializing the nest sub-model using the current one
+        # Initializing the next sub-model using the current one
         net_ = model()
         state_dict = net.state_dict()
         net_.load_state_dict(state_dict)
