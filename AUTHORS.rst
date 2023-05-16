@@ -13,5 +13,6 @@ Development Team
 Contributors
 ------------
 * John Bampton <jbampton@gmail.com>
+* Nicolas Spogis <nicolas.spogis@gmail.com> || <https://linktr.ee/spogis>
 
 (Include your name `here <https://github.com/IBM/simulai/blob/main/AUTHORS.rst>`_. if your are actively contributing to the project in anyway)
