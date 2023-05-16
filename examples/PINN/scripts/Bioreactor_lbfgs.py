@@ -259,13 +259,15 @@ Charts_Dir= './'
  
 # Compare PINN and EDO Results
 ODE_Results = pd.read_csv("Bioreactor_ODEs.csv")
- 
+Filter_Scale = 50
+ODE_Results_OnlyFewData = ODE_Results[::Filter_Scale]
+
 plt.figure(1)
 Chart_File_Name = Charts_Dir + 'Bioreactor_ODE_PINN_Concentration_Comparison.png'
  
-plt.plot(ODE_Results["Time"], ODE_Results["Cell Conc."], label='ODE - Cell Conc.')
-plt.plot(ODE_Results["Time"], ODE_Results["Product Conc."], label='ODE - Product Conc.')
-plt.plot(ODE_Results["Time"], ODE_Results["Substrate Conc."], label='ODE - Substrate Conc.')
+plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["Cell Conc."], label='ODE - Cell Conc.')
+plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["Product Conc."], label='ODE - Product Conc.')
+plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["Substrate Conc."], label='ODE - Substrate Conc.')
 plt.plot(time_plot, df['X_C'], label='PINN - Cell Conc.')
 plt.plot(time_plot, df['P_C'], label='PINN - Product Conc.')
 plt.plot(time_plot, df['S_C'], label='PINN - Substrate Conc.')
@@ -279,7 +281,7 @@ plt.show()
 plt.figure(2)
 Chart_File_Name = Charts_Dir + 'Bioreactor_ODE_PINN_Volume_Comparison.png'
  
-plt.plot(ODE_Results["Time"], ODE_Results["Volume [liter]"], label='ODE - Volume [liter]')
+plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["Volume [liter]"], label='ODE - Volume [liter]')
 plt.plot(time_plot, df['Vol'], label='PINN - Volume [liter]')
  
 plt.legend()
