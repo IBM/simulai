@@ -17,6 +17,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+from scipy.interpolate import interp1d
 
 # In order to execute this script, it is necessary to
 # set the environment variable engine as "pytorch" before initializing
@@ -41,7 +42,7 @@ pi = np.pi
 time_train = (np.random.rand(n) * T_max)[:, None]
 time_eval = np.linspace(0, T_max, N)[:, None]
 time_ext = np.linspace(T_max, T_max + 0.5, N)[:, None]
-
+T_eval = np.sin(4*np.pi*time_eval)
 
 def dataset(t: np.ndarray = None) -> np.ndarray:
     return (t - mu) ** 2 * np.cos(omega * np.pi * t)
@@ -59,9 +60,13 @@ u_data_ext = dataset_2(t=time_ext)
 def k1(t: torch.Tensor) -> torch.Tensor:
     return 2 * (t - mu) * torch.cos(omega * pi * t)
 
-
 def k2(t: torch.Tensor) -> torch.Tensor:
     return torch.sin(omega * pi * t)
+
+def k3(t: torch.Tensor, T: torch.Tensor) -> torch.Tensor:
+    interp = interp1d(t, T)
+    v = torch.from_numpy(interp(t))
+    return torch.sin(omega * pi * v)
 
 
 # The expression we aim at minimizing
@@ -116,11 +121,11 @@ optimizer = Optimizer("adam", params=optimizer_config)
 
 residual = SymbolicOperator(
     expressions=[f],
-    input_vars=["t"],
+    input_vars=["t", "T"],
     output_vars=["u"],
     function=net,
     constants={"omega": omega, "mu": mu},
-    external_functions={"k1": k1, "k2": k2},
+    external_functions={"k1": k1, "k2": k2, "k3": k3},
     engine="torch",
     device="gpu",
 )
