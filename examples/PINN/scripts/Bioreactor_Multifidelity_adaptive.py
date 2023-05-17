@@ -43,7 +43,7 @@ N = 100
 n = 100
 
 t_max = 72.0
-n_intervals = 72
+n_intervals = 150
 delta_t = t_max/n_intervals
 
 """    Initial_Conditions """ 
@@ -92,7 +92,7 @@ if train == "yes":
     n_inputs = len(input_labels)
     n_outputs = len(output_labels)
 
-    n_epochs_ini = 5_000    # Maximum number of iterations for ADAM
+    n_epochs_ini = 8_000    # Maximum number of iterations for ADAM
     n_epochs_min = 500      # Minimum number of iterations for ADAM
     Epoch_Tau = 3.0         # Number o Epochs Decay
     lr = 1e-3               # Initial learning rate for the ADAM algorithm
@@ -109,13 +109,13 @@ if train == "yes":
 
     def Delta_t(iteration_number):
         if iteration_number <= 10:
-            Delta_t = 1
+            Delta_t = 0.1
         elif iteration_number > 10 and iteration_number <= 20:
+            Delta_t = 0.5
+        elif iteration_number > 20 and iteration_number <= 50:
+            Delta_t = 1
+        elif iteration_number > 50 and iteration_number <= 75:
             Delta_t = 2
-        elif iteration_number > 20 and iteration_number <= 200:
-            Delta_t = 4
-        elif iteration_number > 200 and iteration_number <= 300:
-            Delta_t = 8
         else:
             Delta_t = 16
         print("\n Delta t:", Delta_t)
@@ -126,6 +126,7 @@ if train == "yes":
     depth = 3
     width = 50
     activations_funct = "tanh"
+
     def model():
       from simulai.regression import SLFNN, ConvexDenseNetwork
       from simulai.models import ImprovedDenseNetwork
@@ -177,13 +178,10 @@ if train == "yes":
         from simulai.models import ImprovedDenseNetwork
         from simulai.regression import SLFNN, ConvexDenseNetwork
 
-        t_max = 72.0
-        n_intervals = 72
-        delta_t = t_max/n_intervals
-
         depth = 3
         width = 50
         activations_funct = "tanh"
+        n_intervals = 150 # overestimated
 
         # Model used for initialization
         def sub_model():
@@ -237,12 +235,14 @@ if train == "yes":
                 for i, model in enumerate(models_list):
                     self.set_network(net=model, index=i)
 
-                self.delta_t = np.zeros(len(models_list))
+                self.delta_t = torch.nn.Parameter(data=torch.zeros(len(models_list)),
+                                                  requires_grad=False).to(device)
+
                 self.device = device
 
             def set_delta_t(self, delta_t:float, index:int=None) -> None:
 
-                self.delta_t[index] = delta_t
+                getattr(self, "delta_t").data[index] = delta_t
 
             def set_network(self, net:NetworkTemplate=None, index:int=None) -> None:
 
@@ -258,15 +258,15 @@ if train == "yes":
             @property
             def time_intervals(self):
 
-                cumulated_time = np.cumsum(self.delta_t)
+                cumulated_time = [0] + np.cumsum(self.delta_t).tolist()
 
                 return np.array([ [ cumulated_time[i], cumulated_time[i+1] ] for i in
-                                 range(cumulated_time.shape[0])])
+                                 range(len(cumulated_time) -1)])
 
             def _interval_delimiter(self, value:float, lower:float,
                                     upper:float) -> bool:
 
-                if lower < value <= upper:
+                if lower <= value[0] < upper:
                     return True
                 else:
                     return False
@@ -284,7 +284,9 @@ if train == "yes":
                     index = is_in_interval.index(True)
                     eval_indices.append(index)
 
-                input_data = input_data - self.delta_t[np.array(eval_indices)][:, None]
+                cumulated_time = np.array([0] + np.cumsum(self.delta_t).tolist())
+
+                input_data = input_data - cumulated_time[np.array(eval_indices)][:, None]
 
                 return np.vstack([self._eval_interval(index=i, input_data=idata) \
                                                      for i, idata in zip(eval_indices, input_data)])
@@ -309,12 +311,15 @@ if train == "yes":
 
     ### Run Multifidelity Model
     i = 0
+    t_acu = 0
+    get_Delta_t = 0.1
+
     while t_acu < t_max:
 
         net = net_
 
-        time_train = np.linspace(0, delta_t, n)[:, None]
-        time_eval = np.linspace(0, delta_t, n)[:, None]
+        time_train = np.linspace(0, get_Delta_t, n)[:, None]
+        time_eval = np.linspace(0, get_Delta_t, n)[:, None]
 
         # Simple model of flame growth
         initial_state = np.array([state_t])
@@ -340,7 +345,7 @@ if train == "yes":
             "initial_input": np.array([0])[:, None],
             "initial_state": initial_state,
             "weights_residual": [1, 1, 1, 1],
-            "initial_penalty": 5e8,
+            "initial_penalty": 1#5e8,
         }
 
         # Reduce Epochs for sequential PINNs
@@ -396,6 +401,7 @@ if train == "yes":
         multi_net.set_delta_t(delta_t=get_Delta_t, index=i)
 
         i += 1
+        t_acu += get_Delta_t
 
     saver = SPFile(compact=False)
     saver.write(
