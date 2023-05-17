@@ -96,6 +96,7 @@ if train == "yes":
     n_epochs_min = 500      # Minimum number of iterations for ADAM
     Epoch_Tau = 3.0         # Number o Epochs Decay
     lr = 1e-3               # Initial learning rate for the ADAM algorithm
+
     def Epoch_Decay(iteration_number):
         if iteration_number<100:
             n_epochs_iter = n_epochs_ini*(np.exp(-iteration_number/Epoch_Tau))
@@ -105,6 +106,21 @@ if train == "yes":
         print("N Epochs:", n_epochs)
         print("Iteration:", iteration_number)
         return n_epochs
+
+    def Delta_t(iteration_number):
+        if iteration_number <= 10:
+            Delta_t = 1
+        elif iteration_number > 10 and iteration_number <= 20:
+            Delta_t = 2
+        elif iteration_number > 20 and iteration_number <= 200:
+            Delta_t = 4
+        elif iteration_number > 200 and iteration_number <= 300:
+            Delta_t = 8
+        else:
+            Delta_t = 16
+        print("\n Delta t:", Delta_t)
+        return Delta_t
+
 
     # Local model, which will be replicated for each sub-domain
     depth = 3
@@ -123,29 +139,28 @@ if train == "yes":
           "input_size": 1,
           "output_size": 4,
           "name": "net"}
-          
+
       #Instantiating and training the surrogate model
       densenet = ConvexDenseNetwork(**config)
       encoder_u = SLFNN(input_size=1, output_size=width, activation=activations_funct)
       encoder_v = SLFNN(input_size=1, output_size=width, activation=activations_funct)
 
       class ScaledImprovedDenseNetwork(ImprovedDenseNetwork):
-        
+
         def __init__(self, network=None, encoder_u=None, encoder_v=None, devices="gpu", scale_factors=None):
-            
+
             super(ScaledImprovedDenseNetwork, self).__init__(network=densenet, encoder_u=encoder_u, encoder_v=encoder_v, devices="gpu")
             self.scale_factors = torch.from_numpy(scale_factors.astype("float32")).to(self.device)
-            
-        
+
         def forward(self, input_data=None):
-            
+
             return super().forward(input_data)*self.scale_factors
-        
+
       net = ScaledImprovedDenseNetwork(network=densenet, encoder_u=encoder_u, encoder_v=encoder_v, devices="gpu", scale_factors=scale_factors)
 
       # It prints a summary of the network features
       net.summary()
-          
+
       return net
 
     # Multifidelity network, a composite model with multiple sub-domain 
@@ -161,14 +176,15 @@ if train == "yes":
         import numpy as np
         from simulai.models import ImprovedDenseNetwork
         from simulai.regression import SLFNN, ConvexDenseNetwork
-        
+
         t_max = 72.0
         n_intervals = 72
         delta_t = t_max/n_intervals
-        
+
         depth = 3
         width = 50
         activations_funct = "tanh"
+
         # Model used for initialization
         def sub_model():
             from simulai.regression import SLFNN, ConvexDenseNetwork
@@ -183,29 +199,28 @@ if train == "yes":
                 "input_size": 1,
                 "output_size": 4,
                 "name": "net"}
-                
+
             #Instantiating and training the surrogate model
             densenet = ConvexDenseNetwork(**config)
             encoder_u = SLFNN(input_size=1, output_size=width, activation=activations_funct)
             encoder_v = SLFNN(input_size=1, output_size=width, activation=activations_funct)
 
             class ScaledImprovedDenseNetwork(ImprovedDenseNetwork):
-              
+
               def __init__(self, network=None, encoder_u=None, encoder_v=None, devices="gpu", scale_factors=None):
-                  
+
                   super(ScaledImprovedDenseNetwork, self).__init__(network=densenet, encoder_u=encoder_u, encoder_v=encoder_v, devices="gpu")
                   self.scale_factors = torch.from_numpy(scale_factors.astype("float32")).to(self.device)
-                  
-              
+
               def forward(self, input_data=None):
-                  
+
                   return super().forward(input_data)*self.scale_factors
-              
+
             net = ScaledImprovedDenseNetwork(network=densenet, encoder_u=encoder_u, encoder_v=encoder_v, devices="gpu", scale_factors=scale_factors)
 
             # It prints a summary of the network features
             net.summary()
-                
+
             return net
 
         # Initialization for the multifidelity network
@@ -293,7 +308,9 @@ if train == "yes":
     time_eval_plot = np.empty((0, 1), dtype=float)
 
     ### Run Multifidelity Model
-    for i in range(0, int(n_intervals), 1):
+    i = 0
+    while t_acu < t_max:
+
         net = net_
 
         time_train = np.linspace(0, delta_t, n)[:, None]
@@ -328,6 +345,7 @@ if train == "yes":
 
         # Reduce Epochs for sequential PINNs
         get_n_epochs = Epoch_Decay(i)
+        get_Delta_t = Delta_t(i)
 
         # First Evaluation With ADAM Optimizer
         optimizer.fit(
@@ -375,7 +393,9 @@ if train == "yes":
         # Storing the current network in the multifidelity
         # model
         multi_net.set_network(net=net, index=i)
-        multi_net.set_delta_t(delta_t=1, index=i)
+        multi_net.set_delta_t(delta_t=get_Delta_t, index=i)
+
+        i += 1
 
     saver = SPFile(compact=False)
     saver.write(
@@ -399,7 +419,7 @@ else:
     time_plot = np.linspace(0, t_max, 1000)[:, None]
 
     approximated_data_plot = multi_net.eval(input_data=time_plot)
-    
+
     df = pd.DataFrame(approximated_data_plot, columns = output_labels)
     # Plot Result
     Charts_Dir= './'
@@ -411,26 +431,26 @@ else:
 
     plt.figure(1)
     Chart_File_Name = Charts_Dir + 'Bioreactor_ODE_PINN_Concentration_Comparison.png'
-    
+
     plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["Cell Conc."], label='ODE - Cell Conc.')
     plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["Product Conc."], label='ODE - Product Conc.')
     plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["Substrate Conc."], label='ODE - Substrate Conc.')
     plt.plot(time_plot, df['X_C'], label='PINN - Cell Conc.')
     plt.plot(time_plot, df['P_C'], label='PINN - Product Conc.')
     plt.plot(time_plot, df['S_C'], label='PINN - Substrate Conc.')
-    
+
     plt.legend()
     plt.xlabel('Time [hr]')
     plt.ylabel('Concentration [g/liter]')
     plt.savefig(Chart_File_Name)
     plt.show()
-    
+
     plt.figure(2)
     Chart_File_Name = Charts_Dir + 'Bioreactor_ODE_PINN_Volume_Comparison.png'
-    
+
     plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["Volume [liter]"], label='ODE - Volume [liter]')
     plt.plot(time_plot, df['Vol'], label='PINN - Volume [liter]')
-    
+
     plt.legend()
     plt.xlabel('Time [hr]')
     plt.ylabel('Volume [liter]')
