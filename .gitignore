@@ -15,6 +15,7 @@
 *.png
 *.h5
 *.pth
+*.csv
 validation_tests/Dense/*.pth
 .travis.yml
 # C extensions
