@@ -47,7 +47,7 @@ class PreyGaussianDisturb:
 
 T_max = 150
 functions = list()
-n_functions = 10
+n_functions = 100
 sigmas = [1, 5, 10]
 A = np.linspace(10, 20, n_functions)
 np.random.shuffle(A)
