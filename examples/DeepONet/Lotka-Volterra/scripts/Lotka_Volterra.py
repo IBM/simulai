@@ -47,11 +47,13 @@ class PreyGaussianDisturb:
 
 T_max = 150
 functions = list()
-n_functions = 1000
+n_functions = 10
 sigmas = [1, 5, 10]
 A = np.linspace(10, 20, n_functions)
 np.random.shuffle(A)
 mus = np.linspace(10, T_max - 10, n_functions)
+
+parameter_inputs = np.zeros((n_functions, 2))
 
 for ff in range(n_functions):
     print(f"Generating input function: {ff}")
@@ -59,6 +61,8 @@ for ff in range(n_functions):
     function = PreyGaussianDisturb(A=A[ff], sigma=random.choice(sigmas), mu=mus[ff])
     functions.append(function)
 
+    parameter_inputs[ff, 0] = A[ff]
+    parameter_inputs[ff, 1] = mus[ff]
 
 # In[4]:
 
@@ -112,7 +116,7 @@ alpha = 1.1
 beta = 0.4
 gamma = 0.4
 delta = 0.1
-dt = 0.01
+dt = 0.05
 lambd = dt
 
 t = np.arange(0, T_max, dt)
@@ -124,26 +128,28 @@ input_dataset = list()
 for ff, function in enumerate(functions):
     print(f"Solving system using input function {ff}")
 
-    # solver = LotkaVolterra(alpha=alpha, beta=beta, gamma=gamma, delta=delta, forcing=function, lambd=lambd)
-    solver = LotkaVolterra(
-        alpha=alpha, beta=beta, gamma=gamma, delta=delta, lambd=lambd
-    )
+    solver = LotkaVolterra(alpha=alpha, beta=beta, gamma=gamma, delta=delta, forcing=function, lambd=lambd)
+    #solver = LotkaVolterra(
+    #    alpha=alpha, beta=beta, gamma=gamma, delta=delta, lambd=lambd
+    #)
 
     solution, forcing = solver.run(initial_state, t)
 
-    input_dataset.append(forcing)
+    input_dataset.append(forcing[:, None])
     output_dataset.append(solution)
 
+parameter_dataset = parameter_inputs
 
 # In[7]:
 
 
-input_dataset_array = np.stack(input_dataset, axis=-1)
+input_dataset_array = forcing
 
 
 # In[8]:
 
 
+input_dataset_array = np.stack(input_dataset, axis=-1)
 output_dataset_array = np.stack(output_dataset, axis=-1)
 
 
@@ -154,13 +160,14 @@ np.savez(
     "Lotka_Volterra_dataset.npz",
     input_dataset=input_dataset_array,
     output_dataset=output_dataset_array,
+    parameter_dataset=parameter_inputs,
     time=t,
 )
 
 
 # In[15]:
 
-
+"""
 for ff in range(0, n_functions, 100):
     plt.plot(t, input_dataset_array[:, ff])
 plt.show()
@@ -180,3 +187,4 @@ plt.show()
 for ff in range(0, n_functions, 100):
     plt.plot(t, output_dataset_array[:, 1, ff])
 plt.show()
+"""

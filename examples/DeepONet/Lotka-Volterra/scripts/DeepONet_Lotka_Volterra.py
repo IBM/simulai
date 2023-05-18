@@ -20,6 +20,7 @@
 
 import os
 import sys
+from argparse import ArgumentParser
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -31,9 +32,13 @@ from simulai.regression import DenseNetwork
 
 # In[2]:
 
+# Reading command line arguments.
+parser = ArgumentParser(description="Reading input parameters")
 
-data_path = os.environ["DATASET_PATH"]
-data_path
+parser.add_argument("--data_path", type=str, help="Save path", default="/tmp")
+args = parser.parse_args()
+
+data_path = args.data_path
 
 
 # In[3]:
@@ -47,6 +52,7 @@ datasets = np.load(data_path)
 
 input_dataset_raw = datasets["input_dataset"]
 output_dataset_raw = datasets["output_dataset"]
+input_dataset_parameter = datasets["parameter_dataset"]
 time_raw = datasets["time"]
 
 
@@ -54,7 +60,7 @@ time_raw = datasets["time"]
 
 
 time_interval = [0, 120]
-n_cases = 980
+n_cases = 80
 n_cases_test = 20
 n_sensors = 100
 n_time_samples = 100
@@ -90,34 +96,37 @@ time = time_[time_indices]
 output_dataset_train = output_dataset_raw[:, :, :n_cases]
 output_dataset_test = output_dataset_raw[:, :, n_cases:]
 
-input_dataset_train = input_dataset_raw[:, :n_cases]
-input_dataset_test = input_dataset_raw[:, n_cases:]
+input_dataset_train = input_dataset_parameter[:n_cases]
+input_dataset_test = input_dataset_parameter[n_cases:]
 
 
 # In[9]:
 
 
 output_dataset_time_sampled = output_dataset_train[time_indices, ...]
-input_dataset_sensor_sampled = input_dataset_train[sensors_indices, ...][:, None, :]
+input_dataset_sensor_sampled = input_dataset_train
 
 
 # In[10]:
 
 
-output_target = output_dataset_time_sampled.transpose(2, 0, 1).reshape(
-    n_cases * n_time_samples, -1
-)
+output_target = np.tile(output_dataset_time_sampled, (n_cases, 1))
 output_target_tensor = torch.from_numpy(output_target.astype("float32"))
-input_branch = np.tile(
-    input_dataset_sensor_sampled.transpose(2, 1, 0), (1, n_time_samples, 1)
-).reshape(n_cases * n_time_samples, -1)
+
+n_samples = output_dataset_time_sampled.shape[0]
+input_dataset = input_dataset_train[:, None, :]
+input_dataset = np.tile(input_dataset, (1, n_samples, 1))
+input_dataset = input_dataset.reshape((n_samples*n_cases, -1))
+
+input_branch = torch.from_numpy(input_dataset.astype("float32"))
+
 input_trunk = np.tile(time[:, None], (n_cases, 1))
 
 
 # In[11]:
 
-
-print(output_target.shape)
+print("Final datasets:\n")
+print(output_target_tensor.shape)
 print(input_branch.shape)
 print(input_trunk.shape)
 
