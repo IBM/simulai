@@ -19,7 +19,7 @@ Prof. Nicolas Spogis, Ph.D.
 Chemical Engineering Department
 LinkTree: https://linktr.ee/spogis
 
-Simple Bioreactor with Monod Model
+Rober Multifidelity Adaptative Time Step
 """
 
 """    Import Python Libraries    """
@@ -42,17 +42,14 @@ from simulai.file import SPFile
 N = 100
 n = 100
 
-t_max = 72.0
-#n_intervals = 150
-#delta_t = t_max/n_intervals
+t_max = 500
 
-"""    Initial_Conditions """ 
-X0 = 0.05
-P0 = 0.00
-S0 = 10.00
-V0 = 1.00
+"""    Initial Condition    """    
+s1_0 = 1.0
+s2_0 = 0.0
+s3_0 = 0.0
 
-state_t = np.array([X0, P0, S0, V0])
+state_t=np.array([s1_0, s2_0, s3_0])
 
 # Will we train from scratch or restore a 
 # pre-trained model from disk ?
@@ -66,28 +63,18 @@ train = "yes"
 
 if train == "yes":
 
-    """    Kinetics constants """ 
-    mumax = 0.20      # 1/hour  - maximum specific growth rate
-    Ks = 1.00         # g/liter - half saturation constant
+    """    Kinetics constants """    
+    k1 = 0.04
+    k2 = 3e7
+    k3 = 1e4
 
-    # Yxs = mass of new cells formed / mass of substrate consumed
-    Yxs = 0.5         # g/g
-
-    # Ypx = mass of product formed / mass of product formed
-    Ypx = 0.2         # g/g
-
-    Sf = 10.0         # g/liter - Fed substrate concentration
-    Flow_Rate = 0.05  # Feed flowrate - l/h
-
-
-    """    The expressions we aim at minimizing """ 
-    f_X_C = "D(X_C, t) - ((-Flow_Rate*X_C/Vol)     +         (mumax*S_C/(Ks + S_C))*X_C)"
-    f_P_C = "D(P_C, t) - ((-Flow_Rate*P_C/Vol)     +     Ypx*(mumax*S_C/(Ks + S_C))*X_C)"
-    f_S_C = "D(S_C, t) - ((Flow_Rate*(Sf-S_C)/Vol) - (1/Yxs)*(mumax*S_C/(Ks + S_C))*X_C)"
-    f_Vol = "D(Vol, t) - (Flow_Rate)"
+    """    The expressions we aim at minimizing    """    
+    f_s1 = "D(s1, t) + k1*s1 - k3*s2*s3"
+    f_s2 = "D(s2, t) - k1*s1 + k2*(s2**2) + k3*s2*s3"
+    f_s3 = "D(s3, t) - k2*(s2**2)"
 
     input_labels = ["t"]
-    output_labels = ["X_C", "P_C", "S_C", "Vol"]
+    output_labels = ["s1", "s2", "s3"]
 
     n_inputs = len(input_labels)
     n_outputs = len(output_labels)
@@ -108,8 +95,8 @@ if train == "yes":
         return n_epochs
 
     def Delta_t(i):
-        Tau = 150
-        n = 3.5
+        Tau = 100
+        n = 2.5
         dt_min = 0.001
         dt_max = 3.000
                 
@@ -129,14 +116,14 @@ if train == "yes":
       from simulai.regression import SLFNN, ConvexDenseNetwork
       from simulai.models import ImprovedDenseNetwork
 
-      scale_factors = np.array([1, 1, 1, 1])
+      scale_factors = np.array([1, 1e-4, 1])
 
       # Configuration for the fully-connected network
       config = {
           "layers_units": depth * [width],               # Hidden layers
           "activations": activations_funct,
           "input_size": 1,
-          "output_size": 4,
+          "output_size": 3,
           "name": "net"}
 
       #Instantiating and training the surrogate model
@@ -179,21 +166,21 @@ if train == "yes":
         depth = 3
         width = 50
         activations_funct = "tanh"
-        n_intervals = 150 # overestimated
+        n_intervals = 500 # overestimated
 
         # Model used for initialization
         def sub_model():
             from simulai.regression import SLFNN, ConvexDenseNetwork
             from simulai.models import ImprovedDenseNetwork
 
-            scale_factors = np.array([1, 1, 1, 1])
+            scale_factors = np.array([1, 1e-4, 1])
 
             # Configuration for the fully-connected network
             config = {
                 "layers_units": depth * [width],               # Hidden layers
                 "activations": activations_funct,
                 "input_size": 1,
-                "output_size": 4,
+                "output_size": 3,
                 "name": "net"}
 
             #Instantiating and training the surrogate model
@@ -310,7 +297,6 @@ if train == "yes":
     ### Run Multifidelity Model
     i = 0
     t_acu = 0
-    #get_Delta_t = 0.1
 
     while t_acu < t_max:
         get_Delta_t = Delta_t(i)
@@ -323,17 +309,11 @@ if train == "yes":
         initial_state = np.array([state_t])
 
         residual = SymbolicOperator(
-            expressions= [f_X_C, f_P_C, f_S_C, f_Vol],
+            expressions=[f_s1, f_s2, f_s3],
             input_vars=["t"],
-            output_vars=["X_C", "P_C", "S_C", "Vol"],
+            output_vars=["s1", "s2", "s3"],
             function=net,
-            constants={"mumax": mumax,
-                       "Ks": Ks,
-                       "Yxs": Yxs,
-                       "Ypx": Ypx,
-                       "Sf": Sf,
-                       "Flow_Rate": Flow_Rate,
-                       },
+            constants={"k1": k1, "k2": k2, "k3": k3},
             engine="torch",
             device="gpu",
         )
@@ -342,8 +322,9 @@ if train == "yes":
             "residual": residual,
             "initial_input": np.array([0])[:, None],
             "initial_state": initial_state,
-            "weights_residual": [1, 1, 1, 1],
-            "initial_penalty": 1e8,
+            "weights_residual": [1, 1, 1],
+            "weights":  [1, 1e6, 1],        # Maximum derivative magnitudes to be used as loss weights
+            "initial_penalty": 1e7,
         }
 
         # Reduce Epochs for sequential PINNs
@@ -399,12 +380,12 @@ if train == "yes":
 
         i += 1
         t_acu += get_Delta_t
-        print("Simulated Time:", t_acu)
+        print("\nSimulated Time:", t_acu)
 
     saver = SPFile(compact=False)
     saver.write(
         save_dir='./',
-        name="multi_fidelity_Bioreactor_pinn",
+        name="adaptative_multifidelity_rober_pinn",
         model=multi_net,
         template=model_,
     )
@@ -413,50 +394,41 @@ if train == "yes":
 # evaluations
 else:
     saver = SPFile(compact=False)
-    multi_net = saver.read(model_path='./multi_fidelity_Bioreactor_pinn', device='cpu')
+    multi_net = saver.read(model_path='./adaptative_multifidelity_rober_pinn', device='cpu')
 
     input_labels = ["t"]
-    output_labels = ["X_C", "P_C", "S_C", "Vol"]
+    output_labels = ["s1", "s2", "s3"]
 
     multi_net.summary()
 
     time_plot = np.linspace(0, t_max, 1000)[:, None]
 
     approximated_data_plot = multi_net.eval(input_data=time_plot)
-
+    
+    # Scale data (s2*1e4) only to help visualization
+    approximated_data_plot = approximated_data_plot * np.array([1, 1e4, 1])
+    
     df = pd.DataFrame(approximated_data_plot, columns = output_labels)
     # Plot Result
     Charts_Dir= './'
 
     # Compare PINN and EDO Results
-    ODE_Results = pd.read_csv("Bioreactor_ODEs.csv")
+    ODE_Results = pd.read_csv("Rober_ODE.csv")
     Filter_Scale = 50
     ODE_Results_OnlyFewData = ODE_Results[::Filter_Scale]
 
     plt.figure(1)
-    Chart_File_Name = Charts_Dir + 'Bioreactor_ODE_PINN_Concentration_Comparison.png'
-
-    plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["Cell Conc."], label='ODE - Cell Conc.')
-    plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["Product Conc."], label='ODE - Product Conc.')
-    plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["Substrate Conc."], label='ODE - Substrate Conc.')
-    plt.plot(time_plot, df['X_C'], label='PINN - Cell Conc.')
-    plt.plot(time_plot, df['P_C'], label='PINN - Product Conc.')
-    plt.plot(time_plot, df['S_C'], label='PINN - Substrate Conc.')
-
+    Chart_File_Name = Charts_Dir + 'Rober_ODE_Multifidelity_PINN_Comparison.png'
+    
+    plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["s1"], s=20, label='ODE - s1')
+    plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["s2"], s=20, label='ODE - s2 (*1e4)')
+    plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["s3"], s=20, label='ODE - s3')
+    plt.plot(time_plot, df['s1'], label='PINN - s1')
+    plt.plot(time_plot, df['s2'], label='PINN - s2 (*1e4)')
+    plt.plot(time_plot, df['s3'], label='PINN - s3')
+    
     plt.legend()
-    plt.xlabel('Time [hr]')
-    plt.ylabel('Concentration [g/liter]')
-    plt.savefig(Chart_File_Name)
-    plt.show()
-
-    plt.figure(2)
-    Chart_File_Name = Charts_Dir + 'Bioreactor_ODE_PINN_Volume_Comparison.png'
-
-    plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["Volume [liter]"], label='ODE - Volume [liter]')
-    plt.plot(time_plot, df['Vol'], label='PINN - Volume [liter]')
-
-    plt.legend()
-    plt.xlabel('Time [hr]')
-    plt.ylabel('Volume [liter]')
+    plt.xlabel('Time')
+    plt.ylabel('Concentration')
     plt.savefig(Chart_File_Name)
     plt.show()
