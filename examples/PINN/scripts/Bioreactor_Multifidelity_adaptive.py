@@ -402,7 +402,7 @@ if train == "yes":
         print("Simulated Time:", t_acu)
 
         print("Last PDE loss state:\n")
-        print(optimizer.loss_states['pde'])
+        print(optimizer.loss_states['pde'][-1])
 
     saver = SPFile(compact=False)
     saver.write(
