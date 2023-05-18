@@ -401,6 +401,9 @@ if train == "yes":
         t_acu += get_Delta_t
         print("Simulated Time:", t_acu)
 
+        print("Last PDE loss state:\n")
+        print(optimizer.loss_states['pde'])
+
     saver = SPFile(compact=False)
     saver.write(
         save_dir='./',

@@ -493,6 +493,9 @@ class Optimizer:
 
             self.lr_decay_handler(epoch=epoch)
 
+        self.loss_states = loss_states
+
+
     # Basic version of the mini-batch optimization loop
     # TODO It could be parallelized
     def _batchwise_optimization_loop(
