@@ -279,8 +279,15 @@ class NetworkTemplate(torch.nn.Module):
                 requires_grad=True,
             )
 
-        # Making evaluation using the trained fully-connected network
+    # Detaching parameters from the backpropagation pipeline
+    def detach_parameters(self) -> None:
 
+        for param in self.parameters():
+
+            param.requires_grad = False
+            param.data.copy_(param.data.detach())
+
+    # Making evaluations using the network
     def eval(self, input_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
         output_tensor = self.forward(input_data=input_data)
 
