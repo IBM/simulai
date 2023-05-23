@@ -56,10 +56,14 @@ class NetworkTemplate(torch.nn.Module):
 
     @property
     def n_parameters(self):
-        if hasattr(self, "weights"):
-            return int(sum([np.product(i.shape) for i in self.weights]))
-        else:
-            raise Exception(f"Class {self} has no attribute self.weights.")
+
+        try:
+            return sum([np.prod(tuple(param.shape)) for param in
+                    self.parameters()])
+
+        except Exception:
+
+            print(f"Class {self} has no torch.nn.Parameter or attribute self.weights.")
 
     def _set_device(self, devices: Union[str, list] = "cpu") -> str:
         device = None
