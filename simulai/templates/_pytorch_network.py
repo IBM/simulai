@@ -58,8 +58,8 @@ class NetworkTemplate(torch.nn.Module):
     def n_parameters(self):
 
         try:
-            return sum([np.prod(tuple(param.shape)) for param in
-                    self.parameters()])
+            return int(sum([np.prod(tuple(param.shape)) for param in
+                    self.parameters()]))
 
         except Exception:
 
