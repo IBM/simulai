@@ -531,7 +531,9 @@ class PIRMSELoss(LossBasics):
 
         """
 
-        weights = self.weights_estimator(residual=residual_approximation)
+        weights = self.weights_estimator(residual=residual_approximation,
+                                         loss_evaluator=self.loss_evaluator,
+                                         loss_history=self.loss_states)
 
         residual_loss = [
             weight * self.loss_evaluator(res)
