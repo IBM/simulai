@@ -763,7 +763,7 @@ class PIRMSELoss(LossBasics):
             initial_output_tilde = self.operator(input_data=initial_input)
 
             # Evaluating loss function for residual
-            residual_loss = self._residual_loss(
+            residual_loss = self.residual_loss(
                 residual_approximation=residual_approximation, weights=weights_residual
             )
 
