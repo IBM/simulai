@@ -514,6 +514,34 @@ class PIRMSELoss(LossBasics):
 
         return residual_loss
 
+    def _residual_loss_adaptive(
+        self, residual_approximation: List[torch.Tensor] = None, weights: list = None
+    ) -> List[torch.Tensor]:
+        """
+
+        It evaluates the physics-driven residual loss
+
+        :param residual_approximation: a list of tensors containing the evaluation for
+                                       the physical residual for each sample in the dataset
+        :type residual_approximation: List[torch.Tensor]
+        :param weights: a list of weights used for rescaling the residuals of each variable
+        :type weights: list
+        :returns: the list of residual losses
+        :rtype: torch.Tensor
+
+        """
+
+        weights = self.weights_estimator(residual=residual_approximation,
+                                         loss_evaluator=self.loss_evaluator,
+                                         loss_history=self.loss_states)
+
+        residual_loss = [
+            weight * self.loss_evaluator(res)
+            for weight, res in zip(weights, residual_approximation)
+        ]
+
+        return residual_loss
+
     def _extra_data(
         self, input_data: torch.Tensor = None, target_data: torch.Tensor = None
     ) -> torch.Tensor:
@@ -628,6 +656,7 @@ class PIRMSELoss(LossBasics):
         weights_residual=None,
         device: str = "cpu",
         causality_preserving: Callable = None,
+        weights_estimator: Callable = False,
         use_mean: bool = True,
     ) -> Callable:
         self.residual = residual
@@ -635,6 +664,8 @@ class PIRMSELoss(LossBasics):
         self.device = device
 
         self.causality_preserving = causality_preserving
+
+        self.weights_estimator = weights_estimator
 
         if (
             isinstance(extra_input_data, np.ndarray)
@@ -713,6 +744,12 @@ class PIRMSELoss(LossBasics):
         else:
             self.norm_evaluator = lambda ref: 1
 
+        # Determing the usage of special residual loss evaluators
+        if weights_estimator:
+            self.residual_loss = self._residual_loss_adaptive
+        else:
+            self.residual_loss = self._residual_loss
+
         def closure():
             # Executing the symbolic residual evaluation
             residual_approximation = self.residual_wrapper(input_data)
@@ -726,7 +763,7 @@ class PIRMSELoss(LossBasics):
             initial_output_tilde = self.operator(input_data=initial_input)
 
             # Evaluating loss function for residual
-            residual_loss = self._residual_loss(
+            residual_loss = self.residual_loss(
                 residual_approximation=residual_approximation, weights=weights_residual
             )
 
