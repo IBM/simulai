@@ -815,7 +815,11 @@ class PIRMSELoss(LossBasics):
             init = initial_data_loss
             bound = sum(boundary_loss)
 
-            loss_weights = self.global_weights(initial_penalty=initial_penalty)
+            # Updating the loss weights if necessary
+            loss_weights = self.global_weights(initial_penalty=initial_penalty,
+                                               operator=self.operator,
+                                               pde=pde, init=init, bound=bound,
+                                               extra_data=extra_data)
 
             # Overall loss function
             loss = pde + loss_weights[0] * init +\

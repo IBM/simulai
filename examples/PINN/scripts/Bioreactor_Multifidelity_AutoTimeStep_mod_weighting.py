@@ -383,7 +383,7 @@ if train == "yes":
             "initial_input": np.array([0])[:, None],
             "initial_state": initial_state,
             "weights_residual": [1, 1, 1, 1],
-            "weights_estimator": estimator,
+            "residual_weights_estimator": estimator,
             "initial_penalty": 1e8,
             "lambda_2": 1e-5,
         }
