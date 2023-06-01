@@ -19,7 +19,7 @@ class GeometricMean:
         mean_exps = torch.mean(torch.Tensor(exps))
         shifts = [mean_exps - exp for exp in exps]
 
-        weights = [torch.exp(shift) for shift in shifts]
+        weights = [torch.exp(shift).detach() for shift in shifts]
 
         return weights
 
@@ -39,7 +39,7 @@ class ShiftToMax:
         max_exps = torch.max(torch.Tensor(exps))
         shifts = [max_exps - exp for exp in exps]
 
-        weights = [torch.exp(shift)/n_res for shift in shifts]
+        weights = [torch.exp(shift.to(int).detach())/n_res for shift in shifts]
 
         return weights
 
