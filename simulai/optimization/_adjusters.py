@@ -4,6 +4,10 @@ import torch
 
 from simulai.templates import NetworkTemplate
 
+##########################################################
+# Adjusters designed for equation-based loss terms (PINNs)
+##########################################################
+
 class GeometricMean:
 
     def __init__(self):
@@ -43,6 +47,11 @@ class ShiftToMax:
         weights = [torch.exp(shift.to(int).detach())/n_res for shift in shifts]
 
         return weights
+
+########################################################################
+# Adjusters designed for balancing overall residual (PINN) contributions
+# and data-driven and  initial/boundary conditions
+########################################################################
 
 class AnnealingWeights:
 
