@@ -491,6 +491,16 @@ class PIRMSELoss(LossBasics):
 
         return sum(data_losses)
 
+    def _global_weights_bypass(self, initial_penalty:float=None, **kwargs) -> List[float]:
+
+        return [initial_penalty, 1.0, 1.0]
+
+    def _global_weights_estimator(self, **kwargs) -> List[float]:
+
+        weights = self.global_weights_estimator(**kwargs)
+
+        return weights
+
     def _residual_loss(
         self, residual_approximation: List[torch.Tensor] = None, weights: list = None
     ) -> List[torch.Tensor]:
@@ -531,7 +541,7 @@ class PIRMSELoss(LossBasics):
 
         """
 
-        weights = self.weights_estimator(residual=residual_approximation,
+        weights = self.residual_weights_estimator(residual=residual_approximation,
                                          loss_evaluator=self.loss_evaluator,
                                          loss_history=self.loss_states)
 
@@ -656,7 +666,8 @@ class PIRMSELoss(LossBasics):
         weights_residual=None,
         device: str = "cpu",
         causality_preserving: Callable = None,
-        weights_estimator: Callable = False,
+        global_weights_estimator: Callable = None,
+        residual_weights_estimator: Callable = None,
         use_mean: bool = True,
     ) -> Callable:
         self.residual = residual
@@ -665,7 +676,9 @@ class PIRMSELoss(LossBasics):
 
         self.causality_preserving = causality_preserving
 
-        self.weights_estimator = weights_estimator
+        self.global_weights_estimator = global_weights_estimator
+
+        self.residual_weights_estimator = residual_weights_estimator
 
         if (
             isinstance(extra_input_data, np.ndarray)
@@ -744,11 +757,17 @@ class PIRMSELoss(LossBasics):
         else:
             self.norm_evaluator = lambda ref: 1
 
-        # Determing the usage of special residual loss evaluators
-        if weights_estimator:
+        # Determing the usage of special residual loss weighting
+        if residual_weights_estimator:
             self.residual_loss = self._residual_loss_adaptive
         else:
             self.residual_loss = self._residual_loss
+
+        # Determining the usage of special global loss weighting
+        if global_weights_estimator:
+            self.global_weights = self._global_weights_estimator
+        else:
+            self.global_weights = self._global_weights_bypass
 
         def closure():
             # Executing the symbolic residual evaluation
@@ -796,8 +815,16 @@ class PIRMSELoss(LossBasics):
             init = initial_data_loss
             bound = sum(boundary_loss)
 
+            # Updating the loss weights if necessary
+            loss_weights = self.global_weights(initial_penalty=initial_penalty,
+                                               operator=self.operator,
+                                               pde=pde, init=init, bound=bound,
+                                               extra_data=extra_data)
+
             # Overall loss function
-            loss = pde + initial_penalty * init + bound + extra_data + l2_reg + l1_reg
+            loss = pde + loss_weights[0] * init +\
+                         loss_weights[1] * bound +\
+                         loss_weights[2] * extra_data + l2_reg + l1_reg
 
             # Back-propagation
             loss.backward()
