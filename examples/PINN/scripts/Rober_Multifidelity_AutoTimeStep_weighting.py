@@ -19,7 +19,7 @@ Prof. Nicolas Spogis, Ph.D.
 Chemical Engineering Department
 LinkTree: https://linktr.ee/spogis
 
-Simple Bioreactor with Monod Model
+Rober Multifidelity Auto Time Step
 """
 
 """    Import Python Libraries    """
@@ -32,29 +32,25 @@ import random
 import torch 
 torch.set_default_dtype(torch.float64)
 
-from simulai import ARRAY_DTYPE
 from simulai.optimization import Optimizer, PIRMSELoss, ScipyInterface
-from simulai.optimization import GeometricMean, ShiftToMax, AnnealingWeights
 from simulai.residuals import SymbolicOperator
 from simulai.templates import NetworkTemplate, guarantee_device
 from simulai.file import SPFile
+from simulai.optimization import AnnealingWeights
 
 """    Variables    """
 # Bioreactor
 N = 100
 n = 100
 
-t_max = 72.0
-#n_intervals = 150
-#delta_t = t_max/n_intervals
+t_max = 500
 
 """    Initial_Conditions """ 
-X0 = 0.05
-P0 = 0.00
-S0 = 10.00
-V0 = 1.00
+s1_0 = 1.0
+s2_0 = 0.0
+s3_0 = 0.0
 
-state_t = np.array([X0, P0, S0, V0])
+state_t=np.array([s1_0, s2_0, s3_0])
 
 # Will we train from scratch or restore a 
 # pre-trained model from disk ?
@@ -68,36 +64,26 @@ train = "yes"
 
 if train == "yes":
 
-    """    Kinetics constants """ 
-    mumax = 0.20      # 1/hour  - maximum specific growth rate
-    Ks = 1.00         # g/liter - half saturation constant
+    """    Kinetics constants """    
+    k1 = 0.04
+    k2 = 3e7
+    k3 = 1e4
 
-    # Yxs = mass of new cells formed / mass of substrate consumed
-    Yxs = 0.5         # g/g
-
-    # Ypx = mass of product formed / mass of product formed
-    Ypx = 0.2         # g/g
-
-    Sf = 10.0         # g/liter - Fed substrate concentration
-    Flow_Rate = 0.05  # Feed flowrate - l/h
-
-
-    """    The expressions we aim at minimizing """ 
-    f_X_C = "D(X_C, t) - ((-Flow_Rate*X_C/Vol)     +         (mumax*S_C/(Ks + S_C))*X_C)"
-    f_P_C = "D(P_C, t) - ((-Flow_Rate*P_C/Vol)     +     Ypx*(mumax*S_C/(Ks + S_C))*X_C)"
-    f_S_C = "D(S_C, t) - ((Flow_Rate*(Sf-S_C)/Vol) - (1/Yxs)*(mumax*S_C/(Ks + S_C))*X_C)"
-    f_Vol = "D(Vol, t) - (Flow_Rate)"
+    """    The expressions we aim at minimizing    """    
+    f_s1 = "D(s1, t) + k1*s1 - k3*s2*s3"
+    f_s2 = "D(s2, t) - k1*s1 + k2*(s2**2) + k3*s2*s3"
+    f_s3 = "D(s3, t) - k2*(s2**2)"
 
     input_labels = ["t"]
-    output_labels = ["X_C", "P_C", "S_C", "Vol"]
+    output_labels = ["s1", "s2", "s3"]
 
     n_inputs = len(input_labels)
     n_outputs = len(output_labels)
 
-    n_epochs_ini = 5_000    # Maximum number of iterations for ADAM
-    n_epochs_min = 1_000    # Minimum number of iterations for ADAM
+    n_epochs_ini = 2_000    # Maximum number of iterations for ADAM
+    n_epochs_min = 200      # Minimum number of iterations for ADAM
     Epoch_Tau = 5.0         # Number o Epochs Decay
-    lr = 1e-3               # Initial learning rate for the ADAM algorithm
+    lr = 5e-4               # Initial learning rate for the ADAM algorithm
 
     def Epoch_Decay(iteration_number):
         if iteration_number<100:
@@ -110,24 +96,30 @@ if train == "yes":
         return n_epochs
     
     
-    """ Auto Time Step  """
+    """ Adaptive Time Step """
+    tol = 1e-05                     # Truncation Error Tolerance  
     def Delta_t(i, last_delta_t):
-        Tau = 150
-        n = 3.5
-        dt_min = 0.001
-        dt_max = 3.0
-        tol = 1e-03
-        safety_factor = 0.9  
-        Change_Iteration = 5
-        
-        if i<Change_Iteration:
-            dt_sug = dt_max*(1-np.exp(-(i/Tau)**n))
-            print("Suggested new Delta t:", dt_sug)
+        dt_init = 1e-03             # Initial Time Step Size
+        dt_min = 5e-04              # Minimum Time Step Size
+        dt_max = 2.0                # Maximum Time Step Size
+        Safety_Factor = 0.9         # Safety Factor
+        Max_SCF = 2.0               # Maximum Step Change Factor 
+        Min_SCF = 0.3               # Minimum Step Change Factor 
+        Change_Iteration = 5        # Fixed Time Steps
+           
+        i = i+1
+        if i<Change_Iteration+1:
+            dt_sug = dt_init
+            print("Number of Fixed Time Steps:", Change_Iteration)
+            print("Fixed Delta t:", dt_sug)
         else:
             LastLoss = optimizer.loss_states['pde']
-            dt_sug = safety_factor*last_delta_t*min(max((tol/(2*LastLoss[-1]))**(1/2),0.3),2)
+            LastLoss = LastLoss[-1]
+            Adams_Moulton_Step =((270/19)*(tol*last_delta_t)/(LastLoss))*(1/4)
+            Adams_Ratio = Adams_Moulton_Step/last_delta_t
+            dt_sug = Safety_Factor*last_delta_t*max(min(Adams_Ratio,Max_SCF),Min_SCF)
             print("Suggested new Delta t:", dt_sug)
-            
+
         Delta_t = min(max(dt_sug,dt_min),dt_max)    
         print("Next Delta t (resp. Min and Max):", Delta_t)
         return Delta_t
@@ -142,13 +134,14 @@ if train == "yes":
       from simulai.regression import SLFNN, ConvexDenseNetwork
       from simulai.models import ImprovedDenseNetwork
 
+      scale_factors = np.array([1, 1e-4, 1])
+
       # Configuration for the fully-connected network
       config = {
           "layers_units": depth * [width],               # Hidden layers
           "activations": activations_funct,
-          "last_activation": 'identity',
           "input_size": 1,
-          "output_size": 4,
+          "output_size": 3,
           "name": "net"}
 
       #Instantiating and training the surrogate model
@@ -158,25 +151,16 @@ if train == "yes":
 
       class ScaledImprovedDenseNetwork(ImprovedDenseNetwork):
 
-          def __init__(self, network=None, encoder_u=None, encoder_v=None, devices="gpu", scale_factors=None):
+        def __init__(self, network=None, encoder_u=None, encoder_v=None, devices="gpu", scale_factors=None):
 
-              super(ScaledImprovedDenseNetwork, self).__init__(network=densenet, encoder_u=encoder_u, encoder_v=encoder_v, devices="gpu")
+            super(ScaledImprovedDenseNetwork, self).__init__(network=densenet, encoder_u=encoder_u, encoder_v=encoder_v, devices="gpu")
+            self.scale_factors = torch.from_numpy(scale_factors.astype("float32")).to(self.device)
 
-              if scale_factors != None:
-                  self.scale_factors = torch.from_numpy(scale_factors.astype("float32")).to(self.device)
-              else:
-                  self.scale_factors = torch.nn.Parameter(data=torch.zeros(self.network.output_size), 
-                                                    requires_grad=True).to(self.device)
+        def forward(self, input_data=None):
 
-          def set_scale_factors(self, scale_factors:np.ndarray=None) -> None:
+            return super().forward(input_data)*self.scale_factors
 
-              getattr(self, f"scale_factors").data = torch.from_numpy(scale_factors.astype(ARRAY_DTYPE))
-
-          def forward(self, input_data=None):
-
-              return super().forward(input_data)*self.scale_factors
-
-      net = ScaledImprovedDenseNetwork(network=densenet, encoder_u=encoder_u, encoder_v=encoder_v, devices="gpu")
+      net = ScaledImprovedDenseNetwork(network=densenet, encoder_u=encoder_u, encoder_v=encoder_v, devices="gpu", scale_factors=scale_factors)
 
       # It prints a summary of the network features
       # net.summary()
@@ -200,21 +184,21 @@ if train == "yes":
         depth = 3
         width = 50
         activations_funct = "tanh"
-        n_intervals = 150 # overestimated
+        n_intervals = 500 # overestimated
 
         # Model used for initialization
         def sub_model():
             from simulai.regression import SLFNN, ConvexDenseNetwork
             from simulai.models import ImprovedDenseNetwork
 
+            scale_factors = np.array([1, 1e-4, 1])
 
             # Configuration for the fully-connected network
             config = {
                 "layers_units": depth * [width],               # Hidden layers
                 "activations": activations_funct,
-                "last_activation": 'identity',
                 "input_size": 1,
-                "output_size": 4,
+                "output_size": 3,
                 "name": "net"}
 
             #Instantiating and training the surrogate model
@@ -227,22 +211,13 @@ if train == "yes":
               def __init__(self, network=None, encoder_u=None, encoder_v=None, devices="gpu", scale_factors=None):
 
                   super(ScaledImprovedDenseNetwork, self).__init__(network=densenet, encoder_u=encoder_u, encoder_v=encoder_v, devices="gpu")
-
-                  if scale_factors != None:
-                      self.scale_factors = torch.from_numpy(scale_factors.astype("float32")).to(self.device)
-                  else:
-                      self.scale_factors = torch.nn.Parameter(data=torch.zeros(self.network.output_size), 
-                                                        requires_grad=False).to(self.device)
-
-              def set_scale_factors(self, scale_factors:np.ndarray=None) -> None:
-
-                  getattr(self, f"scale_factors").data = torch.from_numpy(scale_factors.astype(ARRAY_DTYPE))
+                  self.scale_factors = torch.from_numpy(scale_factors.astype("float32")).to(self.device)
 
               def forward(self, input_data=None):
 
                   return super().forward(input_data)*self.scale_factors
 
-            net = ScaledImprovedDenseNetwork(network=densenet, encoder_u=encoder_u, encoder_v=encoder_v, devices="gpu")
+            net = ScaledImprovedDenseNetwork(network=densenet, encoder_u=encoder_u, encoder_v=encoder_v, devices="gpu", scale_factors=scale_factors)
 
             # It prints a summary of the network features
             # net.summary()
@@ -333,8 +308,6 @@ if train == "yes":
     optimizer_config = {"lr": lr}
     optimizer = Optimizer("adam", params=optimizer_config)
 
-    scale_factors = np.array([1.0, 1.0, 1.0 , 1.0])
-
     time_plot = np.empty((0, 1), dtype=float)
     approximated_data_plot = np.empty((0, 1), dtype=float)
     time_eval_plot = np.empty((0, 1), dtype=float)
@@ -342,13 +315,14 @@ if train == "yes":
     ### Run Multifidelity Model
     i = 0
     t_acu = 0
-    last_delta_t = 0.001
-
-    net_.set_scale_factors(scale_factors=scale_factors)
-
+    Not_Acepted_Steps = 0
+    last_delta_t = 0.01
+    get_Delta_t = Delta_t(i, last_delta_t)
+    
     while t_acu < t_max:
+        last_delta_t = get_Delta_t
         get_Delta_t = Delta_t(i, last_delta_t)
-
+        
         net = net_
 
         time_train = np.linspace(0, get_Delta_t, n)[:, None]
@@ -358,38 +332,23 @@ if train == "yes":
         initial_state = np.array([state_t])
 
         residual = SymbolicOperator(
-            expressions= [f_X_C, f_P_C, f_S_C, f_Vol],
+            expressions=[f_s1, f_s2, f_s3],
             input_vars=["t"],
-            output_vars=["X_C", "P_C", "S_C", "Vol"],
+            output_vars=["s1", "s2", "s3"],
             function=net,
-            constants={"mumax": mumax,
-                       "Ks": Ks,
-                       "Yxs": Yxs,
-                       "Ypx": Ypx,
-                       "Sf": Sf,
-                       "Flow_Rate": Flow_Rate,
-                       },
+            constants={"k1": k1, "k2": k2, "k3": k3},
             engine="torch",
             device="gpu",
         )
-
-        if i == 0:
-            estimator = None
-            global_estimator = AnnealingWeights(alpha=0.5, init_weight=1e8) #None
-
-        else:
-            estimator = None #ShiftToMax()
-            global_estimator = AnnealingWeights(alpha=0.5, init_weight=1e8)
 
         params = {
             "residual": residual,
             "initial_input": np.array([0])[:, None],
             "initial_state": initial_state,
-            "weights_residual": [1, 1, 1, 1],
-            "residual_weights_estimator": estimator,
-            "global_weights_estimator": global_estimator,
-            "initial_penalty": 1e8,
-            "lambda_2": 1e-5,
+            "weights_residual": [1, 1, 1],
+            "weights":  [1, 1e6, 1],        # Maximum derivative magnitudes to be used as loss weights
+            "global_weights_estimator": AnnealingWeights(alpha=0.5),
+            "initial_penalty": 1,
         }
 
         # Reduce Epochs for sequential PINNs
@@ -425,21 +384,23 @@ if train == "yes":
             },
         )
 
-        #optimizer_lbfgs.fit(input_data=time_train)
+        optimizer_lbfgs.fit(input_data=time_train)
 
         # Evaluation in training dataset
         approximated_data = net.eval(input_data=time_eval)
-
-        print(f"Using scale_factors: {net.scale_factors}")
-
-        get_Delta_t = Delta_t(i, last_delta_t)
-        if get_Delta_t<last_delta_t:
+                
+        LastLoss = optimizer.loss_states['pde']
+        LastLoss = LastLoss[-1]
+        
+        if LastLoss>tol:
+            Not_Acepted_Steps += 1
             print("\nSolution Not Accepted")
+            print("Last Loss:", LastLoss)
+            print("Minimum Tol.:", tol)
             print("Run again with reduced time step")
         else:
             print("\nSolution Accepted")
             print("Run next time step")
-            last_delta_t = get_Delta_t
             # Get Last PINN Value and Update as Initial Condition for the Next PINN
             state_t = approximated_data[-1]
     
@@ -456,11 +417,12 @@ if train == "yes":
             i += 1
             t_acu += get_Delta_t
             print("Simulated Time:", t_acu)
-
+    
+    print("Number of Non Acepted Steps:", Not_Acepted_Steps)
     saver = SPFile(compact=False)
     saver.write(
         save_dir='./',
-        name="multi_fidelity_Bioreactor_pinn",
+        name="adaptative_multifidelity_rober_pinn",
         model=multi_net,
         template=model_,
     )
@@ -469,50 +431,41 @@ if train == "yes":
 # evaluations
 else:
     saver = SPFile(compact=False)
-    multi_net = saver.read(model_path='./multi_fidelity_Bioreactor_pinn', device='cpu')
+    multi_net = saver.read(model_path='./adaptative_multifidelity_rober_pinn', device='cpu')
 
     input_labels = ["t"]
-    output_labels = ["X_C", "P_C", "S_C", "Vol"]
+    output_labels = ["s1", "s2", "s3"]
 
     multi_net.summary()
 
     time_plot = np.linspace(0, t_max, 1000)[:, None]
 
     approximated_data_plot = multi_net.eval(input_data=time_plot)
-
+    
+    # Scale data (s2*1e4) only to help visualization
+    approximated_data_plot = approximated_data_plot * np.array([1, 1e4, 1])
+    
     df = pd.DataFrame(approximated_data_plot, columns = output_labels)
     # Plot Result
     Charts_Dir= './'
 
     # Compare PINN and EDO Results
-    ODE_Results = pd.read_csv("Bioreactor_ODEs.csv")
+    ODE_Results = pd.read_csv("Rober_ODE.csv")
     Filter_Scale = 50
     ODE_Results_OnlyFewData = ODE_Results[::Filter_Scale]
 
     plt.figure(1)
-    Chart_File_Name = Charts_Dir + 'Bioreactor_ODE_PINN_Concentration_Comparison.png'
-
-    plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["Cell Conc."], label='ODE - Cell Conc.')
-    plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["Product Conc."], label='ODE - Product Conc.')
-    plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["Substrate Conc."], label='ODE - Substrate Conc.')
-    plt.plot(time_plot, df['X_C'], label='PINN - Cell Conc.')
-    plt.plot(time_plot, df['P_C'], label='PINN - Product Conc.')
-    plt.plot(time_plot, df['S_C'], label='PINN - Substrate Conc.')
-
+    Chart_File_Name = Charts_Dir + 'Rober_ODE_Multifidelity_PINN_Comparison.png'
+    
+    plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["s1"], s=20, label='ODE - s1')
+    plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["s2"], s=20, label='ODE - s2 (*1e4)')
+    plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["s3"], s=20, label='ODE - s3')
+    plt.plot(time_plot, df['s1'], label='PINN - s1')
+    plt.plot(time_plot, df['s2'], label='PINN - s2 (*1e4)')
+    plt.plot(time_plot, df['s3'], label='PINN - s3')
+    
     plt.legend()
-    plt.xlabel('Time [hr]')
-    plt.ylabel('Concentration [g/liter]')
-    plt.savefig(Chart_File_Name)
-    plt.show()
-
-    plt.figure(2)
-    Chart_File_Name = Charts_Dir + 'Bioreactor_ODE_PINN_Volume_Comparison.png'
-
-    plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["Volume [liter]"], label='ODE - Volume [liter]')
-    plt.plot(time_plot, df['Vol'], label='PINN - Volume [liter]')
-
-    plt.legend()
-    plt.xlabel('Time [hr]')
-    plt.ylabel('Volume [liter]')
+    plt.xlabel('Time')
+    plt.ylabel('Concentration')
     plt.savefig(Chart_File_Name)
     plt.show()

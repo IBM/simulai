@@ -497,7 +497,7 @@ class PIRMSELoss(LossBasics):
 
     def _global_weights_estimator(self, **kwargs) -> List[float]:
 
-        weights = self.global_weights_estimator
+        weights = self.global_weights_estimator(**kwargs)
 
         return weights
 
