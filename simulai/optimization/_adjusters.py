@@ -124,7 +124,7 @@ class PIInverseDirichlet(WeightsEstimator):
                                                loss=residual_grads[j])
 
             self.weights[j] = (self.alpha)*self.weights[j] + (1 - self.alpha)*weight_update
-        print(self.weights)
+
         return self.weights
 
 ########################################################################
