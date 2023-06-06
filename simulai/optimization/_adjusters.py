@@ -4,55 +4,6 @@ import torch
 
 from simulai.templates import NetworkTemplate
 
-##########################################################
-# Adjusters designed for equation-based loss terms (PINNs)
-##########################################################
-
-class GeometricMean:
-
-    def __init__(self):
-
-        pass
-
-    def __call__(self, residual=List[torch.Tensor],
-                       loss_evaluator=Callable,
-                       loss_history=Dict[str, float]) -> None:
-
-        n_res = len(residual)
-        residual_norms = [loss_evaluator(res).detach() for res in residual]
-        exps = [torch.log(res) for res in residual_norms]
-        mean_exps = torch.mean(torch.Tensor(exps))
-        shifts = [mean_exps - exp for exp in exps]
-
-        weights = [torch.exp(shift).detach() for shift in shifts]
-
-        return weights
-
-class ShiftToMax:
-
-    def __init__(self):
-
-        pass
-
-    def __call__(self, residual=List[torch.Tensor],
-                       loss_evaluator=Callable,
-                       loss_history=Dict[str, float]) -> None:
-
-        n_res = len(residual)
-        residual_norms = [loss_evaluator(res).detach() for res in residual]
-        exps = [torch.log(res) for res in residual_norms]
-        max_exps = torch.max(torch.Tensor(exps))
-        shifts = [max_exps - exp for exp in exps]
-
-        weights = [torch.exp(shift.to(int).detach())/n_res for shift in shifts]
-
-        return weights
-
-########################################################################
-# Adjusters designed for balancing overall residual (PINN) contributions
-# and data-driven and  initial/boundary conditions
-########################################################################
-
 class WeightsEstimator:
 
     def __init__(self) -> None:
@@ -80,21 +31,106 @@ class WeightsEstimator:
 
         return gradients
 
-    def _coeff_update(self, loss_ref:torch.tensor=None, loss:torch.tensor=None,
-                      **kwargs):
 
-        raise NotImplementedError
+##########################################################
+# Adjusters designed for equation-based loss terms (PINNs)
+##########################################################
 
-    def __call__(self, pde:torch.tensor=None,
-                       init:torch.tensor=None,
-                       bound:torch.tensor=None,
-                       extra_data:torch.tensor=None,
-                       init_weight:torch.tensor=None,
-                       bound_weight:torch.tensor=None,
-                       extra_data_weight:torch.tensor=None,
-                       operator: NetworkTemplate=None, **kwargs) -> torch.tensor:
+class GeometricMean:
 
-        raise NotImplementedError
+    def __init__(self):
+
+        pass
+
+    def __call__(self, residual=List[torch.Tensor],
+                       loss_evaluator=Callable,
+                       loss_history=Dict[str, float], **kwargs) -> None:
+
+        n_res = len(residual)
+        residual_norms = [loss_evaluator(res).detach() for res in residual]
+        exps = [torch.log(res) for res in residual_norms]
+        mean_exps = torch.mean(torch.Tensor(exps))
+        shifts = [mean_exps - exp for exp in exps]
+
+        weights = [torch.exp(shift).detach() for shift in shifts]
+
+        return weights
+
+class ShiftToMax:
+
+    def __init__(self):
+
+        pass
+
+    def __call__(self, residual=List[torch.Tensor],
+                       loss_evaluator=Callable,
+                       loss_history=Dict[str, float], **kwargs) -> None:
+
+        n_res = len(residual)
+        residual_norms = [loss_evaluator(res).detach() for res in residual]
+        exps = [torch.log(res) for res in residual_norms]
+        max_exps = torch.max(torch.Tensor(exps))
+        shifts = [max_exps - exp for exp in exps]
+
+        weights = [torch.exp(shift.to(int).detach())/n_res for shift in shifts]
+
+        return weights
+
+class PIInverseDirichlet(WeightsEstimator):
+
+    def __init__(self, alpha:float=None, n_residuals:int=None) -> None:
+
+        super().__init__()
+
+        self.alpha = alpha
+        self.n_residuals = n_residuals
+        self.weights = [1.0]*n_residuals
+
+    def _coeff_update(self, nominator:torch.tensor=None, loss:torch.tensor=None):
+
+        loss_grad_std = torch.std(loss)
+
+        if torch.abs(loss_grad_std) >= 1e-15:
+            coeff_hat = nominator/loss_grad_std
+        else:
+            coeff_hat = 0
+
+        return coeff_hat
+
+    def _clip_grad(self, loss:torch.tensor=None, operator:Callable=None) -> torch.Tensor:
+
+        loss_grads = self._grad(loss=loss, operator=operator)
+
+        return loss_grads
+
+    def __call__(self, residual=List[torch.Tensor],
+                       loss_evaluator=Callable,
+                       loss_history=Dict[str, float],
+                       operator:Callable=None, **kwargs) -> None:
+
+        residual_grads = list()
+
+        for res in residual:
+            res_loss = loss_evaluator(res)
+            residual_grads.append(self._clip_grad(loss=res_loss, operator=operator))
+
+        losses_std = [torch.std(l) for l in residual_grads]
+
+        nominator = torch.max(torch.Tensor(losses_std))
+
+        for j in range(len(residual)):
+
+            weight_update = self._coeff_update(nominator=nominator,
+                                               loss=residual_grads[j])
+
+            self.weights[j] = (self.alpha)*self.weights[j] + (1 - self.alpha)*weight_update
+        print(self.weights)
+        return self.weights
+
+########################################################################
+# Adjusters designed for balancing overall residual (PINN) contributions
+# and data-driven and  initial/boundary conditions
+########################################################################
 
 class AnnealingWeights(WeightsEstimator):
 

@@ -543,7 +543,8 @@ class PIRMSELoss(LossBasics):
 
         weights = self.residual_weights_estimator(residual=residual_approximation,
                                          loss_evaluator=self.loss_evaluator,
-                                         loss_history=self.loss_states)
+                                         loss_history=self.loss_states,
+                                         operator=self.operator)
 
         residual_loss = [
             weight * self.loss_evaluator(res)
