@@ -53,16 +53,10 @@ class ShiftToMax:
 # and data-driven and  initial/boundary conditions
 ########################################################################
 
-class AnnealingWeights:
+class WeightsEstimator:
 
-    def __init__(self, alpha:float=None, init_weight:float=1.0,
-                 bound_weight:float=1.0, extra_data_weight:float=1.0) -> None:
-
-        self.alpha = alpha
-
-        self.init_weight = init_weight
-        self.bound_weight = bound_weight
-        self.extra_data_weight = extra_data_weight
+    def __init__(self) -> None:
+        pass
 
     def _grad(self, loss:torch.tensor=None, operator:NetworkTemplate=None) -> torch.Tensor:
 
@@ -85,6 +79,34 @@ class AnnealingWeights:
             gradients = torch.zeros(operator.n_parameters)
 
         return gradients
+
+    def _coeff_update(self, loss_ref:torch.tensor=None, loss:torch.tensor=None):
+
+        raise NotImplementedError
+
+    def __call__(self, pde:torch.tensor=None,
+                       init:torch.tensor=None,
+                       bound:torch.tensor=None,
+                       extra_data:torch.tensor=None,
+                       init_weight:torch.tensor=None,
+                       bound_weight:torch.tensor=None,
+                       extra_data_weight:torch.tensor=None,
+                       operator: NetworkTemplate=None, **kwargs) -> torch.tensor:
+
+        raise NotImplementedError
+
+class AnnealingWeights(WeightsEstimator):
+
+    def __init__(self, alpha:float=None, init_weight:float=1.0,
+                 bound_weight:float=1.0, extra_data_weight:float=1.0) -> None:
+
+        super().__init__()
+
+        self.alpha = alpha
+
+        self.init_weight = init_weight
+        self.bound_weight = bound_weight
+        self.extra_data_weight = extra_data_weight
 
     def _coeff_update(self, loss_ref:torch.tensor=None, loss:torch.tensor=None):
 
