@@ -36,7 +36,7 @@ from simulai.optimization import Optimizer, PIRMSELoss, ScipyInterface
 from simulai.residuals import SymbolicOperator
 from simulai.templates import NetworkTemplate, guarantee_device
 from simulai.file import SPFile
-from simulai.optimization import AnnealingWeights
+from simulai.optimization import AnnealingWeights, InverseDirichletWeights
 
 """    Variables    """
 # Bioreactor
@@ -81,7 +81,7 @@ if train == "yes":
     n_outputs = len(output_labels)
 
     n_epochs_ini = 2_000    # Maximum number of iterations for ADAM
-    n_epochs_min = 200      # Minimum number of iterations for ADAM
+    n_epochs_min = 500      # Minimum number of iterations for ADAM
     Epoch_Tau = 5.0         # Number o Epochs Decay
     lr = 5e-4               # Initial learning rate for the ADAM algorithm
 
@@ -328,7 +328,7 @@ if train == "yes":
         time_train = np.linspace(0, get_Delta_t, n)[:, None]
         time_eval = np.linspace(0, get_Delta_t, n)[:, None]
 
-        # Simple model of flame growth
+            # Simple model of flame growth
         initial_state = np.array([state_t])
 
         residual = SymbolicOperator(
@@ -346,8 +346,8 @@ if train == "yes":
             "initial_input": np.array([0])[:, None],
             "initial_state": initial_state,
             "weights_residual": [1, 1, 1],
-            "weights":  [1, 1e6, 1],        # Maximum derivative magnitudes to be used as loss weights
-            "global_weights_estimator": AnnealingWeights(alpha=0.5),
+                "weights":  [1, 1e6, 1],        # Maximum derivative magnitudes to be used as loss weights
+                "global_weights_estimator": InverseDirichletWeights(alpha=0.9), #AnnealingWeights(alpha=0.5),
             "initial_penalty": 1,
         }
 
@@ -438,6 +438,8 @@ else:
 
     multi_net.summary()
 
+    compare = False
+
     time_plot = np.linspace(0, t_max, 1000)[:, None]
 
     approximated_data_plot = multi_net.eval(input_data=time_plot)
@@ -450,16 +452,18 @@ else:
     Charts_Dir= './'
 
     # Compare PINN and EDO Results
-    ODE_Results = pd.read_csv("Rober_ODE.csv")
-    Filter_Scale = 50
-    ODE_Results_OnlyFewData = ODE_Results[::Filter_Scale]
+    if compare:
+        ODE_Results = pd.read_csv("Rober_ODE.csv")
+        Filter_Scale = 50
+        ODE_Results_OnlyFewData = ODE_Results[::Filter_Scale]
 
     plt.figure(1)
     Chart_File_Name = Charts_Dir + 'Rober_ODE_Multifidelity_PINN_Comparison.png'
-    
-    plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["s1"], s=20, label='ODE - s1')
-    plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["s2"], s=20, label='ODE - s2 (*1e4)')
-    plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["s3"], s=20, label='ODE - s3')
+    if compare: 
+        plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["s1"], s=20, label='ODE - s1')
+        plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["s2"], s=20, label='ODE - s2 (*1e4)')
+        plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["s3"], s=20, label='ODE - s3')
+
     plt.plot(time_plot, df['s1'], label='PINN - s1')
     plt.plot(time_plot, df['s2'], label='PINN - s2 (*1e4)')
     plt.plot(time_plot, df['s3'], label='PINN - s3')
