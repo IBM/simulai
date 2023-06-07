@@ -181,19 +181,19 @@ class AnnealingWeights(WeightsEstimator):
         self.bound_weight = (self.alpha)*self.bound_weight + (1 - self.alpha)*bound_weight_update
         self.extra_data_weight = (self.alpha)*self.extra_data_weight + (1 - self.alpha)*extra_data_weight_update
 
-
-        return [self.init_weight, self.bound_weight, self.extra_data_weight]
+        return [1.0, self.init_weight, self.bound_weight, self.extra_data_weight]
 
 
 class InverseDirichletWeights(WeightsEstimator):
 
-    def __init__(self, alpha:float=None, init_weight:float=1.0,
+    def __init__(self, alpha:float=None, pde_weight:float=1.0, init_weight:float=1.0,
                  bound_weight:float=1.0, extra_data_weight:float=1.0) -> None:
 
         super().__init__()
 
         self.alpha = alpha
 
+        self.pde_weight =  pde_weight
         self.init_weight = init_weight
         self.bound_weight = bound_weight
         self.extra_data_weight = extra_data_weight
@@ -234,6 +234,8 @@ class InverseDirichletWeights(WeightsEstimator):
 
         nominator = torch.max(torch.Tensor(losses_std))
 
+        pde_weight_update = self._coeff_update(nominator=nominator,
+                                                   loss=pde_grads)
         init_weight_update = self._coeff_update(nominator=nominator,
                                                 loss=init_grads)
         bound_weight_update = self._coeff_update(nominator=nominator,
@@ -241,9 +243,10 @@ class InverseDirichletWeights(WeightsEstimator):
         extra_data_weight_update = self._coeff_update(nominator=nominator,
                                                       loss=extra_data_grads)
 
+        self.pde_weight = (self.alpha)*self.pde_weight + (1 - self.alpha)*pde_weight_update
         self.init_weight = (self.alpha)*self.init_weight + (1 - self.alpha)*init_weight_update
         self.bound_weight = (self.alpha)*self.bound_weight + (1 - self.alpha)*bound_weight_update
         self.extra_data_weight = (self.alpha)*self.extra_data_weight + (1 - self.alpha)*extra_data_weight_update
 
-        return [self.init_weight, self.bound_weight, self.extra_data_weight]
+        return [self.pde_weight, self.init_weight, self.bound_weight, self.extra_data_weight]
 
