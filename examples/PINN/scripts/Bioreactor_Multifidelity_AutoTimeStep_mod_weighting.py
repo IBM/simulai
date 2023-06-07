@@ -34,7 +34,7 @@ torch.set_default_dtype(torch.float64)
 
 from simulai import ARRAY_DTYPE
 from simulai.optimization import Optimizer, PIRMSELoss, ScipyInterface
-from simulai.optimization import GeometricMean, ShiftToMax, AnnealingWeights
+from simulai.optimization import GeometricMean, ShiftToMax, AnnealingWeights, PIInverseDirichlet
 from simulai.residuals import SymbolicOperator
 from simulai.templates import NetworkTemplate, guarantee_device
 from simulai.file import SPFile
@@ -162,7 +162,7 @@ if train == "yes":
 
               super(ScaledImprovedDenseNetwork, self).__init__(network=densenet, encoder_u=encoder_u, encoder_v=encoder_v, devices="gpu")
 
-              if scale_factors != None:
+              if isinstance(scale_factors, np.ndarray):
                   self.scale_factors = torch.from_numpy(scale_factors.astype("float32")).to(self.device)
               else:
                   self.scale_factors = torch.nn.Parameter(data=torch.zeros(self.network.output_size), 
@@ -176,7 +176,9 @@ if train == "yes":
 
               return super().forward(input_data)*self.scale_factors
 
-      net = ScaledImprovedDenseNetwork(network=densenet, encoder_u=encoder_u, encoder_v=encoder_v, devices="gpu")
+      net = ScaledImprovedDenseNetwork(network=densenet, encoder_u=encoder_u,
+                                       encoder_v=encoder_v, devices="gpu",
+                                       scale_factors=np.array([1,1,1,1]))
 
       # It prints a summary of the network features
       # net.summary()
@@ -228,7 +230,7 @@ if train == "yes":
 
                   super(ScaledImprovedDenseNetwork, self).__init__(network=densenet, encoder_u=encoder_u, encoder_v=encoder_v, devices="gpu")
 
-                  if scale_factors != None:
+                  if isinstance(scale_factors, np.ndarray):
                       self.scale_factors = torch.from_numpy(scale_factors.astype("float32")).to(self.device)
                   else:
                       self.scale_factors = torch.nn.Parameter(data=torch.zeros(self.network.output_size), 
@@ -242,7 +244,11 @@ if train == "yes":
 
                   return super().forward(input_data)*self.scale_factors
 
-            net = ScaledImprovedDenseNetwork(network=densenet, encoder_u=encoder_u, encoder_v=encoder_v, devices="gpu")
+            net = ScaledImprovedDenseNetwork(network=densenet,
+                                             encoder_u=encoder_u,
+                                             encoder_v=encoder_v,
+                                             devices="gpu",
+                                             scale_factors=np.array([1,1,1,1]))
 
             # It prints a summary of the network features
             # net.summary()
@@ -375,19 +381,19 @@ if train == "yes":
 
         if i == 0:
             estimator = None
-            global_estimator = AnnealingWeights(alpha=0.5, init_weight=1e8) #None
+            global_estimator = None #AnnealingWeights(alpha=0.5, init_weight=1e8) #None
 
         else:
             estimator = None #ShiftToMax()
-            global_estimator = AnnealingWeights(alpha=0.5, init_weight=1e8)
+            global_estimator = None #AnnealingWeights(alpha=0.5, init_weight=1e8)
 
         params = {
             "residual": residual,
             "initial_input": np.array([0])[:, None],
             "initial_state": initial_state,
             "weights_residual": [1, 1, 1, 1],
-            "residual_weights_estimator": estimator,
-            "global_weights_estimator": global_estimator,
+            "residual_weights_estimator": PIInverseDirichlet(alpha=0.5, n_residuals=4), #estimator,
+            #"global_weights_estimator": global_estimator,
             "initial_penalty": 1e8,
             "lambda_2": 1e-5,
         }

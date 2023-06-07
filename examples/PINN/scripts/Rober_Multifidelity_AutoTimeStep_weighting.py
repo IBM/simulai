@@ -36,7 +36,7 @@ from simulai.optimization import Optimizer, PIRMSELoss, ScipyInterface
 from simulai.residuals import SymbolicOperator
 from simulai.templates import NetworkTemplate, guarantee_device
 from simulai.file import SPFile
-from simulai.optimization import AnnealingWeights, InverseDirichletWeights, PIInverseDirichlet
+from simulai.optimization import ShiftToMax, AnnealingWeights, InverseDirichletWeights, PIInverseDirichlet
 
 """    Variables    """
 # Bioreactor
@@ -346,10 +346,10 @@ if train == "yes":
             "initial_input": np.array([0])[:, None],
             "initial_state": initial_state,
             "weights_residual": [1, 1, 1],
-            "weights":  [1, 1e6, 1],        # Maximum derivative magnitudes to be used as loss weights
-            "residual_weights_estimator": PIInverseDirichlet(alpha=0.5,
-                                                             n_residuals=3),
-            #"global_weights_estimator": InverseDirichletWeights(alpha=0.9), #AnnealingWeights(alpha=0.5),
+            "weights":  [1, 1, 1],        # Maximum derivative magnitudes to be used as loss weights
+            #"data_weights_estimator": ShiftToMax(),
+            #"residual_weights_estimator": PIInverseDirichlet(alpha=0.9, n_residuals=3),
+            #"global_weights_estimator": InverseDirichletWeights(alpha=0.5),
             "initial_penalty": 1,
         }
 
@@ -386,7 +386,7 @@ if train == "yes":
             },
         )
 
-        optimizer_lbfgs.fit(input_data=time_train)
+        #optimizer_lbfgs.fit(input_data=time_train)
 
         # Evaluation in training dataset
         approximated_data = net.eval(input_data=time_eval)
