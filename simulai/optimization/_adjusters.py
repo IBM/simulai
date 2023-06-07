@@ -9,6 +9,14 @@ class WeightsEstimator:
     def __init__(self) -> None:
         pass
 
+    def _clip_grad(self, grad:torch.Tensor=None, size:int=None) -> torch.Tensor:
+
+        if not isinstance(grad, torch.Tensor):
+            return torch.zeros(size).detach()
+        else:
+            return grad.detach()
+
+
     def _grad(self, loss:torch.tensor=None, operator:NetworkTemplate=None) -> torch.Tensor:
 
 
@@ -16,7 +24,7 @@ class WeightsEstimator:
 
             loss.backward(retain_graph=True)
 
-            grads = [v.grad.detach() for v in operator.parameters()]
+            grads = [self._clip_grad(grad=v.grad, size=v.shape) for v in operator.parameters()]
 
             for v in operator.parameters():
                 v.grad = None
@@ -97,12 +105,6 @@ class PIInverseDirichlet(WeightsEstimator):
 
         return coeff_hat
 
-    def _clip_grad(self, loss:torch.tensor=None, operator:Callable=None) -> torch.Tensor:
-
-        loss_grads = self._grad(loss=loss, operator=operator)
-
-        return loss_grads
-
     def __call__(self, residual=List[torch.Tensor],
                        loss_evaluator=Callable,
                        loss_history=Dict[str, float],
@@ -112,7 +114,7 @@ class PIInverseDirichlet(WeightsEstimator):
 
         for res in residual:
             res_loss = loss_evaluator(res)
-            residual_grads.append(self._clip_grad(loss=res_loss, operator=operator))
+            residual_grads.append(self._grad(loss=res_loss, operator=operator))
 
         losses_std = [torch.std(l) for l in residual_grads]
 
