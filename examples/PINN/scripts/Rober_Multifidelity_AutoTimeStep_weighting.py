@@ -346,10 +346,10 @@ if train == "yes":
             "initial_input": np.array([0])[:, None],
             "initial_state": initial_state,
             "weights_residual": [1, 1, 1],
-            "weights":  [1, 1e6, 1],        # Maximum derivative magnitudes to be used as loss weights
+            "weights":  [1, 1, 1],        # Maximum derivative magnitudes to be used as loss weights
             #"data_weights_estimator": ShiftToMax(),
             #"residual_weights_estimator": PIInverseDirichlet(alpha=0.9, n_residuals=3),
-            "global_weights_estimator": InverseDirichletWeights(alpha=0.5),
+            #"global_weights_estimator": InverseDirichletWeights(alpha=0.5),
             "initial_penalty": 1,
         }
 
