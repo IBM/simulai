@@ -533,7 +533,7 @@ class PIRMSELoss(LossBasics):
 
     def _global_weights_bypass(self, initial_penalty:float=None, **kwargs) -> List[float]:
 
-        return [initial_penalty, 1.0, 1.0]
+        return [1.0, initial_penalty, 1.0, 1.0]
 
     def _global_weights_estimator(self, **kwargs) -> List[float]:
 
