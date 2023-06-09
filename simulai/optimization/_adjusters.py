@@ -86,13 +86,17 @@ class ShiftToMax:
 
 class PIInverseDirichlet(WeightsEstimator):
 
-    def __init__(self, alpha:float=None, n_residuals:int=None) -> None:
+    def __init__(self, alpha:float=None, n_residuals:int=None, initial_weights:List[float]=None) -> None:
 
         super().__init__()
 
         self.alpha = alpha
         self.n_residuals = n_residuals
-        self.weights = [1.0]*n_residuals
+
+        if not initial_weights:
+            self.weights = [1.0]*n_residuals
+        else:
+            self.weights = initial_weights
 
     def _coeff_update(self, nominator:torch.tensor=None, loss:torch.tensor=None):
 
@@ -211,12 +215,6 @@ class InverseDirichletWeights(WeightsEstimator):
 
         return coeff_hat
 
-    def _clip_grad(self, loss:torch.tensor=None, operator:Callable=None) -> torch.Tensor:
-
-        loss_grads = self._grad(loss=loss, operator=operator)
-
-        return loss_grads
-
     def __call__(self, pde:torch.tensor=None,
                        init:torch.tensor=None,
                        bound:torch.tensor=None,
@@ -226,10 +224,10 @@ class InverseDirichletWeights(WeightsEstimator):
                        extra_data_weight:torch.tensor=None,
                        operator: NetworkTemplate=None, **kwargs) -> torch.tensor:
 
-        pde_grads = self._clip_grad(loss=pde, operator=operator)
-        init_grads = self._clip_grad(loss=init, operator=operator)
-        bound_grads = self._clip_grad(loss=bound, operator=operator)
-        extra_data_grads = self._clip_grad(loss=extra_data, operator=operator)
+        pde_grads = self._grad(loss=pde, operator=operator)
+        init_grads = self._grad(loss=init, operator=operator)
+        bound_grads = self._grad(loss=bound, operator=operator)
+        extra_data_grads = self._grad(loss=extra_data, operator=operator)
 
         losses_std = [torch.std(l) for l in [pde_grads, init_grads,
                                              bound_grads, extra_data_grads] if torch.std(l) != torch.nan]

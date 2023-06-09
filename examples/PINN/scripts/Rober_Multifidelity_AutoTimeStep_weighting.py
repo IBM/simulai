@@ -97,7 +97,7 @@ if train == "yes":
     
     
     """ Adaptive Time Step """
-    tol = 1e-05                     # Truncation Error Tolerance  
+    tol = 5e-05                     # Truncation Error Tolerance  
     def Delta_t(i, last_delta_t):
         dt_init = 1e-03             # Initial Time Step Size
         dt_min = 5e-04              # Minimum Time Step Size
@@ -306,7 +306,6 @@ if train == "yes":
     multi_net = model_()
 
     optimizer_config = {"lr": lr}
-    optimizer = Optimizer("adam", params=optimizer_config)
 
     time_plot = np.empty((0, 1), dtype=float)
     approximated_data_plot = np.empty((0, 1), dtype=float)
@@ -318,11 +317,20 @@ if train == "yes":
     Not_Acepted_Steps = 0
     last_delta_t = 0.01
     get_Delta_t = Delta_t(i, last_delta_t)
-    
+
     while t_acu < t_max:
+
+        optimizer = Optimizer("adam",
+                            lr_decay_scheduler_params={
+                                "name": "ExponentialLR",
+                                "gamma": 0.5,
+                                "decay_frequency": 5_00,
+                            },
+                          params=optimizer_config)
+
         last_delta_t = get_Delta_t
         get_Delta_t = Delta_t(i, last_delta_t)
-        
+
         net = net_
 
         time_train = np.linspace(0, get_Delta_t, n)[:, None]
@@ -346,10 +354,10 @@ if train == "yes":
             "initial_input": np.array([0])[:, None],
             "initial_state": initial_state,
             "weights_residual": [1, 1, 1],
-            "weights":  [1, 1, 1],        # Maximum derivative magnitudes to be used as loss weights
-            #"data_weights_estimator": ShiftToMax(),
-            #"residual_weights_estimator": PIInverseDirichlet(alpha=0.9, n_residuals=3),
-            #"global_weights_estimator": InverseDirichletWeights(alpha=0.5),
+            "weights":  [1, 1e6, 1],        # Maximum derivative magnitudes to be used as loss weights
+            #"data_weights_estimator": PIInverseDirichlet(alpha=0.9, n_residuals=3),
+            "residual_weights_estimator": PIInverseDirichlet(alpha=0.9, n_residuals=3),
+            "global_weights_estimator": InverseDirichletWeights(alpha=0.5),
             "initial_penalty": 1,
         }
 
