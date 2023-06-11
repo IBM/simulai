@@ -76,6 +76,16 @@ class LossBasics:
                 f" tuple but received {(lambda_type, term_type)}"
             )
 
+    def _eval_weighted_loss(losses:List[torch.tensor], weights:List[float]) -> torch.tensor:
+
+        residual_loss = [
+                weight * loss
+                for weight, loss in zip(weights, losses)
+            ]
+
+    def _bypass_weighted_loss(losses:List[torch.tensor], *args) -> torch.tensor:
+
+        return tuple(losses)
 
 # Classic RMSE Loss with regularization for PyTorch
 class RMSELoss(LossBasics):
@@ -487,11 +497,11 @@ class PIRMSELoss(LossBasics):
         target_split = torch.split(target_data_tensor, self.split_dim, dim=-1)
 
         data_losses = [
-            weights[i]*self.loss_evaluator(out_split - tgt_split) / self.norm_evaluator(tgt_split)
+            self.loss_evaluator(out_split - tgt_split) / self.norm_evaluator(tgt_split)
             for i, (out_split, tgt_split) in enumerate(zip(output_split, target_split))
         ]
 
-        return sum(data_losses)
+        return sum(self.weighted_loss_evaluator(data_losses, weights))
 
     def _data_loss_adaptive(
         self, output_tilde: torch.Tensor = None,
@@ -558,11 +568,11 @@ class PIRMSELoss(LossBasics):
 
         """
         residual_loss = [
-            weight * self.loss_evaluator(res)
+            self.loss_evaluator(res)
             for weight, res in zip(weights, residual_approximation)
         ]
 
-        return residual_loss
+        return sum(self.weighted_loss_evaluator(residual_loss, weights))
 
     def _residual_loss_adaptive(
         self, residual_approximation: List[torch.Tensor] = None, weights: list = None
@@ -706,6 +716,7 @@ class PIRMSELoss(LossBasics):
         weights=None,
         weights_residual=None,
         device: str = "cpu",
+        split_losses: bool = False,
         causality_preserving: Callable = None,
         global_weights_estimator: Callable = None,
         residual_weights_estimator: Callable = None,
@@ -723,6 +734,11 @@ class PIRMSELoss(LossBasics):
         self.residual_weights_estimator = residual_weights_estimator
 
         self.data_weights_estimator = data_weights_estimator
+
+        if split_losses:
+            self.weighted_loss_evaluator = self._bypass_weighted_loss
+        else:
+            self.weighted_loss_evaluator = self._eval_weighted_loss
 
         if (
             isinstance(extra_input_data, np.ndarray)
@@ -862,7 +878,7 @@ class PIRMSELoss(LossBasics):
             l1_reg = l1_reg_multiplication(lambda_1, weights_l1)
 
             # The complete loss function
-            pde = sum(residual_loss)
+            pde = residual_loss
             init = initial_data_loss
             bound = sum(boundary_loss)
 
