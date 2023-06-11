@@ -76,6 +76,7 @@ class LossBasics:
                 f" tuple but received {(lambda_type, term_type)}"
             )
 
+    @staticmethod
     def _eval_weighted_loss(losses:List[torch.tensor], weights:List[float]) -> torch.tensor:
 
         residual_loss = [
@@ -83,6 +84,9 @@ class LossBasics:
                 for weight, loss in zip(weights, losses)
             ]
 
+        return residual_loss
+
+    @staticmethod
     def _bypass_weighted_loss(losses:List[torch.tensor], *args) -> torch.tensor:
 
         return tuple(losses)
@@ -567,12 +571,12 @@ class PIRMSELoss(LossBasics):
         :rtype: torch.Tensor
 
         """
-        residual_loss = [
+        residual_losses = [
             self.loss_evaluator(res)
-            for weight, res in zip(weights, residual_approximation)
+            for res in residual_approximation
         ]
 
-        return sum(self.weighted_loss_evaluator(residual_loss, weights))
+        return sum(self.weighted_loss_evaluator(residual_losses, weights))
 
     def _residual_loss_adaptive(
         self, residual_approximation: List[torch.Tensor] = None, weights: list = None
@@ -601,7 +605,7 @@ class PIRMSELoss(LossBasics):
             for weight, res in zip(weights, residual_approximation)
         ]
 
-        return residual_loss
+        return sum(residual_loss)
 
     def _extra_data(
         self, input_data: torch.Tensor = None, target_data: torch.Tensor = None
@@ -880,7 +884,7 @@ class PIRMSELoss(LossBasics):
             # The complete loss function
             pde = residual_loss
             init = initial_data_loss
-            bound = sum(boundary_loss)
+            bound = boundary_loss
 
             # Updating the loss weights if necessary
             loss_weights = self.global_weights(initial_penalty=initial_penalty,
