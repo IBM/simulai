@@ -86,15 +86,15 @@ class ShiftToMax:
 
 class PIInverseDirichlet(WeightsEstimator):
 
-    def __init__(self, alpha:float=None, n_residuals:int=None, initial_weights:List[float]=None) -> None:
+    def __init__(self, alpha:float=None, initial_weights:List[float]=None) -> None:
 
         super().__init__()
 
         self.alpha = alpha
-        self.n_residuals = n_residuals
+        self.default_number = 100
 
         if not initial_weights:
-            self.weights = [1.0]*n_residuals
+            self.weights = [1.0]*self.default_number
         else:
             self.weights = initial_weights
 
@@ -109,9 +109,9 @@ class PIInverseDirichlet(WeightsEstimator):
 
         return coeff_hat
 
-    def __call__(self, residual=List[torch.Tensor],
-                       loss_evaluator=Callable,
-                       loss_history=Dict[str, float],
+    def __call__(self, residual:List[torch.Tensor]=None,
+                       loss_evaluator:Callable=None,
+                       loss_history:Dict[str, float]=None,
                        operator:Callable=None, **kwargs) -> None:
 
         residual_grads = list()
@@ -131,7 +131,7 @@ class PIInverseDirichlet(WeightsEstimator):
 
             self.weights[j] = (self.alpha)*self.weights[j] + (1 - self.alpha)*weight_update
 
-        return self.weights
+        return self.weights[:len(residual)]
 
 ########################################################################
 # Adjusters designed for balancing overall residual (PINN) contributions
@@ -162,14 +162,13 @@ class AnnealingWeights(WeightsEstimator):
 
         return coeff_hat
 
-    def __call__(self, pde:torch.tensor=None,
-                       init:torch.tensor=None,
-                       bound:torch.tensor=None,
-                       extra_data:torch.tensor=None,
-                       init_weight:torch.tensor=None,
-                       bound_weight:torch.tensor=None,
-                       extra_data_weight:torch.tensor=None,
+    def __call__(self, residual:torch.tensor=None,
                        operator: NetworkTemplate=None, **kwargs) -> torch.tensor:
+
+        pde = residual[0]
+        init = residual[1]
+        bound = residual[2]
+        extra_data = residual[3]
 
         pde_grads = self._grad(loss=pde, operator=operator)
         init_grads = self._grad(loss=init, operator=operator)
@@ -215,14 +214,13 @@ class InverseDirichletWeights(WeightsEstimator):
 
         return coeff_hat
 
-    def __call__(self, pde:torch.tensor=None,
-                       init:torch.tensor=None,
-                       bound:torch.tensor=None,
-                       extra_data:torch.tensor=None,
-                       init_weight:torch.tensor=None,
-                       bound_weight:torch.tensor=None,
-                       extra_data_weight:torch.tensor=None,
+    def __call__(self, residual:torch.tensor=None,
                        operator: NetworkTemplate=None, **kwargs) -> torch.tensor:
+
+        pde = residual[0]
+        init = residual[1]
+        bound = residual[2]
+        extra_data = residual[3]
 
         pde_grads = self._grad(loss=pde, operator=operator)
         init_grads = self._grad(loss=init, operator=operator)

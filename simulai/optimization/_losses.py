@@ -14,6 +14,7 @@
 
 import sys
 from typing import Callable, List, Tuple, Union
+from time import sleep
 
 import numpy as np
 import torch
@@ -22,7 +23,7 @@ from simulai import ARRAY_DTYPE
 from simulai.io import IntersectingBatches
 from simulai.models import AutoencoderKoopman, AutoencoderVariational, DeepONet
 from simulai.residuals import SymbolicOperator
-
+from simulai.optimization._adjusters import AnnealingWeights
 
 class LossBasics:
     def __init__(self):
@@ -76,6 +77,63 @@ class LossBasics:
                 f" tuple but received {(lambda_type, term_type)}"
             )
 
+    @staticmethod
+    def _eval_weighted_loss(losses:List[torch.tensor], weights:List[float]) -> torch.tensor:
+
+        residual_loss = [
+                weight * loss
+                for weight, loss in zip(weights, losses)
+            ]
+
+        return [sum(residual_loss)]
+
+    @staticmethod
+    def _bypass_weighted_loss(losses:List[torch.tensor], *args) -> torch.tensor:
+
+        return losses
+
+    @staticmethod
+    def _aggregate_terms(*args) -> List[torch.tensor]:
+
+        return list(args)
+
+    @staticmethod
+    def _formatter(value:torch.tensor=None, n_decimals:int=2) -> str:
+
+        value = torch.tensor(value)
+
+        if value > 0:
+
+            exp = float(torch.log10(value))
+            base = int(exp)
+            res = round(exp - base, n_decimals)
+
+            return f"{round(10**res, n_decimals)}e{base}"
+        else:
+            return str(round(float(value)))
+
+    @staticmethod
+    def _pprint_simple(loss_str:str=None,
+                       losses_list:List[torch.tensor]=None,
+                       call_back:str=None,
+                       loss_indices:List[int]=None, **kwargs) -> None:
+
+       sys.stdout.write((loss_str).format(*losses_list[loss_indices]) + call_back)
+
+       sys.stdout.flush()
+
+    def _pprint_verbose(self, loss_terms:List[torch.tensor]=None, loss_weights:List[torch.tensor]=None, **kwargs) -> None:
+
+        terms_str_list = [f"|L_{i}: {{}} | w_{i}: {{}}|" for i in range(len(loss_terms))] 
+
+        formatted_loss_terms = [self._formatter(value=l) for l in loss_terms]
+        formatted_weights = [self._formatter(value=w) for w in loss_weights]
+
+        terms_list = [str_term.format(l, w) for str_term, l, w in zip(terms_str_list,
+                                                                      formatted_loss_terms,
+                                                                      formatted_weights)]
+
+        print((len(terms_list))*"\033[F" + '\n'.join(terms_list), end='\n', flush=True)
 
 # Classic RMSE Loss with regularization for PyTorch
 class RMSELoss(LossBasics):
@@ -487,11 +545,11 @@ class PIRMSELoss(LossBasics):
         target_split = torch.split(target_data_tensor, self.split_dim, dim=-1)
 
         data_losses = [
-            weights[i]*self.loss_evaluator(out_split - tgt_split) / self.norm_evaluator(tgt_split)
+            self.loss_evaluator(out_split - tgt_split) / self.norm_evaluator(tgt_split)
             for i, (out_split, tgt_split) in enumerate(zip(output_split, target_split))
         ]
 
-        return sum(data_losses)
+        return self.weighted_loss_evaluator(data_losses, weights)
 
     def _data_loss_adaptive(
         self, output_tilde: torch.Tensor = None,
@@ -529,7 +587,7 @@ class PIRMSELoss(LossBasics):
             for i, (out_split, tgt_split) in enumerate(zip(output_split, target_split))
         ]
 
-        return sum(data_losses)
+        return [sum(data_losses)]
 
     def _global_weights_bypass(self, initial_penalty:float=None, **kwargs) -> List[float]:
 
@@ -557,12 +615,12 @@ class PIRMSELoss(LossBasics):
         :rtype: torch.Tensor
 
         """
-        residual_loss = [
-            weight * self.loss_evaluator(res)
-            for weight, res in zip(weights, residual_approximation)
+        residual_losses = [
+            self.loss_evaluator(res)
+            for res in residual_approximation
         ]
 
-        return residual_loss
+        return self.weighted_loss_evaluator(residual_losses, weights)
 
     def _residual_loss_adaptive(
         self, residual_approximation: List[torch.Tensor] = None, weights: list = None
@@ -591,7 +649,7 @@ class PIRMSELoss(LossBasics):
             for weight, res in zip(weights, residual_approximation)
         ]
 
-        return residual_loss
+        return [sum(residual_loss)]
 
     def _extra_data(
         self, input_data: torch.Tensor = None, target_data: torch.Tensor = None
@@ -690,6 +748,7 @@ class PIRMSELoss(LossBasics):
         self,
         input_data: Union[dict, torch.Tensor] = None,
         target_data: Union[dict, torch.Tensor] = None,
+        verbose:bool=False,
         call_back: str = "",
         residual: Callable = None,
         initial_input: Union[dict, torch.Tensor] = None,
@@ -706,6 +765,7 @@ class PIRMSELoss(LossBasics):
         weights=None,
         weights_residual=None,
         device: str = "cpu",
+        split_losses: bool = False,
         causality_preserving: Callable = None,
         global_weights_estimator: Callable = None,
         residual_weights_estimator: Callable = None,
@@ -718,11 +778,25 @@ class PIRMSELoss(LossBasics):
 
         self.causality_preserving = causality_preserving
 
+        # Handling expection when AnnealingWeights and split_losses
+        # are used together.
+        if isinstance(global_weights_estimator, AnnealingWeights):
+            if split_losses:
+                raise RuntimeError("Global weights estimator, AnnealingWeights, is not"+\
+                                   "compatible with split loss terms.")
+            else:
+                pass
+
         self.global_weights_estimator = global_weights_estimator
 
         self.residual_weights_estimator = residual_weights_estimator
 
         self.data_weights_estimator = data_weights_estimator
+
+        if split_losses:
+            self.weighted_loss_evaluator = self._bypass_weighted_loss
+        else:
+            self.weighted_loss_evaluator = self._eval_weighted_loss
 
         if (
             isinstance(extra_input_data, np.ndarray)
@@ -819,6 +893,11 @@ class PIRMSELoss(LossBasics):
         else:
             self.global_weights = self._global_weights_bypass
 
+        if verbose:
+            self.pprint = self._pprint_verbose
+        else:
+            self.pprint = self._pprint_simple
+
         def closure():
             # Executing the symbolic residual evaluation
             residual_approximation = self.residual_wrapper(input_data)
@@ -862,29 +941,27 @@ class PIRMSELoss(LossBasics):
             l1_reg = l1_reg_multiplication(lambda_1, weights_l1)
 
             # The complete loss function
-            pde = sum(residual_loss)
+            pde = residual_loss
             init = initial_data_loss
-            bound = sum(boundary_loss)
+            bound = boundary_loss
+
+            loss_terms = self._aggregate_terms(*pde, *init, *bound, *extra_data)
 
             # Updating the loss weights if necessary
             loss_weights = self.global_weights(initial_penalty=initial_penalty,
                                                operator=self.operator,
-                                               pde=pde, init=init, bound=bound,
-                                               extra_data=extra_data)
-
+                                               loss_evaluator=self.loss_evaluator,
+                                               residual=loss_terms)
             # Overall loss function
-            loss = loss_weights[0] * pde +\
-                   loss_weights[1] * init +\
-                   loss_weights[2] * bound +\
-                   loss_weights[3] * extra_data + l2_reg + l1_reg
+            loss = sum(self._eval_weighted_loss(loss_terms, loss_weights)) + l2_reg + l1_reg
 
             # Back-propagation
             loss.backward()
 
-            pde_detach = float(pde.detach().data)
-            init_detach = float(init.detach().data)
-            bound_detach = float(bound.detach().data)
-            extra_data_detach = float(extra_data.detach().data)
+            pde_detach = float(sum(pde).detach().data)
+            init_detach = float(sum(init).detach().data)
+            bound_detach = float(sum(bound).detach().data)
+            extra_data_detach = float(sum(extra_data).detach().data)
 
             self.loss_states["pde"].append(pde_detach)
             self.loss_states["init"].append(init_detach)
@@ -895,9 +972,12 @@ class PIRMSELoss(LossBasics):
                 [pde_detach, init_detach, bound_detach, extra_data_detach]
             )
 
-            sys.stdout.write((loss_str).format(*losses_list[loss_indices]) + call_back)
-
-            sys.stdout.flush()
+            self.pprint(loss_str=loss_str,
+                        losses_list=losses_list,
+                        call_back=call_back,
+                        loss_indices=loss_indices,
+                        loss_terms=loss_terms,
+                        loss_weights=loss_weights)
 
             _current_loss = loss
 
