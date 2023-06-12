@@ -22,7 +22,7 @@ from simulai import ARRAY_DTYPE
 from simulai.io import IntersectingBatches
 from simulai.models import AutoencoderKoopman, AutoencoderVariational, DeepONet
 from simulai.residuals import SymbolicOperator
-
+from simulai.optimization._adjusters import AnnealingWeights
 
 class LossBasics:
     def __init__(self):
@@ -84,12 +84,17 @@ class LossBasics:
                 for weight, loss in zip(weights, losses)
             ]
 
-        return residual_loss
+        return [sum(residual_loss)]
 
     @staticmethod
     def _bypass_weighted_loss(losses:List[torch.tensor], *args) -> torch.tensor:
 
-        return tuple(losses)
+        return losses
+
+    @staticmethod
+    def _aggregate_terms(*args) -> List[torch.tensor]:
+
+        return list(args)
 
 # Classic RMSE Loss with regularization for PyTorch
 class RMSELoss(LossBasics):
@@ -505,7 +510,7 @@ class PIRMSELoss(LossBasics):
             for i, (out_split, tgt_split) in enumerate(zip(output_split, target_split))
         ]
 
-        return sum(self.weighted_loss_evaluator(data_losses, weights))
+        return self.weighted_loss_evaluator(data_losses, weights)
 
     def _data_loss_adaptive(
         self, output_tilde: torch.Tensor = None,
@@ -543,7 +548,7 @@ class PIRMSELoss(LossBasics):
             for i, (out_split, tgt_split) in enumerate(zip(output_split, target_split))
         ]
 
-        return sum(data_losses)
+        return [sum(data_losses)]
 
     def _global_weights_bypass(self, initial_penalty:float=None, **kwargs) -> List[float]:
 
@@ -576,7 +581,7 @@ class PIRMSELoss(LossBasics):
             for res in residual_approximation
         ]
 
-        return sum(self.weighted_loss_evaluator(residual_losses, weights))
+        return self.weighted_loss_evaluator(residual_losses, weights)
 
     def _residual_loss_adaptive(
         self, residual_approximation: List[torch.Tensor] = None, weights: list = None
@@ -605,7 +610,7 @@ class PIRMSELoss(LossBasics):
             for weight, res in zip(weights, residual_approximation)
         ]
 
-        return sum(residual_loss)
+        return [sum(residual_loss)]
 
     def _extra_data(
         self, input_data: torch.Tensor = None, target_data: torch.Tensor = None
@@ -732,6 +737,15 @@ class PIRMSELoss(LossBasics):
         self.device = device
 
         self.causality_preserving = causality_preserving
+
+        # Handling expection when AnnealingWeights and split_losses
+        # are used together.
+        if isinstance(global_weights_estimator, AnnealingWeights):
+            if split_losses:
+                raise RuntimeError("Global weights estimator, AnnealingWeights, is not"+\
+                                   "compatible with split loss terms.")
+            else:
+                pass
 
         self.global_weights_estimator = global_weights_estimator
 
@@ -886,25 +900,23 @@ class PIRMSELoss(LossBasics):
             init = initial_data_loss
             bound = boundary_loss
 
+            loss_terms = self._aggregate_terms(*pde, *init, *bound, *extra_data)
+
             # Updating the loss weights if necessary
             loss_weights = self.global_weights(initial_penalty=initial_penalty,
                                                operator=self.operator,
-                                               pde=pde, init=init, bound=bound,
-                                               extra_data=extra_data)
-
+                                               loss_evaluator=self.loss_evaluator,
+                                               residual=loss_terms)
             # Overall loss function
-            loss = loss_weights[0] * pde +\
-                   loss_weights[1] * init +\
-                   loss_weights[2] * bound +\
-                   loss_weights[3] * extra_data + l2_reg + l1_reg
+            loss = sum(self._eval_weighted_loss(loss_terms, loss_weights)) + l2_reg + l1_reg
 
             # Back-propagation
             loss.backward()
 
-            pde_detach = float(pde.detach().data)
-            init_detach = float(init.detach().data)
-            bound_detach = float(bound.detach().data)
-            extra_data_detach = float(extra_data.detach().data)
+            pde_detach = float(sum(pde).detach().data)
+            init_detach = float(sum(init).detach().data)
+            bound_detach = float(sum(bound).detach().data)
+            extra_data_detach = float(sum(extra_data).detach().data)
 
             self.loss_states["pde"].append(pde_detach)
             self.loss_states["init"].append(init_detach)

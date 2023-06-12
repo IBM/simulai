@@ -318,15 +318,10 @@ if train == "yes":
     last_delta_t = 0.01
     get_Delta_t = Delta_t(i, last_delta_t)
 
-    while t_acu < t_max:
+    optimizer = Optimizer("adam",
+                         params=optimizer_config)
 
-        optimizer = Optimizer("adam",
-                            lr_decay_scheduler_params={
-                                "name": "ExponentialLR",
-                                "gamma": 0.5,
-                                "decay_frequency": 5_00,
-                            },
-                          params=optimizer_config)
+    while t_acu < t_max:
 
         last_delta_t = get_Delta_t
         get_Delta_t = Delta_t(i, last_delta_t)
@@ -355,8 +350,7 @@ if train == "yes":
             "initial_state": initial_state,
             "weights_residual": [1, 1, 1],
             "weights":  [1, 1e6, 1],        # Maximum derivative magnitudes to be used as loss weights
-            #"data_weights_estimator": PIInverseDirichlet(alpha=0.9, n_residuals=3),
-            "residual_weights_estimator": PIInverseDirichlet(alpha=0.9, n_residuals=3),
+            "split_losses": False,
             "global_weights_estimator": InverseDirichletWeights(alpha=0.5),
             "initial_penalty": 1,
         }
@@ -399,7 +393,7 @@ if train == "yes":
         # Evaluation in training dataset
         approximated_data = net.eval(input_data=time_eval)
                 
-        LastLoss = optimizer.loss_states['pde']
+        LastLoss = np.array(optimizer.loss_states['pde']) + np.array(optimizer.loss_states['init'])
         LastLoss = LastLoss[-1]
         
         if LastLoss>tol:
