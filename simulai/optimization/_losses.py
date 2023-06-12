@@ -104,12 +104,12 @@ class LossBasics:
         if value > 0:
 
             exp = float(torch.log10(value))
-            base = int(exp - 1)
+            base = int(exp)
             res = round(exp - base, n_decimals)
 
             return f"{round(10**res, n_decimals)}e{base}"
         else:
-            return str(float(value))
+            return str(round(float(value)))
 
     @staticmethod
     def _pprint_simple(loss_str:str=None,
