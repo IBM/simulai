@@ -14,6 +14,7 @@
 
 import sys
 from typing import Callable, List, Tuple, Union
+from time import sleep
 
 import numpy as np
 import torch
@@ -123,7 +124,7 @@ class LossBasics:
 
     def _pprint_verbose(self, loss_terms:List[torch.tensor]=None, loss_weights:List[torch.tensor]=None, **kwargs) -> None:
 
-        terms_str_list = [f"L_{i}: {{}}, w_{i}: {{}}" for i in range(len(loss_terms))] 
+        terms_str_list = [f"|L_{i}: {{}} | w_{i}: {{}}|" for i in range(len(loss_terms))] 
 
         formatted_loss_terms = [self._formatter(value=l) for l in loss_terms]
         formatted_weights = [self._formatter(value=w) for w in loss_weights]
@@ -132,11 +133,7 @@ class LossBasics:
                                                                       formatted_loss_terms,
                                                                       formatted_weights)]
 
-        sys.stdout.write('\r' + '|'.join(terms_list))
-
-        sys.stdout.flush()
-
-
+        print((len(terms_list))*"\033[F" + '\n'.join(terms_list), end='\n', flush=True)
 
 # Classic RMSE Loss with regularization for PyTorch
 class RMSELoss(LossBasics):

@@ -80,8 +80,8 @@ if train == "yes":
     n_inputs = len(input_labels)
     n_outputs = len(output_labels)
 
-    n_epochs_ini = 2_000    # Maximum number of iterations for ADAM
-    n_epochs_min = 500      # Minimum number of iterations for ADAM
+    n_epochs_ini = 2_00    # Maximum number of iterations for ADAM
+    n_epochs_min = 50      # Minimum number of iterations for ADAM
     Epoch_Tau = 5.0         # Number o Epochs Decay
     lr = 5e-4               # Initial learning rate for the ADAM algorithm
 
@@ -97,7 +97,7 @@ if train == "yes":
     
     
     """ Adaptive Time Step """
-    tol = 5e-05                     # Truncation Error Tolerance  
+    tol = 2e-03                     # Truncation Error Tolerance  
     def Delta_t(i, last_delta_t):
         dt_init = 1e-03             # Initial Time Step Size
         dt_min = 5e-04              # Minimum Time Step Size
@@ -321,11 +321,8 @@ if train == "yes":
     optimizer = Optimizer("adam",
                          params=optimizer_config)
 
-<<<<<<< Updated upstream
     while t_acu < t_max:
 
-=======
->>>>>>> Stashed changes
         last_delta_t = get_Delta_t
         get_Delta_t = Delta_t(i, last_delta_t)
 
@@ -353,29 +350,16 @@ if train == "yes":
             "initial_state": initial_state,
             "weights_residual": [1, 1, 1],
             "weights":  [1, 1e6, 1],        # Maximum derivative magnitudes to be used as loss weights
-<<<<<<< Updated upstream
-            "split_losses": False,
+            "split_losses": True,
             "verbose": True,
-            "residual_weights_estimator": PIInverseDirichlet(alpha=0.5),
-=======
-            #"data_weights_estimator": PIInverseDirichlet(alpha=0.9, n_residuals=3),
-            #"residual_weights_estimator": PIInverseDirichlet(alpha=0.9, n_residuals=3),
->>>>>>> Stashed changes
-            "global_weights_estimator": InverseDirichletWeights(alpha=0.5),
+            #"residual_weights_estimator": PIInverseDirichlet(alpha=0.9),
+            "global_weights_estimator": PIInverseDirichlet(alpha=0.9),
             "initial_penalty": 1,
         }
 
         # Reduce Epochs for sequential PINNs
         get_n_epochs = Epoch_Decay(i)
-
-        optimizer = Optimizer("adam",
-                            lr_decay_scheduler_params={
-                                "name": "ExponentialLR",
-                                "gamma": 0.9,
-                                "decay_frequency": 1_00,
-                            },
-                          params=optimizer_config)
-
+        #print('\n\n\n\r')
         # First Evaluation With ADAM Optimizer
         optimizer.fit(
             op=net,
@@ -411,11 +395,7 @@ if train == "yes":
         # Evaluation in training dataset
         approximated_data = net.eval(input_data=time_eval)
                 
-<<<<<<< Updated upstream
         LastLoss = np.array(optimizer.loss_states['pde']) + np.array(optimizer.loss_states['init'])
-=======
-        LastLoss = optimizer.loss_states['pde'] + optimizer.loss_states['init']
->>>>>>> Stashed changes
         LastLoss = LastLoss[-1]
         
         if LastLoss>tol:
