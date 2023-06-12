@@ -321,8 +321,11 @@ if train == "yes":
     optimizer = Optimizer("adam",
                          params=optimizer_config)
 
+<<<<<<< Updated upstream
     while t_acu < t_max:
 
+=======
+>>>>>>> Stashed changes
         last_delta_t = get_Delta_t
         get_Delta_t = Delta_t(i, last_delta_t)
 
@@ -350,13 +353,28 @@ if train == "yes":
             "initial_state": initial_state,
             "weights_residual": [1, 1, 1],
             "weights":  [1, 1e6, 1],        # Maximum derivative magnitudes to be used as loss weights
+<<<<<<< Updated upstream
             "split_losses": False,
+            "verbose": True,
+            "residual_weights_estimator": PIInverseDirichlet(alpha=0.5),
+=======
+            #"data_weights_estimator": PIInverseDirichlet(alpha=0.9, n_residuals=3),
+            #"residual_weights_estimator": PIInverseDirichlet(alpha=0.9, n_residuals=3),
+>>>>>>> Stashed changes
             "global_weights_estimator": InverseDirichletWeights(alpha=0.5),
             "initial_penalty": 1,
         }
 
         # Reduce Epochs for sequential PINNs
         get_n_epochs = Epoch_Decay(i)
+
+        optimizer = Optimizer("adam",
+                            lr_decay_scheduler_params={
+                                "name": "ExponentialLR",
+                                "gamma": 0.9,
+                                "decay_frequency": 1_00,
+                            },
+                          params=optimizer_config)
 
         # First Evaluation With ADAM Optimizer
         optimizer.fit(
@@ -393,7 +411,11 @@ if train == "yes":
         # Evaluation in training dataset
         approximated_data = net.eval(input_data=time_eval)
                 
+<<<<<<< Updated upstream
         LastLoss = np.array(optimizer.loss_states['pde']) + np.array(optimizer.loss_states['init'])
+=======
+        LastLoss = optimizer.loss_states['pde'] + optimizer.loss_states['init']
+>>>>>>> Stashed changes
         LastLoss = LastLoss[-1]
         
         if LastLoss>tol:

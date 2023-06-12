@@ -96,6 +96,48 @@ class LossBasics:
 
         return list(args)
 
+    @staticmethod
+    def _formatter(value:torch.tensor=None, n_decimals:int=2) -> str:
+
+        value = torch.tensor(value)
+
+        if value > 0:
+
+            exp = float(torch.log10(value))
+            base = int(exp - 1)
+            res = round(exp - base, n_decimals)
+
+            return f"{round(10**res, n_decimals)}e{base}"
+        else:
+            return str(float(value))
+
+    @staticmethod
+    def _pprint_simple(loss_str:str=None,
+                       losses_list:List[torch.tensor]=None,
+                       call_back:str=None,
+                       loss_indices:List[int]=None, **kwargs) -> None:
+
+       sys.stdout.write((loss_str).format(*losses_list[loss_indices]) + call_back)
+
+       sys.stdout.flush()
+
+    def _pprint_verbose(self, loss_terms:List[torch.tensor]=None, loss_weights:List[torch.tensor]=None, **kwargs) -> None:
+
+        terms_str_list = [f"L_{i}: {{}}, w_{i}: {{}}" for i in range(len(loss_terms))] 
+
+        formatted_loss_terms = [self._formatter(value=l) for l in loss_terms]
+        formatted_weights = [self._formatter(value=w) for w in loss_weights]
+
+        terms_list = [str_term.format(l, w) for str_term, l, w in zip(terms_str_list,
+                                                                      formatted_loss_terms,
+                                                                      formatted_weights)]
+
+        sys.stdout.write('\r' + '|'.join(terms_list))
+
+        sys.stdout.flush()
+
+
+
 # Classic RMSE Loss with regularization for PyTorch
 class RMSELoss(LossBasics):
     def __init__(self, operator: torch.nn.Module = None) -> None:
@@ -709,6 +751,7 @@ class PIRMSELoss(LossBasics):
         self,
         input_data: Union[dict, torch.Tensor] = None,
         target_data: Union[dict, torch.Tensor] = None,
+        verbose:bool=False,
         call_back: str = "",
         residual: Callable = None,
         initial_input: Union[dict, torch.Tensor] = None,
@@ -853,6 +896,11 @@ class PIRMSELoss(LossBasics):
         else:
             self.global_weights = self._global_weights_bypass
 
+        if verbose:
+            self.pprint = self._pprint_verbose
+        else:
+            self.pprint = self._pprint_simple
+
         def closure():
             # Executing the symbolic residual evaluation
             residual_approximation = self.residual_wrapper(input_data)
@@ -927,9 +975,12 @@ class PIRMSELoss(LossBasics):
                 [pde_detach, init_detach, bound_detach, extra_data_detach]
             )
 
-            sys.stdout.write((loss_str).format(*losses_list[loss_indices]) + call_back)
-
-            sys.stdout.flush()
+            self.pprint(loss_str=loss_str,
+                        losses_list=losses_list,
+                        call_back=call_back,
+                        loss_indices=loss_indices,
+                        loss_terms=loss_terms,
+                        loss_weights=loss_weights)
 
             _current_loss = loss
 
