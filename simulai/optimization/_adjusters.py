@@ -240,11 +240,15 @@ class InverseDirichletWeights(WeightsEstimator):
                                                  loss=bound_grads)
         extra_data_weight_update = self._coeff_update(nominator=nominator,
                                                       loss=extra_data_grads)
+        pde_weight = self.pde_weight
+        init_weight = self.init_weight
+        bound_weight = self.bound_weight
+        extra_data_weight = self.extra_data_weight
 
         self.pde_weight = (self.alpha)*self.pde_weight + (1 - self.alpha)*pde_weight_update
         self.init_weight = (self.alpha)*self.init_weight + (1 - self.alpha)*init_weight_update
         self.bound_weight = (self.alpha)*self.bound_weight + (1 - self.alpha)*bound_weight_update
         self.extra_data_weight = (self.alpha)*self.extra_data_weight + (1 - self.alpha)*extra_data_weight_update
 
-        return [self.pde_weight, self.init_weight, self.bound_weight, self.extra_data_weight]
+        return [pde_weight, init_weight, bound_weight, extra_data_weight]
 
