@@ -84,55 +84,6 @@ class ShiftToMax:
 
         return weights
 
-class PIInverseDirichlet(WeightsEstimator):
-
-    def __init__(self, alpha:float=None, initial_weights:List[float]=None) -> None:
-
-        super().__init__()
-
-        self.alpha = alpha
-        self.default_number = 100
-
-        if not initial_weights:
-            self.weights = [1.0]*self.default_number
-        else:
-            self.weights = initial_weights
-
-    def _coeff_update(self, nominator:torch.tensor=None, loss:torch.tensor=None):
-
-        loss_grad_std = torch.std(loss)
-
-        if torch.abs(loss_grad_std) >= 1e-15:
-            coeff_hat = nominator/loss_grad_std
-        else:
-            coeff_hat = 0
-
-        return coeff_hat
-
-    def __call__(self, residual:List[torch.Tensor]=None,
-                       loss_evaluator:Callable=None,
-                       loss_history:Dict[str, float]=None,
-                       operator:Callable=None, **kwargs) -> None:
-
-        residual_grads = list()
-
-        for res in residual:
-            res_loss = loss_evaluator(res)
-            residual_grads.append(self._grad(loss=res_loss, operator=operator))
-
-        losses_std = [torch.std(l) for l in residual_grads]
-
-        nominator = torch.max(torch.Tensor(losses_std))
-
-        for j in range(len(residual)):
-
-            weight_update = self._coeff_update(nominator=nominator,
-                                               loss=residual_grads[j])
-
-            self.weights[j] = (self.alpha)*self.weights[j] + (1 - self.alpha)*weight_update
-
-        return self.weights[:len(residual)]
-
 ########################################################################
 # Adjusters designed for balancing overall residual (PINN) contributions
 # and data-driven and  initial/boundary conditions
@@ -188,20 +139,19 @@ class AnnealingWeights(WeightsEstimator):
 
         return [1.0, self.init_weight, self.bound_weight, self.extra_data_weight]
 
-
 class InverseDirichletWeights(WeightsEstimator):
 
-    def __init__(self, alpha:float=None, pde_weight:float=1.0, init_weight:float=1.0,
-                 bound_weight:float=1.0, extra_data_weight:float=1.0) -> None:
+    def __init__(self, alpha:float=None, initial_weights:List[float]=None) -> None:
 
         super().__init__()
 
         self.alpha = alpha
+        self.default_number = 100
 
-        self.pde_weight =  pde_weight
-        self.init_weight = init_weight
-        self.bound_weight = bound_weight
-        self.extra_data_weight = extra_data_weight
+        if not initial_weights:
+            self.weights = [1.0]*self.default_number
+        else:
+            self.weights = initial_weights
 
     def _coeff_update(self, nominator:torch.tensor=None, loss:torch.tensor=None):
 
@@ -214,41 +164,29 @@ class InverseDirichletWeights(WeightsEstimator):
 
         return coeff_hat
 
-    def __call__(self, residual:torch.tensor=None,
-                       operator: NetworkTemplate=None, **kwargs) -> torch.tensor:
+    def __call__(self, residual:List[torch.Tensor]=None,
+                       loss_evaluator:Callable=None,
+                       loss_history:Dict[str, float]=None,
+                       operator:Callable=None, **kwargs) -> None:
 
-        pde = residual[0]
-        init = residual[1]
-        bound = residual[2]
-        extra_data = residual[3]
+        residual_grads = list()
 
-        pde_grads = self._grad(loss=pde, operator=operator)
-        init_grads = self._grad(loss=init, operator=operator)
-        bound_grads = self._grad(loss=bound, operator=operator)
-        extra_data_grads = self._grad(loss=extra_data, operator=operator)
+        for res in residual:
+            res_loss = loss_evaluator(res)
+            residual_grads.append(self._grad(loss=res_loss, operator=operator))
 
-        losses_std = [torch.std(l) for l in [pde_grads, init_grads,
-                                             bound_grads, extra_data_grads] if torch.std(l) != torch.nan]
+        losses_std = [torch.std(l) for l in residual_grads]
 
         nominator = torch.max(torch.Tensor(losses_std))
 
-        pde_weight_update = self._coeff_update(nominator=nominator,
-                                                   loss=pde_grads)
-        init_weight_update = self._coeff_update(nominator=nominator,
-                                                loss=init_grads)
-        bound_weight_update = self._coeff_update(nominator=nominator,
-                                                 loss=bound_grads)
-        extra_data_weight_update = self._coeff_update(nominator=nominator,
-                                                      loss=extra_data_grads)
-        pde_weight = self.pde_weight
-        init_weight = self.init_weight
-        bound_weight = self.bound_weight
-        extra_data_weight = self.extra_data_weight
+        for j in range(len(residual)):
 
-        self.pde_weight = (self.alpha)*self.pde_weight + (1 - self.alpha)*pde_weight_update
-        self.init_weight = (self.alpha)*self.init_weight + (1 - self.alpha)*init_weight_update
-        self.bound_weight = (self.alpha)*self.bound_weight + (1 - self.alpha)*bound_weight_update
-        self.extra_data_weight = (self.alpha)*self.extra_data_weight + (1 - self.alpha)*extra_data_weight_update
+            weight_update = self._coeff_update(nominator=nominator,
+                                               loss=residual_grads[j])
 
-        return [pde_weight, init_weight, bound_weight, extra_data_weight]
+            self.weights[j] = (self.alpha)*self.weights[j] + (1 - self.alpha)*weight_update
+
+        return self.weights[:len(residual)]
+
+
 

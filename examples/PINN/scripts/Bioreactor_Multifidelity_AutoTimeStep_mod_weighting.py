@@ -34,7 +34,7 @@ torch.set_default_dtype(torch.float64)
 
 from simulai import ARRAY_DTYPE
 from simulai.optimization import Optimizer, PIRMSELoss, ScipyInterface
-from simulai.optimization import GeometricMean, ShiftToMax, AnnealingWeights, PIInverseDirichlet
+from simulai.optimization import GeometricMean, ShiftToMax, AnnealingWeights, InverseDirichletWeights
 from simulai.residuals import SymbolicOperator
 from simulai.templates import NetworkTemplate, guarantee_device
 from simulai.file import SPFile
@@ -392,7 +392,7 @@ if train == "yes":
             "initial_input": np.array([0])[:, None],
             "initial_state": initial_state,
             "weights_residual": [1, 1, 1, 1],
-            "residual_weights_estimator": PIInverseDirichlet(alpha=0.5, n_residuals=4), #estimator,
+            "residual_weights_estimator": InverseDirichletWeights(alpha=0.5, n_residuals=4), #estimator,
             #"global_weights_estimator": global_estimator,
             "initial_penalty": 1e8,
             "lambda_2": 1e-5,

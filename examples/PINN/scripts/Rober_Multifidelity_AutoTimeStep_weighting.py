@@ -36,7 +36,7 @@ from simulai.optimization import Optimizer, PIRMSELoss, ScipyInterface
 from simulai.residuals import SymbolicOperator
 from simulai.templates import NetworkTemplate, guarantee_device
 from simulai.file import SPFile
-from simulai.optimization import ShiftToMax, AnnealingWeights, InverseDirichletWeights, PIInverseDirichlet
+from simulai.optimization import ShiftToMax, AnnealingWeights, InverseDirichletWeights, InverseDirichletWeights
 
 """    Variables    """
 # Bioreactor
@@ -352,8 +352,8 @@ if train == "yes":
             "weights":  [1, 1e6, 1],        # Maximum derivative magnitudes to be used as loss weights
             "split_losses": False,
             "verbose": False,
-            "residual_weights_estimator": PIInverseDirichlet(alpha=0.9),
-            "global_weights_estimator": PIInverseDirichlet(alpha=0.9),
+            #"residual_weights_estimator": InverseDirichletWeights(alpha=0.9),
+            "global_weights_estimator": InverseDirichletWeights(alpha=0.9),
             "initial_penalty": 1,
         }
 
