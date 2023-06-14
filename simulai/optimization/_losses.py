@@ -545,7 +545,7 @@ class PIRMSELoss(LossBasics):
         target_split = torch.split(target_data_tensor, self.split_dim, dim=-1)
 
         data_losses = [
-            self.loss_evaluator(out_split - tgt_split) / (self.norm_evaluator(tgt_split) or 1.0)
+            self.loss_evaluator(out_split - tgt_split) / (self.norm_evaluator(tgt_split) or torch.tensor(1.0).to(self.device))
             for i, (out_split, tgt_split) in enumerate(zip(output_split, target_split))
         ]
 
