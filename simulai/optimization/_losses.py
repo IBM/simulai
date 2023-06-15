@@ -26,11 +26,29 @@ from simulai.residuals import SymbolicOperator
 from simulai.optimization._adjusters import AnnealingWeights
 
 class LossBasics:
+
     def __init__(self):
         """
         Loss functions parent class
         """
         self.loss_states = None
+        self.tol = 1e-16
+
+    def _single_term_loss(self, res:torch.Tensor) -> torch.Tensor:
+
+        return torch.square(res)
+
+    def _two_term_loss(self, res_a:torch.Tensor, res_b:torch.Tensor) -> torch.Tensor:
+
+        return torch.square(res_a - res_b)
+
+    def _two_term_log_loss(self, res_a:torch.Tensor, res_b:torch.Tensor) -> torch.Tensor:
+
+        if torch.all(res_a <= self.tol) or torch.all(res_b <= self.tol):
+
+            return self._two_term_loss(res_a, res_b)
+        else:
+            return torch.square(torch.log(res_a) - torch.log(res_b))
 
     # Choosing the kind of multiplication to be done for each
     # type of lambda penalties and regularization terms
@@ -545,7 +563,7 @@ class PIRMSELoss(LossBasics):
         target_split = torch.split(target_data_tensor, self.split_dim, dim=-1)
 
         data_losses = [
-            self.loss_evaluator(out_split - tgt_split) / (self.norm_evaluator(tgt_split) or torch.tensor(1.0).to(self.device))
+            self.loss_evaluator_data((out_split, tgt_split)) / (self.norm_evaluator(tgt_split) or torch.tensor(1.0).to(self.device))
             for i, (out_split, tgt_split) in enumerate(zip(output_split, target_split))
         ]
 
@@ -583,7 +601,7 @@ class PIRMSELoss(LossBasics):
                                          operator=self.operator)
 
         data_losses = [
-            weights[i]*self.loss_evaluator(out_split - tgt_split)
+            weights[i]*self.loss_evaluator_data((out_split, tgt_split))
             for i, (out_split, tgt_split) in enumerate(zip(output_split, target_split))
         ]
 
@@ -771,6 +789,7 @@ class PIRMSELoss(LossBasics):
         residual_weights_estimator: Callable = None,
         data_weights_estimator: Callable = None,
         use_mean: bool = True,
+        use_data_log: bool = False,
     ) -> Callable:
         self.residual = residual
 
@@ -861,10 +880,20 @@ class PIRMSELoss(LossBasics):
         else:
             self.extra_data = self._no_extra_data
 
-        if use_mean == True:
-            self.loss_evaluator = lambda res: torch.mean(torch.square((res)))
+        if use_data_log == True:
+            self.inner_square = self._two_term_log_loss
         else:
-            self.loss_evaluator = lambda res: torch.sum(torch.square((res)))
+            self.inner_square = self._two_term_loss
+
+        if use_mean == True:
+            self.loss_evaluator = lambda res: torch.mean(self._single_term_loss(res))
+        else:
+            self.loss_evaluator = lambda res: torch.sum(self._single_term_loss(res))
+
+        if use_mean == True:
+            self.loss_evaluator_data = lambda res: torch.mean(self.inner_square(*res))
+        else:
+            self.loss_evaluator_data = lambda res: torch.sum(self.inner_square(*res))
 
         # Relative norm or not
         if relative == True:
