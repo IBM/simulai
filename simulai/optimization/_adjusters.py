@@ -172,7 +172,7 @@ class InverseDirichletWeights(WeightsEstimator):
         residual_grads = list()
 
         for res in residual:
-            res_loss = loss_evaluator(res)
+            res_loss = res
             residual_grads.append(self._grad(loss=res_loss, operator=operator))
 
         losses_std = [torch.std(l) for l in residual_grads]
