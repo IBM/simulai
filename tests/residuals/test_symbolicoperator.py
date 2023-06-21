@@ -158,7 +158,7 @@ class TestSymbolicOperator(TestCase):
             input_vars=input_labels,
             external_functions={"Dot": Dot, "Gp": Gp},
             output_vars=output_labels,
-            inputs_key="input_trunk|input_branch:0|input_branch:1|input_branch:2|input_branch:3|input_branch:4",
+            inputs_key="input_trunk|input_branch[0,4]",
             function=net,
             engine="torch",
         )

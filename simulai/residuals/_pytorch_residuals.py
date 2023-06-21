@@ -226,11 +226,23 @@ class SymbolicOperator(torch.nn.Module):
 
         return protected_operators
 
+    def _parse_key_interval(self, intv:str) -> List:
+
+        begin, end = intv.split(",")
+
+        end = int(end[:-1])
+        begin = int(begin)
+        end = int(end + 1)
+
+        return np.arange(begin, end).astype(int).tolist()
+
     def _parse_inputs_key(self, inputs_key: str = None) -> dict:
         # Sentences separator: '|'
         sep = "|"
         # Index identifier: ':'
         inx = ":"
+        # Interval identifier
+        intv = "["
 
         # Removing possible spaces in the inputs_key string
         inputs_key = inputs_key.replace(" ", "")
@@ -243,14 +255,25 @@ class SymbolicOperator(torch.nn.Module):
         keys_dict = dict()
         for s in split_components:
             try:
-                key, index = s.split(inx)
+                if len(s.split(inx)) > 1:
+                    key, index = s.split(inx)
 
-                if not key in keys_dict:
-                    keys_dict[key] = list()
-                    keys_dict[key].append(int(index))
+                    if not key in keys_dict:
+                        keys_dict[key] = list()
+                        keys_dict[key].append(int(index))
+
+                    else:
+                        keys_dict[key].append(int(index))
+
+                elif len(s.split(intv)) > 1:
+
+                    key, interval_str = s.split(intv)
+                    interval = self._parse_key_interval(interval_str)
+                    keys_dict[key] = interval
 
                 else:
-                    keys_dict[key].append(int(index))
+                    raise ValueError
+
             except ValueError:
                 keys_dict[s] = -1
 
