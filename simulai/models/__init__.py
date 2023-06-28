@@ -26,6 +26,7 @@ if engine == "pytorch":
         ImprovedDenseNetwork,
         MetaModel,
         ModelMaker,
+        MultiNetwork,
         MoEPool,
         ResDeepONet,
     )

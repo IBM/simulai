@@ -5,4 +5,4 @@ from ._autoencoder import (
     AutoencoderVariational,
 )
 from ._deeponet import DeepONet, FlexibleDeepONet, ImprovedDeepONet, ResDeepONet
-from ._miscellaneous import ImprovedDenseNetwork, MetaModel, ModelMaker, MoEPool
+from ._miscellaneous import ImprovedDenseNetwork, MetaModel, ModelMaker, MultiNetwork, MoEPool
