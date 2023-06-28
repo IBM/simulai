@@ -9,48 +9,28 @@ def model():
 
     import numpy as np
 
-    from simulai.models import DeepONet, ImprovedDenseNetwork
-    from simulai.regression import SLFNN, ConvexDenseNetwork
+    from simulai.models import DeepONet
+    from simulai.regression import SLFNN, DenseNetwork
 
-    n_latent = 100
+    n_latent = 5
     n_inputs_b = 5
     n_inputs_t = 1
     n_outputs = 1
 
     # Configuration for the fully-connected trunk network
     trunk_config = {
-        "layers_units": 7 * [100],  # Hidden layers
+        "layers_units": 3 * [50],  # Hidden layers
         "activations": "tanh",
         "input_size": n_inputs_t,
         "output_size": n_latent * n_outputs,
         "name": "trunk_net",
     }
 
-    # Configuration for the fully-connected branch network
-    branch_config = {
-        "layers_units": 7 * [100],  # Hidden layers
-        "activations": "tanh",
-        "input_size": n_inputs_b,
-        "output_size": n_latent * n_outputs,
-        "name": "branch_net",
-    }
-
-    encoder_u_trunk = SLFNN(input_size=n_inputs_t, output_size=100, activation="tanh")
-    encoder_v_trunk = SLFNN(input_size=n_inputs_t, output_size=100, activation="tanh")
-    encoder_u_branch = SLFNN(input_size=n_inputs_b, output_size=100, activation="tanh")
-    encoder_v_branch = SLFNN(input_size=n_inputs_b, output_size=100, activation="tanh")
+    branch_net = SLFNN(input_size=n_inputs_b, output_size=n_inputs_b,
+                       activation="identity")
 
     # Instantiating and training the surrogate model
-    trunk_net_dense = ConvexDenseNetwork(**trunk_config)
-    branch_net_dense = ConvexDenseNetwork(**branch_config)
-
-    trunk_net = ImprovedDenseNetwork(
-        network=trunk_net_dense, encoder_u=encoder_u_trunk, encoder_v=encoder_v_trunk
-    )
-
-    branch_net = ImprovedDenseNetwork(
-        network=branch_net_dense, encoder_u=encoder_u_branch, encoder_v=encoder_v_branch
-    )
+    trunk_net = DenseNetwork(**trunk_config)
 
     # It prints a summary of the network features
     trunk_net.summary()
@@ -60,7 +40,6 @@ def model():
         trunk_network=trunk_net,
         branch_network=branch_net,
         var_dim=n_outputs,
-        rescale_factors=np.array([1]),
         devices="gpu",
         model_id="flame_net",
     )
@@ -76,7 +55,7 @@ model_name = "polynomial_integrator"
 
 T = 1
 t_interval = [0, T]
-N = 1_00
+N = 1_000
 
 net = model()
 
@@ -100,7 +79,7 @@ input_data = {"input_trunk": input_trunk, "input_branch": input_branch}
 optimizer_config = {"lr": 1e-3}
 lambda_1 = 0.0
 lambda_2 = 0.0
-n_epochs = 1_000
+n_epochs = 5_000
 batch_size = 100
 
 optimizer = Optimizer(
@@ -128,6 +107,7 @@ params = {
     "weights_residual": [1, 1, 1],
     "initial_input": {"input_trunk": np.zeros((1_000, 1)), "input_branch": a},
     "initial_state": np.zeros((1_000, 1)),
+    "initial_penalty": 1e3,
 }
 
 optimizer.fit(
@@ -141,4 +121,10 @@ optimizer.fit(
     use_jit=True,
 )
 
+basis = net.eval(trunk_data=t, branch_data=np.array([0.5, 0.5, 0, 0, 0]))
+
+import matplotlib.pyplot as plt
+
+plt.plot(basis)
+plt.show()
 
