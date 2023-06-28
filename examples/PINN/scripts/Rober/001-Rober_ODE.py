@@ -18,8 +18,20 @@ Example Created by:
 Prof. Nicolas Spogis, Ph.D.
 Chemical Engineering Department
 LinkTree: https://linktr.ee/spogis
-"""
 
+Rober Stiffness 
+
+The Rober problem revolves around a complex system of three nonlinear ordinary 
+differential equations that describe the kinetics of an autocatalytic reaction 
+as formulated by Robertson (1966). The presence of a substantial discrepancy 
+among the reaction rate constants is the underlying cause of stiffness in this 
+problem. As is typical for challenges encountered in chemical kinetics, this 
+particular system exhibits a brief but intense initial transient phase. 
+
+Following this, the components undergo a gradual and continuous variation, 
+making it appropriate to employ a numerical method that can accommodate a 
+larger step size.
+"""
 
 """    Import Python Libraries    """
 
@@ -79,4 +91,4 @@ Results = pd.concat([df_time,df_num_sol], axis=1)
 
 """     Export Results for PINN Performance Evaluation    """
 
-Results.to_csv("Rober_ODE.csv", index=False)
+Results.to_csv("001-Rober_ODE_Dataset.csv", index=False)
