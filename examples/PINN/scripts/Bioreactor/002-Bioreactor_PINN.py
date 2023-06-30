@@ -606,6 +606,8 @@ if train == "yes":
 # Restoring the model from disk and using it for making 
 # evaluations
 else:
+    from sklearn.metrics import r2_score
+    
     saver = SPFile(compact=False)
     multi_net = saver.read(model_path='./multi_fidelity_Bioreactor_pinn', device='cpu')
 
@@ -613,8 +615,13 @@ else:
     output_labels = ["X_C", "P_C", "S_C", "Vol"]
 
     multi_net.summary()
+    
+    # Compare PINN and EDO Results
+    ODE_Results = pd.read_csv("001-Bioreactor_ODEs_Dataset.csv")
+    Filter_Scale = 50
+    ODE_Results_OnlyFewData = ODE_Results[::Filter_Scale]
 
-    time_plot = np.linspace(0, t_max, 1000)[:, None]
+    time_plot = ODE_Results['Time'].to_numpy()[:, None]
 
     approximated_data_plot = multi_net.eval(input_data=time_plot)
 
@@ -623,13 +630,7 @@ else:
     df2 = pd.DataFrame(approximated_data_plot, columns = output_labels)
     df = pd.concat([df1, df2], axis=1)
     
-    # Plot Result
-     
-    # Compare PINN and EDO Results
-    ODE_Results = pd.read_csv("001-Bioreactor_ODEs_Dataset.csv")
-    Filter_Scale = 50
-    ODE_Results_OnlyFewData = ODE_Results[::Filter_Scale]
-
+    # Plot Results     
     plt.figure(1)
     Chart_File_Name = Charts_Dir + 'Bioreactor_ODE_PINN_Concentration_Comparison.png'
 
@@ -645,6 +646,16 @@ else:
     plt.ylabel('Concentration [g/liter]')
     plt.savefig(Chart_File_Name)
     plt.show()
+    
+    # Calculate R² score
+    r2 = r2_score(ODE_Results['Cell Conc.'], df['X_C'])
+    print("\nCell Conc. R²:", r2)
+    
+    r2 = r2_score(ODE_Results['Product Conc.'], df['P_C'])
+    print("\nCell Conc. R²:", r2)
+    
+    r2 = r2_score(ODE_Results['Substrate Conc.'], df['S_C'])
+    print("\nCell Conc. R²:", r2)
 
     plt.figure(2)
     Chart_File_Name = Charts_Dir + 'Bioreactor_ODE_PINN_Volume_Comparison.png'
@@ -657,6 +668,10 @@ else:
     plt.ylabel('Volume [liter]')
     plt.savefig(Chart_File_Name)
     plt.show()
+    
+    # Calculate R² score
+    r2 = r2_score(ODE_Results['Volume [liter]'], df['Vol'])
+    print("\nVolume R²:", r2)
     
     df.to_csv("002-Bioreactor_PINN_Dataset.csv", index=False)
 
