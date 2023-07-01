@@ -604,6 +604,8 @@ if train == "yes":
 # Restoring the model from disk and using it for making 
 # evaluations
 else:
+    from sklearn.metrics import r2_score
+    
     saver = SPFile(compact=False)
     multi_net = saver.read(model_path='./adaptative_multifidelity_rober_pinn', device='cpu')
 
@@ -611,8 +613,13 @@ else:
     output_labels = ["s1", "s2", "s3"]
 
     multi_net.summary()
-
-    time_plot = np.linspace(0, t_max, 1000)[:, None]
+    
+    # Compare PINN and EDO Results
+    ODE_Results = pd.read_csv("001-Rober_ODE_Dataset.csv")
+    Filter_Scale = 50
+    ODE_Results_OnlyFewData = ODE_Results[::Filter_Scale]
+    
+    time_plot = ODE_Results['Time'].to_numpy()[:, None]
 
     approximated_data_plot = multi_net.eval(input_data=time_plot)
     
@@ -624,13 +631,7 @@ else:
     df2 = pd.DataFrame(approximated_data_plot, columns = output_labels)
     df = pd.concat([df1, df2], axis=1)
     
-    # Plot Result
-
-    # Compare PINN and EDO Results
-    ODE_Results = pd.read_csv("001-Rober_ODE_Dataset.csv")
-    Filter_Scale = 50
-    ODE_Results_OnlyFewData = ODE_Results[::Filter_Scale]
-
+    # Plot Results    
     plt.figure(1)
     Chart_File_Name = Charts_Dir + 'Rober_ODE_Multifidelity_PINN_Comparison.png'
     
@@ -649,5 +650,17 @@ else:
     plt.savefig(Chart_File_Name)
     plt.show()
     
+    # Calculate R² score
+    r2 = r2_score(ODE_Results['s1'], df['s1'])
+    print("\ns1 R²:", r2)
+    
+    # Calculate R² score
+    r2 = r2_score(ODE_Results['s2'], df['s2'])
+    print("\ns2 R²:", r2)
+    
+    # Calculate R² score
+    r2 = r2_score(ODE_Results['s3'], df['s3'])
+    print("\ns3 R²:", r2)
+        
     df.to_csv("002-Rober_PINN_Dataset.csv", index=False)
 

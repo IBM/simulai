@@ -591,6 +591,8 @@ if train == "yes":
 # Restoring the model from disk and using it for making 
 # evaluations
 else:
+    from sklearn.metrics import r2_score
+    
     saver = SPFile(compact=False)
     multi_net = saver.read(model_path='./multi_fidelity_Fire_pinn', device='cpu')
 
@@ -598,8 +600,13 @@ else:
     output_labels = ["u"]
 
     multi_net.summary()
+    
+    # Compare PINN and EDO Results
+    ODE_Results = pd.read_csv("001-Fire_ODEs_Dataset.csv")
+    Filter_Scale = 1
+    ODE_Results_OnlyFewData = ODE_Results[::Filter_Scale]
 
-    time_plot = np.linspace(0, t_max, 1000)[:, None]
+    time_plot = ODE_Results['Time'].to_numpy()[:, None]
 
     approximated_data_plot = multi_net.eval(input_data=time_plot)
     
@@ -608,24 +615,21 @@ else:
     df2 = pd.DataFrame(approximated_data_plot, columns = output_labels)
     df = pd.concat([df1, df2], axis=1)
     
-    # Plot Result
-
-    # Compare PINN and EDO Results
-    ODE_Results = pd.read_csv("001-Fire_ODEs_Dataset.csv")
-    Filter_Scale = 1
-    ODE_Results_OnlyFewData = ODE_Results[::Filter_Scale]
-    
+    # Plot Result    
     plt.figure(1)
     Chart_File_Name = Charts_Dir + 'FIRE_ODE_PINN_Comparison.png'
     
     plt.plot(time_plot, approximated_data_plot, label="PINN")
-    #plt.scatter(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["u"], s=20, label='ODE')
     plt.plot(ODE_Results_OnlyFewData["Time"], ODE_Results_OnlyFewData["u"], label='ODE')
     plt.xlabel("Time")
     plt.legend()
     plt.ylim([0.0, 1.1])
     plt.savefig(Chart_File_Name)
     plt.show()
+    
+    # Calculate R² score
+    r2 = r2_score(ODE_Results['u'], df['u'])
+    print("\nR²:", r2)
     
     df.to_csv("002-Fire_PINN_Dataset.csv", index=False)
 
