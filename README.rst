@@ -10,7 +10,7 @@ SimulAI
    :alt: Documentation Status
 .. image:: assets/coverage.svg
    :target: tests/
-
+[![simulai package](https://github.com/IBM/simulai/actions/workflows/test.yaml/badge.svg)](https://github.com/IBM/simulai/actions/workflows/test.yaml)
 ..
    .. image:: assets/logo.png
 
