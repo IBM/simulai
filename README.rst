@@ -1,7 +1,6 @@
 SimulAI
 =======
-.. image:: https://github.com/IBM/simulai/actions/workflows/test.yaml/badge.svg
-   :target https://github.com/IBM/simulai/actions/workflows/test.yaml/badge
+
 .. image:: https://zenodo.org/badge/561364034.svg
    :target: https://zenodo.org/badge/latestdoi/561364034
 .. image:: https://badge.fury.io/py/simulai-toolkit.svg
