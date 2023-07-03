@@ -14,6 +14,8 @@ SimulAI
 ..
    .. image:: assets/logo.png
 
+[![simulai package](https://github.com/IBM/simulai/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/IBM/simulai/actions/workflows/test.yaml)
+
 An extensible Python package with data-driven pipelines for physics-informed machine learning.
 
 .. image:: assets/simulai_diagram.svg
