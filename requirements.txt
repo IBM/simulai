@@ -15,3 +15,4 @@ optuna
 urllib3
 sphinx_theme
 matplotlib
+tensorboard
