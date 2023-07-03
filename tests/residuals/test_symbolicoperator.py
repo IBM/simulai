@@ -19,9 +19,8 @@ import numpy as np
 from tests.config import configure_dtype
 torch = configure_dtype()
 
-
 from simulai.residuals import SymbolicOperator
-
+from simulai.tokens import Dot, Gp
 
 def model(n_inputs: int = 1, n_outputs: int = 1):
     from simulai.regression import DenseNetwork
@@ -39,6 +38,68 @@ def model(n_inputs: int = 1, n_outputs: int = 1):
     net = DenseNetwork(**config)
 
     return net
+
+def model_operator():
+
+    import numpy as np
+
+    from simulai.models import DeepONet, ImprovedDenseNetwork
+    from simulai.regression import SLFNN, ConvexDenseNetwork
+
+    n_latent = 100
+    n_inputs_b = 5
+    n_inputs_t = 1
+    n_outputs = 1
+
+    # Configuration for the fully-connected trunk network
+    trunk_config = {
+        "layers_units": 7 * [100],  # Hidden layers
+        "activations": "tanh",
+        "input_size": n_inputs_t,
+        "output_size": n_latent * n_outputs,
+        "name": "trunk_net",
+    }
+
+    # Configuration for the fully-connected branch network
+    branch_config = {
+        "layers_units": 7 * [100],  # Hidden layers
+        "activations": "tanh",
+        "input_size": n_inputs_b,
+        "output_size": n_latent * n_outputs,
+        "name": "branch_net",
+    }
+
+    encoder_u_trunk = SLFNN(input_size=n_inputs_t, output_size=100, activation="tanh")
+    encoder_v_trunk = SLFNN(input_size=n_inputs_t, output_size=100, activation="tanh")
+    encoder_u_branch = SLFNN(input_size=n_inputs_b, output_size=100, activation="tanh")
+    encoder_v_branch = SLFNN(input_size=n_inputs_b, output_size=100, activation="tanh")
+
+    # Instantiating and training the surrogate model
+    trunk_net_dense = ConvexDenseNetwork(**trunk_config)
+    branch_net_dense = ConvexDenseNetwork(**branch_config)
+
+    trunk_net = ImprovedDenseNetwork(
+        network=trunk_net_dense, encoder_u=encoder_u_trunk, encoder_v=encoder_v_trunk
+    )
+
+    branch_net = ImprovedDenseNetwork(
+        network=branch_net_dense, encoder_u=encoder_u_branch, encoder_v=encoder_v_branch
+    )
+
+    # It prints a summary of the network features
+    trunk_net.summary()
+    branch_net.summary()
+
+    deep_o_net = DeepONet(
+        trunk_network=trunk_net,
+        branch_network=branch_net,
+        var_dim=n_outputs,
+        rescale_factors=np.array([1]),
+        devices="gpu",
+        model_id="flame_net",
+    )
+
+    return deep_o_net
 
 
 class TestSymbolicOperator(TestCase):
@@ -77,6 +138,35 @@ class TestSymbolicOperator(TestCase):
         t = np.linspace(*t_interval)[:, None]
 
         assert all([isinstance(item, torch.Tensor) for item in residual(t)])
+
+    def test_symbolic_buitin_functions(self):
+
+        f = f"D(u, t) - Dot(a, Gp(t, t, 4))"
+
+        input_labels = ["t", "a"]
+        output_labels = ["u"]
+
+        T = 1
+        t_interval = [0, T]
+        N = 100
+        a = torch.from_numpy(np.random.rand(100, 5).astype("float32"))
+
+        net = model_operator()
+
+        residual = SymbolicOperator(
+            expressions=[f],
+            input_vars=input_labels,
+            external_functions={"Dot": Dot, "Gp": Gp},
+            output_vars=output_labels,
+            inputs_key="input_trunk|input_branch[0,4]",
+            function=net,
+            engine="torch",
+        )
+
+        t = torch.from_numpy(np.linspace(*t_interval, N)[:, None].astype("float32"))
+        input_data = {"input_trunk": t, "input_branch": a}
+
+        assert all([isinstance(item, torch.Tensor) for item in residual(input_data)])
 
     def test_symbolic_operator_ode(self):
         for token in ["sin", "cos", "sqrt"]:

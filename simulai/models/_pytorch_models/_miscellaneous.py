@@ -165,6 +165,49 @@ class ImprovedDenseNetwork(NetworkTemplate):
 
         print(self)
 
+# Prototype for multi-fidelity network applied to time-series
+class MultiNetwork(NetworkTemplate):
+
+    def __init__(self, models_list:List[NetworkTemplate]=None,
+                 delta_t:float=None, device:str='cpu') -> None:
+
+        super(MultiNetwork, self).__init__()
+
+        for i, model in enumerate(models_list):
+            self.set_network(net=model, index=i)
+
+        self.delta_t = delta_t
+        self.device = device
+
+    def set_network(self, net:NetworkTemplate=None, index:int=None) -> None:
+
+        setattr(self, f"worker_{index}", net)
+
+        self.add_module(f"worker_{index}", net)
+
+    def _eval_interval(self, index:int=None, input_data:torch.Tensor=None) -> torch.Tensor:
+
+        input_data = input_data[:, None]
+        return getattr(self, f"worker_{index}").eval(input_data=input_data)
+
+    def eval(self, input_data:np.ndarray=None) -> np.ndarray:
+
+        eval_indices_float = input_data/delta_t
+        eval_indices = np.where(eval_indices_float > 0,
+                                np.floor(eval_indices_float - 1e-13).astype(int),
+                                eval_indices_float.astype(int))
+
+        eval_indices = eval_indices.flatten().tolist()
+
+        input_data = input_data - self.delta_t*np.array(eval_indices)[:, None]
+
+        return np.vstack([self._eval_interval(index=i, input_data=idata) \
+                                             for i, idata in zip(eval_indices, input_data)])
+
+    def summary(self):
+
+        print(self)
+
 
 # Mixture of Experts POC
 class MoEPool(NetworkTemplate):

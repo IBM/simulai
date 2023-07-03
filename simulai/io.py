@@ -1398,7 +1398,7 @@ class SlidingWindow:
 
     def __call__(
         self, input_data: np.ndarray = None, output_data: np.ndarray = None
-    ) -> tuple[np.ndarray, np.ndarray]:
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Applies a sliding window operation on the given time series and returns the windowed samples.
 
