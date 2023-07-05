@@ -27,7 +27,7 @@ parser = ArgumentParser(description="Reading input parameters")
 
 parser.add_argument("--save_path", type=str, help="Save path", default="/tmp")
 parser.add_argument(
-    "--model_name", type=str, help="Model name", default="flame_deeponet"
+    "--model_name", type=str, help="Model name", default="fire_deeponet"
 )
 args = parser.parse_args()
 
@@ -114,25 +114,25 @@ def model():
     trunk_net.summary()
     branch_net.summary()
 
-    flame_net = DeepONet(
+    fire_net = DeepONet(
         trunk_network=trunk_net,
         branch_network=branch_net,
         var_dim=n_outputs,
         rescale_factors=np.array([1]),
         devices="gpu",
-        model_id="flame_net",
+        model_id="fire_net",
     )
 
-    return flame_net
+    return fire_net
 
 
-flame_net = model()
+fire_net = model()
 
 residual = SymbolicOperator(
     expressions=[f_u],
     input_vars=input_labels,
     output_vars=output_labels,
-    function=flame_net,
+    function=fire_net,
     inputs_key="input_trunk|input_branch:0",
     device="gpu",
     engine="torch",
@@ -174,7 +174,7 @@ params = {
 }
 
 optimizer.fit(
-    op=flame_net,
+    op=fire_net,
     input_data=input_data,
     n_epochs=n_epochs,
     loss="opirmse",
@@ -187,4 +187,4 @@ optimizer.fit(
 # Saving model
 print("Saving model.")
 saver = SPFile(compact=False)
-saver.write(save_dir=save_path, name=model_name, model=flame_net, template=model)
+saver.write(save_dir=save_path, name=model_name, model=fire_net, template=model)

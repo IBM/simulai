@@ -35,7 +35,7 @@ Q = 1000
 
 # Testing to reload from disk
 saver = SPFile(compact=False)
-flame_net = saver.read(model_path=save_path)
+fire_net = saver.read(model_path=save_path)
 
 branch_input_test = np.tile(initial_state_test[None, :], (Q, 1))
 trunk_input_test = np.linspace(0, Delta_t, Q)[:, None]
@@ -45,7 +45,7 @@ eval_list = list()
 for i in range(0, n_times):
     branch_input_test = np.tile(initial_state_test[None, :], (Q, 1))
 
-    approximated_data = flame_net.eval(
+    approximated_data = fire_net.eval(
         trunk_data=trunk_input_test, branch_data=branch_input_test
     )
     initial_state_test = approximated_data[-1]
@@ -58,7 +58,7 @@ time = np.linspace(0, n_times, evaluation.shape[0])
 np.save("evaluation.npy", evaluation)
 plt.plot(time, evaluation, label="Approximated")
 plt.xlabel("t (s)")
-plt.savefig("flame_approximation.png")
+plt.savefig("fire_approximation.png")
 plt.close()
 
 plt.figure(figsize=(15, 6))
@@ -70,4 +70,4 @@ for i in range(n_outputs):
 plt.yticks(np.linspace(0, 1, 5))
 plt.legend()
 plt.grid(True)
-plt.savefig(f"flame_approximation_custom.png")
+plt.savefig(f"fire_approximation_custom.png")
