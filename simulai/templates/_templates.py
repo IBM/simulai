@@ -65,7 +65,7 @@ class NetworkInstanceGen:
 
     def __init__(
         self,
-        architecture: str,
+        architecture: str = None,
         dim: str = None,
         shallow: bool = False,
         use_batch_norm: bool = False,

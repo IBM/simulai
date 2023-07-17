@@ -204,6 +204,38 @@ def model_conv(product_type=None):
 
     return net
 
+def model_conv_template(product_type=None):
+
+    from simulai.workflows import ConvDeepONet
+
+    n_inputs = 1
+    n_outputs = 2
+    dim="2d"
+    n_latent = 64
+    product_type = None
+
+    # Configuration for the fully-connected trunk network
+    trunk_config = {
+        "layers_units": [50, 50, 50],  # Hidden layers
+        "activations": "elu",
+        "input_size": n_inputs,
+        "output_size": n_latent * n_outputs,
+        "name": "trunk_net",
+    }
+
+    net_template = ConvDeepONet(trunk_config=trunk_config,
+                     n_outputs=n_outputs,
+                     dim=dim,
+                     n_latent = n_latent,
+                     branch_input_dim=(None,1,16,16),
+                     shallow=True,
+                     product_type=product_type,
+                     use_batch_norm=True,
+                     branch_activation="elu",
+                     )
+
+    return net_template()
+
 
 class TestDeeponet(TestCase):
     def setUp(self) -> None:
@@ -324,6 +356,18 @@ class TestDeeponet_with_Conv(TestCase):
 
     def test_deeponet_forward(self):
         net = model_conv()
+
+        data_trunk = torch.rand(1_000, 1)
+        data_branch = torch.rand(1_000, 1, 16, 16)
+
+        output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
+
+        print(f"Network has {net.n_parameters} parameters.")
+
+        assert output.shape[1] == 2, "The network output is not like expected."
+
+    def test_deeponet_template_forward(self):
+        net = model_conv_template()
 
         data_trunk = torch.rand(1_000, 1)
         data_branch = torch.rand(1_000, 1, 16, 16)
