@@ -1090,6 +1090,7 @@ class AutoencoderVariational(NetworkTemplate):
         latent_dim: Optional[int] = None,
         activation: Optional[Union[list, str]] = None,
         channels: Optional[int] = None,
+        kernel_size: Optional[int] = None,
         case: Optional[str] = None,
         architecture: Optional[str] = None,
         use_batch_norm: Optional[bool] = False,
@@ -1123,6 +1124,8 @@ class AutoencoderVariational(NetworkTemplate):
             The activation function to use in the networks. Defaults to None.
         channels : Optional[int], optional
             The number of channels in the input data. Defaults to None.
+        kernel_size : Optional[int]
+            Convolutional kernel size.
         case : Optional[str], optional
             The name of the autoencoder variant. Defaults to None.
         architecture : Optional[str], optional
@@ -1163,6 +1166,7 @@ class AutoencoderVariational(NetworkTemplate):
                 output_dim=output_dim,
                 activation=activation,
                 channels=channels,
+                kernel_size=kernel_size,
                 architecture=architecture,
                 case=case,
                 shallow=shallow,

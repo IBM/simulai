@@ -359,6 +359,27 @@ class TestAutoGenNet(TestCase):
 
         assert estimated_data.shape == input_data.shape
 
+    def test_autoencoder_kernel_size_shallow(self) -> None:
+        from simulai.models import AutoencoderVariational
+
+        input_data = np.random.rand(100, 1, 128, 128)
+
+        autoencoder = AutoencoderVariational(
+            input_dim=(None, 1, 128, 128),
+            latent_dim=8,
+            kernel_size=7,
+            activation="tanh",
+            architecture="cnn",
+            case="2d",
+            shallow=True,
+        )
+
+        estimated_data = autoencoder.eval(input_data=input_data)
+        print(autoencoder)
+        autoencoder.summary()
+
+        assert estimated_data.shape == input_data.shape
+
     def test_autoencoder_variational_mlp(self) -> None:
         from simulai.models import AutoencoderVariational
 
