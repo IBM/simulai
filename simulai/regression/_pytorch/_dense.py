@@ -23,9 +23,8 @@ from simulai.templates import NetworkTemplate, as_tensor
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
-
-# Linear operator F(u) = Au + b
 class Linear(NetworkTemplate):
+
     name = "linear"
     engine = "torch"
 
@@ -36,6 +35,22 @@ class Linear(NetworkTemplate):
         bias: bool = True,
         name: str = None,
     ) -> None:
+
+        """
+        Linear operator F(u) = Au + b
+
+        Parameters
+        ----------
+        input_size : int
+            Dimension of the input.
+        output_size : int
+            Dimension of the output.
+        bias : bool
+            Using bias tensor or not.
+        name : str
+            A name for identifying the model.
+        """
+
         super(Linear, self).__init__(name=name)
 
         self.input_size = input_size
@@ -57,13 +72,35 @@ class Linear(NetworkTemplate):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
+
+        """
+        Applying the operator Linear.
+
+        Parameters
+        ----------
+        input_data : Union[torch.Tensor, np.ndarray]
+            Data to be processed using Linear.
+
+        Returns
+        -------
+            The output after the application of Linear.
+        """
+
         return self.layers[0](input_data)
 
     def to_numpy(self):
+
+        """
+        It converts the tensors in Linear to numpy.ndarray. 
+
+        Returns
+        -------
+            An object LinearNumpy, which reproduces Linear. 
+        """
+
         return LinearNumpy(layer=self.layers[0], name=self.name)
 
 
-# Single layer fully-connected (dense) neural network
 class SLFNN(Linear):
     def __init__(
         self,
@@ -73,6 +110,23 @@ class SLFNN(Linear):
         name: str = None,
         activation: str = "tanh",
     ) -> None:
+        """
+        Single layer fully-connected (dense) neural network
+
+        Parameters
+        ----------
+        input_size : int
+            Dimension of the input.
+        output_size : int
+            Dimension of the output.
+        bias : bool
+            Using bias tensor or not. 
+        name : str
+            A name for identifying the model.
+        activation : str
+            Activation function.
+        """
+
         super(SLFNN, self).__init__(
             input_size=input_size, output_size=output_size, bias=bias, name=name
         )
@@ -82,10 +136,24 @@ class SLFNN(Linear):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
+
+        """
+        Applying the operator Linear.
+
+        Parameters
+        ----------
+        input_data : Union[torch.Tensor, np.ndarray]
+            Data to be processed using SLFNN.
+
+        Returns
+        -------
+            The output after the application of SLFNN.
+        """
+
+
         return self.activation(super().forward(input_data=input_data))
 
 
-# ELM-like shallow network
 class ShallowNetwork(SLFNN):
     def __init__(
         self,
@@ -96,6 +164,26 @@ class ShallowNetwork(SLFNN):
         name: str = None,
         activation: str = "tanh",
     ) -> None:
+
+        """
+        ELM-like (Extreme Learning Machine) shallow network
+
+        Parameters
+        ----------
+        input_size : int
+            Dimension of the input.
+        hidden_size : int
+            Dimension of the hidden (intermediary) state.
+        output_size : int
+            Dimension of the output.
+        bias : bool
+            Using bias or not for the last layer.
+        name : str
+            A name for identifying the model. 
+        activation : str
+            Activation function.
+        """
+
         super(ShallowNetwork, self).__init__(
             input_size=input_size, output_size=hidden_size, bias=bias, name=name
         )
@@ -109,6 +197,17 @@ class ShallowNetwork(SLFNN):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
+        """
+
+        Parameters
+        ----------
+        input_data : Union[torch.Tensor, np.ndarray]
+            Input data to be processed using ShallowNetwork.
+        Returns
+        -------
+            The output of ShallowNetwork.
+        """
+
         hidden_state = self.activation(super().forward(input_data=input_data))
 
         return self.output_layer.forward(input_data=hidden_state)
@@ -131,6 +230,31 @@ class DenseNetwork(NetworkTemplate):
         last_activation: str = "identity",
         **kwargs,
     ) -> None:
+
+        """
+        Dense (fully-connected) neural network written in PyTorch
+
+        Parameters
+        ----------
+        layers_units : list
+            List with the number of neurons for each layer.
+        activations : Union[list, str]
+            List of activations for each layer or a single string 
+            informing the activation used for all of them.
+        input_size : int
+            Dimension of the input.
+        output_size : int
+            Dimension of the output.
+        normalization : str
+            Kind of normalization used between two layers.
+        name : str
+            A name for identifying the model.
+        last_bias : bool
+            Using bias in the last layer or not.
+        last_activation : str
+            Activation for the last layer (default is 'identity').
+        """
+
         super(DenseNetwork, self).__init__()
 
         assert layers_units, "Please, set a list of units for each layer"
@@ -185,6 +309,21 @@ class DenseNetwork(NetworkTemplate):
         self.layers_map = [[ll, ll + 1] for ll in range(0, 2 * n_layers, 2)]
 
     def _calculate_gain(self, activation: str = "Tanh") -> float:
+
+        """
+        It evaluates a multiplier coefficient, named as `gain`, 
+        which is used to enhance the funcionality of each kind of activation
+        function.
+
+        Parameters
+        ----------
+        activation : str
+            Activation function.
+        Returns
+        -------
+            The value of the gain associated to that activation.
+        """
+
         if type(activation) is not str:
             assert hasattr(
                 activation, "name"
@@ -200,6 +339,21 @@ class DenseNetwork(NetworkTemplate):
 
     @staticmethod
     def _determine_initialization(activation: str = "Tanh") -> str:
+
+        """
+        It determines the most proper initialization method for each 
+        activation function.
+
+        Parameters
+        ----------
+        activation : str
+            Activation function.
+
+        Returns
+        -------
+            The initialization method most indicated for that activation.
+        """
+
         if type(activation) is not str:
             assert hasattr(
                 activation, "name"
@@ -223,6 +377,27 @@ class DenseNetwork(NetworkTemplate):
         bias: bool = True,
         first_layer: bool = False,
     ) -> torch.nn.Linear:
+
+        """
+
+        Parameters
+        ----------
+        input_size : int
+            Dimension of the input.
+        output_size : int
+            Dimension of the output.
+        initialization : str
+            Initialization method.
+        bias : bool
+            Using bias tensor or not.
+        first_layer : bool
+            Is this layer the first layer or not.
+
+        Returns
+        -------
+            An instance of torch.nn.Linear.
+        """
+
         # It instantiates a linear operation
         # f: y^l = f(x^(l-1)) = (W^l).dot(x^(l-1)) + b^l
         layer = torch.nn.Linear(input_size, output_size, bias=bias)
@@ -268,6 +443,21 @@ class DenseNetwork(NetworkTemplate):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
+
+        """
+        It executes the forward step for the DenseNetwork.
+
+        Parameters
+        ----------
+        input_data : Union[torch.Tensor, np.ndarray]
+            The input tensor to be processed by DenseNetwork.
+
+        Returns
+        -------
+            A torch.Tensor object representing the output of the 
+            network. 
+        """
+
         input_tensor_ = input_data
 
         # TODO It can be done using the PyTorch Sequential object
@@ -281,7 +471,6 @@ class DenseNetwork(NetworkTemplate):
         return output_tensor
 
 
-# Residual Dense (fully-connected) neural network written in PyTorch
 class ResDenseNetwork(DenseNetwork):
     name = "residualdense"
     engine = "torch"
@@ -299,6 +488,33 @@ class ResDenseNetwork(DenseNetwork):
         residual_size: int = 1,
         **kwargs,
     ) -> None:
+
+        """
+        Residual Dense (fully-connected) neural network written in PyTorch
+
+        Parameters
+        ----------
+        layers_units : list
+            List with the number of neurons for each layer.
+        activations : Union[list, str]
+            List of activations for each layer or a single string 
+            informing the activation used for all of them.
+        input_size : int
+            Dimension of the input.
+        output_size : int
+            Dimension of the output.
+        normalization : str
+            Kind of normalization used between two layers.
+        name : str
+            A name for identifying the model.
+        last_bias : bool
+            Using bias in the last layer or not.
+        last_activation : str
+            Activation for the last layer (default is 'identity').
+        residual_size : int
+            Size of the residual block. 
+        """
+
         super().__init__(
             layers_units=layers_units,
             activations=activations,
@@ -337,6 +553,22 @@ class ResDenseNetwork(DenseNetwork):
 
     # Merging the layers into a reasonable sequence
     def _merge(self, layer: list = None, act: list = None) -> list:
+
+        """
+        It merges the dense layers and the activations into a single block.
+
+        Parameters
+        ----------
+        layer : list
+            List of dense layers.
+        act : list
+            List of activation functions.
+
+        Returns
+        -------
+            The merged list of layers and activations.
+        """
+
         merged_list = list()
 
         for i, j in zip(layer, act):
@@ -346,6 +578,11 @@ class ResDenseNetwork(DenseNetwork):
         return merged_list
 
     def summary(self):
+
+        """
+        It prints a summary of the network.
+        """
+
         super().summary()
 
         print("Residual Blocks:\n")
@@ -354,11 +591,21 @@ class ResDenseNetwork(DenseNetwork):
         print(self.hidden_blocks)
         print(self.output_block)
 
-    # The forward step of the network
     @as_tensor
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
+
+        """
+        Parameters
+        ----------
+        input_data : Union[torch.Tensor, np.ndarray]
+            Input data to be processed using ResDenseNetwork.
+        Returns
+        -------
+            The output of ResDenseNetwork.
+        """
+
         input_tensor_ = input_data
 
         input_tensor_ = self.input_block(input_tensor_)
@@ -373,8 +620,6 @@ class ResDenseNetwork(DenseNetwork):
         return output_tensor
 
 
-# Dense network with convex combinations in the hidden layers
-# This architecture is useful when combined to the Improved Version ofr DeepONets
 class ConvexDenseNetwork(DenseNetwork):
     name = "convexdense"
     engine = "torch"
@@ -391,6 +636,32 @@ class ConvexDenseNetwork(DenseNetwork):
         last_activation: str = "identity",
         **kwargs,
     ) -> None:
+
+        """
+        Dense network with convex combinations in the hidden layers.
+        This architecture is useful when combined to the Improved Version of DeepONets
+
+        Parameters
+        ----------
+        layers_units : list
+            List with the number of neurons for each layer.
+        activations : Union[list, str]
+            List of activations for each layer or a single string 
+            informing the activation used for all of them.
+        input_size : int
+            Dimension of the input.
+        output_size : int
+            Dimension of the output.
+        normalization : str
+            Kind of normalization used between two layers.
+        name : str
+            A name for identifying the model.
+        last_bias : bool
+            Using bias in the last layer or not.
+        last_activation : str
+            Activation for the last layer (default is 'identity').
+        """
+
         self.hidden_size = None
         assert self._check_regular_net(layers_units=layers_units), (
             "All the hidden layers must be equal in" "a Convex Dense Network."
@@ -408,7 +679,20 @@ class ConvexDenseNetwork(DenseNetwork):
             **kwargs,
         )
 
-    def _check_regular_net(self, layers_units: list):
+    def _check_regular_net(self, layers_units: list) -> bool:
+
+        """
+        It checks if all the layers has the same number of neurons.
+
+        Parameters
+        ----------
+        layers_units : list
+            List of layers sizes.
+        Returns
+        -------
+            If the network is regular or not.
+        """
+
         mean = int(sum(layers_units) / len(layers_units))
         self.hidden_size = mean
 
@@ -417,7 +701,6 @@ class ConvexDenseNetwork(DenseNetwork):
         else:
             return False
 
-    # The forward step of the network
     @as_tensor
     def forward(
         self,
@@ -425,6 +708,23 @@ class ConvexDenseNetwork(DenseNetwork):
         u: Union[torch.Tensor, np.ndarray] = None,
         v: Union[torch.Tensor, np.ndarray] = None,
     ) -> torch.Tensor:
+
+        """
+
+        Parameters
+        ----------
+        input_data : Union[torch.Tensor, np.ndarray]
+            Input data to be processed using ConvexDenseNetwork.
+        u : Union[torch.Tensor, np.ndarray]
+            Input generated by the first auxiliar encoder (external model).
+        v : Union[torch.Tensor, np.ndarray]
+            Input generated by the second auxiliar encoder (external model).
+
+        Returns
+        -------
+            The output of ConvexDenseNetwork.
+        """
+
         input_tensor_ = input_data
 
         # The first layer operation has no difference from the Vanilla one
