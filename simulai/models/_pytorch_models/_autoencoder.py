@@ -1784,6 +1784,7 @@ class MultiScaleAutoencoder(NetworkTemplate):
 
         self.architecture = "cnn"
         self.kernel_size_list = kernel_sizes_list
+        self.latent_dim = latent_dim
 
         self.device = self._set_device(devices=devices)
 
@@ -1806,7 +1807,47 @@ class MultiScaleAutoencoder(NetworkTemplate):
 
             self.AutoencodersList.append(autoencoder)
 
+        self.z_mean = torch.nn.Linear(self.latent_dimension, self.latent_dimension).to(
+            self.device
+        )
+        self.z_log_var = torch.nn.Linear(
+            self.latent_dimension, self.latent_dimension
+        ).to(self.device)
+
+        self.add_module("z_mean", self.z_mean)
+        self.add_module("z_log_var", self.z_log_var)
+
         self.weights = sum([ae.weights for ae in self.AutoencodersList], [])
+
+    def latent_gaussian_noisy(
+        self, input_data: Union[np.ndarray, torch.Tensor] = None
+    ) -> torch.Tensor:
+        """
+        Generates a noisy latent representation of the input data.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to encode and generate a noisy latent representation, by default None
+
+        Returns
+        -------
+        torch.Tensor
+            A noisy latent representation of the input data.
+
+        Notes
+        -----
+        This function adds Gaussian noise to the mean and standard deviation of the encoded input data to generate a noisy latent representation.
+
+        """
+
+        self.mu = self.z_mean(input_data)
+        self.log_v = self.z_log_var(input_data)
+        eps = self.scale * torch.autograd.Variable(
+            torch.randn(*self.log_v.size())
+        ).type_as(self.log_v)
+
+        return self.mu + torch.exp(self.log_v / 2.0) * eps
 
     def reconstruction_forward(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
@@ -1829,10 +1870,10 @@ class MultiScaleAutoencoder(NetworkTemplate):
         latent_list = list()
         for ae in self.AutoencodersList:
             latent = ae.projection(input_data=input_data)
-            latent_noisy_ = ae.latent_gaussian_noisy(input_data=latent)
-            latent_list.append(latent_noisy_)
+            latent_list.append(latent)
 
-        latent_noisy = sum(latent_list)
+        latent = sum(latent_list)
+        latent_noisy = self.latent_gaussian_noisy(input_data=latent)
 
         reconstructed_list = list()
         for ae in self.AutoencodersList:
@@ -1863,10 +1904,10 @@ class MultiScaleAutoencoder(NetworkTemplate):
         latent_list = list()
         for ae in self.AutoencodersList:
             latent = ae.projection(input_data=input_data)
-            latent_noisy_ = ae.z_mean(latent)
-            latent_list.append(latent_noisy_)
+            latent_list.append(latent)
 
-        latent_noisy = sum(latent_list)
+        latent_ = sum(latent_list)
+        latent_noisy = self.z_mean(latent_)
 
         reconstructed_list = list()
         for ae in self.AutoencodersList:
