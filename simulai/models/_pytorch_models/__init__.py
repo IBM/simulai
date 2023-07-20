@@ -3,7 +3,7 @@ from ._autoencoder import (
     AutoencoderKoopman,
     AutoencoderMLP,
     AutoencoderVariational,
-    MultScaleAutoencoder,
+    MultiScaleAutoencoder,
 )
 from ._deeponet import DeepONet, FlexibleDeepONet, ImprovedDeepONet, ResDeepONet
 from ._miscellaneous import ImprovedDenseNetwork, MetaModel, ModelMaker, MultiNetwork, MoEPool

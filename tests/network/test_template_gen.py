@@ -380,11 +380,11 @@ class TestAutoGenNet(TestCase):
         assert estimated_data.shape == input_data.shape
 
     def test_autoencoder_multiscaleautoencoder(self) -> None:
-        from simulai.models import MultScaleAutoencoder
+        from simulai.models import MultiScaleAutoencoder
 
         input_data = np.random.rand(100, 1, 128, 128)
 
-        autoencoder = MultScaleAutoencoder(
+        autoencoder = MultiScaleAutoencoder(
             input_dim=(None, 1, 128, 128),
             latent_dim=8,
             kernel_sizes_list=[3,5,7,9],

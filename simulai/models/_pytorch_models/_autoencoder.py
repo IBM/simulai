@@ -1767,7 +1767,7 @@ class AutoencoderVariational(NetworkTemplate):
 
 ### Hybrid Autoencoder architectures
 
-class MultScaleAutoencoder(NetworkTemplate):
+class MultiScaleAutoencoder(NetworkTemplate):
 
     def __init__(self,
                  input_dim: Tuple[int, ...] = None, 
@@ -1780,7 +1780,7 @@ class MultScaleAutoencoder(NetworkTemplate):
                  devices:Union[str, List]="cpu",
                  name:str=None) -> None:
 
-        super(MultScaleAutoencoder, self).__init__(name=name)
+        super(MultiScaleAutoencoder, self).__init__(name=name)
 
         self.architecture = "cnn"
         self.kernel_size_list = kernel_sizes_list
