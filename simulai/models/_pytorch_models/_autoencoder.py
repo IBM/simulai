@@ -1822,12 +1822,7 @@ class MultScaleAutoencoder(NetworkTemplate):
         torch.Tensor
             The reconstructed output of the autoencoder.
 
-        Examples
-        --------
-        >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
-        >>> input_data = np.random.rand(1, 28, 28, 1)
-        >>> reconstructed_data = autoencoder.reconstruction_forward(input_data=input_data)
-        """
+       """
 
         latent_list = list()
         for ae in self.AutoencodersList:
@@ -1861,11 +1856,6 @@ class MultScaleAutoencoder(NetworkTemplate):
         torch.Tensor
             The reconstructed output of the autoencoder.
 
-        Examples
-        --------
-        >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
-        >>> input_data = np.random.rand(1, 28, 28, 1)
-        >>> reconstructed_data = autoencoder.reconstruction_eval(input_data=input_data)
         """
 
         latent_list = list()
@@ -1900,12 +1890,8 @@ class MultScaleAutoencoder(NetworkTemplate):
         np.ndarray
             The input data projected onto the autoencoder's latent space.
 
-        Examples
-        --------
-        >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
-        >>> input_data = np.random.rand(1, 28, 28, 1)
-        >>> projected_data = autoencoder.project(input_data=input_data)
         """
+
         if isinstance(input_data, np.ndarray):
             input_data = torch.from_numpy(input_data.astype(ARRAY_DTYPE))
 
@@ -1932,12 +1918,8 @@ class MultScaleAutoencoder(NetworkTemplate):
         np.ndarray
             The reconstructed data.
 
-        Examples
-        --------
-        >>> autoencoder = Autoencoder(input_dim=(28, 28, 1))
-        >>> input_data = np.random.rand(1, 28, 28, 1)
-        >>> reconstructed_data = autoencoder.reconstruct(input_data=input_data)
         """
+
         if isinstance(input_data, np.ndarray):
             input_data = torch.from_numpy(input_data.astype(ARRAY_DTYPE))
 
@@ -1962,12 +1944,8 @@ class MultScaleAutoencoder(NetworkTemplate):
         np.ndarray
             The reconstructed data.
 
-        Examples
-        --------
-        >>> autoencoder = Autoencoder(input_dim=(28, 28, 1))
-        >>> input_data = np.random.rand(1, 28, 28, 1)
-        >>> reconstructed_data = autoencoder.eval(input_data=input_data)
         """
+
         if isinstance(input_data, np.ndarray):
             input_data = torch.from_numpy(input_data.astype(ARRAY_DTYPE))
 
