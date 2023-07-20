@@ -1806,6 +1806,8 @@ class MultiScaleAutoencoder(NetworkTemplate):
 
             self.AutoencodersList.append(autoencoder)
 
+        self.weights = sum([ae.weights for ae in self.AutoencodersList])
+
     def reconstruction_forward(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
