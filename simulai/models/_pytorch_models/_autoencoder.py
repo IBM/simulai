@@ -1784,7 +1784,7 @@ class MultiScaleAutoencoder(NetworkTemplate):
 
         self.architecture = "cnn"
         self.kernel_size_list = kernel_sizes_list
-        self.latent_dim = latent_dim
+        self.latent_dimension = latent_dim
 
         self.device = self._set_device(devices=devices)
 
