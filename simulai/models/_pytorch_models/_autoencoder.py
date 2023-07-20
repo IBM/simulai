@@ -1777,6 +1777,7 @@ class MultiScaleAutoencoder(NetworkTemplate):
                  activation: str = None,
                  case: str = "2d",
                  shallow:bool=True,
+                 scale: float = 1e-3,
                  devices:Union[str, List]="cpu",
                  name:str=None) -> None:
 
@@ -1785,6 +1786,7 @@ class MultiScaleAutoencoder(NetworkTemplate):
         self.architecture = "cnn"
         self.kernel_size_list = kernel_sizes_list
         self.latent_dimension = latent_dim
+        self.scale = scale
 
         self.device = self._set_device(devices=devices)
 
