@@ -1819,6 +1819,38 @@ class MultiScaleAutoencoder(NetworkTemplate):
 
         self.weights = sum([ae.weights for ae in self.AutoencodersList], [])
 
+    def Mu(
+        self, input_data: Union[np.ndarray, torch.Tensor] = None, to_numpy: bool = False
+    ) -> Union[np.ndarray, torch.Tensor]:
+        """
+        Computes the mean of the encoded input data.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to encode and compute the mean, by default None
+        to_numpy : bool, optional
+            If True, returns the result as a NumPy array, by default False
+
+        Returns
+        -------
+        Union[np.ndarray, torch.Tensor]
+            The mean of the encoded input data.
+
+        """
+
+        latent_list = list()
+        for ae in self.AutoencodersList:
+            latent = ae.projection(input_data=input_data)
+            latent_list.append(latent)
+
+        latent = sum(latent_list)
+
+        if to_numpy == True:
+            return self.z_mean(latent).detach().numpy()
+        else:
+            return self.z_mean(latent)
+
     def latent_gaussian_noisy(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
@@ -1940,8 +1972,7 @@ class MultiScaleAutoencoder(NetworkTemplate):
 
         input_data = input_data.to(self.device)
 
-        projected_data_latent = sum([ae.Mu(input_data=input_data)
-                                     for ae in self.AutoencodersList])
+        projected_data_latent = self.Mu(input_data=input_data)
 
         return projected_data_latent.cpu().detach().numpy()
 
