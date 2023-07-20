@@ -113,7 +113,8 @@ def _adjust_loss_function_to_model(
             recommended_loss = "pirmse"
 
     else:
-        if isinstance(model, simmod.AutoencoderVariational):
+        if (isinstance(model, simmod.AutoencoderVariational)
+            or isinstance(model, simmod.MultiScaleAutoencoder)):
             recommended_loss = "vaermse"
 
         elif isinstance(model, simmod.AutoencoderKoopman):

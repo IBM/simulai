@@ -394,7 +394,7 @@ class TestAutoGenNet(TestCase):
             name="model",
         )
 
-        estimated_data = autoencoder.reconstruct_forward(input_data=input_data)
+        estimated_data = autoencoder.reconstruction_forward(input_data=input_data)
         estimated_data = autoencoder.eval(input_data=input_data)
         autoencoder.summary()
 
