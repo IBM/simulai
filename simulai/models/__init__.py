@@ -20,6 +20,7 @@ if engine == "pytorch":
         AutoencoderKoopman,
         AutoencoderMLP,
         AutoencoderVariational,
+        MultScaleAutoencoder,
         DeepONet,
         FlexibleDeepONet,
         ImprovedDeepONet,

@@ -12,7 +12,7 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple, Union, List
 
 import numpy as np
 import torch
@@ -1090,6 +1090,7 @@ class AutoencoderVariational(NetworkTemplate):
         latent_dim: Optional[int] = None,
         activation: Optional[Union[list, str]] = None,
         channels: Optional[int] = None,
+        kernel_size: Optional[int] = None,
         case: Optional[str] = None,
         architecture: Optional[str] = None,
         use_batch_norm: Optional[bool] = False,
@@ -1123,6 +1124,8 @@ class AutoencoderVariational(NetworkTemplate):
             The activation function to use in the networks. Defaults to None.
         channels : Optional[int], optional
             The number of channels in the input data. Defaults to None.
+        kernel_size : Optional[int]
+            Convolutional kernel size.
         case : Optional[str], optional
             The name of the autoencoder variant. Defaults to None.
         architecture : Optional[str], optional
@@ -1163,6 +1166,7 @@ class AutoencoderVariational(NetworkTemplate):
                 output_dim=output_dim,
                 activation=activation,
                 channels=channels,
+                kernel_size=kernel_size,
                 architecture=architecture,
                 case=case,
                 shallow=shallow,
@@ -1760,3 +1764,198 @@ class AutoencoderVariational(NetworkTemplate):
         input_data = input_data.to(self.device)
 
         return self.reconstruction_eval(input_data=input_data).cpu().detach().numpy()
+
+### Hybrid Autoencoder architectures
+
+class MultScaleAutoencoder(NetworkTemplate):
+
+    def __init__(self,
+                 input_dim: Tuple[int, ...] = None, 
+                 output_dim: Optional[Tuple[int, ...]] = None,
+                 latent_dim: int=None,
+                 kernel_sizes_list: List[int] = None, 
+                 activation: str = None,
+                 case: str = "2d",
+                 shallow:bool=True,
+                 devices:Union[str, List]="cpu",
+                 name:str=None) -> None:
+
+        super(MultScaleAutoencoder, self).__init__(name=name)
+
+        self.architecture = "cnn"
+        self.kernel_size_list = kernel_sizes_list
+
+        self.device = self._set_device(devices=devices)
+
+        self.AutoencodersList = torch.nn.ModuleList()
+
+        for kernel_size in kernel_sizes_list:
+
+            autoencoder = AutoencoderVariational(
+                        input_dim=input_dim,
+                        output_dim=output_dim,
+                        latent_dim=latent_dim,
+                        kernel_size=kernel_size,
+                        activation=activation,
+                        architecture=self.architecture,
+                        case=case,
+                        devices=devices,
+                        shallow=shallow,
+                        name=name,
+                    )
+
+            self.AutoencodersList.append(autoencoder)
+
+    def reconstruction_forward(
+        self, input_data: Union[np.ndarray, torch.Tensor] = None
+    ) -> torch.Tensor:
+        """
+        Applies the encoder, adds Gaussian noise to the encoded data, and then applies the decoder to generate a reconstructed output.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to pass through the autoencoder, by default None
+
+        Returns
+        -------
+        torch.Tensor
+            The reconstructed output of the autoencoder.
+
+       """
+
+        latent_list = list()
+        for ae in self.AutoencodersList:
+            latent = ae.projection(input_data=input_data)
+            latent_noisy_ = ae.latent_gaussian_noisy(input_data=latent)
+            latent_list.append(latent_noisy_)
+
+        latent_noisy = sum(latent_list)
+
+        reconstructed_list = list()
+        for ae in sel.AutoencodersList:
+            reconstructed_ = ae.reconstruction(input_data=latent_noisy)
+
+        reconstructed = sum(reconstructed_list)
+
+        return reconstructed
+
+    def reconstruction_eval(
+        self, input_data: Union[np.ndarray, torch.Tensor] = None
+    ) -> torch.Tensor:
+        """
+        Applies the encoder, computes the mean of the encoded data, and then applies the decoder to generate a reconstructed output.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to pass through the autoencoder, by default None
+
+        Returns
+        -------
+        torch.Tensor
+            The reconstructed output of the autoencoder.
+
+        """
+
+        latent_list = list()
+        for ae in self.AutoencodersList:
+            latent = ae.projection(input_data=input_data)
+            latent_noisy_ = ae.z_mean(latent)
+            latent_list.append(latent_noisy_)
+
+        latent_noisy = sum(latent_list)
+
+        reconstructed_list = list()
+        for ae in self.AutoencodersList:
+            reconstructed_ = ae.reconstruction(input_data=latent_noisy)
+            reconstructed_list.append(reconstructed_)
+
+        reconstructed = sum(reconstructed_list)
+
+        return reconstructed
+
+
+    def project(self, input_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
+        """
+        Projects the input data onto the autoencoder's latent space.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to project onto the autoencoder's latent space, by default None
+
+        Returns
+        -------
+        np.ndarray
+            The input data projected onto the autoencoder's latent space.
+
+        """
+
+        if isinstance(input_data, np.ndarray):
+            input_data = torch.from_numpy(input_data.astype(ARRAY_DTYPE))
+
+        input_data = input_data.to(self.device)
+
+        projected_data_latent = sum([ae.Mu(input_data=input_data)
+                                     for ae in self.AutoencodersList])
+
+        return projected_data_latent.cpu().detach().numpy()
+
+    def reconstruct(
+        self, input_data: Union[np.ndarray, torch.Tensor] = None
+    ) -> np.ndarray:
+        """
+        Reconstructs the input data using the trained autoencoder.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to reconstruct, by default None
+
+        Returns
+        -------
+        np.ndarray
+            The reconstructed data.
+
+        """
+
+        if isinstance(input_data, np.ndarray):
+            input_data = torch.from_numpy(input_data.astype(ARRAY_DTYPE))
+
+        input_data = input_data.to(self.device)
+
+        reconstructed_data = sum([ae.reconstruction(input_data=input_data)
+                                  for ae in self.AutoencodersList])
+
+        return reconstructed_data.cpu().detach().numpy()
+
+    def eval(self, input_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
+        """
+        Reconstructs the input data using the mean of the encoded data.
+
+        Parameters
+        ----------
+        input_data : Union[np.ndarray, torch.Tensor], optional
+            The input data to reconstruct, by default None
+
+        Returns
+        -------
+        np.ndarray
+            The reconstructed data.
+
+        """
+
+        if isinstance(input_data, np.ndarray):
+            input_data = torch.from_numpy(input_data.astype(ARRAY_DTYPE))
+
+        input_data = input_data.to(self.device)
+
+        return self.reconstruction_eval(input_data=input_data).cpu().detach().numpy()
+
+    def summary(self) -> None:
+
+        print(self)
+
+
+

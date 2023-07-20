@@ -69,6 +69,8 @@ class NetworkInstanceGen:
         dim: str = None,
         shallow: bool = False,
         use_batch_norm: bool = False,
+        kernel_size: Optional[int] = None,
+        **kwargs,
     ) -> None:
 
         """
@@ -84,7 +86,8 @@ class NetworkInstanceGen:
             The network will be shallow or not.  
         use_batch_norm : bool
             Batch normalization will be used or not.
-
+        kernel_size : Optional[int]
+            Convolutional kernel size.
         """
 
         self.shallow = shallow
@@ -129,11 +132,18 @@ class NetworkInstanceGen:
             # neural network
             self.channels = 16
             self.channels_multiplier = 2
-            self.kernel_size = 3
+
+            if kernel_size:
+                self.kernel_size = kernel_size
+                self.padding = "same"
+            else:
+                self.kernel_size = 3
+                self.padding = 1
+
             self.stride = 1
             self.pool_kernel_size = 2
             self.pool_stride = 2
-            self.padding = 1
+
             self.scale_factor = 2
             self.mode = self.interp_tag.get(dim)
             self.channels_position = 1
@@ -569,7 +579,7 @@ class NetworkInstanceGen:
         return self.architecture_class(**config_dict)
 
 
-# Templates used for creating autoenoders using automatically
+# Templates used for creating autoencoders using automatically
 # generated configurations
 
 
@@ -658,6 +668,7 @@ def cnn_autoencoder_auto(
     output_dim: Optional[Tuple[int, ...]] = None,
     activation: str = None,
     channels: int = None,
+    kernel_size: Optional[int] = None,
     case: str = None,
     use_batch_norm: bool = False,
     shallow: bool = False,
@@ -679,6 +690,8 @@ def cnn_autoencoder_auto(
         The activation function used in the autoencoder.
     channels : int
         The initial number of channels (filters).
+    kernel_size : Optional[int]
+        Size of the convolution kernel
     case : str
         The kind of convolution used: case in ['1d', '2d', '3d']
     use_batch_norm : bool
@@ -723,8 +736,10 @@ def cnn_autoencoder_auto(
     last_channels = output_dim[1]
 
     autogen_cnn = NetworkInstanceGen(
-        architecture="cnn", dim=case, use_batch_norm=use_batch_norm
+        architecture="cnn", dim=case, use_batch_norm=use_batch_norm,
+        kernel_size=kernel_size,
     )
+
     autogen_dense = NetworkInstanceGen(architecture="dense", shallow=shallow)
 
     # Default choice for the model name
@@ -777,6 +792,7 @@ def autoencoder_auto(
     output_dim: Optional[Union[int, Tuple[int, ...]]] = None,
     activation: str = None,
     channels: int = None,
+    kernel_size: Optional[int] = None,
     architecture: str = None,
     shallow: bool = False,
     use_batch_norm: bool = False,
@@ -800,6 +816,8 @@ def autoencoder_auto(
         The activation function used in the autoencoder.
     channels : int
         The initial number of channels (filters). Applicable for 'architecture' ='cnn'.
+    kernel_size : Optional[int]
+        Convolutional kernel size.
     architecture : str
         The kind of architecture used, 'cnn' or 'dense'.
     case : str
@@ -841,6 +859,7 @@ def autoencoder_auto(
             output_dim=output_dim,
             activation=activation,
             channels=channels,
+            kernel_size=kernel_size,
             case=case,
             shallow=shallow,
             use_batch_norm=use_batch_norm,
