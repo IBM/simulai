@@ -460,19 +460,3 @@ class MoEPool(NetworkTemplate):
 
         print(self)
 
-class MultScaleAutoencoder:
-
-
-    def __init__(self):
-
-        autoencoder = AutoencoderVariational(
-            input_dim=(None, 1, 128, 128),
-            latent_dim=8,
-            kernel_size=7,
-            activation="tanh",
-            architecture="cnn",
-            case="2d",
-            shallow=True,
-        )
-
-
