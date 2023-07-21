@@ -1779,7 +1779,8 @@ class MultiScaleAutoencoder(NetworkTemplate):
                  shallow:bool=True,
                  scale: float = 1e-3,
                  devices:Union[str, List]="cpu",
-                 name:str=None) -> None:
+                 name:str=None,
+                 **kwargs) -> None:
 
         super(MultiScaleAutoencoder, self).__init__(name=name)
 
@@ -1805,6 +1806,7 @@ class MultiScaleAutoencoder(NetworkTemplate):
                         devices=devices,
                         shallow=shallow,
                         name=name,
+                        **kwargs,
                     )
 
             self.AutoencodersList.append(autoencoder)
