@@ -1098,6 +1098,7 @@ class AutoencoderVariational(NetworkTemplate):
         scale: float = 1e-3,
         devices: Union[str, list] = "cpu",
         name: str = None,
+        **kwargs,
     ) -> None:
         """
         Constructor method.
@@ -1172,6 +1173,7 @@ class AutoencoderVariational(NetworkTemplate):
                 shallow=shallow,
                 use_batch_norm=use_batch_norm,
                 name=self.name,
+                **kwargs
             )
 
         self.encoder = encoder.to(self.device)

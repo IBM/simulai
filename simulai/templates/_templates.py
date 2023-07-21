@@ -673,6 +673,7 @@ def cnn_autoencoder_auto(
     use_batch_norm: bool = False,
     shallow: bool = False,
     name: str = None,
+    **kwargs,
 ) -> Tuple[NetworkTemplate, ...]:
 
     """
@@ -737,7 +738,7 @@ def cnn_autoencoder_auto(
 
     autogen_cnn = NetworkInstanceGen(
         architecture="cnn", dim=case, use_batch_norm=use_batch_norm,
-        kernel_size=kernel_size,
+        kernel_size=kernel_size, **kwargs,
     )
 
     autogen_dense = NetworkInstanceGen(architecture="dense", shallow=shallow)
@@ -798,6 +799,7 @@ def autoencoder_auto(
     use_batch_norm: bool = False,
     case: str = None,
     name: str = None,
+    **kwargs,
 ) -> Tuple[Union[NetworkTemplate, None], ...]:
 
     """
@@ -864,6 +866,7 @@ def autoencoder_auto(
             shallow=shallow,
             use_batch_norm=use_batch_norm,
             name=name,
+            **kwargs,
         )
 
         return encoder, decoder, bottleneck_encoder, bottleneck_decoder

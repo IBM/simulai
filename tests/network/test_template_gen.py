@@ -372,6 +372,7 @@ class TestAutoGenNet(TestCase):
             architecture="cnn",
             case="2d",
             shallow=True,
+            padding_mode='replicate',
         )
 
         estimated_data = autoencoder.eval(input_data=input_data)
@@ -392,6 +393,7 @@ class TestAutoGenNet(TestCase):
             case="2d",
             shallow=True,
             name="model",
+            padding_mode='replicate',
         )
 
         estimated_data = autoencoder.reconstruction_forward(input_data=input_data)
