@@ -1912,6 +1912,7 @@ class MultiScaleAutoencoder(NetworkTemplate):
         reconstructed_list = list()
         for ae in self.AutoencodersList:
             reconstructed_ = ae.reconstruction(input_data=latent_noisy)
+            reconstructed_list.append(reconstructed_)
 
         reconstructed = sum(reconstructed_list)
 
