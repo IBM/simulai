@@ -1781,6 +1781,7 @@ class MultiScaleAutoencoder(NetworkTemplate):
                  shallow:bool=True,
                  scale: float = 1e-3,
                  devices:Union[str, List]="cpu",
+                 kind_of_ae: str = "variational",
                  name:str=None,
                  **kwargs) -> None:
 
@@ -1790,14 +1791,19 @@ class MultiScaleAutoencoder(NetworkTemplate):
         self.kernel_size_list = kernel_sizes_list
         self.latent_dimension = latent_dim
         self.scale = scale
-
+        self.kind_of_ae = kind_of_ae
         self.device = self._set_device(devices=devices)
+
+        if self.kind_of_ae == "variational":
+            self.ae_class = AutoencoderVariational
+        else:
+            self.ae_class = AutoencoderCNN
 
         self.AutoencodersList = torch.nn.ModuleList()
 
         for kernel_size in kernel_sizes_list:
 
-            autoencoder = AutoencoderVariational(
+            autoencoder = self.ae_class(
                         input_dim=input_dim,
                         output_dim=output_dim,
                         latent_dim=latent_dim,
@@ -1813,6 +1819,8 @@ class MultiScaleAutoencoder(NetworkTemplate):
 
             self.AutoencodersList.append(autoencoder)
 
+        ### These methods are used just when the architecture chosen is
+        ### variational.
         self.z_mean = torch.nn.Linear(self.latent_dimension, self.latent_dimension).to(
             self.device
         )
@@ -1822,6 +1830,14 @@ class MultiScaleAutoencoder(NetworkTemplate):
 
         self.add_module("z_mean", self.z_mean)
         self.add_module("z_log_var", self.z_log_var)
+        ###
+
+        if self.kind_of_ae == "variational":
+            self.latent_op = self.latent_gaussian_noisy
+            self.latent_op_eval = self.z_mean
+        else:
+            self.latent_op = self.latent_bypass
+            self.latent_op_eval = self.latent_bypass
 
         self.weights = sum([ae.weights for ae in self.AutoencodersList], [])
 
@@ -1853,9 +1869,15 @@ class MultiScaleAutoencoder(NetworkTemplate):
         latent = sum(latent_list)
 
         if to_numpy == True:
-            return self.z_mean(latent).detach().numpy()
+            return self.latent_op_eval(latent).detach().numpy()
         else:
-            return self.z_mean(latent)
+            return self.latent_op_eval(latent)
+
+    def latent_bypass(
+        self, input_data: Union[np.ndarray, torch.Tensor] = None
+    ) -> torch.Tensor:
+
+        return input_data
 
     def latent_gaussian_noisy(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
@@ -1911,11 +1933,11 @@ class MultiScaleAutoencoder(NetworkTemplate):
             latent_list.append(latent)
 
         latent = sum(latent_list)
-        latent_noisy = self.latent_gaussian_noisy(input_data=latent)
+        latent_mod = self.latent_op(input_data=latent)
 
         reconstructed_list = list()
         for ae in self.AutoencodersList:
-            reconstructed_ = ae.reconstruction(input_data=latent_noisy)
+            reconstructed_ = ae.reconstruction(input_data=latent_mod)
             reconstructed_list.append(reconstructed_)
 
         reconstructed = sum(reconstructed_list)
@@ -1946,11 +1968,11 @@ class MultiScaleAutoencoder(NetworkTemplate):
             latent_list.append(latent)
 
         latent_ = sum(latent_list)
-        latent_noisy = self.z_mean(latent_)
+        latent_mod = self.latent_op_eval(latent_)
 
         reconstructed_list = list()
         for ae in self.AutoencodersList:
-            reconstructed_ = ae.reconstruction(input_data=latent_noisy)
+            reconstructed_ = ae.reconstruction(input_data=latent_mod)
             reconstructed_list.append(reconstructed_)
 
         reconstructed = sum(reconstructed_list)
