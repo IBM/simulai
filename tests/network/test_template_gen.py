@@ -393,6 +393,7 @@ class TestAutoGenNet(TestCase):
                 kernel_sizes_list=[3,5,7,9],
                 activation="tanh",
                 case="2d",
+                kind_of_ae=kind_of_ae,
                 shallow=True,
                 name="model",
                 padding_mode='replicate',

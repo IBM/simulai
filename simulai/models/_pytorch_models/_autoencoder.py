@@ -240,12 +240,14 @@ class AutoencoderCNN(NetworkTemplate):
         input_dim: Optional[Tuple[int, ...]] = None,
         output_dim: Optional[Tuple[int, ...]] = None,
         latent_dim: Optional[int] = None,
+        kernel_size: Optional[int] = None,
         activation: Optional[Union[list, str]] = None,
         channels: Optional[int] = None,
         case: Optional[str] = None,
         shallow: Optional[bool] = False,
         devices: Union[str, list] = "cpu",
         name: str = None,
+        **kwargs,
     ) -> None:
         """
         Initialize the AutoencoderCNN network.
@@ -312,6 +314,7 @@ class AutoencoderCNN(NetworkTemplate):
                 latent_dim=latent_dim,
                 output_dim=output_dim,
                 activation=activation,
+                kernel_size=kernel_size,
                 channels=channels,
                 case=case,
                 shallow=shallow,
