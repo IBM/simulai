@@ -1531,6 +1531,34 @@ class VAERMSELoss(LossBasics):
         use_mean: bool = True,
         beta: float = 1,
     ) -> Callable:
+
+        """
+
+        Parameters
+        ----------
+        input_data : Union[dict, torch.Tensor]
+            The data used as input for the model.
+        target_data : Union[dict, torch.Tensor]
+            The target data used to guide the model training.
+        call_back : str
+            A string to be used for printing log during the training.
+        relative : bool
+            Use relative norm (dividing by a norm of the target data) or not.
+        lambda_1 : float
+            Penalty for the L^1 norm of the weights (regularization term).
+        lambda_2 : float
+            Penalty for the L^2 norm of the weights (regularization term).
+        device : str
+            Device to be used for executing the method (`cpu` or `gpu`)
+        use_mean : bool
+            Use a mean operation or not. In negative case, a sum is used.
+        beta : float
+            Penalty for the Kulback-Leibler term. 
+        Returns
+        -------
+            A callable object used to evaluate the global loss function.
+        """
+
         l1_reg_multiplication = self._exec_multiplication_in_regularization(
             lambda_type=type(lambda_1), term_type=type(self.operator.weights_l1)
         )
