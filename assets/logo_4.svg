@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="297mm"
+   height="100mm"
+   viewBox="0 0 297 100"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="logo_4.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.49264169"
+     inkscape:cx="402.92976"
+     inkscape:cy="399.88495"
+     inkscape:window-width="1366"
+     inkscape:window-height="699"
+     inkscape:window-x="0"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient2353">
+      <stop
+         style="stop-color:#000000;stop-opacity:0.82468039;"
+         offset="0"
+         id="stop2349" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0.83711159;"
+         offset="1"
+         id="stop2351" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient1824">
+      <stop
+         style="stop-color:#ff004e;stop-opacity:0.64140517;"
+         offset="0"
+         id="stop1820" />
+      <stop
+         style="stop-color:#ff0011;stop-opacity:1;"
+         offset="1"
+         id="stop1822" />
+    </linearGradient>
+    <rect
+       x="500.57874"
+       y="116.21028"
+       width="332.23904"
+       height="204.91916"
+       id="rect1275" />
+    <rect
+       x="106.45818"
+       y="43.246922"
+       width="323.7045"
+       height="219.45094"
+       id="rect354" />
+    <rect
+       x="212.35451"
+       y="43.769505"
+       width="322.17218"
+       height="190.38606"
+       id="rect348" />
+    <rect
+       x="65.753555"
+       y="216.54013"
+       width="989.74176"
+       height="386.33966"
+       id="rect113" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1824"
+       id="linearGradient1826"
+       x1="506.91412"
+       y1="167.76294"
+       x2="610.59418"
+       y2="167.76294"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2353"
+       id="linearGradient2355"
+       x1="70.648598"
+       y1="283.1954"
+       x2="418.10776"
+       y2="283.1954"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     inkscape:label="Camada 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       transform="matrix(0.69295519,0.00340664,0,0.5687026,-34.023017,-101.07987)"
+       id="text111"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:119.882px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono';white-space:pre;shape-inside:url(#rect113);display:inline;fill:url(#linearGradient2355);fill-opacity:1;stroke:none;stroke-opacity:1"><tspan
+         x="65.753906"
+         y="325.03423"
+         id="tspan2969">SIMUL</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text346"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.25;font-family:FreeMono;-inkscape-font-specification:FreeMono;white-space:pre;shape-inside:url(#rect348);display:inline;fill:#000000;fill-opacity:1;stroke:none" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.47173722,0,0,0.47173722,-2.0602242,-35.667964)"
+       id="text1273"
+       style="font-size:96px;line-height:1.25;font-family:Waree;-inkscape-font-specification:'Waree, Normal';white-space:pre;shape-inside:url(#rect1275);display:inline;fill:url(#linearGradient1826);fill-opacity:1"><tspan
+         x="500.57812"
+         y="203.09094"
+         id="tspan2973"><tspan
+           style="font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono'"
+           id="tspan2971">ai</tspan></tspan></text>
+  </g>
+</svg>
