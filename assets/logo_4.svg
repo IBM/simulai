@@ -7,7 +7,7 @@
    viewBox="0 0 297 100"
    version="1.1"
    id="svg5"
-   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
    sodipodi:docname="logo_4.svg"
    inkscape:export-filename="logo_4.png"
    inkscape:export-xdpi="96"
@@ -32,9 +32,9 @@
      inkscape:cx="404.95964"
      inkscape:cy="399.88495"
      inkscape:window-width="1366"
-     inkscape:window-height="699"
+     inkscape:window-height="739"
      inkscape:window-x="0"
-     inkscape:window-y="32"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
@@ -116,8 +116,8 @@
        id="text111"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:119.882px;line-height:1.25;font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono';white-space:pre;shape-inside:url(#rect113);display:inline;fill:url(#linearGradient2355);fill-opacity:1;stroke:none;stroke-opacity:1"><tspan
          x="65.753906"
-         y="325.03423"
-         id="tspan150">SIMUL</tspan></text>
+         y="322.60849"
+         id="tspan1">SIMUL</tspan></text>
     <text
        xml:space="preserve"
        transform="scale(0.26458333)"
@@ -125,13 +125,13 @@
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.25;font-family:FreeMono;-inkscape-font-specification:FreeMono;white-space:pre;shape-inside:url(#rect348);display:inline;fill:#000000;fill-opacity:1;stroke:none" />
     <text
        xml:space="preserve"
-       transform="matrix(0.47173722,0,0,0.47173722,-2.0602242,-35.667964)"
+       transform="matrix(0.47173722,0,0,0.47173722,7.2243694,-37.224299)"
        id="text1273"
        style="font-size:96px;line-height:1.25;font-family:Waree;-inkscape-font-specification:'Waree, Normal';white-space:pre;shape-inside:url(#rect1275);display:inline;fill:url(#linearGradient1826);fill-opacity:1"><tspan
          x="500.57812"
-         y="203.09094"
-         id="tspan154"><tspan
+         y="201.14844"
+         id="tspan3"><tspan
            style="font-family:'IBM Plex Mono';-inkscape-font-specification:'IBM Plex Mono'"
-           id="tspan152">ai</tspan></tspan></text>
+           id="tspan2">ai</tspan></tspan></text>
   </g>
 </svg>
