@@ -6,4 +6,4 @@ from ._autoencoder import (
     MultiScaleAutoencoder,
 )
 from ._deeponet import DeepONet, FlexibleDeepONet, ImprovedDeepONet, ResDeepONet
-from ._miscellaneous import ImprovedDenseNetwork, MetaModel, ModelMaker, MultiNetwork, MoEPool
+from ._miscellaneous import ImprovedDenseNetwork, MetaModel, ModelMaker, MultiNetwork, MoEPool, SplitPool

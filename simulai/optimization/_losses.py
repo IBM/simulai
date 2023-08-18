@@ -18,6 +18,7 @@ from time import sleep
 
 import numpy as np
 import torch
+import torch.nn.functional as F
 
 from simulai import ARRAY_DTYPE
 from simulai.io import IntersectingBatches
@@ -1616,3 +1617,33 @@ class VAERMSELoss(LossBasics):
             sys.stdout.flush()
 
         return closure
+
+# Wrapper for the Binary Cross-entropy loss function
+class BCELoss(LossBasics):
+    def __init__(self, operator: torch.nn.Module) -> None:
+
+        self.loss_states = dict()
+        self.operator = operator
+
+    def __call__(self,
+                 input_data: Union[dict, torch.Tensor] = None,
+                 target_data: Union[dict, torch.Tensor] = None,
+                 call_back: str = ""
+                 ) -> None:
+
+        def closure():
+
+            output_tilde = self.operator(input_data)
+            loss = F.binary_cross_entropy(output_tilde, target_data)
+
+            loss.backward()
+
+            loss_str = ("loss: {}").format(loss)
+
+            self.loss_states["loss"].append(float(loss.detach().data))
+
+            sys.stdout.write(loss_str)
+            sys.stdout.flush()
+
+
+
