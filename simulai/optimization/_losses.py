@@ -1628,8 +1628,8 @@ class BCELoss(LossBasics):
     def __call__(self,
                  input_data: Union[dict, torch.Tensor] = None,
                  target_data: Union[dict, torch.Tensor] = None,
-                 call_back: str = ""
-                 ) -> None:
+                 call_back: str = "",
+                 **kwargs) -> None:
 
         def closure():
 
