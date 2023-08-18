@@ -521,7 +521,9 @@ class SplitPool(NetworkTemplate):
         self.output_size = self.experts_list[-1].output_size
 
         if not aggregation:
-            self.aggreate = self._aggregate_default
+            self.aggregate = self._aggregate_default
+        else:
+            self.aggregate = aggregation
 
         self.last_activation = self._get_operation(operation=last_activation)
 

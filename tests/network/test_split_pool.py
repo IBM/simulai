@@ -21,7 +21,7 @@ class TestSplitPool(TestCase):
         }
 
         experts_list = list()
-        n_experts = 4
+        n_experts = 10
 
         for ex in range(n_experts):
             experts_list.append(DenseNetwork(**config))
@@ -48,19 +48,19 @@ class TestSplitPool(TestCase):
             },
         )
 
-        n_inputs_b = 1
+        n_inputs_b = 10
         n_outputs = 1
 
         config = {
             "layers_units": 7 * [100],  # Hidden layers
             "activations": "tanh",
-            "input_size": n_inputs_b,
+            "input_size": 1,
             "output_size": n_outputs,
             "name": "branch_net",
         }
 
         experts_list = list()
-        n_experts = 4
+        n_experts = 10
         n_epochs = 10
 
         for ex in range(n_experts):
