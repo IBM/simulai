@@ -1622,7 +1622,7 @@ class VAERMSELoss(LossBasics):
 class BCELoss(LossBasics):
     def __init__(self, operator: torch.nn.Module) -> None:
 
-        self.loss_states = dict()
+        self.loss_states = {"loss":list()}
         self.operator = operator
 
     def __call__(self,
@@ -1645,5 +1645,5 @@ class BCELoss(LossBasics):
             sys.stdout.write(loss_str)
             sys.stdout.flush()
 
-
+        return closure
 
