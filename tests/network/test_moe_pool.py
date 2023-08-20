@@ -166,6 +166,6 @@ class TestMoEPool(TestCase):
             target_data=target_data,
             params=params,
             n_epochs=n_epochs,
-            loss="bce",
+            loss="rmse",
             device="gpu",
         )
