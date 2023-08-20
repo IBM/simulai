@@ -15,6 +15,7 @@ class TestSplitPool(TestCase):
         config = {
             "layers_units": 7 * [100],  # Hidden layers
             "activations": "tanh",
+            "last_activation": "softmax",
             "input_size": 1,
             "output_size": n_latent,
             "name": "branch_net",
@@ -54,6 +55,7 @@ class TestSplitPool(TestCase):
         config = {
             "layers_units": 7 * [100],  # Hidden layers
             "activations": "tanh",
+            "last_activation": "softmax",
             "input_size": 1,
             "output_size": n_outputs,
             "name": "branch_net",
@@ -104,6 +106,7 @@ class TestSplitPool(TestCase):
         config = {
             "layers_units": 7 * [100],  # Hidden layers
             "activations": "tanh",
+            "last_activation": "softmax",
             "input_size": 1,
             "output_size": n_outputs,
             "name": "branch_net",

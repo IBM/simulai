@@ -1622,6 +1622,8 @@ class VAERMSELoss(LossBasics):
 class BCELoss(LossBasics):
     def __init__(self, operator: torch.nn.Module) -> None:
 
+        super().__init__()
+
         self.loss_states = {"loss":list()}
         self.operator = operator
 
