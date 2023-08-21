@@ -1635,12 +1635,12 @@ class BCELoss(LossBasics):
 
         def closure():
 
-            output_tilde = self.operator(input_data)
+            output_tilde = self.operator.forward(input_data)
             loss = F.binary_cross_entropy(output_tilde, target_data)
 
             loss.backward()
 
-            loss_str = ("loss: {}").format(loss)
+            loss_str = ("\rloss: {}").format(loss)
 
             self.loss_states["loss"].append(float(loss.detach().data))
 

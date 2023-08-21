@@ -30,12 +30,13 @@ config = {
 
 experts_list = list()
 n_experts = 10
-n_epochs = 10
+n_epochs = 1000
 
 for ex in range(n_experts):
     experts_list.append(DenseNetwork(**config))
 
-net = SplitPool(experts_list=experts_list, input_size=n_inputs_b, devices="gpu")
+net = SplitPool(experts_list=experts_list, input_size=n_inputs_b,
+                devices="gpu", last_activation="softmax")
 
 input_data = np.random.rand(1_000, n_inputs_b)
 target_data = np.random.rand(1_000, n_outputs)
