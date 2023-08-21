@@ -29,6 +29,7 @@ if engine == "pytorch":
         ModelMaker,
         MultiNetwork,
         MoEPool,
+        SplitPool,
         ResDeepONet,
     )
 elif engine == "numpy":

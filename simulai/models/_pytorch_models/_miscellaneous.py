@@ -460,3 +460,118 @@ class MoEPool(NetworkTemplate):
 
         print(self)
 
+# Splitting features between experts
+class SplitPool(NetworkTemplate):
+
+    def __init__(
+        self,
+        experts_list: List[NetworkTemplate],
+        input_size: int = None,
+        aggregation: callable = None,
+        last_activation: str = "relu",
+        devices: Union[list, str] = None,
+        hidden_size: Optional[int] = None,
+    ) -> None:
+        super(SplitPool, self).__init__()
+
+        """
+        Mixture of Experts
+
+        Parameters
+        ----------
+
+        experts_list: List[NetworkTemplate]
+            The list of neural networks used as experts. 
+       input_size: int
+            The number of dimensions of the input.
+        devices: Union[list, str]
+            Device ("gpu" or "cpu") or list of devices in which
+            the model is placed.
+       hidden_size: Optional[int]
+            If information about the experts hidden size is required, which occurs, 
+            for instance, when they are ConvexDenseNetwork objects,
+            it is necessary to define this argument.
+
+        """
+
+        # Determining the kind of device to be used for allocating the
+        # subnetworks used in the DeepONet model
+        self.device = self._set_device(devices=devices)
+
+        self.experts_list = experts_list
+        self.n_experts = len(experts_list)
+        self.input_size = input_size
+        self.hidden_size = hidden_size
+
+        if self.hidden_size == None:
+            warnings.warn(
+                "hidden_size is None. If you are using a convex model, as ConvexDenseNetwork,"
+                + " it is better to provide a value for it."
+            )
+
+        # Sending each sub-network to the correct device
+        for ei, expert in enumerate(self.experts_list):
+            self.experts_list[ei] = expert.to(self.device)
+
+        for ii, item in enumerate(self.experts_list):
+            self.add_module(f"expert_{ii}", item)
+
+        self.weights = sum([i.weights for i in self.experts_list], [])
+
+        self.output_size = self.experts_list[-1].output_size
+
+        if not aggregation:
+            self.aggregate = self._aggregate_default
+        else:
+            self.aggregate = aggregation
+
+        self.last_activation = self._get_operation(operation=last_activation)
+
+    def _aggregate_default(self, output:List[torch.Tensor]) -> torch.Tensor:
+
+        output_ = torch.stack(output, dim=1)
+
+        return torch.prod(output_, dim=1)
+
+    # @guarantee_device
+    def forward(
+        self, input_data: Union[np.ndarray, torch.Tensor], **kwargs
+    ) -> torch.Tensor:
+        """
+        Forward method
+
+        Parameters
+        ----------
+
+        input_data: Union[np.ndarray, torch.Tensor]
+            Data to be evaluated using the MoE object.
+        kwargs: dict
+            Used for bypassing arguments not defined in this model.
+
+        Returns
+        -------
+
+        torch.Tensor
+            The output of the SplitPool evaluation.
+        """
+
+        if isinstance(input_data, dict):
+            input_data_ = input_data["input_data"]
+        else:
+            input_data_ = input_data
+
+        def _forward(worker: NetworkTemplate = None, index: int = None) -> torch.Tensor:
+            return worker.forward(input_data=input_data_[:, index][:, None], **kwargs)
+
+        output = list(map(_forward, self.experts_list, list(np.arange(self.n_experts).astype(int))))
+
+        return self.last_activation(self.aggregate(output))
+
+    def summary(self) -> None:
+        """
+        It prints a general view of the architecture.
+        """
+
+        print(self)
+
+
