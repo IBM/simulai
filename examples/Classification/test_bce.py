@@ -28,6 +28,17 @@ config = {
     "name": "branch_net",
 }
 
+agg_config = {
+    "layers_units": 7 * [100],  # Hidden layers
+    "activations": "tanh",
+    "last_activation": "softmax",
+    "input_size": n_inputs_b,
+    "output_size": n_outputs,
+    "name": "branch_net",
+}
+
+aggregation = DenseNetwork(**agg_config)
+
 experts_list = list()
 n_experts = 10
 n_epochs = 1000
@@ -35,7 +46,7 @@ n_epochs = 1000
 for ex in range(n_experts):
     experts_list.append(DenseNetwork(**config))
 
-net = SplitPool(experts_list=experts_list, input_size=n_inputs_b,
+net = SplitPool(experts_list=experts_list, input_size=n_inputs_b, aggregation=aggregation,
                 devices="gpu", last_activation="softmax")
 
 input_data = np.random.rand(1_000, n_inputs_b)

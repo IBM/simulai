@@ -529,7 +529,7 @@ class SplitPool(NetworkTemplate):
 
     def _aggregate_default(self, output:List[torch.Tensor]) -> torch.Tensor:
 
-        return torch.prod(output, dim=1)
+        return torch.prod(output, dim=1, keepdim=True)
 
     # @guarantee_device
     def forward(
@@ -563,7 +563,7 @@ class SplitPool(NetworkTemplate):
 
         output = list(map(_forward, self.experts_list, list(np.arange(self.n_experts).astype(int))))
 
-        output_ = torch.stack(output, dim=1)
+        output_ = torch.hstack(output)
 
         return self.last_activation(self.aggregate(output_))
 
