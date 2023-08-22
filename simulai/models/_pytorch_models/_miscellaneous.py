@@ -529,7 +529,7 @@ class SplitPool(NetworkTemplate):
 
     def _aggregate_default(self, output:List[torch.Tensor]) -> torch.Tensor:
 
-        return torch.prod(output_, dim=1)
+        return torch.prod(output, dim=1)
 
     # @guarantee_device
     def forward(
