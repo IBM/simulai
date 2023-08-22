@@ -553,13 +553,8 @@ class SplitPool(NetworkTemplate):
             The output of the SplitPool evaluation.
         """
 
-        if isinstance(input_data, dict):
-            input_data_ = input_data["input_data"]
-        else:
-            input_data_ = input_data
-
         def _forward(worker: NetworkTemplate = None, index: int = None) -> torch.Tensor:
-            return worker.forward(input_data=input_data_[:, index][:, None], **kwargs)
+            return worker.forward(input_data=input_data[:, index][:, None], **kwargs)
 
         output = list(map(_forward, self.experts_list, list(np.arange(self.n_experts).astype(int))))
 
