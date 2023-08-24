@@ -460,7 +460,7 @@ class MoEPool(NetworkTemplate):
 
         print(self)
 
-# Splitting features between experts
+# Splitting features among experts
 class SplitPool(NetworkTemplate):
 
     def __init__(
@@ -475,7 +475,7 @@ class SplitPool(NetworkTemplate):
         super(SplitPool, self).__init__()
 
         """
-        Mixture of Experts
+        Pool of experts to divide work
 
         Parameters
         ----------
@@ -531,7 +531,6 @@ class SplitPool(NetworkTemplate):
 
         return torch.prod(output, dim=1, keepdim=True)
 
-    # @guarantee_device
     def forward(
         self, input_data: Union[np.ndarray, torch.Tensor], **kwargs
     ) -> torch.Tensor:

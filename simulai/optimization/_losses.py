@@ -1632,6 +1632,21 @@ class BCELoss(LossBasics):
                  target_data: Union[dict, torch.Tensor] = None,
                  call_back: str = "",
                  **kwargs) -> None:
+        """
+
+        Parameters
+        ----------
+        input_data : Union[dict, torch.Tensor]
+            The data used as input for the model.
+        target_data : Union[dict, torch.Tensor]
+            The target data used to guide the model training.
+        call_back : str
+            A string to be used for printing log during the training.
+        Returns
+        -------
+            A callable object used to evaluate the global loss function.
+        """
+
 
         def closure():
 
