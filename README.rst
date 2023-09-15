@@ -143,6 +143,11 @@ Allan Moreira de Carvalho, João Lucas de Sousa Almeida and Alberto Costa
 Nogueira Jr. Data-driven reduced-order model for atmospheric CO2 dispersion. In AAAI 2022 Fall Symposium: The Role of AI in Responding to
 Climate Challenges, 2022.
 
+Pedro Roberto Barbosa Rocha, João Lucas de Sousa Almeida, Marcos Sebastião de Paula Gomes, Alberto Costa Nogueira,
+Reduced-order modeling of the two-dimensional Rayleigh–Bénard convection flow through a non-intrusive operator inference,
+Engineering Applications of Artificial Intelligence, Volume 126, Part B, 2023, 106923,
+ISSN 0952-1976, https://doi.org/10.1016/j.engappai.2023.106923. (https://www.sciencedirect.com/science/article/pii/S0952197623011077)
+
 References
 ==========
 
