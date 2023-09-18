@@ -38,7 +38,8 @@ class DeepONet(NetworkTemplate):
         devices: Union[str, list] = "cpu",
         product_type: str = None,
         rescale_factors: np.ndarray = None,
-        model_id=None,
+        model_id:str=None,
+        use_bias:bool=False,
     ) -> None:
         """
 
@@ -72,6 +73,7 @@ class DeepONet(NetworkTemplate):
         # Determining the kind of device to be used for allocating the
         # subnetworks used in the DeepONet model
         self.device = self._set_device(devices=devices)
+        self.use_bias = use_bias
 
         self.trunk_network = trunk_network.to(self.device)
         self.branch_network = branch_network.to(self.device)
@@ -115,18 +117,30 @@ class DeepONet(NetworkTemplate):
             f"{self.branch_network.output_size}"
         )
 
-        # Checking the compatibility of the subnetworks outputs for each kind of product being employed
+        # If bias is being used, check whether the network outputs are compatible.
+        if self.use_bias:
+            print("Bias is being used.")
+            self._bias_compatibility_is_correct(dim_trunk=self.trunk_network.output_size,
+                                                dim_branch=self.branch_network.output_size)
+            self.bias_wrapper = self._wrapper_bias_active
+        else:
+            self.bias_wrapper = self._wrapper_bias_inactive
+
+        # Checking the compatibility of the subnetworks outputs for each kind of product being employed.
         if self.product_type != "dense":
             output_branch = self.branch_network.output_size
             output_trunk = self.trunk_network.output_size
 
             # It checks if the inner product operation can be performed.
-            assert output_branch == output_trunk, (
-                f"The output dimensions for the sub-networks"
-                f" trunk and branch must be equal but are"
-                f" {output_branch}"
-                f" and {output_trunk}"
-            )
+            if not self.use_bias:
+                assert output_branch == output_trunk, (
+                    f"The output dimensions for the sub-networks"
+                    f" trunk and branch must be equal but are"
+                    f" {output_branch}"
+                    f" and {output_trunk}"
+                )
+            else:
+                print("Bias compatibility was already verified.")
         else:
             output_branch = self.branch_network.output_size
 
@@ -190,6 +204,13 @@ class DeepONet(NetworkTemplate):
                 return True
             else:
                 return False
+
+    def _bias_compatibility_is_correct(self, dim_trunk: Union[int, tuple],
+                                       dim_branch: Union[int, tuple]) -> bool:
+
+        assert dim_branch == dim_trunk + self.var_dim, ("When using bias, the dimension"+
+                                                        "of the branch output should be" +
+                                                        "trunk output + var_dim.")
 
     def _forward_decoder(
         self, output_trunk: torch.Tensor = None, output_branch: torch.Tensor = None
@@ -364,6 +385,29 @@ class DeepONet(NetworkTemplate):
     def weights(self) -> list:
         return sum([net.weights for net in self.subnetworks], [])
 
+    def _wrapper_bias_inactive(
+        self,
+        output_trunk: Union[np.ndarray, torch.Tensor] = None,
+        output_branch: Union[np.ndarray, torch.Tensor] = None,
+    ) -> torch.Tensor:
+
+        output = self._forward(output_trunk=output_trunk, output_branch=output_branch)
+
+        return output
+
+    def _wrapper_bias_active(
+        self,
+        output_trunk: Union[np.ndarray, torch.Tensor] = None,
+        output_branch: Union[np.ndarray, torch.Tensor] = None,
+    ) -> torch.Tensor:
+
+        output_branch_ = output_branch[:, :-self.var_dim]
+        bias = output_branch[:, -self.var_dim:]
+
+        output = self._forward(output_trunk=output_trunk, output_branch=output_branch_) + bias
+
+        return output
+
     def forward(
         self,
         input_trunk: Union[np.ndarray, torch.Tensor] = None,
@@ -392,7 +436,7 @@ class DeepONet(NetworkTemplate):
 
         output_branch = self.branch_network.forward(input_branch).to(self.device)
 
-        output = self._forward(output_trunk=output_trunk, output_branch=output_branch)
+        output = self.bias_wrapper(output_trunk=output_trunk, output_branch=output_branch)
 
         return output * self.rescale_factors
 
@@ -477,7 +521,8 @@ class ResDeepONet(DeepONet):
         rescale_factors: np.ndarray = None,
         residual: bool = True,
         multiply_by_trunk: bool = False,
-        model_id=None,
+        model_id:str=None,
+        use_bias:bool=False,
     ) -> None:
         """
 
@@ -522,6 +567,7 @@ class ResDeepONet(DeepONet):
             product_type=product_type,
             rescale_factors=rescale_factors,
             model_id=model_id,
+            use_bias=use_bias,
         )
 
         input_dim = self.branch_network.input_size
@@ -647,7 +693,8 @@ class ImprovedDeepONet(ResDeepONet):
         rescale_factors: np.ndarray = None,
         residual: bool = False,
         multiply_by_trunk: bool = False,
-        model_id=None,
+        model_id:str=None,
+        use_bias:bool=False,
     ) -> None:
         """
         The so-called Improved DeepONet architecture aims at enhancing the communication
@@ -705,6 +752,7 @@ class ImprovedDeepONet(ResDeepONet):
             residual=residual,
             multiply_by_trunk=multiply_by_trunk,
             model_id=model_id,
+            use_bias=use_bias,
         )
 
         self.encoder_trunk = encoder_trunk.to(self.device)
@@ -825,7 +873,8 @@ class FlexibleDeepONet(ResDeepONet):
         rescale_factors: np.ndarray = None,
         residual: bool = False,
         multiply_by_trunk: bool = False,
-        model_id=None,
+        model_id:str=None,
+        use_bias:bool=False,
     ) -> None:
         """
 
@@ -884,6 +933,7 @@ class FlexibleDeepONet(ResDeepONet):
             residual=residual,
             multiply_by_trunk=multiply_by_trunk,
             model_id=model_id,
+            use_bias=use_bias,
         )
 
         self.pre_network = pre_network

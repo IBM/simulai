@@ -28,6 +28,7 @@ def model(
     product_type=None,
     multiply_by_trunk: bool = False,
     n_outputs: int = 4,
+    use_bias:bool=False,
     residual: bool = False,
 ):
     from simulai.models import FlexibleDeepONet
@@ -41,6 +42,11 @@ def model(
         output_size = n_latent * n_outputs
     else:
         output_size = n_latent
+
+    if use_bias == True:
+        extra_dim = n_outputs
+    else:
+        extra_dim = 0
 
     # Configuration for the fully-connected trunk network
     trunk_config = {
@@ -64,7 +70,7 @@ def model(
         "layers_units": 7 * [100],  # Hidden layers
         "activations": "tanh",
         "input_size": n_inputs_b,
-        "output_size": n_latent * n_outputs,
+        "output_size": n_latent * n_outputs + extra_dim,
         "name": "branch_net",
     }
 
@@ -82,10 +88,10 @@ def model(
         product_type=product_type,
         residual=residual,
         model_id="net",
+        use_bias=use_bias,
     )
 
     return net
-
 
 class TestImprovedDeeponet(TestCase):
     def setUp(self) -> None:
@@ -140,7 +146,9 @@ class TestImprovedDeeponet(TestCase):
         optimizer = Optimizer("adam", params=optimizer_config)
 
         for product_type in [None, "dense"]:
+
             for multiply_by_trunk in [True, False]:
+
                 print(
                     f"Multiply by trunk: {multiply_by_trunk}, Product type: {product_type}"
                 )
@@ -162,6 +170,31 @@ class TestImprovedDeeponet(TestCase):
                 output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
 
                 assert output.shape[1] == 4, "The network output is not like expected."
+
+            for use_bias in [False]:
+
+                print(
+                    f"use_bias: {use_bias}, Product type: {product_type}"
+                )
+
+                net = model(
+                    use_bias=use_bias, product_type=product_type
+                )
+
+                optimizer.fit(
+                    op=net,
+                    input_data=input_data,
+                    target_data=output_target,
+                    n_epochs=n_epochs,
+                    loss="wrmse",
+                    params=params,
+                    device=DEVICE,
+                )
+
+                output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
+
+                assert output.shape[1] == 4, "The network output is not like expected."
+
 
     # Vanilla DeepONets are single output
     def test_vanilla_deeponet_train(self):
