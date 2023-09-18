@@ -28,6 +28,7 @@ def model(
     product_type=None,
     multiply_by_trunk: bool = False,
     n_outputs: int = 4,
+    use_bias:bool=False,
     residual: bool = False,
 ):
     import numpy as np
@@ -44,6 +45,11 @@ def model(
     else:
         output_size = n_latent
 
+    if use_bias == True:
+        extra_dim = n_outputs
+    else:
+        extra_dim = 0
+    
     # Configuration for the fully-connected trunk network
     trunk_config = {
         "layers_units": 6 * [100],  # Hidden layers
@@ -58,7 +64,7 @@ def model(
         "layers_units": 6 * [100],  # Hidden layers
         "activations": "tanh",
         "input_size": n_inputs_b,
-        "output_size": n_latent * n_outputs,
+        "output_size": n_latent * n_outputs + extra_dim,
         "name": "branch_net",
     }
 
@@ -85,6 +91,7 @@ def model(
         residual=residual,
         devices=DEVICE,
         model_id="net",
+        use_bias=use_bias,
     )
 
     return net
@@ -159,6 +166,29 @@ class TestImprovedDeeponet(TestCase):
                 output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
 
                 assert output.shape[1] == 4, "The network output is not like expected."
+
+        for use_bias in [False]:
+            print(
+                f"use_bias: {use_bias}, Product type: {product_type}"
+            )
+
+            net = model(
+                use_bias=use_bias, product_type=None,
+            )
+
+            optimizer.fit(
+                op=net,
+                input_data=input_data,
+                target_data=output_target,
+                n_epochs=n_epochs,
+                loss="wrmse",
+                params=params,
+                device=DEVICE,
+            )
+
+            output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
+
+            assert output.shape[1] == 4, "The network output is not like expected."
 
     # Vanilla DeepONets are single output
     def test_vanilla_deeponet_train(self):
