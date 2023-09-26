@@ -68,21 +68,21 @@ class DeepONet(NetworkTemplate):
 
         """
 
-        super(DeepONet, self).__init__()
+        super(DeepONet, self).__init__(devices=devices)
 
         # Determining the kind of device to be used for allocating the
         # subnetworks used in the DeepONet model
         self.device = self._set_device(devices=devices)
         self.use_bias = use_bias
 
-        self.trunk_network = trunk_network.to(self.device)
-        self.branch_network = branch_network.to(self.device)
+        self.trunk_network = self.to_wrap(entity=trunk_network, device=self.device)
+        self.branch_network = self.to_wrap(entity=branch_network, device=self.device)
 
         self.add_module("trunk_network", self.trunk_network)
         self.add_module("branch_network", self.branch_network)
 
         if decoder_network is not None:
-            self.decoder_network = decoder_network.to(self.device)
+            self.decoder_network = self.to_wrap(entity=decoder_network, device=self.device)
             self.add_module("decoder_network", self.decoder_network)
         else:
             self.decoder_network = decoder_network
@@ -100,7 +100,7 @@ class DeepONet(NetworkTemplate):
         else:
             rescale_factors = torch.from_numpy(np.ones(self.var_dim).astype("float32"))
 
-        self.rescale_factors = rescale_factors.to(self.device)
+        self.rescale_factors = self.to_wrap(entity=rescale_factors, device=self.device)
 
         # Checking up whether the output of each subnetwork are in correct shape
         assert self._latent_dimension_is_correct(self.trunk_network.output_size), (
@@ -432,9 +432,11 @@ class DeepONet(NetworkTemplate):
         """
 
         # Forward method execution
-        output_trunk = self.trunk_network.forward(input_trunk).to(self.device)
+        output_trunk = self.to_wrap(entity=self.trunk_network.forward(input_trunk),
+                                    device=self.device)
 
-        output_branch = self.branch_network.forward(input_branch).to(self.device)
+        output_branch = self.to_wrap(entity=self.branch_network.forward(input_branch),
+                                     device=self.device)
 
         output = self.bias_wrapper(output_trunk=output_trunk, output_branch=output_branch)
 
@@ -755,8 +757,8 @@ class ImprovedDeepONet(ResDeepONet):
             use_bias=use_bias,
         )
 
-        self.encoder_trunk = encoder_trunk.to(self.device)
-        self.encoder_branch = encoder_branch.to(self.device)
+        self.encoder_trunk = self.to_wrap(entity=encoder_trunk, device=self.device)
+        self.encoder_branch = self.to_wrap(entity=encoder_branch, device=self.device)
 
         self.add_module("encoder_trunk", self.encoder_trunk)
         self.add_module("encoder_branch", self.encoder_branch)
@@ -791,13 +793,15 @@ class ImprovedDeepONet(ResDeepONet):
         v = self.encoder_trunk.forward(input_data=input_trunk)
         u = self.encoder_branch.forward(input_data=input_branch)
 
-        output_trunk = self.trunk_network.forward(input_data=input_trunk, u=u, v=v).to(
-            self.device
+        output_trunk = self.to_wrap(entity=self.trunk_network.forward(
+                                    input_data=input_trunk, u=u, v=v),
+                                    device=self.device
         )
 
-        output_branch = self.branch_network.forward(
-            input_data=input_branch, u=u, v=v
-        ).to(self.device)
+        output_branch =  self.to_wrap(entity=self.branch_network.forward(
+                                      input_data=input_branch, u=u, v=v),
+                                      device=self.device
+        )
 
         output = self._forward(output_trunk=output_trunk, output_branch=output_branch)
 
@@ -936,7 +940,7 @@ class FlexibleDeepONet(ResDeepONet):
             use_bias=use_bias,
         )
 
-        self.pre_network = pre_network
+        self.pre_network = self.to_wrap(entity=pre_network, device=self.device)
         self.forward_ = self._forward_flexible
         self.subnetworks += [self.pre_network]
         self.subnetworks_names += ["pre"]
@@ -974,17 +978,19 @@ class FlexibleDeepONet(ResDeepONet):
         """
 
         # Forward method execution
-        output_branch = self.branch_network.forward(input_data=input_branch).to(
-            self.device
+        output_branch = self.to_wrap(entity=self.branch_network.forward(input_data=input_branch),
+                                     device=self.device
         )
 
-        rescaling = self.pre_network.forward(input_data=input_branch).to(self.device)
+        rescaling = self.to_wrap(entity=self.pre_network.forward(input_data=input_branch),
+                                 device=self.device)
+
         input_trunk_rescaled = self._rescaling_operation(
             input_data=input_trunk, rescaling_tensor=rescaling
         )
 
-        output_trunk = self.trunk_network.forward(input_data=input_trunk_rescaled).to(
-            self.device
+        output_trunk = self.to_wrap(entity=self.trunk_network.forward(input_data=input_trunk_rescaled), 
+                                    device=self.device
         )
 
         output = self._forward(output_trunk=output_trunk, output_branch=output_branch)

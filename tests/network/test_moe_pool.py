@@ -27,15 +27,24 @@ class TestMoEPool(TestCase):
         for ex in range(n_experts):
             experts_list.append(DenseNetwork(**config))
 
-        net = MoEPool(experts_list=experts_list, input_size=n_inputs_b, devices="gpu")
+        for device in ["cpu", "gpu", None]:
 
-        input_data = np.random.rand(1_000, n_inputs_b)
+            net = MoEPool(experts_list=experts_list, input_size=n_inputs_b, devices=device)
 
-        estimated_output = net.eval(input_data=input_data)
-        weights = net.gate(input_data=input_data)
+            # Checking if the model is coretly placed when no device is
+            # informed
+            if not device:
+                assert net.device == "cpu", ("When no device is provided it is expected the model"+
+                                             f"being on cpu, but received {net.device}.")
 
-        assert estimated_output.shape[1] == n_latent * n_outputs
-        assert weights.shape[1] == n_experts
+
+            input_data = np.random.rand(1_000, n_inputs_b)
+
+            estimated_output = net.eval(input_data=input_data)
+            weights = net.gate(input_data=input_data)
+
+            assert estimated_output.shape[1] == n_latent * n_outputs
+            assert weights.shape[1] == n_experts
 
     def test_moe_pool_binary(self):
         n_inputs_b = 20
@@ -58,19 +67,28 @@ class TestMoEPool(TestCase):
 
         input_data = np.random.rand(1_000, n_inputs_b)
 
-        net = MoEPool(
-            experts_list=experts_list,
-            input_size=n_inputs_b,
-            binary_selection=True,
-            devices="gpu",
-        )
+        for device in ["cpu", "gpu", None]:
 
-        weights = net.gate(input_data=input_data)
-        weights = weights.numpy()
+            net = MoEPool(
+                experts_list=experts_list,
+                input_size=n_inputs_b,
+                binary_selection=True,
+                devices=device,
+            )
 
-        assert np.array_equal(
-            np.where(weights == 1, 0, weights), np.zeros_like(weights)
-        )
+            # Checking if the model is coretly placed when no device is
+            # informed
+            if not device:
+                assert net.device == "cpu", ("When no device is provided it is expected the model"+
+                                             f"being on cpu, but received {net.device}.")
+
+
+            weights = net.gate(input_data=input_data)
+            weights = weights.numpy()
+
+            assert np.array_equal(
+                np.where(weights == 1, 0, weights), np.zeros_like(weights)
+            )
 
     def test_moe_pool_optimization(self):
         lr = 1e-3

@@ -25,7 +25,7 @@ from simulai import ARRAY_DTYPE
 
 # Template for a generic neural network
 class NetworkTemplate(torch.nn.Module):
-    def __init__(self, name: str = None) -> None:
+    def __init__(self, name: str = None, devices: str = None) -> None:
         super(NetworkTemplate, self).__init__()
 
         # Default choice for the model name
@@ -45,6 +45,12 @@ class NetworkTemplate(torch.nn.Module):
         self.initializations = None
 
         self.shapes_dict = None
+        self.device_type = devices
+
+        if self.device_type:
+            self.to_wrap = self._to_explicit_device
+        else:
+            self.to_wrap = self._to_bypass
 
     @property
     def weights_l2(self) -> torch.Tensor:
@@ -249,6 +255,16 @@ class NetworkTemplate(torch.nn.Module):
             partitions += [ii] * n_dof
 
         return stitch_indices
+
+    def _to_explicit_device(self, entity:Union[torch.nn.Module, torch.Tensor],
+                            device:str=None) -> Union[torch.nn.Module, torch.Tensor]:
+
+        return entity.to(device)
+
+    def _to_bypass(self, entity:Union[torch.nn.Module, torch.Tensor],
+                   device:str=None) -> Union[torch.nn.Module, torch.Tensor]:
+
+        return entity
 
     # It returns all the model parameters in a single array.
     def get_parameters(self) -> np.ndarray:

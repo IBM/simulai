@@ -13,7 +13,7 @@
 #     limitations under the License.
 
 from unittest import TestCase
-
+from typing import Optional
 import numpy as np
 from tests.config import configure_dtype
 torch = configure_dtype()
@@ -30,6 +30,7 @@ def model(
     n_outputs: int = 4,
     use_bias:bool=False,
     residual: bool = False,
+    device:Optional[str]="cpu"
 ):
     import numpy as np
 
@@ -49,7 +50,7 @@ def model(
         extra_dim = n_outputs
     else:
         extra_dim = 0
-    
+
     # Configuration for the fully-connected trunk network
     trunk_config = {
         "layers_units": 6 * [100],  # Hidden layers
@@ -79,6 +80,11 @@ def model(
     trunk_net.summary()
     branch_net.summary()
 
+    if not device:
+        DEVICE_=None
+    else:
+        DEVICE_=DEVICE
+
     net = ImprovedDeepONet(
         trunk_network=trunk_net,
         branch_network=branch_net,
@@ -89,7 +95,7 @@ def model(
         product_type=product_type,
         multiply_by_trunk=multiply_by_trunk,
         residual=residual,
-        devices=DEVICE,
+        devices=DEVICE_,
         model_id="net",
         use_bias=use_bias,
     )
@@ -102,29 +108,38 @@ class TestImprovedDeeponet(TestCase):
         pass
 
     def test_deeponet_forward(self):
-        net = model()
-        net.summary()
 
-        data_trunk = torch.rand(1_000, 1)
-        data_branch = torch.rand(1_000, 4)
+        for device in ["cpu", "gpu", None]:
 
-        print(f"Network has {net.n_parameters} parameters.")
+            net = model()
+            net.summary()
 
-        output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
+            # Checking if the model is coretly placed when no device is
+            # informed
+            if not device:
+                assert net.device == "cpu", ("When no device is provided it is expected the model"+
+                                             f"being on cpu, but received {net.device}.")
 
-        assert output.shape[1] == 4, "The network output is not like expected."
+            data_trunk = torch.rand(1_000, 1)
+            data_branch = torch.rand(1_000, 4)
 
-        output = net.eval_subnetwork(
-            name="trunk", trunk_data=data_trunk, branch_data=data_branch
-        )
-        assert output.shape[1] == 400, "The network output is not like expected."
-        assert isinstance(output, np.ndarray)
+            print(f"Network has {net.n_parameters} parameters.")
 
-        output = net.eval_subnetwork(
-            name="branch", trunk_data=data_trunk, branch_data=data_branch
-        )
-        assert output.shape[1] == 400, "The network output is not like expected."
-        assert isinstance(output, np.ndarray)
+            output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
+
+            assert output.shape[1] == 4, "The network output is not like expected."
+
+            output = net.eval_subnetwork(
+                name="trunk", trunk_data=data_trunk, branch_data=data_branch
+            )
+            assert output.shape[1] == 400, "The network output is not like expected."
+            assert isinstance(output, np.ndarray)
+
+            output = net.eval_subnetwork(
+                name="branch", trunk_data=data_trunk, branch_data=data_branch
+            )
+            assert output.shape[1] == 400, "The network output is not like expected."
+            assert isinstance(output, np.ndarray)
 
     def test_deeponet_train(self):
         from simulai.optimization import Optimizer

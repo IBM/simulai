@@ -106,8 +106,8 @@ class AutoencoderMLP(NetworkTemplate):
         # subnetworks used in the DeepONet model
         self.device = self._set_device(devices=devices)
 
-        self.encoder = encoder.to(self.device)
-        self.decoder = decoder.to(self.device)
+        self.encoder = self.to_wrap(entity=encoder, device=self.device)
+        self.decoder = self.to_wrap(entity=decoder, device=self.device)
 
         self.add_module("encoder", self.encoder)
         self.add_module("decoder", self.decoder)
@@ -320,10 +320,10 @@ class AutoencoderCNN(NetworkTemplate):
                 shallow=shallow,
             )
 
-        self.encoder = encoder.to(self.device)
-        self.bottleneck_encoder = bottleneck_encoder.to(self.device)
-        self.bottleneck_decoder = bottleneck_decoder.to(self.device)
-        self.decoder = decoder.to(self.device)
+        self.encoder = self.to_wrap(entity=encoder, device=self.device)
+        self.bottleneck_encoder = self.to_wrap(entity=bottleneck_encoder, device=self.device)
+        self.bottleneck_decoder = self.to_wrap(entity=bottleneck_decoder, device=self.device)
+        self.decoder = self.to_wrap(entity=decoder, device=self.device)
 
         self.add_module("encoder", self.encoder)
         self.add_module("bottleneck_encoder", self.bottleneck_encoder)
@@ -383,7 +383,7 @@ class AutoencoderCNN(NetworkTemplate):
                 input_shape = self.encoder.input_size
                 input_shape[0] = 1
 
-                input_data = torch.ones(input_shape).to(self.device)
+                input_data = self.to_wrap(entity=torch.ones(input_shape), device=self.device)
 
                 btnk_input = self.encoder.forward(input_data=input_data)
 
@@ -680,8 +680,8 @@ class AutoencoderKoopman(NetworkTemplate):
 
         # These subnetworks are optional
         if bottleneck_encoder is not None and bottleneck_decoder is not None:
-            self.bottleneck_encoder = bottleneck_encoder.to(self.device)
-            self.bottleneck_decoder = bottleneck_decoder.to(self.device)
+            self.bottleneck_encoder = self.to_wrap(entity=bottleneck_encoder, device=self.device)
+            self.bottleneck_decoder = self.to_wrap(entity=bottleneck_decoder, device=self.device)
 
             self.add_module("bottleneck_encoder", self.bottleneck_encoder)
             self.add_module("bottleneck_decoder", self.bottleneck_decoder)
@@ -691,8 +691,8 @@ class AutoencoderKoopman(NetworkTemplate):
 
         # These subnetworks are optional
         if bottleneck_encoder is not None and bottleneck_decoder is not None:
-            self.bottleneck_encoder = bottleneck_encoder.to(self.device)
-            self.bottleneck_decoder = bottleneck_decoder.to(self.device)
+            self.bottleneck_encoder = self.to_wrap(entity=bottleneck_encoder, device=self.device)
+            self.bottleneck_decoder = self.to_wrap(entity=bottleneck_decoder, device=self.device)
 
             self.add_module("bottleneck_encoder", self.bottleneck_encoder)
             self.add_module("bottleneck_decoder", self.bottleneck_decoder)
@@ -717,9 +717,9 @@ class AutoencoderKoopman(NetworkTemplate):
         else:
             self.latent_dimension = self.encoder.output_size
 
-        self.K_op = torch.nn.Linear(
+        self.K_op = self.to_wrap(entity=torch.nn.Linear(
             self.latent_dimension, self.latent_dimension, bias=False
-        ).weight.to(self.device)
+        ).weight, device=self.device)
 
         self.encoder_activation = self._get_operation(operation=encoder_activation)
 
@@ -752,7 +752,7 @@ class AutoencoderKoopman(NetworkTemplate):
                 input_shape = self.encoder.input_size
                 input_shape[0] = 1
 
-                input_data = torch.ones(input_shape).to(self.device)
+                input_data = self.to_wrap(entity=torch.ones(input_shape), device=self.device)
 
                 btnk_input = self.encoder.forward(input_data=input_data)
 
@@ -1179,7 +1179,7 @@ class AutoencoderVariational(NetworkTemplate):
                 **kwargs
             )
 
-        self.encoder = encoder.to(self.device)
+        self.encoder = self.to_wrap(entity=encoder, device=self.device)
         self.decoder = decoder.to(self.device)
 
         self.add_module("encoder", self.encoder)
@@ -1192,8 +1192,8 @@ class AutoencoderVariational(NetworkTemplate):
 
         # These subnetworks are optional
         if bottleneck_encoder is not None and bottleneck_decoder is not None:
-            self.bottleneck_encoder = bottleneck_encoder.to(self.device)
-            self.bottleneck_decoder = bottleneck_decoder.to(self.device)
+            self.bottleneck_encoder = self.to_wrap(entity=bottleneck_encoder, device=self.device)
+            self.bottleneck_decoder = self.to_wrap(entity=bottleneck_decoder, device=self.device)
 
             self.add_module("bottleneck_encoder", self.bottleneck_encoder)
             self.add_module("bottleneck_decoder", self.bottleneck_decoder)
@@ -1220,12 +1220,15 @@ class AutoencoderVariational(NetworkTemplate):
         else:
             self.latent_dimension = self.encoder.output_size
 
-        self.z_mean = torch.nn.Linear(self.latent_dimension, self.latent_dimension).to(
-            self.device
+        self.z_mean = self.to_wrap(entity=torch.nn.Linear(self.latent_dimension,
+                                                          self.latent_dimension),
+            device=self.device
         )
-        self.z_log_var = torch.nn.Linear(
-            self.latent_dimension, self.latent_dimension
-        ).to(self.device)
+
+        self.z_log_var = self.to_wrap(entity=torch.nn.Linear(self.latent_dimension,
+                                                            self.latent_dimension),
+            device=self.device
+        )
 
         self.add_module("z_mean", self.z_mean)
         self.add_module("z_log_var", self.z_log_var)
@@ -1315,7 +1318,7 @@ class AutoencoderVariational(NetworkTemplate):
 
                 input_shape[0] = 1
 
-                input_data = torch.ones(input_shape).to(self.device)
+                input_data = self.to_wrap(entity=torch.ones(input_shape), device=self.device)
 
                 btnk_input = self.encoder.forward(input_data=input_data)
 
@@ -1824,12 +1827,15 @@ class MultiScaleAutoencoder(NetworkTemplate):
 
         ### These methods are used just when the architecture chosen is
         ### variational.
-        self.z_mean = torch.nn.Linear(self.latent_dimension, self.latent_dimension).to(
-            self.device
+        self.z_mean = self.to_wrap(entity=torch.nn.Linear(self.latent_dimension,
+                                                          self.latent_dimension),
+            device=self.device
         )
-        self.z_log_var = torch.nn.Linear(
-            self.latent_dimension, self.latent_dimension
-        ).to(self.device)
+
+        self.z_log_var = self.to_wrap(entity=torch.nn.Linear(self.latent_dimension,
+                                                             self.latent_dimension),
+            device=self.device
+        )
 
         self.add_module("z_mean", self.z_mean)
         self.add_module("z_log_var", self.z_log_var)

@@ -234,13 +234,25 @@ class TestAutoGenNet(TestCase):
         assert estimated_data.shape == input_data.shape
 
         # Removing explicit reference to output_dim
-        autoencoder = AutoencoderMLP(input_dim=64, latent_dim=8, activation="tanh")
 
-        autoencoder.summary()
+        for device in ["cpu", "gpu", None]:
 
-        estimated_data = autoencoder.eval(input_data=input_data)
+            autoencoder = AutoencoderMLP(input_dim=64,
+                                         latent_dim=8,
+                                         activation="tanh",
+                                         devices=device)
 
-        assert estimated_data.shape == input_data.shape
+            # Checking if the model is coretly placed when no device is
+            # informed
+            if not device:
+                assert autoencoder.device == "cpu", ("When no device is provided it is expected the model"+
+                                             f"being on cpu, but received {net.device}.")
+
+            autoencoder.summary()
+
+            estimated_data = autoencoder.eval(input_data=input_data)
+
+            assert estimated_data.shape == input_data.shape
 
     def test_autoencoder_cnn(self) -> None:
         from simulai.models import AutoencoderCNN
@@ -260,13 +272,25 @@ class TestAutoGenNet(TestCase):
         assert estimated_data.shape == input_data.shape
 
         # Removing explicit reference to output_dim
-        autoencoder = AutoencoderCNN(
-            input_dim=(None, 1, 64, 64), latent_dim=8, activation="tanh", case="2d"
-        )
+        for device in ["cpu", "gpu", None]:
 
-        estimated_data = autoencoder.eval(input_data=input_data)
+            autoencoder = AutoencoderCNN(
+                input_dim=(None, 1, 64, 64),
+                latent_dim=8,
+                activation="tanh",
+                case="2d",
+                devices=device
+            )
 
-        assert estimated_data.shape == input_data.shape
+            # Checking if the model is coretly placed when no device is
+            # informed
+            if not device:
+                assert autoencoder.device == "cpu", ("When no device is provided it is expected the model"+
+                                             f"being on cpu, but received {net.device}.")
+
+            estimated_data = autoencoder.eval(input_data=input_data)
+
+            assert estimated_data.shape == input_data.shape
 
     def test_autoencoder_koopman(self) -> None:
         from simulai.models import AutoencoderKoopman
@@ -286,19 +310,28 @@ class TestAutoGenNet(TestCase):
 
         assert estimated_data.shape == input_data.shape
 
-        # Removing explicit reference to output_dim
-        autoencoder = AutoencoderKoopman(
-            input_dim=(None, 1, 64, 64),
-            latent_dim=8,
-            activation="tanh",
-            architecture="cnn",
-            case="2d",
-        )
+        for device in ["cpu", "gpu", None]:
 
-        autoencoder.summary()
-        estimated_data = autoencoder.predict(input_data=input_data, n_steps=1)
+            # Removing explicit reference to output_dim
+            autoencoder = AutoencoderKoopman(
+                input_dim=(None, 1, 64, 64),
+                latent_dim=8,
+                activation="tanh",
+                architecture="cnn",
+                case="2d",
+                devices=device,
+            )
 
-        assert estimated_data.shape == input_data.shape
+            # Checking if the model is coretly placed when no device is
+            # informed
+            if not device:
+                assert autoencoder.device == "cpu", ("When no device is provided it is expected the model"+
+                                             f"being on cpu, but received {net.device}.")
+
+            autoencoder.summary()
+            estimated_data = autoencoder.predict(input_data=input_data, n_steps=1)
+
+            assert estimated_data.shape == input_data.shape
 
     def test_autoencoder_rectangle(self) -> None:
         from simulai.models import AutoencoderVariational
@@ -364,63 +397,91 @@ class TestAutoGenNet(TestCase):
 
         input_data = np.random.rand(100, 1, 128, 128)
 
-        autoencoder = AutoencoderVariational(
-            input_dim=(None, 1, 128, 128),
-            latent_dim=8,
-            kernel_size=7,
-            activation="tanh",
-            architecture="cnn",
-            case="2d",
-            shallow=True,
-            padding_mode='replicate',
-        )
+        for device in ["cpu", "gpu", None]:
 
-        estimated_data = autoencoder.eval(input_data=input_data)
-        autoencoder.summary()
-
-        assert estimated_data.shape == input_data.shape
-
-    def test_autoencoder_multiscaleautoencoder(self) -> None:
-        from simulai.models import MultiScaleAutoencoder
-
-        input_data = np.random.rand(100, 1, 128, 128)
-
-        for kind_of_ae in ["variational", "vanilla"]:
-
-            autoencoder = MultiScaleAutoencoder(
+            autoencoder = AutoencoderVariational(
                 input_dim=(None, 1, 128, 128),
                 latent_dim=8,
-                kernel_sizes_list=[3,5,7,9],
+                kernel_size=7,
                 activation="tanh",
+                architecture="cnn",
                 case="2d",
-                kind_of_ae=kind_of_ae,
                 shallow=True,
-                name="model",
+                device=device,
                 padding_mode='replicate',
             )
 
-            estimated_data = autoencoder.reconstruction_forward(input_data=input_data)
+            # Checking if the model is coretly placed when no device is
+            # informed
+            if not device:
+                assert autoencoder.device == "cpu", ("When no device is provided it is expected the model"+
+                                             f"being on cpu, but received {net.device}.")
+
             estimated_data = autoencoder.eval(input_data=input_data)
             autoencoder.summary()
 
             assert estimated_data.shape == input_data.shape
 
+    def test_autoencoder_multiscaleautoencoder(self) -> None:
+        from simulai.models import MultiScaleAutoencoder
+
+        for device in ["cpu", "gpu", None]:
+
+            input_data = np.random.rand(100, 1, 32, 32)
+
+            for kind_of_ae in ["variational", "vanilla"]:
+
+                autoencoder = MultiScaleAutoencoder(
+                    input_dim=(None, 1, 32, 32),
+                    latent_dim=8,
+                    kernel_sizes_list=[3,5,7,9],
+                    activation="tanh",
+                    case="2d",
+                    kind_of_ae=kind_of_ae,
+                    shallow=True,
+                    name="model",
+                    devices=device,
+                    padding_mode='replicate',
+                )
+
+                # Checking if the model is coretly placed when no device is
+                # informed
+                if not device:
+                    assert autoencoder.device == "cpu", ("When no device is provided it is expected the model"+
+                                                 f"being on cpu, but received {net.device}.")
+
+                estimated_data = autoencoder.reconstruction_forward(input_data=input_data)
+                estimated_data = autoencoder.eval(input_data=input_data)
+                autoencoder.summary()
+                del autoencoder
+                assert estimated_data.shape == input_data.shape
+
 
     def test_autoencoder_variational_mlp(self) -> None:
         from simulai.models import AutoencoderVariational
 
-        input_data = np.random.rand(100, 1_000)
+        for device in ["cpu", "gpu", None]:
 
-        autoencoder = AutoencoderVariational(
-            input_dim=1_000,
-            latent_dim=8,
-            activation="tanh",
-            architecture="dense",
-            case="2d",
-        )
+            input_data = np.random.rand(100, 1_000)
 
-        estimated_data = autoencoder.eval(input_data=input_data)
+            autoencoder = AutoencoderVariational(
+                input_dim=1_000,
+                latent_dim=8,
+                activation="tanh",
+                architecture="dense",
+                devices=device,
+                case="2d",
+            )
 
-        autoencoder.summary()
+            # Checking if the model is coretly placed when no device is
+            # informed
+            if not device:
+                assert autoencoder.device == "cpu", ("When no device is provided it is expected the model"+
+                                             f"being on cpu, but received {net.device}.")
 
-        assert estimated_data.shape == input_data.shape
+
+            estimated_data = autoencoder.eval(input_data=input_data)
+
+            autoencoder.summary()
+
+            assert estimated_data.shape == input_data.shape
