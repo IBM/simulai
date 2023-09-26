@@ -427,12 +427,12 @@ class TestAutoGenNet(TestCase):
 
         for device in ["cpu", "gpu", None]:
 
-            input_data = np.random.rand(100, 1, 128, 128)
+            input_data = np.random.rand(100, 1, 32, 32)
 
             for kind_of_ae in ["variational", "vanilla"]:
 
                 autoencoder = MultiScaleAutoencoder(
-                    input_dim=(None, 1, 128, 128),
+                    input_dim=(None, 1, 32, 32),
                     latent_dim=8,
                     kernel_sizes_list=[3,5,7,9],
                     activation="tanh",
@@ -453,7 +453,7 @@ class TestAutoGenNet(TestCase):
                 estimated_data = autoencoder.reconstruction_forward(input_data=input_data)
                 estimated_data = autoencoder.eval(input_data=input_data)
                 autoencoder.summary()
-
+                del autoencoder
                 assert estimated_data.shape == input_data.shape
 
 
