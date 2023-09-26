@@ -45,9 +45,9 @@ class NetworkTemplate(torch.nn.Module):
         self.initializations = None
 
         self.shapes_dict = None
-        self.device = devices
+        self.device_type = devices
 
-        if self.device:
+        if self.device_type:
             self.to_wrap = self._to_explicit_device
         else:
             self.to_wrap = self._to_bypass
