@@ -68,7 +68,7 @@ class DeepONet(NetworkTemplate):
 
         """
 
-        super(DeepONet, self).__init__(device=devices)
+        super(DeepONet, self).__init__(devices=devices)
 
         # Determining the kind of device to be used for allocating the
         # subnetworks used in the DeepONet model
@@ -76,13 +76,13 @@ class DeepONet(NetworkTemplate):
         self.use_bias = use_bias
 
         self.trunk_network = self.to_wrap(entity=trunk_network, device=self.device)
-        self.branch_network = self.to_wrap(entity=branch_network, device=device)
+        self.branch_network = self.to_wrap(entity=branch_network, device=self.device)
 
         self.add_module("trunk_network", self.trunk_network)
         self.add_module("branch_network", self.branch_network)
 
         if decoder_network is not None:
-            self.decoder_network = self.to_wrap(entity=decoder_network, device=device)
+            self.decoder_network = self.to_wrap(entity=decoder_network, device=self.device)
             self.add_module("decoder_network", self.decoder_network)
         else:
             self.decoder_network = decoder_network

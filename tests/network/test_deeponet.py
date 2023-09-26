@@ -13,7 +13,7 @@
 #     limitations under the License.
 
 from unittest import TestCase
-
+from typing import Union, Optional
 import numpy as np
 from tests.config import configure_dtype
 torch = configure_dtype()
@@ -29,6 +29,7 @@ def model(
     residual: bool = False,
     multiply_by_trunk: bool = False,
     use_bias: bool = False,
+    device:Optional[str]="cpu"
 ):
     import importlib
 
@@ -93,12 +94,12 @@ def model(
     if use_bias is True:
         config["use_bias"] = use_bias
 
-    net = DeepONet(**config)
+    net = DeepONet(**config, devices=device)
 
     return net
 
 
-def model_dense_product(product_type=None, n_outputs: int = 2):
+def model_dense_product(product_type=None, n_outputs: int = 2, device:Optional[str]="cpu"):
     from simulai.models import DeepONet
     from simulai.regression import DenseNetwork
 
@@ -135,12 +136,13 @@ def model_dense_product(product_type=None, n_outputs: int = 2):
         var_dim=n_outputs,
         product_type=product_type,
         model_id="deeponet",
+        devices=device,
     )
 
     return net
 
 
-def model_conv(product_type=None):
+def model_conv(product_type=None, device:Optional[str]="cpu"):
     from simulai.models import DeepONet
     from simulai.regression import ConvolutionalNetwork, DenseNetwork
 
@@ -209,11 +211,12 @@ def model_conv(product_type=None):
         var_dim=n_outputs,
         product_type=product_type,
         model_id="deeponet",
+        devices=device,
     )
 
     return net
 
-def model_conv_template(product_type=None):
+def model_conv_template(product_type:Optional[str]=None, device:Optional[str]=None):
 
     from simulai.workflows import ConvDeepONet
 
@@ -251,25 +254,34 @@ class TestDeeponet(TestCase):
         pass
 
     def test_deeponet_forward(self):
-        net = model()
-        net.summary()
 
-        print(f"Network has {net.n_parameters} parameters.")
+        for device in ["cpu", "gpu", None]:
 
-        data_trunk = torch.rand(1_000, 1)
-        data_branch = torch.rand(1_000, 4)
+            net = model(device=device)
+            net.summary()
 
-        output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
+            # Checking if the model is coretly placed when no device is
+            # informed
+            if not device:
+                assert net.device == "cpu", ("When no device is provided it is expected the model"+
+                                             f"being on cpu, but received {net.device}.")
 
-        assert output.shape[1] == 2, "The network output is not like expected."
+            print(f"Network has {net.n_parameters} parameters.")
 
-        output = net.eval_subnetwork(name="trunk", input_data=data_trunk)
-        assert output.shape[1] == 100, "The network output is not like expected."
-        assert isinstance(output, np.ndarray)
+            data_trunk = torch.rand(1_000, 1)
+            data_branch = torch.rand(1_000, 4)
 
-        output = net.eval_subnetwork(name="branch", input_data=data_branch)
-        assert output.shape[1] == 100, "The network output is not like expected."
-        assert isinstance(output, np.ndarray)
+            output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
+
+            assert output.shape[1] == 2, "The network output is not like expected."
+
+            output = net.eval_subnetwork(name="trunk", input_data=data_trunk)
+            assert output.shape[1] == 100, "The network output is not like expected."
+            assert isinstance(output, np.ndarray)
+
+            output = net.eval_subnetwork(name="branch", input_data=data_branch)
+            assert output.shape[1] == 100, "The network output is not like expected."
+            assert isinstance(output, np.ndarray)
 
     def test_deeponet_train(self):
         from simulai.optimization import Optimizer
@@ -382,16 +394,17 @@ class TestDeeponet_with_Conv(TestCase):
         pass
 
     def test_deeponet_forward(self):
-        net = model_conv()
+        for device in ["cpu", "gpu", None]:
+            net = model_conv(device=device)
 
-        data_trunk = torch.rand(1_000, 1)
-        data_branch = torch.rand(1_000, 1, 16, 16)
+            data_trunk = torch.rand(1_000, 1)
+            data_branch = torch.rand(1_000, 1, 16, 16)
 
-        output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
+            output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
 
-        print(f"Network has {net.n_parameters} parameters.")
+            print(f"Network has {net.n_parameters} parameters.")
 
-        assert output.shape[1] == 2, "The network output is not like expected."
+            assert output.shape[1] == 2, "The network output is not like expected."
 
     def test_deeponet_template_forward(self):
         net = model_conv_template()

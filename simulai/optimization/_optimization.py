@@ -713,8 +713,11 @@ class Optimizer:
                 print("Using GPU.")
         elif device == "cpu":
             print("Using CPU.")
+        elif not device:
+            device="cpu"
+            print("Received None, but using cpu instead.")
         else:
-            raise Exception(f"The device must be cpu or gpu, but received: {device}")
+            raise Exception(f"The device must be cpu or gpu, the device {device} is not supported.")
 
         if not "device" in params:
             params["device"] = device
