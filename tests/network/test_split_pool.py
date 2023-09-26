@@ -27,13 +27,21 @@ class TestSplitPool(TestCase):
         for ex in range(n_experts):
             experts_list.append(DenseNetwork(**config))
 
-        net = SplitPool(experts_list=experts_list, input_size=n_inputs_b, devices="gpu")
+        for device in ["cpu", "gpu", None]:
 
-        input_data = np.random.rand(1_000, n_inputs_b)
+            net = SplitPool(experts_list=experts_list, input_size=n_inputs_b, devices=device)
 
-        estimated_output = net.eval(input_data=input_data)
+            # Checking if the model is coretly placed when no device is
+            # informed
+            if not device:
+                assert net.device == "cpu", ("When no device is provided it is expected the model"+
+                                             f"being on cpu, but received {net.device}.")
 
-        assert estimated_output.shape[1] == n_latent
+            input_data = np.random.rand(1_000, n_inputs_b)
+
+            estimated_output = net.eval(input_data=input_data)
+
+            assert estimated_output.shape[1] == n_latent
 
     def test_split_pool_optimization(self):
         lr = 1e-3
