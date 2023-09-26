@@ -73,7 +73,7 @@ class ImprovedDenseNetwork(NetworkTemplate):
 
         """
 
-        super(ImprovedDenseNetwork, self).__init__()
+        super(ImprovedDenseNetwork, self).__init__(devices=devices)
 
         # Guaranteeing the compatibility between the encoders and the branch and trunk networks
         n_hs = network.hidden_size
@@ -92,9 +92,9 @@ class ImprovedDenseNetwork(NetworkTemplate):
             f" {eu_os}, {ev_os} and {n_hs}."
         )
 
-        self.network = network.to(self.device)
-        self.encoder_u = encoder_u.to(self.device)
-        self.encoder_v = encoder_v.to(self.device)
+        self.network = self.to_wrap(entity=network, device=self.device)
+        self.encoder_u = self.to_wrap(entity=encoder_u, device=self.device)
+        self.encoder_v = self.to_wrap(entity=encoder_v, device=self.device)
 
         self.add_module("network", self.network)
         self.add_module("encoder_u", self.encoder_u)
@@ -130,7 +130,8 @@ class ImprovedDenseNetwork(NetworkTemplate):
         v = self.encoder_v.forward(input_data=input_data)
         u = self.encoder_u.forward(input_data=input_data)
 
-        output = self.network.forward(input_data=input_data, u=u, v=v).to(self.device)
+        output = self.to_wrap(entity=self.network.forward(input_data=input_data, u=u, v=v),
+                              device=self.device)
 
         return output
 
@@ -267,15 +268,18 @@ class MoEPool(NetworkTemplate):
         # Gating (classifier) network/object
         # The default gating network is a single-layer fully-connected network
         if gating_network is None:
-            self.gating_network = SLFNN(
+            gating_network = SLFNN(
                 input_size=self.input_size,
                 output_size=self.n_experts,
                 activation="softmax",
-            ).to(self.device)
+            )
 
+            self.gating_network = self.to_wrap(entity=gating_network,
+                                               device=self.device)
         else:
             try:
-                self.gating_network = gating_network.to(self.device)
+                self.gating_network = self.to_wrap(entity=gating_network,
+                                                   device=self.device)
             except:
                 self.gating_network = gating_network
                 print(
@@ -294,7 +298,7 @@ class MoEPool(NetworkTemplate):
 
         # Sending each sub-network to the correct device
         for ei, expert in enumerate(self.experts_list):
-            self.experts_list[ei] = expert.to(self.device)
+            self.experts_list[ei] = self.to_wrap(entity=expert, device=self.device)
 
         # Just the trainable objects need to be included as modules
         if self.is_gating_trainable is True:
@@ -364,7 +368,7 @@ class MoEPool(NetworkTemplate):
 
         maxs = torch.max(gating, dim=1).values[:, None]
 
-        return torch.where(gating == maxs, 1, 0).to(self.device)
+        return self.to_wrap(entity=torch.where(gating == maxs, 1, 0), device=self.device)
 
     def _get_weights_not_trainable(self, gating: torch.Tensor = None) -> torch.Tensor:
         """
@@ -394,7 +398,7 @@ class MoEPool(NetworkTemplate):
             np.arange(batches_size).astype(int).tolist(), gating.astype(int).tolist()
         ] = 1
 
-        return weights.to(self.device)
+        return self.to_wrap(entity=weights, device=self.device)
 
     def gate(self, input_data: Union[np.ndarray, torch.Tensor]) -> torch.Tensor:
         """
@@ -467,7 +471,7 @@ class SplitPool(NetworkTemplate):
         self,
         experts_list: List[NetworkTemplate],
         input_size: int = None,
-        aggregation: callable = None,
+        aggregation: Union[callable, NetworkTemplate] = None,
         last_activation: str = "relu",
         devices: Union[list, str] = None,
         hidden_size: Optional[int] = None,
@@ -511,7 +515,7 @@ class SplitPool(NetworkTemplate):
 
         # Sending each sub-network to the correct device
         for ei, expert in enumerate(self.experts_list):
-            self.experts_list[ei] = expert.to(self.device)
+            self.experts_list[ei] = self.to_wrap(entity=expert, device=self.device)
 
         for ii, item in enumerate(self.experts_list):
             self.add_module(f"expert_{ii}", item)
@@ -523,7 +527,10 @@ class SplitPool(NetworkTemplate):
         if not aggregation:
             self.aggregate = self._aggregate_default
         else:
-            self.aggregate = aggregation
+            if isinstance(aggregation, NetworkTemplate):
+                self.aggregate = self.to_wrap(entity=aggregation, device=self.device)
+            else:
+                self.aggregate = aggregation
 
         self.last_activation = self._get_operation(operation=last_activation)
 
