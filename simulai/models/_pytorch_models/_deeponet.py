@@ -385,7 +385,7 @@ class DeepONet(NetworkTemplate):
         input_data: Union[np.ndarray, torch.Tensor] = None,
     ) -> torch.Tensor:
 
-        return self.decoder.forward(input_data=input_data)
+        return self.decoder_network.forward(input_data=input_data)
 
     def _wrapper_decoder_inactive(
         self, 
