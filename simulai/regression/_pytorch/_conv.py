@@ -111,7 +111,7 @@ class ConvolutionalNetwork(ConvNetworkTemplate):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
-        print(input_data.shape)
+
         return self.flattener(input_data=self.pipeline(input_data))
 
 
@@ -127,12 +127,6 @@ class ResConvolutionalNetwork(ConvNetworkTemplate):
         name: str = None,
     ) -> None:
         super(ResConvolutionalNetwork, self).__init__(name=name)
-
-        if case == '1d':
-            self.channels_dim = channels_dim
-        else:
-            self.channels_dim = channels_dim_higher
-
 
         self.args = ["in_channels", "out_channels", "kernel_size"]
 
