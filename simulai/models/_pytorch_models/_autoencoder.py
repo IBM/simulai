@@ -2063,7 +2063,7 @@ class MultiScaleAutoencoder(NetworkTemplate):
         if isinstance(input_data, np.ndarray):
             input_data = torch.from_numpy(input_data.astype(ARRAY_DTYPE))
 
-        input_data = input_data.to(self.device)
+        input_data = self.to_wrap(entity=input_data, device=self.device)
 
         return self.reconstruction_eval(input_data=input_data).cpu().detach().numpy()
 
