@@ -97,10 +97,9 @@ class DeepONet(NetworkTemplate):
                 len(rescale_factors) == var_dim
             ), "The number of rescaling factors must be equal to var_dim."
             rescale_factors = torch.from_numpy(rescale_factors.astype("float32"))
+            self.rescale_factors = self.to_wrap(entity=rescale_factors, device=self.device)
         else:
-            rescale_factors = torch.from_numpy(np.ones(self.var_dim).astype("float32"))
-
-        self.rescale_factors = self.to_wrap(entity=rescale_factors, device=self.device)
+            self.rescale_factors = None
 
         # Checking up whether the output of each subnetwork are in correct shape
         assert self._latent_dimension_is_correct(self.trunk_network.output_size), (
@@ -131,6 +130,12 @@ class DeepONet(NetworkTemplate):
             self.decoder_wrapper = self._wrapper_decoder_active
         else:
             self.decoder_wrapper = self._wrapper_decoder_inactive
+
+        # Using rescaling factors or not
+        if rescale_factors is not None:
+            self.rescale_wrapper = self._wrapper_rescale_active
+        else:
+            self.rescale_wrapper = self._wrapper_rescale_inactive
 
         # Checking the compatibility of the subnetworks outputs for each kind of product being employed.
         if self.product_type != "dense":
@@ -394,6 +399,20 @@ class DeepONet(NetworkTemplate):
 
         return input_data
 
+    def _wrapper_rescale_active(
+        self, 
+        input_data: Union[np.ndarray, torch.Tensor] = None,
+    ) -> torch.Tensor:
+
+        return input_data * self.rescale_factors
+
+    def _wrapper_rescale_inactive(
+        self, 
+        input_data: Union[np.ndarray, torch.Tensor] = None,
+    ) -> torch.Tensor:
+
+        return input_data
+
     def forward(
         self,
         input_trunk: Union[np.ndarray, torch.Tensor] = None,
@@ -426,7 +445,7 @@ class DeepONet(NetworkTemplate):
 
         output = self.bias_wrapper(output_trunk=output_trunk, output_branch=output_branch)
 
-        return self.decoder_wrapper(input_data=output) * self.rescale_factors
+        return self.rescale_wrapper(input_data=self.decoder_wrapper(input_data=output))
 
     @guarantee_device
     def eval(
@@ -791,7 +810,7 @@ class ImprovedDeepONet(ResDeepONet):
 
         output = self._forward(output_trunk=output_trunk, output_branch=output_branch)
 
-        return output * self.rescale_factors
+        return self.rescale_wrapper(input_data=output)
 
     @guarantee_device
     def eval_subnetwork(
@@ -981,7 +1000,7 @@ class FlexibleDeepONet(ResDeepONet):
 
         output = self._forward(output_trunk=output_trunk, output_branch=output_branch)
 
-        return output * self.rescale_factors
+        return self.rescale_wrapper(input_data=output)
 
     @guarantee_device
     def eval_subnetwork(
