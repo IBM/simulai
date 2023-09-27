@@ -27,7 +27,7 @@ dependencies = [
     "numba",
     "scipy<1.11.1",
     "sympy",
-    "torch<=2.0",
+    "torch<=2.0.1",
     "scikit-learn",
     "psutil",
     "h5py",
