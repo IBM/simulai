@@ -165,7 +165,7 @@ class DeepONet(NetworkTemplate):
 
         # Checking up if the input of the decoder network has the correct dimension
         if self.decoder_network is not None:
-            assert self.decoder_network.weights[0].shape[1] == 1, (
+            assert self.decoder_network.weights[0].shape[1] == self.var_dim, (
                 "The decoder input is expected"
                 " to have dimension (None, 1), but"
                 f"received {self.decoder_network.weights[0].shape}"
