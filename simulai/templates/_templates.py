@@ -301,7 +301,10 @@ class NetworkInstanceGen:
         """
 
         if channels_out == None:
-            channels_out = int(channels_in / self.channels_multiplier)
+            if channels_in > 1:
+                channels_out = int(channels_in / self.channels_multiplier)
+            else:
+                channels_out = channels_in
 
         layer_input = {
             "in_channels": channels_in,

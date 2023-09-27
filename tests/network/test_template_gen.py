@@ -65,22 +65,22 @@ def model_2d(
 
     # Configuring model
 
-        auto_gen = NetworkInstanceGen(architecture="cnn", dim="2d")
+    auto_gen = NetworkInstanceGen(architecture="cnn", dim="2d")
 
-        convnet = auto_gen(
-            input_dim=input_dim,
-            output_dim=output_dim,
-            channels=channels,
-            activation="tanh",
-            name="conv_2d",
-            flatten=flatten,
-            reduce_dimensionality=reduce_dimensionality,
-        )
+    convnet = auto_gen(
+        input_dim=input_dim,
+        output_dim=output_dim,
+        channels=channels,
+        activation="tanh",
+        name="conv_2d",
+        flatten=flatten,
+        reduce_dimensionality=reduce_dimensionality,
+    )
 
-        return convnet
+    return convnet
 
 
-    def model_1d(
+def model_1d(
         reduce_dimensionality: bool = True,
         flatten: bool = True,
         channels: int = 2,
@@ -93,17 +93,17 @@ def model_2d(
 
         auto_gen = NetworkInstanceGen(architecture="cnn", dim="1d")
 
-    convnet = auto_gen(
-        input_dim=input_dim,
-        output_dim=output_dim,
-        channels=channels,
-        activation="tanh",
-        name="conv_1d",
-        flatten=flatten,
-        reduce_dimensionality=reduce_dimensionality,
-    )
+        convnet = auto_gen(
+            input_dim=input_dim,
+            output_dim=output_dim,
+            channels=channels,
+            activation="tanh",
+            name="conv_1d",
+            flatten=flatten,
+            reduce_dimensionality=reduce_dimensionality,
+        )
 
-    return convnet
+        return convnet
 
 
 def model_dense(input_dim: int = 16, output_dim: int = 8):
@@ -177,15 +177,15 @@ class TestAutoGenNet(TestCase):
 
     def test_autogen_upsample_convnet_2d_eval_unflatten(self):
         input_data, output_data = generate_data_2d(
-            n_samples=100, image_size=(16, 16), n_inputs=1, n_outputs=16
+            n_samples=100, image_size=(64, 64), n_inputs=3, n_outputs=16
         )
 
         convnet = model_2d(
             reduce_dimensionality=False,
             flatten=False,
-            channels=1,
+            channels=3,
             input_dim=16,
-            output_dim=(None, 1, 16, 16),
+            output_dim=(None, 3, 64, 64),
         )
         print(convnet)
         estimated_output_data = convnet.forward(input_data=output_data)
