@@ -17,6 +17,7 @@ import warnings
 from typing import Optional, Tuple, Union
 
 import numpy as np
+import torch
 import scipy.sparse as sparse
 
 from simulai.abstract import Regression
@@ -126,6 +127,7 @@ class NetworkInstanceGen:
             self.after_conv = "maxpool" + self.dim
             self.before_conv = "upsample"
             self.batch_norm = "batchnorm" + self.dim
+            self.n_dims = int(self.dim[0])
 
             ### CNN specificities
             # Default number of channels used for the first layer of a convolutional
@@ -440,7 +442,7 @@ class NetworkInstanceGen:
 
     def _gen_cnn_network_increase(
         self,
-        input_dim: Tuple[int, ...] = None,
+        input_dim: Union[int, Tuple[int, ...]] = None,
         output_dim: Tuple[int, ...] = None,
         activation: str = None,
         name: str = None,
@@ -469,15 +471,25 @@ class NetworkInstanceGen:
         """
 
 
-        assert type(input_dim) == tuple
+        assert type(input_dim) in (int, tuple)
         assert type(output_dim) == tuple
         assert type(activation) == str
 
         layers_list = list()
-        ref_dim = input_dim
-        channels = input_dim[self.channels_position]
+
+        if type(input_dim) == tuple:
+            channels = input_dim[self.channels_position]
+            ref_dim = input_dim
+        else:
+            channels = input_dim
+            ref_dim = (None, input_dim,) + self.n_dims*(1,)
 
         layer_count = 0
+
+        if type(input_dim) == int:
+            unflatten_layer = torch.nn.Unflatten(dim=1, unflattened_size=(input_dim,) + self.n_dims*(1,))
+        else:
+            unflatten_layer = None
 
         while not (sum(ref_dim[2:]) >= int(sum(output_dim[2:]) / self.multiplier)):
             layer = self._gen_cnn_layer_increase_dimensionality(channels_in=channels)
@@ -501,6 +513,9 @@ class NetworkInstanceGen:
             "case": self.dim,
             "name": name,
         }
+
+        if isinstance(unflatten_layer, torch.nn.Module):
+            config_dict['pre_layer'] = unflatten_layer
 
         config_dict.update(kwargs)
 

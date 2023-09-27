@@ -175,6 +175,27 @@ class TestAutoGenNet(TestCase):
             f" but received {estimated_output_data.shape}."
         )
 
+    def test_autogen_upsample_convnet_2d_eval_unflatten(self):
+        input_data, output_data = generate_data_2d(
+            n_samples=100, image_size=(16, 16), n_inputs=1, n_outputs=16
+        )
+
+        convnet = model_2d(
+            reduce_dimensionality=False,
+            flatten=False,
+            channels=1,
+            input_dim=16,
+            output_dim=(None, 1, 16, 16),
+        )
+        print(convnet)
+        estimated_output_data = convnet.forward(input_data=output_data)
+
+        assert estimated_output_data.shape == input_data.shape, (
+            "The output of eval is not correct."
+            f" Expected {output_data.shape},"
+            f" but received {estimated_output_data.shape}."
+        )
+
     def test_autogen_upsample_convnet_1d_eval(self):
         input_data, output_data = generate_data_1d(
             n_samples=100, vector_size=16, n_inputs=1, n_outputs=16

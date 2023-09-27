@@ -13,7 +13,7 @@
 #     limitations under the License.
 
 import importlib
-from typing import List, Union
+from typing import List, Union, Optional
 
 import numpy as np
 import torch
@@ -23,7 +23,10 @@ from simulai.templates import ConvNetworkTemplate, as_tensor
 
 def channels_dim(method):
     def inside(self, input_data=None):
-        if len(input_data.shape) < self.n_dimensions:
+        # Any input must be at least 3D to allow the creation
+        # of a 'channels dim'. Otherwise use a Unflatten operation
+        # at the bottom of the model. 
+        if 3 <= len(input_data.shape) < self.n_dimensions:
             return method(self, input_data=input_data[:, None, ...])
         else:
             return method(self, input_data=input_data)
@@ -40,6 +43,7 @@ class ConvolutionalNetwork(ConvNetworkTemplate):
         self,
         layers: list = None,
         activations: list = None,
+        pre_layer: Optional[torch.nn.Module] = None,
         case: str = "2d",
         last_activation: str = "identity",
         transpose: bool = False,
@@ -93,6 +97,10 @@ class ConvolutionalNetwork(ConvNetworkTemplate):
             after_conv=self.after_conv_layers,
         )
 
+        # A bottom layer, it necessary
+        if pre_layer:
+            self.list_of_layers = [pre_layer] + self.list_of_layers
+
         self.pipeline = torch.nn.Sequential(*self.list_of_layers)
 
     @as_tensor
@@ -100,6 +108,7 @@ class ConvolutionalNetwork(ConvNetworkTemplate):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
+        print(input_data.shape)
         return self.flattener(input_data=self.pipeline(input_data))
 
 
