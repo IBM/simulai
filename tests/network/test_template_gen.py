@@ -60,12 +60,15 @@ def model_2d(
     channels: int = 2,
     input_dim: tuple = (None, 1, 16, 16),
     output_dim: tuple = (None, 16, 1, 1),
+    unflattened_size: tuple = None,
 ):
     from simulai.templates import NetworkInstanceGen
 
     # Configuring model
 
-    auto_gen = NetworkInstanceGen(architecture="cnn", dim="2d")
+    auto_gen = NetworkInstanceGen(architecture="cnn",
+                                  dim="2d",
+                                  unflattened_size=unflattened_size)
 
     convnet = auto_gen(
         input_dim=input_dim,
@@ -187,6 +190,28 @@ class TestAutoGenNet(TestCase):
             input_dim=16,
             output_dim=(None, 3, 64, 64),
         )
+        
+        estimated_output_data = convnet.forward(input_data=output_data)
+
+        assert estimated_output_data.shape == input_data.shape, (
+            "The output of eval is not correct."
+            f" Expected {output_data.shape},"
+            f" but received {estimated_output_data.shape}."
+        )
+
+    def test_autogen_upsample_convnet_2d_eval_unflatten_custom(self):
+        input_data, output_data = generate_data_2d(
+            n_samples=100, image_size=(80, 80), n_inputs=3, n_outputs=400
+        )
+
+        convnet = model_2d(
+            reduce_dimensionality=False,
+            flatten=False,
+            channels=3,
+            input_dim=400,
+            unflattened_size=(16, 5, 5),
+            output_dim=(None, 3, 80, 80),
+        )
         print(convnet)
         estimated_output_data = convnet.forward(input_data=output_data)
 
@@ -195,6 +220,7 @@ class TestAutoGenNet(TestCase):
             f" Expected {output_data.shape},"
             f" but received {estimated_output_data.shape}."
         )
+
 
     def test_autogen_upsample_convnet_1d_eval(self):
         input_data, output_data = generate_data_1d(

@@ -71,6 +71,7 @@ class NetworkInstanceGen:
         shallow: bool = False,
         use_batch_norm: bool = False,
         kernel_size: Optional[int] = None,
+        unflattened_size: Tuple[int] = None,
         **kwargs,
     ) -> None:
 
@@ -151,6 +152,7 @@ class NetworkInstanceGen:
             self.channels_position = 1
 
         self.architecture_str = architecture
+        self.unflattened_size = unflattened_size
 
     def _gen_dense_network(
         self,
@@ -480,19 +482,26 @@ class NetworkInstanceGen:
 
         layers_list = list()
 
+        layer_count = 0
+
+        if type(input_dim) == int:
+            if self.unflattened_size:
+                unflatten_layer = torch.nn.Unflatten(dim=1, unflattened_size=self.unflattened_size)
+            else:
+                unflatten_layer = torch.nn.Unflatten(dim=1, unflattened_size=(input_dim,) + self.n_dims*(1,))
+        else:
+            unflatten_layer = None
+
         if type(input_dim) == tuple:
             channels = input_dim[self.channels_position]
             ref_dim = input_dim
         else:
-            channels = input_dim
-            ref_dim = (None, input_dim,) + self.n_dims*(1,)
-
-        layer_count = 0
-
-        if type(input_dim) == int:
-            unflatten_layer = torch.nn.Unflatten(dim=1, unflattened_size=(input_dim,) + self.n_dims*(1,))
-        else:
-            unflatten_layer = None
+            if self.unflattened_size:
+                ref_dim = (None,) + self.unflattened_size
+                channels = self.unflattened_size[0]
+            else:
+                ref_dim = (None, input_dim,) + self.n_dims*(1,)
+                channels = input_dim
 
         while not (sum(ref_dim[2:]) >= int(sum(output_dim[2:]) / self.multiplier)):
             layer = self._gen_cnn_layer_increase_dimensionality(channels_in=channels)
