@@ -174,7 +174,7 @@ class DeepONet(NetworkTemplate):
         self.output = None
         self.var_map = dict()
 
-        # Checking up if the input of the decoder network has the correct dimension
+        #TODO Checking up if the input of the decoder network has the correct dimension
         if self.decoder_network is not None:
             print("Decoder is being used.")
         else:
@@ -329,10 +329,11 @@ class DeepONet(NetworkTemplate):
 
         if self.var_dim > 1:
 
-            # It operates as a dense layer
+            # It operates as a typical dense layer
             if self.product_type == "dense":
                 return self._forward_dense
-
+            # It executes an inner product by parts between the outputs
+            # of the subnetworks branch and trunk
             else:
                 return self._forward_pointwise
         else:
@@ -362,6 +363,7 @@ class DeepONet(NetworkTemplate):
     def weights(self) -> list:
         return sum([net.weights for net in self.subnetworks], [])
 
+    # Now, a sequence of wrappers
     def _wrapper_bias_inactive(
         self,
         output_trunk: Union[np.ndarray, torch.Tensor] = None,
@@ -443,6 +445,9 @@ class DeepONet(NetworkTemplate):
         output_branch = self.to_wrap(entity=self.branch_network.forward(input_branch),
                                      device=self.device)
 
+        # Wrappers are applied to execute user-defined operations.
+        # When those operations are not selected, these wrappers simply
+        # bypass the inputs. 
         output = self.bias_wrapper(output_trunk=output_trunk, output_branch=output_branch)
 
         return self.rescale_wrapper(input_data=self.decoder_wrapper(input_data=output))
