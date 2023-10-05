@@ -313,21 +313,24 @@ class NetworkTemplate(torch.nn.Module):
         return output_tensor.detach().numpy()
 
     # It prints a summary of the network architecture.
-    def summary(self, **kwargs) -> None:
+    def summary(self, display:bool=True, **kwargs) -> None:
         import pprint
 
-        pprinter = pprint.PrettyPrinter(indent=2)
+        if display:
+            pprinter = pprint.PrettyPrinter(indent=2)
 
-        print("Summary of the network properties:")
+            print("Summary of the network properties:")
 
-        print("Linear operations layers:\n")
-        pprinter.pprint(self.layers)
-        print("\n")
-        print("Activations layers:\n")
-        pprinter.pprint(self.activations_str)
-        print("\n")
-        print("Initializations at each layer:\n")
-        pprinter.pprint(self.initializations)
+            print("Linear operations layers:\n")
+            pprinter.pprint(self.layers)
+            print("\n")
+            print("Activations layers:\n")
+            pprinter.pprint(self.activations_str)
+            print("\n")
+            print("Initializations at each layer:\n")
+            pprinter.pprint(self.initializations)
+        else:
+            pass
 
         self.shapes_dict = {"layers": self.layers}
 
