@@ -1249,6 +1249,7 @@ class AutoencoderVariational(NetworkTemplate):
         input_data: Union[np.ndarray, torch.Tensor] = None,
         input_shape: list = None,
         verbose: bool = True,
+        display: bool = True,
     ) -> torch.Tensor:
         """
         Summarizes the overall architecture of the autoencoder and saves the content of the subnetworks to a dictionary.
@@ -1298,7 +1299,7 @@ class AutoencoderVariational(NetworkTemplate):
                 pass
 
             self.encoder.summary(
-                input_data=input_data, input_shape=input_shape, device=self.device
+                input_data=input_data, input_shape=input_shape, device=self.device, display=display
             )
 
             if type(self.encoder.output_size) == tuple:
@@ -1329,8 +1330,8 @@ class AutoencoderVariational(NetworkTemplate):
             if self.there_is_bottleneck:
                 latent = self.bottleneck_encoder.forward(input_data=btnk_input)
 
-                self.bottleneck_encoder.summary()
-                self.bottleneck_decoder.summary()
+                self.bottleneck_encoder.summary(display=display)
+                self.bottleneck_decoder.summary(display=display)
 
                 bottleneck_output = self.encoder_activation(
                     self.bottleneck_decoder.forward(input_data=latent)
@@ -1342,7 +1343,7 @@ class AutoencoderVariational(NetworkTemplate):
             else:
                 bottleneck_output = btnk_input
 
-            self.decoder.summary(input_data=bottleneck_output, device=self.device)
+            self.decoder.summary(input_data=bottleneck_output, device=self.device, display=display)
 
             # Saving the content of the subnetworks to the overall architecture dictionary
             self.shapes_dict.update({"encoder": self.encoder.shapes_dict})
