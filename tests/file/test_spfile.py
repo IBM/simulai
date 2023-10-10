@@ -50,6 +50,42 @@ def model_2d(
 
     return convnet
 
+class ModelTemplate:
+
+    def __init__(self, name:str=None):
+
+        self.name = name
+
+    def model_2d(
+        self,
+        reduce_dimensionality: bool = True,
+        flatten: bool = True,
+        channels: int = 2,
+        input_dim: tuple = (None, 1, 16, 16),
+        output_dim: tuple = (None, 16, 1, 1),
+        unflattened_size: tuple = None,
+    ):
+        from simulai.templates import NetworkInstanceGen
+
+        # Configuring model
+        self.reduce_dimensionality = reduce_dimensionality
+
+        auto_gen = NetworkInstanceGen(architecture="cnn",
+                                      dim="2d",
+                                      unflattened_size=unflattened_size)
+
+        convnet = auto_gen(
+            input_dim=input_dim,
+            output_dim=output_dim,
+            channels=channels,
+            activation="tanh",
+            name="conv_2d",
+            flatten=flatten,
+            reduce_dimensionality=reduce_dimensionality,
+        )
+
+        return convnet
+
 
 def model_1d(
         reduce_dimensionality: bool = True,
@@ -147,4 +183,39 @@ class TestSPFile(TestCase):
         except Exception:
 
             raise Exception(f"It was not possible to save/restore the model {model}.")
+
+    """def test_class_model_with_arguments(self):
+
+        model_template_instance = ModelTemplate(name="model_template")
+
+        channels = 4
+        input_dim = (None, 1, 32, 32)
+        output_dim = (None, 32, 1, 1)
+
+        model = model_template_instance.model_2d(channels=channels,
+                                                 input_dim=input_dim,
+                                                 output_dim=output_dim)
+
+        args = {
+                'channels': channels,
+                'input_dim': input_dim,
+                'output_dim': output_dim
+                }
+
+        try:
+            filemng = SPFile()
+            filemng.write(
+                save_dir='/tmp/',
+                name=f"{id(model)}",
+                model=model,
+                template=model_template_instance.model_2d,
+                args=args
+            )
+
+            filemng = SPFile()
+            filemng.read(model_path=f"/tmp/{id(model)}")
+
+        except Exception:
+
+            raise Exception(f"It was not possible to save/restore the model {model}.")"""
 
