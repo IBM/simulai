@@ -14,6 +14,7 @@
 
 import importlib
 import inspect
+import pickle
 import os
 import sys
 from typing import Union
@@ -124,6 +125,7 @@ class SPFile:
         save_dir: str = None,
         name: str = None,
         template: callable = None,
+        args: dict = None,
         model: NetworkTemplate = None,
         device: str = None,
     ) -> None:
@@ -138,6 +140,8 @@ class SPFile:
             A name for the model.
         template : callable, optional
             A function for instantiating the model.
+        args : dict
+            Dictionary containing arguments to be passed to template.
         model : NetworkTemplate, optional
             The model to be saved.
         device : str, optional
@@ -159,6 +163,10 @@ class SPFile:
         code = inspect.getsource(template)
         code = self._process_code(code=code)
         tfp.write(code)
+
+        args_filename = os.path.join(model_dir, name + "_args.pkl")
+        afp = open(args_filename, "wb")
+        pickle.dump(args, afp)
 
         # Saving the model coefficients
         model.save(save_dir=model_dir, name=name, device=device)
@@ -190,6 +198,14 @@ class SPFile:
 
         module = importlib.import_module(name + "_template")
 
+        # Restoring template keywords from disk
+        args_filename = os.path.join(model_path, name + "_args.json")
+
+        if os.path.isfile(args_filename):
+            args = load_pkl(path=args_filename)
+        else:
+            args = None
+
         callables = {
             attr: getattr(module, attr)
             for attr in dir(module)
@@ -202,10 +218,16 @@ class SPFile:
                     f"There are {len(callables)} models in the module, please provide a value for name."
                 )
             else:
-                Model = callables[template_name]()
+                if args:
+                    Model = callables[template_name](**args)
+                else:
+                    Model = callables[template_name]()
 
         elif len(callables) == 1:
-            Model = list(callables.values())[0]()
+            if args:
+                Model = list(callables.values())[0](**args)
+            else:
+                Model = list(callables.values())[0]()
 
         else:
             raise Exception("There is no model template in the module.")
