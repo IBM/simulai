@@ -64,7 +64,7 @@ source_suffix = [".rst", ".md"]
 # -- Options for HTML output -------------------------------------------------
 
 # -- Options for HTML output
-html_theme = "sphinx_rtd_theme"
+html_theme = "classic"
 
 
 # Below html_theme_options config depends on the theme.
