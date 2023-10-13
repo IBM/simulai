@@ -32,6 +32,9 @@ extensions = [
     "sphinx.ext.autosectionlabel",
 ]
 
+napoleon_use_param = True
+napoleon_use_ivar = True
+
 autodoc_mock_imports = ["mpi4py", "numpy", "simulai"]
 suppress_warnings = ["autosectionlabel.*"]
 
