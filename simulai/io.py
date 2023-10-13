@@ -713,6 +713,7 @@ class MapValid(Reshaper):
 
     def prepare_input_data(self, data: np.ndarray = None) -> np.ndarray:
         """
+
         Internal input data preparer, executed for each label of the structured array
 
         Parameters:
@@ -762,6 +763,7 @@ class MapValid(Reshaper):
 
     def prepare_output_data(self, data: np.ndarray = None) -> np.ndarray:
         """
+
         Prepare output data for the MapValid operation.
 
         Parameters:
@@ -817,6 +819,7 @@ class MapValid(Reshaper):
 
     def prepare_input_structured_data(self, data: np.recarray = None) -> np.ndarray:
         """
+
         This function is used to prepare structured input data for further processing.
 
         Parameters:
@@ -846,6 +849,7 @@ class MapValid(Reshaper):
 
     def prepare_output_structured_data(self, data: np.ndarray = None) -> np.ndarray:
         """
+
         This function is used to prepare structured output data for further processing.
 
         Parameters:
@@ -876,6 +880,7 @@ class MapValid(Reshaper):
 
 class Sampling(DataPreparer):
     """
+
     This class is used for sampling data from the input dataset.
 
     Parameters:
@@ -1091,6 +1096,7 @@ class Sampling(DataPreparer):
 
 class MovingWindow:
     """
+
     MovingWindow is applied over a time-series array (2D array), and it is used for
     creating the necessary augmented data used for LSTM networks, replicating the training
     windows for each sample in the dataset.
@@ -1136,6 +1142,7 @@ class MovingWindow:
     NOTE:
         - The history and horizon size must be provided to the constructor.
         - The full_output parameter is used to decide if the whole window should be returned or just the last item.
+
     """
 
     def __init__(

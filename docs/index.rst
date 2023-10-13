@@ -1,6 +1,3 @@
-Welcome to simulai's documentation!
-===================================
-
 .. include:: source/quickstart.rst
 
 .. toctree::

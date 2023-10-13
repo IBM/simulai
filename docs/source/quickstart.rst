@@ -1,20 +1,21 @@
 Quick Start 
 ===========
-.. image:: https://zenodo.org/badge/561364034.svg
+..
+    image:: https://zenodo.org/badge/561364034.svg
    :target: https://zenodo.org/badge/latestdoi/561364034
-.. image:: https://badge.fury.io/py/simulai-toolkit.svg
+    image:: https://badge.fury.io/py/simulai-toolkit.svg
    :target: https://badge.fury.io/py/simulai-toolkit
-.. image:: https://readthedocs.org/projects/simulai-toolkit/badge/?version=latest
+    image:: https://readthedocs.org/projects/simulai-toolkit/badge/?version=latest
    :target: https://simulai-toolkit.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
-.. image:: ../../assets/coverage.svg
+    image:: ../../assets/coverage.svg
    :target: ../../tests/
-    
-.. image:: ../../assets/logo.png
+    image:: ../../assets/logo.png
 
 A Python package with data-driven pipelines for physics-informed machine learning.
 
-.. image:: ../../assets/simulai_diagram.svg
+..
+    image:: ../../assets/simulai_diagram.svg
 
 The SimulAI toolkit provides easy access to state-of-the-art models and algorithms for physics-informed machine learning. Currently, it includes the following methods described in the literature:
 
@@ -32,7 +33,7 @@ Installing Guide
 
 .. code-block:: console
    
-   Python version requirements: 3.8 <= python <= 3.10
+   Python version requirements: 3.8 <= python <= 3.11
 
 Using pip
 ---------

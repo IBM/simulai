@@ -30,6 +30,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
     "sphinx.ext.autosectionlabel",
+    'sphinx.ext.autosummary'
 ]
 
 autodoc_mock_imports = ["mpi4py"]
@@ -64,14 +65,28 @@ source_suffix = [".rst", ".md"]
 # -- Options for HTML output -------------------------------------------------
 
 # -- Options for HTML output
-html_theme = "classic"
+html_theme = "bizstyle"
 
 
 # Below html_theme_options config depends on the theme.
 html_logo = "../assets/logo.png"
 
+gettext_additional_targets = ['literal-block', 'image']
 
-html_theme_options = {"logo_only": True, "display_version": True}
+html_theme_options = {#"logo_only": True,
+                      #"display_version": True,
+                        "sidebarbgcolor":'#FFF8DC',
+                        "sidebartextcolor": "#000000",
+                        "sidebarlinkcolor": "#444444",
+                        "relbartextcolor": "#000000",
+                        "collapsiblesidebar": True,
+                        "body_max_width": '90%',
+                        "sidebarwidth": '30%',
+                        "globaltoc_maxdepth":10}
+
+
+autodoc_typehints_format = 'short'
+python_use_unqualified_type_names = True
 
 # -- Options for EPUB output
 epub_show_urls = "footnote"
