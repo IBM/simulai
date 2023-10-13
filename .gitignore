@@ -89,3 +89,6 @@ run_examples.txt
 
 #spyder
 .spyproject/*
+
+# Sphinx
+**/_build/*
