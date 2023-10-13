@@ -12,7 +12,7 @@ SimulAI
    :target: tests/
 ..
 
-.. image:: assets/logo_4.png
+.. image:: assets/logo.png
    :width: 500
 
 An extensible Python package with data-driven pipelines for physics-informed machine learning.
