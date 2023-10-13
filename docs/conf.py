@@ -30,10 +30,9 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
     "sphinx.ext.autosectionlabel",
-    'sphinx.ext.autosummary'
 ]
 
-autodoc_mock_imports = ["mpi4py"]
+autodoc_mock_imports = ["mpi4py", "numpy", "simulai"]
 suppress_warnings = ["autosectionlabel.*"]
 
 
