@@ -1,50 +1,21 @@
 Models Package
 ==============
 
-simulai.models._models module
+simulai.models._models
 -----------------------------
 .. automodule:: simulai.models._models
    :members:
    :undoc-members:
    :show-inheritance:
+   :imported-members:
 
-Pytorch Models Package
-----------------------
-
-simulai.models._pytorch_models._autoencoder module
---------------------------------------------------
-.. automodule:: simulai.models._pytorch_models._autoencoder
+simulai.models._pytorch_models
+-----------------------------
+.. automodule:: simulai.models._pytorch_models
    :members:
    :undoc-members:
    :show-inheritance:
+   :imported-members:
 
-simulai.models._pytorch_models._deeponet module
------------------------------------------------
-.. automodule:: simulai.models._pytorch_models._deeponet
+.. autoclass:: simulai.models._pytorch_models._deeponet.DeepONet
    :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. autoclass:: DeepONet
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. autoclass:: ResDeepONet
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. autoclass:: ImprovedDeepONet
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-simulai.models._pytorch_models._miscellaneous module
-----------------------------------------------------
-.. automodule:: simulai.models._pytorch_models._miscellaneous
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -70,7 +70,7 @@ source_suffix = [".rst", ".md"]
 # -- Options for HTML output -------------------------------------------------
 
 # -- Options for HTML output
-html_theme = "furo"
+html_theme = "classic"
 
 
 # Below html_theme_options config depends on the theme.
