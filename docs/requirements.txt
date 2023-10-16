@@ -1,4 +1,5 @@
 sphinx
 sphinx_rtd_theme
+furo
 readthedocs-sphinx-search
 simulai-toolkit

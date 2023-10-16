@@ -2,12 +2,10 @@ simulai.file
 ===========
 
 .. automodule:: simulai.file
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 .. autoclass:: load_pkl
    :members:
+   :undoc-members:
 
 .. autoclass:: SPFile
    :members:

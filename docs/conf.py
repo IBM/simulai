@@ -59,7 +59,7 @@ html_context = {
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = [
-    #"_build",
+    "_build",
     "Thumbs.db",
     ".DS_Store",
     "TODO/*",
@@ -70,7 +70,7 @@ source_suffix = [".rst", ".md"]
 # -- Options for HTML output -------------------------------------------------
 
 # -- Options for HTML output
-html_theme = "classic"
+html_theme = "furo"
 
 
 # Below html_theme_options config depends on the theme.
@@ -78,8 +78,8 @@ html_logo = "../assets/logo.png"
 
 gettext_additional_targets = ['literal-block', 'image']
 
-html_theme_options = {#"logo_only": True,
-                      #"display_version": True,
+html_theme_options = {"logo_only": True,
+                      "display_version": True,
                         "sidebarbgcolor":'#FFF8DC',
                         "sidebartextcolor": "#000000",
                         "sidebarlinkcolor": "#444444",
