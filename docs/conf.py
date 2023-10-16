@@ -15,6 +15,8 @@ import sys
 
 sys.path.insert(0, os.path.abspath("../"))
 
+import simulai
+
 # -- Project information -----------------------------------------------------
 
 project = "simulai"
@@ -30,6 +32,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
     "sphinx.ext.autosectionlabel",
+    'sphinx.ext.autosummary',
 ]
 
 napoleon_use_param = True
@@ -48,7 +51,7 @@ html_context = {
     "github_user": "promptslab",
     "github_repo": "Promptify",
     "github_version": "main",
-    "conf_py_path": "/docs/",
+    "conf_py_path": "docs/",
 }
 
 
@@ -67,7 +70,7 @@ source_suffix = [".rst", ".md"]
 # -- Options for HTML output -------------------------------------------------
 
 # -- Options for HTML output
-html_theme = "bizstyle"
+html_theme = "classic"
 
 
 # Below html_theme_options config depends on the theme.
