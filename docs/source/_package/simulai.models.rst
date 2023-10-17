@@ -1,6 +1,9 @@
 Models Package
 ==============
 
+.. autosummary::
+   :toctree: generated
+
 simulai.models._models module
 -----------------------------
 .. automodule:: simulai.models._models
@@ -24,23 +27,6 @@ simulai.models._pytorch_models._deeponet module
    :members:
    :undoc-members:
    :show-inheritance:
-
-.. autoclass:: DeepONet
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. autoclass:: ResDeepONet
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. autoclass:: ImprovedDeepONet
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 
 simulai.models._pytorch_models._miscellaneous module
 ----------------------------------------------------

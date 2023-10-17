@@ -1,6 +1,9 @@
 Math Package
 ============
 
+.. autosummary::
+   :toctree: generated
+
 simulai.math.differentiation module
 -----------------------------------
 

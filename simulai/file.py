@@ -23,7 +23,8 @@ from simulai.templates import NetworkTemplate
 
 
 def load_pkl(path: str = None) -> Union[object, None]:
-    """Load a pickle file into a Python object.
+    """
+    Load a pickle file into a Python object.
 
     Parameters:
     -----------
