@@ -13,9 +13,9 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath("../"))
+#sys.path.insert(0, os.path.abspath("../"))
 
-import simulai
+#import simulai
 
 # -- Project information -----------------------------------------------------
 
@@ -27,6 +27,7 @@ version = "latest"
 # -- General configuration
 
 extensions = [
+    #"numpydoc",
     "sphinx.ext.napoleon",
     "sphinx.ext.doctest",
     "sphinx.ext.autodoc",
@@ -43,7 +44,7 @@ suppress_warnings = ["autosectionlabel.*"]
 
 
 # Napoleon settings
-napoleon_numpy_docstring = True
+#napoleon_numpy_docstring = True
 
 # html_context configuration for GitHub edit link
 html_context = {
@@ -70,7 +71,7 @@ source_suffix = [".rst", ".md"]
 # -- Options for HTML output -------------------------------------------------
 
 # -- Options for HTML output
-html_theme = "classic"
+html_theme = "press"
 
 
 # Below html_theme_options config depends on the theme.

@@ -1,20 +1,10 @@
-simulai.file
+File Module
 ===========
+
+.. autosummary::
+   :toctree: generated
 
 .. automodule:: simulai.file
    :members:
    :undoc-members:
 
-load_pkl
-^^^^^^^^
-
-.. autoclass:: load_pkl
-   :members:
-   :undoc-members:
-
-SPFIle
-^^^^^^
-
-.. autoclass:: SPFile
-   :members:
-   :undoc-members:
