@@ -38,7 +38,7 @@ extensions = [
 napoleon_use_param = True
 napoleon_use_ivar = True
 
-autodoc_mock_imports = ["mpi4py", "numpy", "simulai"]
+autodoc_mock_imports = ["mpi4py", "numpy", "simulai", "sphinx-press-theme"]
 suppress_warnings = ["autosectionlabel.*"]
 
 
