@@ -14,5 +14,6 @@ pytest
 optuna
 urllib3
 sphinx_theme
+sphinx-press-theme
 matplotlib
 tensorboard
