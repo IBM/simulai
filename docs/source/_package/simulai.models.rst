@@ -1,7 +1,6 @@
 Models Package
 ==============
 
-<<<<<<< HEAD
 simulai.models._models
 =======
 .. autosummary::
