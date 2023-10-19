@@ -12,30 +12,29 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-from simulai import engine
+import os
+from unittest import TestCase
 
-if engine == "pytorch":
-    from ._pytorch_models import (
-        AutoencoderCNN,
-        AutoencoderKoopman,
-        AutoencoderMLP,
-        AutoencoderVariational,
-        MultiScaleAutoencoder,
-        DeepONet,
-        FlexibleDeepONet,
-        ImprovedDeepONet,
-        ImprovedDenseNetwork,
-        Transformer
-        MetaModel,
-        ModelMaker,
-        MultiNetwork,
-        MoEPool,
-        SplitPool,
-        ResDeepONet,
-    )
-elif engine == "numpy":
-    pass
-else:
-    raise Exception(f"Engine {engine} is not available.")
+import numpy as np
+from tests.config import configure_dtype
+torch = configure_dtype()
 
-from ._models import KMeansWrapper, ModelPool
+from utils import configure_device
+
+from simulai import ARRAY_DTYPE
+from simulai.file import SPFile
+from simulai.optimization import Optimizer
+from simulai.modelss import Transformer
+from simulai.regression import DenseNetwork
+e
+DEVICE = configure_device()
+
+
+class TestTransformer(TestCase):
+    def setUp(self) -> None:
+        pass
+
+    def test_instantiate(self):
+        pass
+
+
