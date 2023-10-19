@@ -12,17 +12,10 @@ simulai.models._models module
    :members:
    :undoc-members:
    :show-inheritance:
-   :imported-members:
 
 simulai.models._pytorch_models
 -----------------------------
 .. automodule:: simulai.models._pytorch_models
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :imported-members:
-
-.. autoclass:: simulai.models._pytorch_models._deeponet.DeepONet
    :members:
    :undoc-members:
    :show-inheritance:
