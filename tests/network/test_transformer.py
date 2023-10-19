@@ -24,9 +24,9 @@ from utils import configure_device
 from simulai import ARRAY_DTYPE
 from simulai.file import SPFile
 from simulai.optimization import Optimizer
-from simulai.modelss import Transformer
+from simulai.models import Transformer
 from simulai.regression import DenseNetwork
-e
+
 DEVICE = configure_device()
 
 
@@ -35,6 +35,43 @@ class TestTransformer(TestCase):
         pass
 
     def test_instantiate(self):
-        pass
 
+        num_heads = 4
+        embed_dim = 128
+        hidden_dim = int(embed_dim//2)
+        number_of_encoders = 2
+        number_of_decoders = 2
+        output_size = embed_dim
+        n_samples = 100
 
+        input_data = np.random.rand(n_samples, embed_dim)
+
+        # Configuration for the fully-connected branch network
+        config = {
+            "layers_units": [hidden_dim, hidden_dim, hidden_dim],  # Hidden layers
+            "activations": 'relu',
+            "input_size": embed_dim,
+            "output_size": embed_dim,
+            "name": "mlp_layer",
+        }
+
+        # Instantiating and training the surrogate model
+
+        transformer = Transformer(num_heads_encoder=num_heads,
+                                  num_heads_decoder=num_heads,
+                                  embed_dim_encoder=embed_dim,
+                                  embed_dim_decoder=embed_dim,
+                                  encoder_activation='relu',
+                                  decoder_activation='relu',
+                                  encoder_mlp_layer_config=config,
+                                  decoder_mlp_layer_config=config,
+                                  number_of_encoders=number_of_encoders,
+                                  number_of_decoders=number_of_decoders)
+
+        transformer.summary()
+
+        estimated_output_data = transformer(input_data)
+
+        assert estimated_output_data.shape == (n_samples, embed_dim), "The output has not the expected shape."
+
+        print(estimated_output_data.shape)

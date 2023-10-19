@@ -25,7 +25,7 @@ if engine == "pytorch":
         FlexibleDeepONet,
         ImprovedDeepONet,
         ImprovedDenseNetwork,
-        Transformer
+        Transformer,
         MetaModel,
         ModelMaker,
         MultiNetwork,
