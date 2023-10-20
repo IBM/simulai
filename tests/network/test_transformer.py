@@ -49,7 +49,7 @@ class TestTransformer(TestCase):
         # Configuration for the fully-connected branch network
         config = {
             "layers_units": [hidden_dim, hidden_dim, hidden_dim],  # Hidden layers
-            "activations": 'relu',
+            "activations": 'Wavelet',
             "input_size": embed_dim,
             "output_size": embed_dim,
             "name": "mlp_layer",
