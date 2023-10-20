@@ -125,7 +125,7 @@ or, via Zenodo:
           month        = jan,
           year         = 2023,
           publisher    = {Zenodo},
-          version      = {0.99.13},
+          version      = {0.99.25},
           doi          = {10.5281/zenodo.7566603},
           url          = {https://doi.org/10.5281/zenodo.7566603}
         }
