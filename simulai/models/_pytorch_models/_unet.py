@@ -104,9 +104,8 @@ class CNNUnetDecoder(ConvNetworkTemplate):
 
 class UNet(NetworkTemplate):
 
-    def __init__(self, n_levels:int=None, layers_config:dict=None) -> None:
+    def __init__(self, layers_config:dict=None) -> None:
 
-        self.n_levels = n_levels
         self.layers_config_encoder = self.layers_config["encoder"] 
         self.layers_config_decoder = self.layers_config["decoder"] 
         self.encoder_horizontal_outputs = dict()
