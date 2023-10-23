@@ -35,7 +35,8 @@ class BasicEncoder(BaseTemplate):
 
         self.embed_dim = embed_dim
 
-        self.activation = self._activation_getter(activation=activation)
+        self.activation_1 = self._activation_getter(activation=activation)
+        self.activation_2 = self._activation_getter(activation=activation)
 
         self.mlp_layer = mlp_layer
 
@@ -54,9 +55,9 @@ class BasicEncoder(BaseTemplate):
     ) -> torch.Tensor:
 
         h = input_data
-        h1 = self.activation(h)
+        h1 = self.activation_1(h)
         h = h + self.self_attention(h1, h1, h1)[0]
-        h2 = self.activation(h)
+        h2 = self.activation_2(h)
         h = h + self.mlp_layer(h2)
 
         return h
@@ -74,7 +75,8 @@ class BasicDecoder(BaseTemplate):
 
         self.embed_dim = embed_dim
 
-        self.activation = self._activation_getter(activation=activation)
+        self.activation_1 = self._activation_getter(activation=activation)
+        self.activation_2 = self._activation_getter(activation=activation)
 
         self.mlp_layer = mlp_layer
 
@@ -94,9 +96,9 @@ class BasicDecoder(BaseTemplate):
     ) -> torch.Tensor:
 
         h = input_data
-        h1 = self.activation(h)
+        h1 = self.activation_1(h)
         h = h + self.self_attention(h1, encoder_output, encoder_output)[0]
-        h2 = self.activation(h)
+        h2 = self.activation_2(h)
         h = h + self.mlp_layer(h2)
 
         return h
