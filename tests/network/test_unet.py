@@ -34,8 +34,9 @@ def generate_data(
     n_inputs: int = None,
     n_outputs: int = None,
 ) -> (torch.Tensor, torch.Tensor):
+
     input_data = np.random.rand(n_samples, n_inputs, *image_size)
-    output_data = np.random.rand(n_samples, n_outputs)
+    output_data = np.random.rand(n_samples, n_outputs, *image_size)
 
     return torch.from_numpy(input_data.astype(ARRAY_DTYPE)), torch.from_numpy(
         output_data.astype(ARRAY_DTYPE)
@@ -46,7 +47,8 @@ def model_2d():
     from simulai.models import UNet
 
     # Configuring model
-    n_inputs = 1
+    n_inputs = 3
+    n_outputs = 1
     n_ch_0 = 2
 
     layers = {
@@ -172,12 +174,108 @@ def model_2d():
 
                 },
 
-            ]
-        }
+                {
+                    "in_channels": 8*n_ch_0,
+                    "out_channels": 4*n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+                    "before_conv": {"type": "upsample", "scale_factor": 2, "mode": "bicubic"},
+                },
 
+                {
+                    "in_channels": 8*n_ch_0,
+                    "out_channels": 4*n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+
+                },
+
+                {
+                    "in_channels": 4*n_ch_0,
+                    "out_channels": 4*n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+
+                },
+
+                {
+                    "in_channels": 4*n_ch_0,
+                    "out_channels": 2*n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+                    "before_conv": {"type": "upsample", "scale_factor": 2, "mode": "bicubic"},
+                },
+
+                {
+                    "in_channels": 4*n_ch_0,
+                    "out_channels": 2*n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+                },
+
+                {
+                    "in_channels": 2*n_ch_0,
+                    "out_channels": 2*n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+                },
+
+                {
+                    "in_channels": 2*n_ch_0,
+                    "out_channels": 1*n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+                    "before_conv": {"type": "upsample", "scale_factor": 2, "mode": "bicubic"},
+                },
+
+                {
+                    "in_channels": 2*n_ch_0,
+                    "out_channels": 1*n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+                },
+
+                {
+                    "in_channels": 1*n_ch_0,
+                    "out_channels": 1*n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+                },
+
+                {
+                    "in_channels": 1*n_ch_0,
+                    "out_channels": n_outputs,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+                },
+
+            ]
+        },
+        "encoder_activations": ["relu", "relu", "relu", "relu", "relu",
+                                "relu", "relu", "relu", "relu", "relu",
+                                "relu"
+                                ],
+
+        "decoder_activations": ["relu", "identity", "relu", "relu", "identity",
+                                "relu", "relu", "identity", "relu", "relu",
+                                "identity", "relu", "relu", "identity", 
+                                ],
     }
 
-    unet = UNet(layers_config=layers)
+    unet = UNet(layers_config=layers,
+                intermediary_outputs_indices=[4, 9, 14, 19],
+                intermediary_inputs_indices=[4, 10, 16, 22],
+                )
 
     return unet
 
@@ -192,10 +290,11 @@ class TestConvNet2D(TestCase):
 
     def test_convnet_2d_eval(self):
         input_data, output_data = generate_data(
-            n_samples=100, image_size=(16, 16), n_inputs=1, n_outputs=16
+            n_samples=100, image_size=(16, 16), n_inputs=3, n_outputs=1
         )
 
         unet = model_2d()
+        unet.summary()
 
         estimated_output_data = unet.eval(input_data=input_data)
 

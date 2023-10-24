@@ -159,9 +159,9 @@ class NetworkTemplate(torch.nn.Module):
         ):
             activations_list = list()
             for activation_name in activation:
-                activation_op = self._get_operation(operation=activation_name)
+                activation_op = self._get_operation(operation=activation_name, is_activation=True)
 
-                activations_list.append(activation_op())
+                activations_list.append(activation_op)##activation_op())
 
             return activations_list, activation
 
