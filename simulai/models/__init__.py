@@ -26,6 +26,7 @@ if engine == "pytorch":
         ImprovedDeepONet,
         ImprovedDenseNetwork,
         Transformer,
+        UNet,
         MetaModel,
         ModelMaker,
         MultiNetwork,
