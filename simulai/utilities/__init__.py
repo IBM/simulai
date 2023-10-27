@@ -15,4 +15,4 @@
 from ._makedirs_to_file import makedirs_to_file
 from ._tmp_dir import make_temp_directory
 from .opinf_deviation import OpInfDeviation
-from ._vizualization import view_api
+from ._visualization import view_api
