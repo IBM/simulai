@@ -263,11 +263,11 @@ class Transformer(NetworkTemplate):
                             )
 
         # Defining the decoder architecture
-        self.DecoderStage =  [BasicDecoder(num_heads=self.num_heads_decoder,
-                                           activation=self.decoder_activation,
-                                           mlp_layer=self.decoder_mlp_layers_list[d],
-                                           embed_dim=self.embed_dim_decoder) for d in range(self.number_of_decoders)
-                              ]
+        self.DecoderStage =  torch.nn.ModuleList([BasicDecoder(num_heads=self.num_heads_decoder,
+                                                               activation=self.decoder_activation,
+                                                               mlp_layer=self.decoder_mlp_layers_list[d],
+                                                               embed_dim=self.embed_dim_decoder) for d in range(self.number_of_decoders)
+                              ])
 
 
         self.weights = list()
@@ -303,7 +303,7 @@ class Transformer(NetworkTemplate):
             output = decoder(input_data=current_input, encoder_output=encoder_output)
             current_input = output
 
-            return output
+        return output
 
     def summary(self):
         """
