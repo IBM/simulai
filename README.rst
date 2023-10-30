@@ -27,6 +27,8 @@ The SimulAI toolkit provides easy access to state-of-the-art models and algorith
 - `Operator Inference <#references>`_ (OpInf)
 - `Koopman Autoencoders <#references>`_ (experimental)
 - `Echo State Networks <#references>`_ (experimental GPU support)
+- `Transformers`
+- `U-Nets`
 
 In addition to the methods above, many more techniques for model reduction and regularization are included in SimulAI. See `documentation <https://simulai-toolkit.readthedocs.io/>`_.
 
