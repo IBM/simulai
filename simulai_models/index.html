@@ -1,445 +1,2812 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>simulai.models - SimulAI Docs</title>
-    <link rel="stylesheet" href="../css/theme.css" />
-    <link rel="stylesheet" href="../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
-        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
     
-      <script>
-        // Current page data
-        var mkdocs_page_name = "simulai.models";
-        var mkdocs_page_input_path = "simulai_models.md";
-        var mkdocs_page_url = null;
-      </script>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../simulai_residuals/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.7">
     
-    <!--[if lt IE 9]>
-      <script src="../js/html5shiv.min.js"></script>
-    <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-      <script>hljs.highlightAll();</script> 
-</head>
+    
+      
+        <title>simulai.models - SimulAI Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.4b4a2bd9.min.css">
+      
+      
 
-<body class="wy-body-for-nav" role="document">
 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
-    <div class="wy-side-scroll">
-      <div class="wy-side-nav-search">
-          <a href=".." class="icon icon-home"> SimulAI Docs
-        </a><div role="search">
-  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
-  </form>
-</div>
-      </div>
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
 
-      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="..">Welcome to SimulAI</a>
-                </li>
-              </ul>
-              <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="./">simulai.models</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#transformer">Transformer</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.Transformer">Transformer</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.Transformer.__init__">__init__()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.Transformer.__init__--parameters">Parameters</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.Transformer.forward">forward()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.Transformer.forward--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.Transformer.forward--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.Transformer.summary">summary()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#u-net">U-Net</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.UNet">UNet</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.UNet.__init__">__init__()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.UNet.__init__--parameters">Parameters</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.UNet.forward">forward()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.UNet.forward--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.UNet.forward--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.UNet.summary">summary()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#deeponet">DeepONet</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.DeepONet">DeepONet</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.DeepONet.__init__">__init__()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.DeepONet.__init__--parameters">Parameters</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.DeepONet.eval">eval()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.DeepONet.eval--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.DeepONet.eval--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.DeepONet.eval_subnetwork">eval_subnetwork()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.DeepONet.eval_subnetwork--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.DeepONet.eval_subnetwork--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.DeepONet.forward">forward()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.DeepONet.forward--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.DeepONet.forward--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#autoencodermlp">AutoencoderMLP</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderMLP">AutoencoderMLP</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderMLP.__init__">__init__()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderMLP.__init__--parameters">Parameters</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderMLP.eval_projection">eval_projection()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderMLP.eval_projection--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderMLP.eval_projection--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderMLP.forward">forward()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderMLP.forward--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderMLP.forward--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderMLP.projection">projection()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderMLP.projection--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderMLP.projection--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderMLP.reconstruction">reconstruction()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderMLP.reconstruction--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderMLP.reconstruction--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderMLP.summary">summary()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#autoencodercnn">AutoencoderCNN</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderCNN">AutoencoderCNN</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderCNN.__init__">__init__()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderCNN.__init__--parameters">Parameters</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderCNN.eval">eval()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderCNN.eval--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderCNN.eval--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderCNN.forward">forward()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderCNN.forward--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderCNN.forward--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderCNN.project">project()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderCNN.project--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderCNN.project--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderCNN.projection">projection()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderCNN.projection--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderCNN.projection--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderCNN.reconstruct">reconstruct()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderCNN.reconstruct--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderCNN.reconstruct--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderCNN.reconstruction">reconstruction()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderCNN.reconstruction--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderCNN.reconstruction--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderCNN.summary">summary()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderCNN.summary--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderCNN.summary--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#autoencoderkoopman">AutoencoderKoopman</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderKoopman">AutoencoderKoopman</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.__init__">__init__()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.__init__--parameters">Parameters</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.latent_forward">latent_forward()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.latent_forward--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.latent_forward--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.latent_forward_m">latent_forward_m()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.latent_forward_m--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.latent_forward_m--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.predict">predict()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.predict--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.predict--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.project">project()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.project--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.project--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.reconstruct">reconstruct()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.reconstruct--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.reconstruct--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.reconstruction_forward">reconstruction_forward()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.reconstruction_forward--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.reconstruction_forward--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.reconstruction_forward_m">reconstruction_forward_m()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.reconstruction_forward_m--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderKoopman.reconstruction_forward_m--returns">Returns</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#autoencodervariational">AutoencoderVariational</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderVariational">AutoencoderVariational</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderVariational.CoVariance">CoVariance()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.CoVariance--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.CoVariance--returns">Returns</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.CoVariance--examples">Examples</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderVariational.Mu">Mu()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.Mu--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.Mu--returns">Returns</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.Mu--examples">Examples</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderVariational.Sigma">Sigma()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.Sigma--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.Sigma--returns">Returns</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.Sigma--examples">Examples</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderVariational.__init__">__init__()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.__init__--parameters">Parameters</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderVariational.eval">eval()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.eval--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.eval--returns">Returns</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.eval--examples">Examples</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderVariational.latent_gaussian_noisy">latent_gaussian_noisy()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.latent_gaussian_noisy--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.latent_gaussian_noisy--returns">Returns</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.latent_gaussian_noisy--notes">Notes</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.latent_gaussian_noisy--examples">Examples</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderVariational.project">project()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.project--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.project--returns">Returns</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.project--examples">Examples</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderVariational.reconstruct">reconstruct()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.reconstruct--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.reconstruct--returns">Returns</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.reconstruct--examples">Examples</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderVariational.reconstruction_eval">reconstruction_eval()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.reconstruction_eval--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.reconstruction_eval--returns">Returns</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.reconstruction_eval--examples">Examples</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderVariational.reconstruction_forward">reconstruction_forward()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.reconstruction_forward--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.reconstruction_forward--returns">Returns</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.reconstruction_forward--examples">Examples</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.models.AutoencoderVariational.summary">summary()</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.summary--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.summary--returns">Returns</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.summary--raises">Raises</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.summary--notes">Notes</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#simulai.models.AutoencoderVariational.summary--examples">Examples</a>
-    </li>
-        </ul>
-    </li>
-    </ul>
-                </li>
-              </ul>
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#simulaimodels" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="SimulAI Docs" class="md-header__button md-logo" aria-label="SimulAI Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SimulAI Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              simulai.models
+            
+          </span>
+        </div>
       </div>
     </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="..">SimulAI Docs</a>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
         
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
       </nav>
-      <div class="wy-nav-content">
-        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
-  <ul class="wy-breadcrumbs">
-    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">simulai.models</li>
-    <li class="wy-breadcrumbs-aside">
-    </li>
-  </ul>
-  <hr/>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-            <div class="section" itemprop="articleBody">
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
               
-                <h1 id="simulaimodels">simulai.models</h1>
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="SimulAI Docs" class="md-nav__button md-logo" aria-label="SimulAI Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    SimulAI Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Welcome to SimulAI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    simulai.models
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    simulai.models
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#transformer" class="md-nav__link">
+    Transformer
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.Transformer" class="md-nav__link">
+    Transformer
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.Transformer.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.Transformer.__init__--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.Transformer.forward" class="md-nav__link">
+    forward()
+  </a>
+  
+    <nav class="md-nav" aria-label="forward()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.Transformer.forward--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.Transformer.forward--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.Transformer.summary" class="md-nav__link">
+    summary()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#u-net" class="md-nav__link">
+    U-Net
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.UNet" class="md-nav__link">
+    UNet
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.UNet.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.UNet.__init__--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.UNet.forward" class="md-nav__link">
+    forward()
+  </a>
+  
+    <nav class="md-nav" aria-label="forward()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.UNet.forward--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.UNet.forward--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.UNet.summary" class="md-nav__link">
+    summary()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deeponet" class="md-nav__link">
+    DeepONet
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet" class="md-nav__link">
+    DeepONet
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.__init__--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.eval" class="md-nav__link">
+    eval()
+  </a>
+  
+    <nav class="md-nav" aria-label="eval()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.eval--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.eval--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.eval_subnetwork" class="md-nav__link">
+    eval_subnetwork()
+  </a>
+  
+    <nav class="md-nav" aria-label="eval_subnetwork()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.eval_subnetwork--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.eval_subnetwork--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.forward" class="md-nav__link">
+    forward()
+  </a>
+  
+    <nav class="md-nav" aria-label="forward()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.forward--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.forward--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autoencodermlp" class="md-nav__link">
+    AutoencoderMLP
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP" class="md-nav__link">
+    AutoencoderMLP
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.__init__--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.eval_projection" class="md-nav__link">
+    eval_projection()
+  </a>
+  
+    <nav class="md-nav" aria-label="eval_projection()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.eval_projection--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.eval_projection--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.forward" class="md-nav__link">
+    forward()
+  </a>
+  
+    <nav class="md-nav" aria-label="forward()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.forward--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.forward--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.projection" class="md-nav__link">
+    projection()
+  </a>
+  
+    <nav class="md-nav" aria-label="projection()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.projection--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.projection--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.reconstruction" class="md-nav__link">
+    reconstruction()
+  </a>
+  
+    <nav class="md-nav" aria-label="reconstruction()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.reconstruction--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.reconstruction--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.summary" class="md-nav__link">
+    summary()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autoencodercnn" class="md-nav__link">
+    AutoencoderCNN
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN" class="md-nav__link">
+    AutoencoderCNN
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.__init__--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.eval" class="md-nav__link">
+    eval()
+  </a>
+  
+    <nav class="md-nav" aria-label="eval()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.eval--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.eval--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.forward" class="md-nav__link">
+    forward()
+  </a>
+  
+    <nav class="md-nav" aria-label="forward()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.forward--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.forward--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.project" class="md-nav__link">
+    project()
+  </a>
+  
+    <nav class="md-nav" aria-label="project()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.project--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.project--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.projection" class="md-nav__link">
+    projection()
+  </a>
+  
+    <nav class="md-nav" aria-label="projection()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.projection--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.projection--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.reconstruct" class="md-nav__link">
+    reconstruct()
+  </a>
+  
+    <nav class="md-nav" aria-label="reconstruct()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.reconstruct--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.reconstruct--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.reconstruction" class="md-nav__link">
+    reconstruction()
+  </a>
+  
+    <nav class="md-nav" aria-label="reconstruction()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.reconstruction--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.reconstruction--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.summary" class="md-nav__link">
+    summary()
+  </a>
+  
+    <nav class="md-nav" aria-label="summary()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.summary--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.summary--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autoencoderkoopman" class="md-nav__link">
+    AutoencoderKoopman
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman" class="md-nav__link">
+    AutoencoderKoopman
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.__init__--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.latent_forward" class="md-nav__link">
+    latent_forward()
+  </a>
+  
+    <nav class="md-nav" aria-label="latent_forward()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.latent_forward--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.latent_forward--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.latent_forward_m" class="md-nav__link">
+    latent_forward_m()
+  </a>
+  
+    <nav class="md-nav" aria-label="latent_forward_m()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.latent_forward_m--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.latent_forward_m--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.predict" class="md-nav__link">
+    predict()
+  </a>
+  
+    <nav class="md-nav" aria-label="predict()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.predict--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.predict--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.project" class="md-nav__link">
+    project()
+  </a>
+  
+    <nav class="md-nav" aria-label="project()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.project--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.project--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.reconstruct" class="md-nav__link">
+    reconstruct()
+  </a>
+  
+    <nav class="md-nav" aria-label="reconstruct()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.reconstruct--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.reconstruct--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.reconstruction_forward" class="md-nav__link">
+    reconstruction_forward()
+  </a>
+  
+    <nav class="md-nav" aria-label="reconstruction_forward()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.reconstruction_forward--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.reconstruction_forward--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.reconstruction_forward_m" class="md-nav__link">
+    reconstruction_forward_m()
+  </a>
+  
+    <nav class="md-nav" aria-label="reconstruction_forward_m()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.reconstruction_forward_m--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.reconstruction_forward_m--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autoencodervariational" class="md-nav__link">
+    AutoencoderVariational
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational" class="md-nav__link">
+    AutoencoderVariational
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.CoVariance" class="md-nav__link">
+    CoVariance()
+  </a>
+  
+    <nav class="md-nav" aria-label="CoVariance()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.CoVariance--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.CoVariance--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.CoVariance--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.Mu" class="md-nav__link">
+    Mu()
+  </a>
+  
+    <nav class="md-nav" aria-label="Mu()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.Mu--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.Mu--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.Mu--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.Sigma" class="md-nav__link">
+    Sigma()
+  </a>
+  
+    <nav class="md-nav" aria-label="Sigma()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.Sigma--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.Sigma--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.Sigma--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.__init__--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.eval" class="md-nav__link">
+    eval()
+  </a>
+  
+    <nav class="md-nav" aria-label="eval()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.eval--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.eval--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.eval--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.latent_gaussian_noisy" class="md-nav__link">
+    latent_gaussian_noisy()
+  </a>
+  
+    <nav class="md-nav" aria-label="latent_gaussian_noisy()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.latent_gaussian_noisy--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.latent_gaussian_noisy--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.latent_gaussian_noisy--notes" class="md-nav__link">
+    Notes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.latent_gaussian_noisy--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.project" class="md-nav__link">
+    project()
+  </a>
+  
+    <nav class="md-nav" aria-label="project()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.project--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.project--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.project--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruct" class="md-nav__link">
+    reconstruct()
+  </a>
+  
+    <nav class="md-nav" aria-label="reconstruct()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruct--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruct--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruct--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruction_eval" class="md-nav__link">
+    reconstruction_eval()
+  </a>
+  
+    <nav class="md-nav" aria-label="reconstruction_eval()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruction_eval--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruction_eval--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruction_eval--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruction_forward" class="md-nav__link">
+    reconstruction_forward()
+  </a>
+  
+    <nav class="md-nav" aria-label="reconstruction_forward()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruction_forward--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruction_forward--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruction_forward--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.summary" class="md-nav__link">
+    summary()
+  </a>
+  
+    <nav class="md-nav" aria-label="summary()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.summary--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.summary--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.summary--raises" class="md-nav__link">
+    Raises
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.summary--notes" class="md-nav__link">
+    Notes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.summary--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../simulai_residuals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    simulai.residuals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#transformer" class="md-nav__link">
+    Transformer
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.Transformer" class="md-nav__link">
+    Transformer
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.Transformer.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.Transformer.__init__--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.Transformer.forward" class="md-nav__link">
+    forward()
+  </a>
+  
+    <nav class="md-nav" aria-label="forward()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.Transformer.forward--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.Transformer.forward--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.Transformer.summary" class="md-nav__link">
+    summary()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#u-net" class="md-nav__link">
+    U-Net
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.UNet" class="md-nav__link">
+    UNet
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.UNet.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.UNet.__init__--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.UNet.forward" class="md-nav__link">
+    forward()
+  </a>
+  
+    <nav class="md-nav" aria-label="forward()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.UNet.forward--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.UNet.forward--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.UNet.summary" class="md-nav__link">
+    summary()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deeponet" class="md-nav__link">
+    DeepONet
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet" class="md-nav__link">
+    DeepONet
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.__init__--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.eval" class="md-nav__link">
+    eval()
+  </a>
+  
+    <nav class="md-nav" aria-label="eval()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.eval--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.eval--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.eval_subnetwork" class="md-nav__link">
+    eval_subnetwork()
+  </a>
+  
+    <nav class="md-nav" aria-label="eval_subnetwork()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.eval_subnetwork--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.eval_subnetwork--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.forward" class="md-nav__link">
+    forward()
+  </a>
+  
+    <nav class="md-nav" aria-label="forward()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.forward--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.DeepONet.forward--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autoencodermlp" class="md-nav__link">
+    AutoencoderMLP
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP" class="md-nav__link">
+    AutoencoderMLP
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.__init__--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.eval_projection" class="md-nav__link">
+    eval_projection()
+  </a>
+  
+    <nav class="md-nav" aria-label="eval_projection()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.eval_projection--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.eval_projection--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.forward" class="md-nav__link">
+    forward()
+  </a>
+  
+    <nav class="md-nav" aria-label="forward()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.forward--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.forward--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.projection" class="md-nav__link">
+    projection()
+  </a>
+  
+    <nav class="md-nav" aria-label="projection()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.projection--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.projection--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.reconstruction" class="md-nav__link">
+    reconstruction()
+  </a>
+  
+    <nav class="md-nav" aria-label="reconstruction()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.reconstruction--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.reconstruction--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderMLP.summary" class="md-nav__link">
+    summary()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autoencodercnn" class="md-nav__link">
+    AutoencoderCNN
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN" class="md-nav__link">
+    AutoencoderCNN
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.__init__--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.eval" class="md-nav__link">
+    eval()
+  </a>
+  
+    <nav class="md-nav" aria-label="eval()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.eval--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.eval--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.forward" class="md-nav__link">
+    forward()
+  </a>
+  
+    <nav class="md-nav" aria-label="forward()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.forward--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.forward--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.project" class="md-nav__link">
+    project()
+  </a>
+  
+    <nav class="md-nav" aria-label="project()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.project--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.project--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.projection" class="md-nav__link">
+    projection()
+  </a>
+  
+    <nav class="md-nav" aria-label="projection()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.projection--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.projection--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.reconstruct" class="md-nav__link">
+    reconstruct()
+  </a>
+  
+    <nav class="md-nav" aria-label="reconstruct()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.reconstruct--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.reconstruct--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.reconstruction" class="md-nav__link">
+    reconstruction()
+  </a>
+  
+    <nav class="md-nav" aria-label="reconstruction()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.reconstruction--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.reconstruction--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.summary" class="md-nav__link">
+    summary()
+  </a>
+  
+    <nav class="md-nav" aria-label="summary()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.summary--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderCNN.summary--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#autoencoderkoopman" class="md-nav__link">
+    AutoencoderKoopman
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman" class="md-nav__link">
+    AutoencoderKoopman
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.__init__--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.latent_forward" class="md-nav__link">
+    latent_forward()
+  </a>
+  
+    <nav class="md-nav" aria-label="latent_forward()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.latent_forward--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.latent_forward--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.latent_forward_m" class="md-nav__link">
+    latent_forward_m()
+  </a>
+  
+    <nav class="md-nav" aria-label="latent_forward_m()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.latent_forward_m--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.latent_forward_m--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.predict" class="md-nav__link">
+    predict()
+  </a>
+  
+    <nav class="md-nav" aria-label="predict()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.predict--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.predict--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.project" class="md-nav__link">
+    project()
+  </a>
+  
+    <nav class="md-nav" aria-label="project()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.project--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.project--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.reconstruct" class="md-nav__link">
+    reconstruct()
+  </a>
+  
+    <nav class="md-nav" aria-label="reconstruct()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.reconstruct--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.reconstruct--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.reconstruction_forward" class="md-nav__link">
+    reconstruction_forward()
+  </a>
+  
+    <nav class="md-nav" aria-label="reconstruction_forward()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.reconstruction_forward--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.reconstruction_forward--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.reconstruction_forward_m" class="md-nav__link">
+    reconstruction_forward_m()
+  </a>
+  
+    <nav class="md-nav" aria-label="reconstruction_forward_m()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.reconstruction_forward_m--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderKoopman.reconstruction_forward_m--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autoencodervariational" class="md-nav__link">
+    AutoencoderVariational
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational" class="md-nav__link">
+    AutoencoderVariational
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.CoVariance" class="md-nav__link">
+    CoVariance()
+  </a>
+  
+    <nav class="md-nav" aria-label="CoVariance()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.CoVariance--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.CoVariance--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.CoVariance--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.Mu" class="md-nav__link">
+    Mu()
+  </a>
+  
+    <nav class="md-nav" aria-label="Mu()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.Mu--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.Mu--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.Mu--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.Sigma" class="md-nav__link">
+    Sigma()
+  </a>
+  
+    <nav class="md-nav" aria-label="Sigma()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.Sigma--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.Sigma--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.Sigma--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.__init__--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.eval" class="md-nav__link">
+    eval()
+  </a>
+  
+    <nav class="md-nav" aria-label="eval()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.eval--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.eval--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.eval--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.latent_gaussian_noisy" class="md-nav__link">
+    latent_gaussian_noisy()
+  </a>
+  
+    <nav class="md-nav" aria-label="latent_gaussian_noisy()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.latent_gaussian_noisy--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.latent_gaussian_noisy--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.latent_gaussian_noisy--notes" class="md-nav__link">
+    Notes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.latent_gaussian_noisy--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.project" class="md-nav__link">
+    project()
+  </a>
+  
+    <nav class="md-nav" aria-label="project()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.project--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.project--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.project--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruct" class="md-nav__link">
+    reconstruct()
+  </a>
+  
+    <nav class="md-nav" aria-label="reconstruct()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruct--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruct--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruct--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruction_eval" class="md-nav__link">
+    reconstruction_eval()
+  </a>
+  
+    <nav class="md-nav" aria-label="reconstruction_eval()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruction_eval--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruction_eval--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruction_eval--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruction_forward" class="md-nav__link">
+    reconstruction_forward()
+  </a>
+  
+    <nav class="md-nav" aria-label="reconstruction_forward()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruction_forward--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruction_forward--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.reconstruction_forward--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.summary" class="md-nav__link">
+    summary()
+  </a>
+  
+    <nav class="md-nav" aria-label="summary()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.summary--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.summary--returns" class="md-nav__link">
+    Returns
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.summary--raises" class="md-nav__link">
+    Raises
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.summary--notes" class="md-nav__link">
+    Notes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulai.models.AutoencoderVariational.summary--examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="simulaimodels">simulai.models</h1>
 <h2 id="transformer">Transformer</h2>
 
 
@@ -779,7 +3146,7 @@ number_of_decoders : int
     The number of decoders to be used.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_transformer.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_transformer.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">182</span>
 <span class="normal">183</span>
 <span class="normal">184</span>
@@ -1007,7 +3374,7 @@ number_of_decoders : int
     The transformer output.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_transformer.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_transformer.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">283</span>
 <span class="normal">284</span>
 <span class="normal">285</span>
@@ -1078,7 +3445,7 @@ number_of_decoders : int
       <p>It prints a general view of the architecture.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_transformer.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_transformer.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">308</span>
 <span class="normal">309</span>
 <span class="normal">310</span>
@@ -1358,7 +3725,7 @@ decoder_extra_args : Dict
     A dictionary containing extra arguments for the decoder.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_unet.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_unet.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">204</span>
 <span class="normal">205</span>
 <span class="normal">206</span>
@@ -1519,7 +3886,7 @@ decoder_extra_args : Dict
     The U-Net output.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_unet.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_unet.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">271</span>
 <span class="normal">272</span>
 <span class="normal">273</span>
@@ -1586,7 +3953,7 @@ decoder_extra_args : Dict
       <p>It shows a general view of the architecture.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_unet.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_unet.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">294</span>
 <span class="normal">295</span>
 <span class="normal">296</span>
@@ -2658,7 +5025,7 @@ model_id: str
     Name for the model</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_deeponet.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_deeponet.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 32</span>
 <span class="normal"> 33</span>
 <span class="normal"> 34</span>
@@ -2997,7 +5364,7 @@ branch_data : Union[np.ndarray, torch.Tensor]</p>
     The result of all the hidden operations in the network.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_deeponet.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_deeponet.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">455</span>
 <span class="normal">456</span>
 <span class="normal">457</span>
@@ -3084,7 +5451,7 @@ branch_data : Union[np.ndarray, torch.Tensor]</p>
     The evaluation performed by the subnetwork.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_deeponet.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_deeponet.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">483</span>
 <span class="normal">484</span>
 <span class="normal">485</span>
@@ -3173,7 +5540,7 @@ input_branch : Union[np.ndarray, torch.Tensor]</p>
     The result of all the hidden operations in the network.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_deeponet.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_deeponet.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">418</span>
 <span class="normal">419</span>
 <span class="normal">420</span>
@@ -3691,7 +6058,7 @@ name : str, optional
     The name of the network, by default None.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 53</span>
 <span class="normal"> 54</span>
 <span class="normal"> 55</span>
@@ -3856,7 +6223,7 @@ name : str, optional
     The dataset projected over the latent space.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">193</span>
 <span class="normal">194</span>
 <span class="normal">195</span>
@@ -3921,7 +6288,7 @@ name : str, optional
     The dataset reconstructed.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">171</span>
 <span class="normal">172</span>
 <span class="normal">173</span>
@@ -3992,7 +6359,7 @@ name : str, optional
     The dataset projected over the latent space.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">129</span>
 <span class="normal">130</span>
 <span class="normal">131</span>
@@ -4061,7 +6428,7 @@ name : str, optional
     The dataset reconstructed.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">150</span>
 <span class="normal">151</span>
 <span class="normal">152</span>
@@ -4124,7 +6491,7 @@ name : str, optional
       <p>Prints the summary of the network architecture</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">122</span>
 <span class="normal">123</span>
 <span class="normal">124</span>
@@ -4929,7 +7296,7 @@ name : str, optional
     The name of the network, by default None.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">233</span>
 <span class="normal">234</span>
 <span class="normal">235</span>
@@ -5180,7 +7547,7 @@ name : str, optional
     The dataset projected over the latent space.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">499</span>
 <span class="normal">500</span>
 <span class="normal">501</span>
@@ -5251,7 +7618,7 @@ name : str, optional
     The reconstructed dataset.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">479</span>
 <span class="normal">480</span>
 <span class="normal">481</span>
@@ -5318,7 +7685,7 @@ name : str, optional
     The dataset projected over the latent space.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">521</span>
 <span class="normal">522</span>
 <span class="normal">523</span>
@@ -5383,7 +7750,7 @@ name : str, optional
     The dataset projected over the latent space.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">421</span>
 <span class="normal">422</span>
 <span class="normal">423</span>
@@ -5464,7 +7831,7 @@ name : str, optional
     The reconstructed dataset.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">540</span>
 <span class="normal">541</span>
 <span class="normal">542</span>
@@ -5531,7 +7898,7 @@ name : str, optional
     The reconstructed dataset.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">448</span>
 <span class="normal">449</span>
 <span class="normal">450</span>
@@ -5622,7 +7989,7 @@ input_shape : list, optional
     The dataset projected over the latent space.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">345</span>
 <span class="normal">346</span>
 <span class="normal">347</span>
@@ -6879,7 +9246,7 @@ name : str, optional
     The name of the autoencoder. Defaults to None.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">585</span>
 <span class="normal">586</span>
 <span class="normal">587</span>
@@ -7192,7 +9559,7 @@ name : str, optional
     The computed latent representation.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">916</span>
 <span class="normal">917</span>
 <span class="normal">918</span>
@@ -7259,7 +9626,7 @@ m : int, optional
     The computed latent representation.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">895</span>
 <span class="normal">896</span>
 <span class="normal">897</span>
@@ -7330,7 +9697,7 @@ n_steps : int, optional
     The predicted reconstructed data.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 982</span>
 <span class="normal"> 983</span>
 <span class="normal"> 984</span>
@@ -7433,7 +9800,7 @@ n_steps : int, optional
     The projected data.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1020</span>
 <span class="normal">1021</span>
 <span class="normal">1022</span>
@@ -7498,7 +9865,7 @@ n_steps : int, optional
     The reconstructed data.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1039</span>
 <span class="normal">1040</span>
 <span class="normal">1041</span>
@@ -7567,7 +9934,7 @@ n_steps : int, optional
     The reconstructed data.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">935</span>
 <span class="normal">936</span>
 <span class="normal">937</span>
@@ -7640,7 +10007,7 @@ m : int, optional
     The reconstructed data.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">957</span>
 <span class="normal">958</span>
 <span class="normal">959</span>
@@ -9217,7 +11584,7 @@ covariance = autoencoder.CoVariance(input_data=input_data)</p>
 </blockquote>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1558</span>
 <span class="normal">1559</span>
 <span class="normal">1560</span>
@@ -9340,7 +11707,7 @@ mu = autoencoder.Mu(input_data=input_data)</p>
 </blockquote>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1496</span>
 <span class="normal">1497</span>
 <span class="normal">1498</span>
@@ -9441,7 +11808,7 @@ sigma = autoencoder.Sigma(input_data=input_data)</p>
 </blockquote>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1527</span>
 <span class="normal">1528</span>
 <span class="normal">1529</span>
@@ -9559,7 +11926,7 @@ name : str, optional
     The name of the autoencoder. Defaults to None.</p>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1084</span>
 <span class="normal">1085</span>
 <span class="normal">1086</span>
@@ -9922,7 +12289,7 @@ reconstructed_data = autoencoder.eval(input_data=input_data)</p>
 </blockquote>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1750</span>
 <span class="normal">1751</span>
 <span class="normal">1752</span>
@@ -10015,7 +12382,7 @@ noisy_latent = autoencoder.latent_gaussian_noisy(input_data=input_data)</p>
 </blockquote>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1600</span>
 <span class="normal">1601</span>
 <span class="normal">1602</span>
@@ -10120,7 +12487,7 @@ projected_data = autoencoder.project(input_data=input_data)</p>
 </blockquote>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1690</span>
 <span class="normal">1691</span>
 <span class="normal">1692</span>
@@ -10215,7 +12582,7 @@ reconstructed_data = autoencoder.reconstruct(input_data=input_data)</p>
 </blockquote>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1719</span>
 <span class="normal">1720</span>
 <span class="normal">1721</span>
@@ -10314,7 +12681,7 @@ reconstructed_data = autoencoder.reconstruction_eval(input_data=input_data)</p>
 </blockquote>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1662</span>
 <span class="normal">1663</span>
 <span class="normal">1664</span>
@@ -10407,7 +12774,7 @@ reconstructed_data = autoencoder.reconstruction_forward(input_data=input_data)</
 </blockquote>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1634</span>
 <span class="normal">1635</span>
 <span class="normal">1636</span>
@@ -10509,7 +12876,7 @@ output_data = autoencoder.summary(input_data=input_data)</p>
 </blockquote>
 
           <details class="quote">
-            <summary> <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
+            <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1247</span>
 <span class="normal">1248</span>
 <span class="normal">1249</span>
@@ -10756,48 +13123,49 @@ output_data = autoencoder.summary(input_data=input_data)</p>
   </div>
 
 </div>
-              
+
+
+
+
+
+                
+              </article>
             </div>
-          </div><footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href=".." class="btn btn-neutral float-left" title="Welcome to SimulAI"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <!-- Copyright etc -->
-  </div>
-
-  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
-</footer>
+          
           
         </div>
-      </div>
-
-    </section>
-
-  </div>
-
-  <div class="rst-versions" role="note" aria-label="Versions">
-  <span class="rst-current-version" data-toggle="rst-current-version">
-    
-    
-      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
-    
-    
-  </span>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
 </div>
-    <script src="../js/jquery-3.6.0.min.js"></script>
-    <script>var base_url = "..";</script>
-    <script src="../js/theme_extra.js"></script>
-    <script src="../js/theme.js"></script>
-      <script src="../search/main.js"></script>
-    <script>
-        jQuery(function () {
-            SphinxRtdTheme.Navigation.enable(true);
-        });
-    </script>
-
-</body>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.aecac24b.min.js"></script>
+      
+    
+  </body>
 </html>
