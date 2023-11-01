@@ -6,7 +6,7 @@ SimulAI
 .. image:: https://badge.fury.io/py/simulai-toolkit.svg
    :target: https://badge.fury.io/py/simulai-toolkit
 .. image:: https://readthedocs.org/projects/simulai-toolkit/badge/?version=latest
-   :target: https://simulai-toolkit.readthedocs.io/en/latest/?badge=latest
+   :target: https://ibm.github.io/simulai
    :alt: Documentation Status
 .. image:: assets/coverage.svg
    :target: tests/
@@ -82,7 +82,7 @@ Using Tensorboard
 Documentation
 =============
 
-Please, refer to the SimulAI API `documentation <https://simulai-toolkit.readthedocs.io>`_ before using the toolkit.
+Please, refer to the SimulAI API `documentation <https://ibm.github.io/simulai>`_ before using the toolkit.
 
 Examples
 ========

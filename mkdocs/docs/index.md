@@ -28,7 +28,7 @@ the following methods described in the literature:
 
 In addition to the methods above, many more techniques for model
 reduction and regularization are included in SimulAI. See
-[documentation](https://simulai-toolkit.readthedocs.io/).
+[documentation](https://ibm.github.io/simulai).
 
 # Installing
 
