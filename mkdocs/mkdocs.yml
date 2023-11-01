@@ -1,0 +1,14 @@
+site_name: SimulAI Docs
+
+theme:
+  name: "readthedocs"
+
+plugins:
+  - search
+  - autorefs
+  - mkdocstrings 
+
+nav:
+  - index.md
+  - simulai_models.md
+
