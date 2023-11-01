@@ -1,5 +1,5 @@
 
-/* Avoid breaking parameters name, etc. in table cells. */
+/* Avoid breaking parameter names, etc. in table cells. */
 .doc-contents td code {
   word-break: normal !important;
 }
@@ -10,48 +10,55 @@
   display: inline;
 }
 
-/* Avoid breaking code headings. */
-.doc-heading code {
-  white-space: normal;
+/* Max width for docstring sections tables. */
+.doc .md-typeset__table,
+.doc .md-typeset__table table {
+  display: table !important;
+  width: 100%;
 }
 
-/* Improve rendering of parameters, returns and exceptions. */
-.doc-contents .field-name {
-  min-width: 100px;
+.doc .md-typeset__table tr {
+  display: table-row;
 }
 
-/* Other curious-spacing fixes. */
-.doc-contents .field-name,
-.doc-contents .field-body {
-  border: none !important;
-  padding: 0 !important;
+/* Defaults in Spacy table style. */
+.doc-param-default {
+  float: right;
 }
 
-.doc-contents p {
-  margin: 1em 0 1em;
+/* Keep headings consistent. */
+h1.doc-heading,
+h2.doc-heading,
+h3.doc-heading,
+h4.doc-heading,
+h5.doc-heading,
+h6.doc-heading {
+  font-weight: 400;
+  line-height: 1.5;
+  color: inherit;
+  text-transform: none;
 }
 
-.doc-contents .field-list {
-  margin: 0 !important;
+h1.doc-heading {
+  font-size: 1.6rem;
 }
 
-.doc-contents pre {
-  padding: 0 !important;
+h2.doc-heading {
+  font-size: 1.2rem;
 }
 
-.doc-contents .wy-table-responsive {
-  margin-bottom: 0 !important;
+h3.doc-heading {
+  font-size: 1.15rem;
 }
 
-.doc-contents td.code {
-  padding: 0 !important;
+h4.doc-heading {
+  font-size: 1.10rem;
 }
 
-.doc-contents td.linenos {
-  padding: 0 8px !important;
+h5.doc-heading {
+  font-size: 1.05rem;
 }
 
-.doc-children,
-footer {
-  margin-top: 20px;
+h6.doc-heading {
+  font-size: 1rem;
 }

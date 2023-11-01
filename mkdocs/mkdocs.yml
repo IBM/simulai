@@ -1,7 +1,7 @@
 site_name: SimulAI Docs
 
 theme:
-  name: "readthedocs"
+  name: "material"
 
 plugins:
   - search
@@ -11,4 +11,5 @@ plugins:
 nav:
   - index.md
   - simulai_models.md
+  - simulai_residuals.md
 
