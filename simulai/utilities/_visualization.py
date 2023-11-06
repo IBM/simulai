@@ -26,6 +26,6 @@ def view_api(module:torch.nn.Module=None,
 
     module_wrap = Module_wrap(module=module)
 
-    model_graph = draw_graph(module_wrap,input_data=input_data, graph_dir=save_dir, **config)
+    model_graph = draw_graph(module_wrap,input_data=input_data, directory=save_dir, **config)
 
     return model_graph.visual_graph
