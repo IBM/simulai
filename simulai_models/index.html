@@ -4257,12 +4257,10 @@ Reduced Order Model;</p>
 <p>A MLP autoencoder architecture consists of two stages:
 --&gt; Fully-connected encoder
 --&gt; Fully connected decoder</p>
-
-<details class="scheme" open>
-  <summary>SCHEME</summary>
-  <p>|         |
-|  |   |  |</p>
-</details>      <p>Z -&gt;    |  | | |  |  -&gt; Z_til
+<p>SCHEME
+        |         |
+        |  |   |  |
+Z -&gt;    |  | | |  |  -&gt; Z_til
         |  |   |  |
         |         |</p>
 <p>ENCODER       DECODER</p>
@@ -4423,7 +4421,7 @@ Reduced Order Model;</p>
 <span class="sd">    --&gt; Fully-connected encoder</span>
 <span class="sd">    --&gt; Fully connected decoder</span>
 
-<span class="sd">    SCHEME:</span>
+<span class="sd">    SCHEME</span>
 <span class="sd">            |         |</span>
 <span class="sd">            |  |   |  |</span>
 <span class="sd">    Z -&gt;    |  | | |  |  -&gt; Z_til</span>
@@ -5347,7 +5345,7 @@ An autoencoder architecture consists of three stages:</p>
     * Fully-connected encoder
     * Fully connected decoder
     * The convolutional decoder</p>
-<p>SCHEME:</p>
+<p>SCHEME</p>
 <p>Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | |  | -&gt; [Conv.T] -&gt; [Conv.T] -&gt; ... [Conv.T] -&gt; Z_til</p>
 <pre><code>            ENCODER               DENSE BOTTLENECK           DECODER
 </code></pre>
@@ -5666,7 +5664,7 @@ An autoencoder architecture consists of three stages:</p>
 <span class="sd">        * Fully connected decoder</span>
 <span class="sd">        * The convolutional decoder</span>
 
-<span class="sd">    SCHEME:</span>
+<span class="sd">    SCHEME</span>
 
 <span class="sd">    Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | |  | -&gt; [Conv.T] -&gt; [Conv.T] -&gt; ... [Conv.T] -&gt; Z_til</span>
 
@@ -7366,14 +7364,12 @@ An autoencoder architecture consists of three stages:</p>
 <li>Fully connected decoder</li>
 <li>The convolutional decoder [Optional]</li>
 </ul>
-
-<details class="scheme" open>
-  <summary>SCHEME</summary>
-  <p>(Koopman OPERATOR)
-         ^
-  |      |      |
-  |  |   |   |  |</p>
-</details>      <p>Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T] -&gt; [Conv.T] -&gt; ... [Conv.T] -&gt; Z_til
+<p>SCHEME
+                                (Koopman OPERATOR)
+                                         ^
+                                  |      |      |
+                                  |  |   |   |  |
+Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T] -&gt; [Conv.T] -&gt; ... [Conv.T] -&gt; Z_til
                                   |  |       |  |
                                   |             |</p>
 <pre><code>            ENCODER          DENSE BOTTLENECK        DECODER
@@ -7816,7 +7812,7 @@ An autoencoder architecture consists of three stages:</p>
 <span class="sd">    * Fully connected decoder</span>
 <span class="sd">    * The convolutional decoder [Optional]</span>
 
-<span class="sd">    SCHEME:</span>
+<span class="sd">    SCHEME</span>
 <span class="sd">                                    (Koopman OPERATOR)</span>
 <span class="sd">                                             ^</span>
 <span class="sd">                                      |      |      |</span>
@@ -9609,15 +9605,12 @@ An autoencoder architecture consists of three stages:</p>
 --&gt; Gaussian noise
 --&gt; Fully connected decoder
 --&gt; The convolutional decoder [Optional]</p>
-
-<details class="scheme" open>
-  <summary>SCHEME</summary>
-  <p>Gaussian noise
-^</p>
-</details>      <pre><code>                                   |      |      |
-                                   |  |   |   |  |
-</code></pre>
-<p>Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T] -&gt; [Conv.T] -&gt; ... [Conv.T] -&gt; Z_til
+<p>SCHEME
+                                              Gaussian noise
+                                              ^
+                                       |      |      |
+                                       |  |   |   |  |
+Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T] -&gt; [Conv.T] -&gt; ... [Conv.T] -&gt; Z_til
                                        |  |       |  |
                                        |             |</p>
 <pre><code>           ENCODER               DENSE BOTTLENECK           DECODER
@@ -10235,7 +10228,7 @@ An autoencoder architecture consists of three stages:</p>
 <span class="sd">    --&gt; Fully connected decoder</span>
 <span class="sd">    --&gt; The convolutional decoder [Optional]</span>
 
-<span class="sd">    SCHEME:</span>
+<span class="sd">    SCHEME</span>
 <span class="sd">                                                  Gaussian noise</span>
 <span class="sd">                                                  ^</span>
 <span class="sd">                                           |      |      |</span>
