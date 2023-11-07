@@ -32,14 +32,14 @@ from simulai.templates import (
 ### Some usual AutoEncoder architectures
 ########################################
 class AutoencoderMLP(NetworkTemplate):
-    """This is an implementation of a Fully-connected AutoEncoder as
+    r"""This is an implementation of a Fully-connected AutoEncoder as
     Reduced Order Model;
     
     A MLP autoencoder architecture consists of two stages:
     --> Fully-connected encoder
     --> Fully connected decoder
     
-    SCHEME:
+    SCHEME
             |         |
             |  |   |  |
     Z ->    |  | | |  |  -> Z_til
@@ -189,10 +189,10 @@ class AutoencoderCNN(NetworkTemplate):
     The bottleneck stage, subdivided in:
         * Fully-connected encoder
         * Fully connected decoder
-        * The convolutional decoder
-    
-    SCHEME:
-    
+        * The convolutional decoder 
+
+    SCHEME
+
     Z -> [Conv] -> [Conv] -> ... [Conv] -> |  | | |  | -> [Conv.T] -> [Conv.T] -> ... [Conv.T] -> Z_til
     
     
@@ -485,7 +485,7 @@ class AutoencoderCNN(NetworkTemplate):
 
 
 class AutoencoderKoopman(NetworkTemplate):
-    """This is an implementation of a Koopman autoencoder as a Reduced Order Model.
+    r"""This is an implementation of a Koopman autoencoder as a Reduced Order Model.
     
     A Koopman autoencoder architecture consists of five stages:
     
@@ -495,7 +495,7 @@ class AutoencoderKoopman(NetworkTemplate):
     * Fully connected decoder
     * The convolutional decoder [Optional]
     
-    SCHEME:
+    SCHEME
                                     (Koopman OPERATOR)
                                              ^
                                       |      |      |
@@ -921,7 +921,7 @@ class AutoencoderVariational(NetworkTemplate):
     --> Fully connected decoder
     --> The convolutional decoder [Optional]
     
-    SCHEME:
+    SCHEME
                                                   Gaussian noise
                                                   ^
                                            |      |      |

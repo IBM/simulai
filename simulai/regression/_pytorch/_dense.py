@@ -196,7 +196,7 @@ class DenseNetwork(NetworkTemplate):
         Args:
             layers_units (list, optional): List with the number of neurons for each layer. (Default value = None)
             activations (Union[list, str], optional): List of activations for each layer or a single string
-        informing the activation used for all of them. (Default value = None)
+            informing the activation used for all of them. (Default value = None)
             input_size (int, optional): Dimension of the input. (Default value = None)
             output_size (int, optional): Dimension of the output. (Default value = None)
             normalization (str, optional): Kind of normalization used between two layers. (Default value = "bypass")
@@ -419,7 +419,7 @@ class ResDenseNetwork(DenseNetwork):
         Args:
             layers_units (list, optional): List with the number of neurons for each layer. (Default value = None)
             activations (Union[list, str], optional): List of activations for each layer or a single string
-        informing the activation used for all of them. (Default value = None)
+            informing the activation used for all of them. (Default value = None)
             input_size (int, optional): Dimension of the input. (Default value = None)
             output_size (int, optional): Dimension of the output. (Default value = None)
             normalization (str, optional): Kind of normalization used between two layers. (Default value = "bypass")
@@ -547,7 +547,7 @@ class ConvexDenseNetwork(DenseNetwork):
         Args:
             layers_units (list, optional): List with the number of neurons for each layer. (Default value = None)
             activations (Union[list, str], optional): List of activations for each layer or a single string
-        informing the activation used for all of them. (Default value = None)
+            informing the activation used for all of them. (Default value = None)
             input_size (int, optional): Dimension of the input. (Default value = None)
             output_size (int, optional): Dimension of the output. (Default value = None)
             normalization (str, optional): Kind of normalization used between two layers. (Default value = "bypass")

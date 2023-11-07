@@ -179,7 +179,7 @@ class UNet(NetworkTemplate):
 
         Args:
             layers_config (Dict, optional): A dictionary containing the complete configuration for the
-        U-Net encoder and decoder. (Default value = None)
+            U-Net encoder and decoder. (Default value = None)
             intermediary_outputs_indices (List[int], optional): A list of indices for indicating the encoder outputs. (Default value = None)
             intermediary_inputs_indices (List[int], optional): A list of indices for indicating the decoder inputs. (Default value = None)
             encoder_extra_args (Dict, optional): A dictionary containing extra arguments for the encoder. (Default value = dict())
