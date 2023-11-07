@@ -343,45 +343,12 @@
     __init__()
   </a>
   
-    <nav class="md-nav" aria-label="__init__()">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#simulai.models.UNet.__init__--parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
   <a href="#simulai.models.UNet.forward" class="md-nav__link">
     forward()
   </a>
-  
-    <nav class="md-nav" aria-label="forward()">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#simulai.models.UNet.forward--parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#simulai.models.UNet.forward--returns" class="md-nav__link">
-    Returns
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -867,45 +834,12 @@
     __init__()
   </a>
   
-    <nav class="md-nav" aria-label="__init__()">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#simulai.models.UNet.__init__--parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
   <a href="#simulai.models.UNet.forward" class="md-nav__link">
     forward()
   </a>
-  
-    <nav class="md-nav" aria-label="forward()">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#simulai.models.UNet.forward--parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#simulai.models.UNet.forward--returns" class="md-nav__link">
-    Returns
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1944,7 +1878,38 @@ number_of_decoders : int
 
             <details class="quote">
               <summary>Source code in <code>simulai/models/_pytorch_models/_unet.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">201</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
 <span class="normal">202</span>
 <span class="normal">203</span>
 <span class="normal">204</span>
@@ -1998,51 +1963,7 @@ number_of_decoders : int
 <span class="normal">252</span>
 <span class="normal">253</span>
 <span class="normal">254</span>
-<span class="normal">255</span>
-<span class="normal">256</span>
-<span class="normal">257</span>
-<span class="normal">258</span>
-<span class="normal">259</span>
-<span class="normal">260</span>
-<span class="normal">261</span>
-<span class="normal">262</span>
-<span class="normal">263</span>
-<span class="normal">264</span>
-<span class="normal">265</span>
-<span class="normal">266</span>
-<span class="normal">267</span>
-<span class="normal">268</span>
-<span class="normal">269</span>
-<span class="normal">270</span>
-<span class="normal">271</span>
-<span class="normal">272</span>
-<span class="normal">273</span>
-<span class="normal">274</span>
-<span class="normal">275</span>
-<span class="normal">276</span>
-<span class="normal">277</span>
-<span class="normal">278</span>
-<span class="normal">279</span>
-<span class="normal">280</span>
-<span class="normal">281</span>
-<span class="normal">282</span>
-<span class="normal">283</span>
-<span class="normal">284</span>
-<span class="normal">285</span>
-<span class="normal">286</span>
-<span class="normal">287</span>
-<span class="normal">288</span>
-<span class="normal">289</span>
-<span class="normal">290</span>
-<span class="normal">291</span>
-<span class="normal">292</span>
-<span class="normal">293</span>
-<span class="normal">294</span>
-<span class="normal">295</span>
-<span class="normal">296</span>
-<span class="normal">297</span>
-<span class="normal">298</span>
-<span class="normal">299</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">UNet</span><span class="p">(</span><span class="n">NetworkTemplate</span><span class="p">):</span>
+<span class="normal">255</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">UNet</span><span class="p">(</span><span class="n">NetworkTemplate</span><span class="p">):</span>
 
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layers_config</span><span class="p">:</span><span class="n">Dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -2050,22 +1971,15 @@ number_of_decoders : int
                  <span class="n">intermediary_inputs_indices</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">encoder_extra_args</span><span class="p">:</span><span class="n">Dict</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span>
                  <span class="n">decoder_extra_args</span><span class="p">:</span><span class="n">Dict</span><span class="o">=</span><span class="nb">dict</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        U-Net. </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;U-Net.</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        layers_config : Dict</span>
-<span class="sd">            A dictionary containing the complete configuration for the </span>
-<span class="sd">            U-Net encoder and decoder.</span>
-<span class="sd">        intermediary_outputs_indices : List[int]</span>
-<span class="sd">            A list of indices for indicating the encoder outputs.</span>
-<span class="sd">        intermediary_inputs_indices : List[int]</span>
-<span class="sd">            A list of indices for indicating the decoder inputs.</span>
-<span class="sd">        encoder_extra_args : Dict</span>
-<span class="sd">            A dictionary containing extra arguments for the encoder.</span>
-<span class="sd">        decoder_extra_args : Dict</span>
-<span class="sd">            A dictionary containing extra arguments for the decoder. </span>
+<span class="sd">        Args:</span>
+<span class="sd">            layers_config (Dict, optional): A dictionary containing the complete configuration for the</span>
+<span class="sd">        U-Net encoder and decoder. (Default value = None)</span>
+<span class="sd">            intermediary_outputs_indices (List[int], optional): A list of indices for indicating the encoder outputs. (Default value = None)</span>
+<span class="sd">            intermediary_inputs_indices (List[int], optional): A list of indices for indicating the decoder inputs. (Default value = None)</span>
+<span class="sd">            encoder_extra_args (Dict, optional): A dictionary containing extra arguments for the encoder. (Default value = dict())</span>
+<span class="sd">            decoder_extra_args (Dict, optional): A dictionary containing extra arguments for the decoder. (Default value = dict())</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -2115,18 +2029,14 @@ number_of_decoders : int
     <span class="nd">@as_tensor</span>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        The U-Net forward method. </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The U-Net forward method.</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        input_data : Union[torch.Tensor, np.ndarray],</span>
-<span class="sd">            A dataset to be inputted in the CNN U-Net encoder.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            input_data (Union[torch.Tensor, np.ndarray], optional): A dataset to be inputted in the CNN U-Net encoder. (Default value = None)</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        torch.Tensor</span>
-<span class="sd">            The U-Net output. </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: The U-Net output.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">encoder_main_output</span><span class="p">,</span> <span class="n">encoder_intermediary_outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">input_data</span><span class="o">=</span><span class="n">input_data</span><span class="p">)</span>
@@ -2136,9 +2046,7 @@ number_of_decoders : int
         <span class="k">return</span> <span class="n">output</span>
 
     <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        It shows a general view of the architecture.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;It shows a general view of the architecture.&quot;&quot;&quot;</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -2170,23 +2078,77 @@ number_of_decoders : int
 
   <div class="doc doc-contents ">
   
-      <p>U-Net. </p>
-<h4 id="simulai.models.UNet.__init__--parameters">Parameters</h4>
-<p>layers_config : Dict
-    A dictionary containing the complete configuration for the 
-    U-Net encoder and decoder.
-intermediary_outputs_indices : List[int]
-    A list of indices for indicating the encoder outputs.
-intermediary_inputs_indices : List[int]
-    A list of indices for indicating the decoder inputs.
-encoder_extra_args : Dict
-    A dictionary containing extra arguments for the encoder.
-decoder_extra_args : Dict
-    A dictionary containing extra arguments for the decoder.</p>
+      <p>U-Net.</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>layers_config</code></td>
+          <td>
+                <code><span title="typing.Dict">Dict</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>A dictionary containing the complete configuration for the</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+      <p>U-Net encoder and decoder. (Default value = None)
+    intermediary_outputs_indices (List[int], optional): A list of indices for indicating the encoder outputs. (Default value = None)
+    intermediary_inputs_indices (List[int], optional): A list of indices for indicating the decoder inputs. (Default value = None)
+    encoder_extra_args (Dict, optional): A dictionary containing extra arguments for the encoder. (Default value = dict())
+    decoder_extra_args (Dict, optional): A dictionary containing extra arguments for the decoder. (Default value = dict())</p>
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_unet.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">204</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
 <span class="normal">205</span>
 <span class="normal">206</span>
 <span class="normal">207</span>
@@ -2213,65 +2175,20 @@ decoder_extra_args : Dict
 <span class="normal">228</span>
 <span class="normal">229</span>
 <span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span>
-<span class="normal">234</span>
-<span class="normal">235</span>
-<span class="normal">236</span>
-<span class="normal">237</span>
-<span class="normal">238</span>
-<span class="normal">239</span>
-<span class="normal">240</span>
-<span class="normal">241</span>
-<span class="normal">242</span>
-<span class="normal">243</span>
-<span class="normal">244</span>
-<span class="normal">245</span>
-<span class="normal">246</span>
-<span class="normal">247</span>
-<span class="normal">248</span>
-<span class="normal">249</span>
-<span class="normal">250</span>
-<span class="normal">251</span>
-<span class="normal">252</span>
-<span class="normal">253</span>
-<span class="normal">254</span>
-<span class="normal">255</span>
-<span class="normal">256</span>
-<span class="normal">257</span>
-<span class="normal">258</span>
-<span class="normal">259</span>
-<span class="normal">260</span>
-<span class="normal">261</span>
-<span class="normal">262</span>
-<span class="normal">263</span>
-<span class="normal">264</span>
-<span class="normal">265</span>
-<span class="normal">266</span>
-<span class="normal">267</span>
-<span class="normal">268</span>
-<span class="normal">269</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layers_config</span><span class="p">:</span><span class="n">Dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="normal">231</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layers_config</span><span class="p">:</span><span class="n">Dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">intermediary_outputs_indices</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">intermediary_inputs_indices</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">encoder_extra_args</span><span class="p">:</span><span class="n">Dict</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span>
              <span class="n">decoder_extra_args</span><span class="p">:</span><span class="n">Dict</span><span class="o">=</span><span class="nb">dict</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    U-Net. </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;U-Net.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    layers_config : Dict</span>
-<span class="sd">        A dictionary containing the complete configuration for the </span>
-<span class="sd">        U-Net encoder and decoder.</span>
-<span class="sd">    intermediary_outputs_indices : List[int]</span>
-<span class="sd">        A list of indices for indicating the encoder outputs.</span>
-<span class="sd">    intermediary_inputs_indices : List[int]</span>
-<span class="sd">        A list of indices for indicating the decoder inputs.</span>
-<span class="sd">    encoder_extra_args : Dict</span>
-<span class="sd">        A dictionary containing extra arguments for the encoder.</span>
-<span class="sd">    decoder_extra_args : Dict</span>
-<span class="sd">        A dictionary containing extra arguments for the decoder. </span>
+<span class="sd">    Args:</span>
+<span class="sd">        layers_config (Dict, optional): A dictionary containing the complete configuration for the</span>
+<span class="sd">    U-Net encoder and decoder. (Default value = None)</span>
+<span class="sd">        intermediary_outputs_indices (List[int], optional): A list of indices for indicating the encoder outputs. (Default value = None)</span>
+<span class="sd">        intermediary_inputs_indices (List[int], optional): A list of indices for indicating the decoder inputs. (Default value = None)</span>
+<span class="sd">        encoder_extra_args (Dict, optional): A dictionary containing extra arguments for the encoder. (Default value = dict())</span>
+<span class="sd">        decoder_extra_args (Dict, optional): A dictionary containing extra arguments for the decoder. (Default value = dict())</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2337,52 +2254,92 @@ decoder_extra_args : Dict
 
   <div class="doc doc-contents ">
   
-      <p>The U-Net forward method. </p>
-<h4 id="simulai.models.UNet.forward--parameters">Parameters</h4>
-<p>input_data : Union[torch.Tensor, np.ndarray],
-    A dataset to be inputted in the CNN U-Net encoder.</p>
-<h4 id="simulai.models.UNet.forward--returns">Returns</h4>
-<p>torch.Tensor
-    The U-Net output.</p>
+      <p>The U-Net forward method.</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>input_data</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[<span title="torch.Tensor">Tensor</span>, <span title="numpy.ndarray">ndarray</span>]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>A dataset to be inputted in the CNN U-Net encoder. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="torch.Tensor">Tensor</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>torch.Tensor: The U-Net output.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_unet.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">271</span>
-<span class="normal">272</span>
-<span class="normal">273</span>
-<span class="normal">274</span>
-<span class="normal">275</span>
-<span class="normal">276</span>
-<span class="normal">277</span>
-<span class="normal">278</span>
-<span class="normal">279</span>
-<span class="normal">280</span>
-<span class="normal">281</span>
-<span class="normal">282</span>
-<span class="normal">283</span>
-<span class="normal">284</span>
-<span class="normal">285</span>
-<span class="normal">286</span>
-<span class="normal">287</span>
-<span class="normal">288</span>
-<span class="normal">289</span>
-<span class="normal">290</span>
-<span class="normal">291</span>
-<span class="normal">292</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@as_tensor</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@as_tensor</span>
 <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The U-Net forward method. </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The U-Net forward method.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    input_data : Union[torch.Tensor, np.ndarray],</span>
-<span class="sd">        A dataset to be inputted in the CNN U-Net encoder.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        input_data (Union[torch.Tensor, np.ndarray], optional): A dataset to be inputted in the CNN U-Net encoder. (Default value = None)</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    torch.Tensor</span>
-<span class="sd">        The U-Net output. </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        torch.Tensor: The U-Net output.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">encoder_main_output</span><span class="p">,</span> <span class="n">encoder_intermediary_outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">input_data</span><span class="o">=</span><span class="n">input_data</span><span class="p">)</span>
@@ -2414,15 +2371,11 @@ decoder_extra_args : Dict
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_unet.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">294</span>
-<span class="normal">295</span>
-<span class="normal">296</span>
-<span class="normal">297</span>
-<span class="normal">298</span>
-<span class="normal">299</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    It shows a general view of the architecture.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;It shows a general view of the architecture.&quot;&quot;&quot;</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -4537,7 +4490,7 @@ Reduced Order Model;</p>
         <tr>
           <td><code>encoder</code></td>
           <td>
-                <code><span title="simulai.regression.DenseNetwork">DenseNetwork</span></code>
+                <code><a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -4551,7 +4504,7 @@ Reduced Order Model;</p>
         <tr>
           <td><code>decoder</code></td>
           <td>
-                <code><span title="simulai.regression.DenseNetwork">DenseNetwork</span></code>
+                <code><a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -5946,7 +5899,7 @@ An autoencoder architecture consists of three stages:</p>
         <tr>
           <td><code>bottleneck_encoder</code></td>
           <td>
-                <code><span title="simulai.regression.Linear">Linear</span></code>
+                <code><a class="autorefs autorefs-internal" title="simulai.regression.Linear" href="../simulai_regression/#simulai.regression.Linear">Linear</a></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -5960,7 +5913,7 @@ An autoencoder architecture consists of three stages:</p>
         <tr>
           <td><code>bottleneck_decoder</code></td>
           <td>
-                <code><span title="simulai.regression.Linear">Linear</span></code>
+                <code><a class="autorefs autorefs-internal" title="simulai.regression.Linear" href="../simulai_regression/#simulai.regression.Linear">Linear</a></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -8205,7 +8158,7 @@ An autoencoder architecture consists of three stages:</p>
         <tr>
           <td><code>encoder</code></td>
           <td>
-                <code><span title="typing.Union">Union</span>[<span title="simulai.regression.ConvolutionalNetwork">ConvolutionalNetwork</span>, <span title="simulai.regression.DenseNetwork">DenseNetwork</span>]</code>
+                <code><span title="typing.Union">Union</span>[<span title="simulai.regression.ConvolutionalNetwork">ConvolutionalNetwork</span>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a>]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -8219,7 +8172,7 @@ An autoencoder architecture consists of three stages:</p>
         <tr>
           <td><code>bottleneck_encoder</code></td>
           <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<span title="simulai.regression.Linear">Linear</span>, <span title="simulai.regression.DenseNetwork">DenseNetwork</span>]]</code>
+                <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="simulai.regression.Linear" href="../simulai_regression/#simulai.regression.Linear">Linear</a>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a>]]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -8233,7 +8186,7 @@ An autoencoder architecture consists of three stages:</p>
         <tr>
           <td><code>bottleneck_decoder</code></td>
           <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<span title="simulai.regression.Linear">Linear</span>, <span title="simulai.regression.DenseNetwork">DenseNetwork</span>]]</code>
+                <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="simulai.regression.Linear" href="../simulai_regression/#simulai.regression.Linear">Linear</a>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a>]]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -8247,7 +8200,7 @@ An autoencoder architecture consists of three stages:</p>
         <tr>
           <td><code>decoder</code></td>
           <td>
-                <code><span title="typing.Union">Union</span>[<span title="simulai.regression.ConvolutionalNetwork">ConvolutionalNetwork</span>, <span title="simulai.regression.DenseNetwork">DenseNetwork</span>]</code>
+                <code><span title="typing.Union">Union</span>[<span title="simulai.regression.ConvolutionalNetwork">ConvolutionalNetwork</span>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a>]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -11261,7 +11214,7 @@ An autoencoder architecture consists of three stages:</p>
         <tr>
           <td><code>encoder</code></td>
           <td>
-                <code><span title="typing.Union">Union</span>[<span title="simulai.regression.ConvolutionalNetwork">ConvolutionalNetwork</span>, <span title="simulai.regression.DenseNetwork">DenseNetwork</span>]</code>
+                <code><span title="typing.Union">Union</span>[<span title="simulai.regression.ConvolutionalNetwork">ConvolutionalNetwork</span>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a>]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -11275,7 +11228,7 @@ An autoencoder architecture consists of three stages:</p>
         <tr>
           <td><code>bottleneck_encoder</code></td>
           <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<span title="simulai.regression.Linear">Linear</span>, <span title="simulai.regression.DenseNetwork">DenseNetwork</span>]]</code>
+                <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="simulai.regression.Linear" href="../simulai_regression/#simulai.regression.Linear">Linear</a>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a>]]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -11289,7 +11242,7 @@ An autoencoder architecture consists of three stages:</p>
         <tr>
           <td><code>bottleneck_decoder</code></td>
           <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<span title="simulai.regression.Linear">Linear</span>, <span title="simulai.regression.DenseNetwork">DenseNetwork</span>]]</code>
+                <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="simulai.regression.Linear" href="../simulai_regression/#simulai.regression.Linear">Linear</a>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a>]]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -11303,7 +11256,7 @@ An autoencoder architecture consists of three stages:</p>
         <tr>
           <td><code>decoder</code></td>
           <td>
-                <code><span title="typing.Union">Union</span>[<span title="simulai.regression.ConvolutionalNetwork">ConvolutionalNetwork</span>, <span title="simulai.regression.DenseNetwork">DenseNetwork</span>]</code>
+                <code><span title="typing.Union">Union</span>[<span title="simulai.regression.ConvolutionalNetwork">ConvolutionalNetwork</span>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a>]</code>
           </td>
           <td>
             <div class="doc-md-description">
