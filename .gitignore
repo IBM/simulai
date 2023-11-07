@@ -92,3 +92,6 @@ run_examples.txt
 
 # Sphinx
 **/_build/*
+
+# MKDocs
+mkdocs/site/*
