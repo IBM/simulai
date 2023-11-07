@@ -40,24 +40,17 @@ except:
 
 
 def exec_model_wrapper(input_data=None, target_data=None, model=None, key=None):
-    """
-    Fit a model with given input_data and target_data and returns a dictionary with the key and the model.
+    """Fit a model with given input_data and target_data and returns a dictionary with the key and the model.
 
-    Parameters
-    ----------
-    input_data : array-like, shape (n_samples, n_features)
-        The input data to fit the model
-    target_data : array-like, shape (n_samples, n_features)
-        The target data to fit the model
-    model : sklearn-like object
-        The model to fit with the given data
-    key : hashable
-        The key to access the model on the returned dictionary
+    Args:
+        input_data (array-like, shape (n_samples, n_features), optional): The input data to fit the model (Default value = None)
+        target_data (array-like, shape (n_samples, n_features), optional): The target data to fit the model (Default value = None)
+        model (sklearn-like object, optional): The model to fit with the given data (Default value = None)
+        key (hashable, optional): The key to access the model on the returned dictionary (Default value = None)
 
-    Returns
-    -------
-    dict
-       It takes input_data, target_data, model, key as input and fits the provided model with the given data. The model is then returned in a dictionary with the key provided.
+    Returns:
+        dict: It takes input_data, target_data, model, key as input and fits the provided model with the given data. The model is then returned in a dictionary with the key provided.
+    
     """
     model.fit(input_data=input_data, target_data=target_data)
     return {key: model}
@@ -72,19 +65,14 @@ class ModelPool:
         model_config: dict = None,
         parallel: str = None,
     ) -> None:
-        """
-        Initialize a ModelPool instance with a given configuration, model type, model configuration, and parallel computation option.
+        """Initialize a ModelPool instance with a given configuration, model type, model configuration, and parallel computation option.
 
-        Parameters
-        ----------
-        config : dict, optional
-            Dictionary of the configuration, by default None
-        model_type : str, optional
-            Type of model, by default 'EchoStateNetwork'
-        model_config : dict, optional
-            Dictionary of the model configuration, by default None
-        parallel : str, optional
-            String to specify parallel computation, by default None
+        Args:
+            config (dict, optional): Dictionary of the configuration, by default None
+            model_type (str, optional): Type of model, by default 'EchoStateNetwork'
+            model_config (dict, optional): Dictionary of the model configuration, by default None
+            parallel (str, optional): String to specify parallel computation, by default None
+        
         """
         self.config = config
         self.model_type = model_type
@@ -184,41 +172,35 @@ class ModelPool:
 
     @property
     def sub_models(self):
-        """
-        Returns the list of values of the model instances list
+        """Returns the list of values of the model instances list
 
-        Returns
-        -------
-        list
-            List of instances of the sub models
+
+        Returns:
+            list: List of instances of the sub models
+        
         """
         return list(self.model_instances_list.values())
 
     @property
     def sub_models_keys(self):
-        """
-        Returns the list of keys of the model instances list
+        """Returns the list of keys of the model instances list
 
-        Returns
-        -------
-        list
-            List of keys of the model instances list
+
+        Returns:
+            list: List of keys of the model instances list
+        
         """
         return list(self.model_instances_list.keys())
 
     def _get_template(self, name=None):
-        """
-        Returns the predefined templates according to the input name
+        """Returns the predefined templates according to the input name
 
-        Parameters
-        ----------
-        name : str
-            name of the template
+        Args:
+            name (str, optional): name of the template (Default value = None)
 
-        Returns
-        -------
-        template : dict
-            Dictionary of the template.
+        Returns:
+            dict: Dictionary of the template.
+        
         """
         templates = {
             "independent_series": {"group_size": 1, "stencil_size": 0, "skip_size": 1},
@@ -238,22 +220,16 @@ class ModelPool:
             raise ValueError(f"The template {name} is not available.")
 
     def _construct_subdatasets(self, groups_indices, data, auxiliary_data=None):
-        """
-        Constructs the subdatasets using the groups indices and the data.
+        """Constructs the subdatasets using the groups indices and the data.
 
-        Parameters
-        ----------
-        groups_indices : list
-            List of tuple of the indices intervals of the input datasets for each sub-group
-        data : numpy array
-            Input data.
-        auxiliary_data : numpy array, Optional
-            Additional data that will be concatenated to the input data in each group
+        Args:
+            groups_indices (list): List of tuple of the indices intervals of the input datasets for each sub-group
+            data (numpy array): Input data.
+            auxiliary_data (numpy array, Optional, optional): Additional data that will be concatenated to the input data in each group (Default value = None)
 
-        Returns
-        -------
-        sub_datasets : dict
-            Dictionary of subdatasets with dataset_id as key and subgroup as value
+        Returns:
+            dict: Dictionary of subdatasets with dataset_id as key and subgroup as value
+        
         """
         sub_datasets = OrderedDict()
         for ig, group in enumerate(groups_indices):
@@ -266,18 +242,14 @@ class ModelPool:
         return sub_datasets
 
     def _adequate_input_history(self, sub_datasets):
-        """
-        Truncates the input history of the subdatasets to the appropriate length.
+        """Truncates the input history of the subdatasets to the appropriate length.
 
-        Parameters
-        ----------
-        sub_datasets : dict
-            Dictionary of subdatasets with dataset_id as key and subgroup as value
+        Args:
+            sub_datasets (dict): Dictionary of subdatasets with dataset_id as key and subgroup as value
 
-        Returns
-        -------
-        new_sub_datasets : dict
-            Dictionary of subdatasets with dataset_id as key and truncated subgroup as value
+        Returns:
+            dict: Dictionary of subdatasets with dataset_id as key and truncated subgroup as value
+        
         """
         new_sub_datasets = OrderedDict()
         for group_id, dataset in sub_datasets.items():
@@ -286,21 +258,17 @@ class ModelPool:
         return new_sub_datasets
 
     def _construct_input_groups(self, no_subdivision=None):
-        """
-        Constructs the indices intervals of the input datasets for each sub-group.
+        """Constructs the indices intervals of the input datasets for each sub-group.
 
-        Parameters
-        ----------
-        no_subdivision : int or None
-            The option to use all the input series for all the sub-groups.
-            If None, it uses the stencil to construct the indices.
-            If 1, it uses all the time-series repeated for each sub-group.
-            If 2, it uses just the current time-series for each sub-group.
+        Args:
+            no_subdivision (int or None, optional): The option to use all the input series for all the sub-groups.
+        If None, it uses the stencil to construct the indices.
+        If 1, it uses all the time-series repeated for each sub-group.
+        If 2, it uses just the current time-series for each sub-group. (Default value = None)
 
-        Returns
-        -------
-        groups_indices_input : list
-            List of tuple of the indices intervals of the input datasets for each sub-group
+        Returns:
+            list: List of tuple of the indices intervals of the input datasets for each sub-group
+        
         """
         groups_indices_input = []
 
@@ -339,13 +307,12 @@ class ModelPool:
         return groups_indices_input
 
     def _construct_target_groups(self):
-        """
-        Constructs the indices intervals of the target datasets for each sub-group
+        """Constructs the indices intervals of the target datasets for each sub-group
+
 
         Returns:
-        -------
-        groups_indices_target : Complex -> List[Tuple[int, int]]
-            A list of tuple of indices intervals for each sub-group
+            Complex -> List[Tuple[int, int]]: A list of tuple of indices intervals for each sub-group
+        
         """
         indices = np.arange(0, self.n_outputs + self.group_size, self.group_size)
         indices_first = indices[:-1]
@@ -358,41 +325,32 @@ class ModelPool:
         return groups_indices_target
 
     def _construct_config_dict_to(self, model_config, method):
-        """
-        Constructs a dictionary of the valid keyword arguments of the method
+        """Constructs a dictionary of the valid keyword arguments of the method
         based on the model_config dictionary.
 
-        Parameters:
-        -------
-        model_config : Dict
-            The configuration of the model.
-        method : Callable
-            The method to construct the valid keyword arguments for.
+        Args:
+            model_config (Dict): The configuration of the model.
+            method (Callable): The method to construct the valid keyword arguments for.
 
         Returns:
-        config_dict : Dict
-            A dictionary of the valid keyword arguments of the method
+            Dict: A dictionary of the valid keyword arguments of the method
+        
         """
         kwargs = inspect.getfullargspec(method).args
 
         return {key: value for key, value in model_config.items() if key in kwargs}
 
     def _history_dependent_input(self, model_id=None, previous_data=None, data=None):
-        """
-        Concatenates the input data and the previous data and selects only the last history_size data.
+        """Concatenates the input data and the previous data and selects only the last history_size data.
 
-        Parameters:
-        model_id : int, optional
-            The index of the model in the pool
-        previous_data : ndarray, optional
-            The previous data.
-        data : ndarray, optional
-            The input data.
+        Args:
+            model_id (int, optional, optional): The index of the model in the pool (Default value = None)
+            previous_data (ndarray, optional, optional): The previous data. (Default value = None)
+            data (ndarray, optional, optional): The input data. (Default value = None)
 
         Returns:
-        -------
-        history_dependent_data : ndarray
-            The input data concatenated with the previous data, only containing the last history_size data.
+            ndarray: The input data concatenated with the previous data, only containing the last history_size data.
+        
         """
         history_size_ = self.history_sizes.get(model_id)
 
@@ -401,85 +359,63 @@ class ModelPool:
         return np.concatenate([previous_data, data], axis=1)[:, -history_size:, ...]
 
     def _train_history_dependent_input(self, model_id=None, data=None):
-        """
-        Selects the first history_size data.
+        """Selects the first history_size data.
 
-        Parameters:
-        -------
-        model_id : int, optional
-            The index of the model in the pool
-        data : ndarray
-            The input data.
+        Args:
+            model_id (int, optional, optional): The index of the model in the pool (Default value = None)
+            data (ndarray, optional): The input data. (Default value = None)
 
         Returns:
-        -------
-        history_dependent_data : ndarray
-            The first history_size data.
+            ndarray: The first history_size data.
+        
         """
         history_data = self.history_sizes.get(model_id)
 
         return data[:history_data, ...]
 
     def _by_pass_input(self, model_id=None, previous_data=None, data=None):
-        """
-        Returns the input data as is, without modification
+        """Returns the input data as is, without modification
 
-        Parameters:
-        -------
-        model_id : int, optional
-            The index of the model in the pool
-        previous_data : ndarray, optional
-            The previous data.
-        data : ndarray, optional
-            The input data.
+        Args:
+            model_id (int, optional, optional): The index of the model in the pool (Default value = None)
+            previous_data (ndarray, optional, optional): The previous data. (Default value = None)
+            data (ndarray, optional, optional): The input data. (Default value = None)
 
         Returns:
-        -------
-        data : ndarray
-            The input data.
+            ndarray: The input data.
+        
         """
         return data
 
     @property
     def max_history(self):
-        """
-        Return the maximum history size among all inputs.
-        """
+        """ """
         history_sizes = list(self.history_sizes.values())
 
         return max(history_sizes)
 
     def _make_id(self, idx=None):
-        """
-        Create a unique identifier for the model instance.
+        """Create a unique identifier for the model instance.
 
-        Parameters
-        ----------
-        idx : int or None, optional
-            An index to be included in the identifier, by default None
+        Args:
+            idx (int or None, optional, optional): An index to be included in the identifier, by default None
 
-        Returns
-        -------
-        str
-            A unique identifier for the model instance.
+        Returns:
+            str: A unique identifier for the model instance.
+        
         """
         return f"{self.model_type}_{idx}"
 
     def _dataset(self, data=None, shuffle=False):
-        """
-        Prepare the input dataset.
+        """Prepare the input dataset.
 
-        Parameters
-        ----------
-        data : list
-            A list of datasets.
-        shuffle : bool, optional
-            Whether to shuffle the input dataset, by default False
+        Args:
+            data (list, optional): A list of datasets. (Default value = None)
+            shuffle (bool, optional, optional): Whether to shuffle the input dataset, by default False
 
-        Returns
-        -------
-        tuple
-            A tuple of the prepared input dataset.
+        Returns:
+            tuple: A tuple of the prepared input dataset.
+        
         """
         assert (
             type(data) is list
@@ -827,53 +763,43 @@ class ModelPool:
         return msg
 
     def _stack_auxiliary(self, data=None, auxiliary_data=None, step=None):
-        """
-        Concatenates the input data with the correspondent auxiliary data for the given step.
+        """Concatenates the input data with the correspondent auxiliary data for the given step.
         The auxiliary data is stacked horizontally with the input data.
 
-        Parameters
-        ----------
-        data : numpy.ndarray
-            Input data
-        auxiliary_data : numpy.ndarray
-            auxiliary data to concatenate with input data
-        step : int
-            The step at which the auxiliary data will be concatenated with the input data
+        Args:
+            data (numpy.ndarray, optional): Input data (Default value = None)
+            auxiliary_data (numpy.ndarray, optional): auxiliary data to concatenate with input data (Default value = None)
+            step (int, optional): The step at which the auxiliary data will be concatenated with the input data (Default value = None)
 
-        Returns
-        -------
-        concatenated : numpy.ndarray
-            The concatenated data of input and auxiliary data for the given step
+        Returns:
+            numpy.ndarray: The concatenated data of input and auxiliary data for the given step
+        
         """
         return np.hstack([data, auxiliary_data[step][None, ...]])
 
     def _bypass(self, data=None, **kwargs):
-        """
-        If no auxiliary variable (such as forcings) is required, at each iteration
+        """If no auxiliary variable (such as forcings) is required, at each iteration
         the input is equivalent to the output of the previous one.
 
-        Parameters
-        ----------
-        data : numpy.ndarray
-            Input data
+        Args:
+            data (numpy.ndarray, optional): Input data (Default value = None)
+            **kwargs: 
 
-        Returns
-        -------
-        data : numpy.ndarray
-            Input data
+        Returns:
+            numpy.ndarray: Input data
+        
         """
         return data
 
     @property
     def _all_autoexecutable(self):
-        """
-        Check if all the models in the pool can be trained without using a wrapper class.
+        """Check if all the models in the pool can be trained without using a wrapper class.
         i.e. If all the models do not use iterative optimization algorithms (e.g certain classes of Reservoir Computing).
 
-        Returns
-        -------
-        all_autoexecutable : bool
-            True if all models in the pool are auto-executable
+
+        Returns:
+            bool: True if all models in the pool are auto-executable
+        
         """
         all_autoexecutable = sum(
             [hasattr(inst, "fit") for inst in self.model_instances_list.values()]
@@ -881,18 +807,15 @@ class ModelPool:
         return all_autoexecutable == len(self.model_instances_list.keys())
 
     def set_parameters(self, parameters):
-        """
-        Set the parameters of the all models in the model pool
+        """Set the parameters of the all models in the model pool
 
-        Parameters
-        ----------
-        parameters : dict
-            A dictionary containing the parameters for each model in the pool
+        Args:
+            parameters (dict): A dictionary containing the parameters for each model in the pool
 
-        Raises
-        ------
-        AssertionError
-            If one of the models in the pool does not have a 'set_parameters' method
+        Raises:
+            AssertionError: If one of the models in the pool does not have a 'set_parameters' method
+
+        
         """
         for model_id, model in self.model_instances_list.items():
             assert hasattr(
@@ -908,31 +831,20 @@ class ModelPool:
         index=None,
         shuffle=False,
     ):
-        """
-        Fits the model(s) using the given input data, target data, and auxiliary data.
+        """Fits the model(s) using the given input data, target data, and auxiliary data.
 
-        Parameters
-        ----------
-        input_data : numpy ndarray, optional
-            The input data to fit the model(s) on.
-        target_data : numpy ndarray, optional
-            The target data to fit the model(s) on.
-        auxiliary_data : numpy ndarray, optional
-            Additional data to fit the model(s) on.
-        index : int, optional
-            The index of the model to fit if the pool is independent_case.
-        shuffle : bool, optional
-            Whether to shuffle the data before fitting or not.
+        Args:
+            input_data (numpy ndarray, optional, optional): The input data to fit the model(s) on. (Default value = None)
+            target_data (numpy ndarray, optional, optional): The target data to fit the model(s) on. (Default value = None)
+            auxiliary_data (numpy ndarray, optional, optional): Additional data to fit the model(s) on. (Default value = None)
+            index (int, optional, optional): The index of the model to fit if the pool is independent_case. (Default value = None)
+            shuffle (bool, optional, optional): Whether to shuffle the data before fitting or not. (Default value = False)
 
-        Returns
-        -------
-        Union[str, None]
-            Message indicating the completion of the fitting process, in case the pool is independent_case, otherwise None.
-
-        Example
-        -------
-        >>> model.fit(input_data, target_data, auxiliary_data, index=0, shuffle=True)
-        'Fitting completed for model 0'
+        Returns:
+            Union[str, None]: Message indicating the completion of the fitting process, in case the pool is independent_case, otherwise None.
+        Examples:
+            >>> model.fit(input_data, target_data, auxiliary_data, index=0, shuffle=True)
+            'Fitting completed for model 0'
         """
         if auxiliary_data is not None:
             assert (
@@ -1006,35 +918,24 @@ class ModelPool:
         index=None,
         compare_data=None,
     ):
-        """
-        Generates predictions for the future state of a system given an initial state. The predictions can be made one step at a time or for the entire future trajectory at once.
+        """Generates predictions for the future state of a system given an initial state. The predictions can be made one step at a time or for the entire future trajectory at once.
 
-        Parameters
-        ----------
-        initial_state : numpy.ndarray, optional
-            The initial state of the system from which predictions will be made. It should have at least 2 dimensions. If not provided, an error will be raised.
-        horizon : int, optional
-            The number of time steps for which predictions will be made. If not provided and auxiliary_data is provided, the horizon will be set to the number of rows in auxiliary_data. If neither horizon nor auxiliary_data are provided, the horizon will default to 1.
-        auxiliary_data : numpy.ndarray, optional
-            Additional data that is used as input to the model. It should have 2 columns. If provided, the horizon will be set to the number of rows in auxiliary_data unless horizon is also provided.
-        index : int, optional
-            The index of the model in the model pool to use for predictions. If not provided, predictions will be made using all models in the model pool.
-        compare_data : numpy.ndarray, optional
-            An array of true values that can be used to compare against the predictions. The error is computed as the L2 norm.
+        Args:
+            initial_state (numpy.ndarray, optional, optional): The initial state of the system from which predictions will be made. It should have at least 2 dimensions. If not provided, an error will be raised. (Default value = None)
+            horizon (int, optional, optional): The number of time steps for which predictions will be made. If not provided and auxiliary_data is provided, the horizon will be set to the number of rows in auxiliary_data. If neither horizon nor auxiliary_data are provided, the horizon will default to 1.
+            auxiliary_data (numpy.ndarray, optional, optional): Additional data that is used as input to the model. It should have 2 columns. If provided, the horizon will be set to the number of rows in auxiliary_data unless horizon is also provided. (Default value = None)
+            index (int, optional, optional): The index of the model in the model pool to use for predictions. If not provided, predictions will be made using all models in the model pool. (Default value = None)
+            compare_data (numpy.ndarray, optional, optional): An array of true values that can be used to compare against the predictions. The error is computed as the L2 norm. (Default value = None)
 
-        Returns
-        -------
-        predictions : numpy.ndarray
-            The predictions for the future state of the system, stacked vertically in case of multiple steps predictions
+        Returns:
+            numpy.ndarray: The predictions for the future state of the system, stacked vertically in case of multiple steps predictions
 
-        Raises
-        ------
-        AssertionError
-            If the input `initial_state` does not have at least 2 dimensions
-        AssertionError
-            If `auxiliary_data` is provided and does not have 2 columns
-        AssertionError
-            If `index` is provided and `horizon` is different from 1
+        Raises:
+            AssertionError: If the input `initial_state` does not have at least 2 dimensions
+            AssertionError: If `auxiliary_data` is provided and does not have 2 columns
+            AssertionError: If `index` is provided and `horizon` is different from 1
+
+        
         """
 
         assert len(initial_state.shape) >= 2, "Input must have two dimensions at most."
@@ -1150,12 +1051,12 @@ class ModelPool:
             )
 
     def reset(self):
-        """
-        Reset all models in the model pool.
+        """Reset all models in the model pool.
 
-        Returns
-        -------
-        None
+
+        Returns:
+            None: 
+        
         """
         for model_id, model in self.model_instances_list.items():
             assert hasattr(model, "reset"), f"The moodel {model} has no method reset."
@@ -1164,18 +1065,15 @@ class ModelPool:
             model.reset()
 
     def set_reference(self, reference=None):
-        """
-        Set the reference state for all models in the model pool.
+        """Set the reference state for all models in the model pool.
 
-        Parameters
-        ----------
-        reference : object, optional
-            The reference state to set for the models. If not provided,
-            the current state will be used as the reference state.
+        Args:
+            reference (object, optional, optional): The reference state to set for the models. If not provided,
+        the current state will be used as the reference state. (Default value = None)
 
-        Returns
-        -------
-        None
+        Returns:
+            None: 
+        
         """
         for model_id, model in self.model_instances_list.items():
             assert hasattr(
@@ -1186,23 +1084,19 @@ class ModelPool:
             model.set_reference(reference=reference)
 
     def save(self, path=None):
-        """
-        Save the current state of the model pool to the given file path.
+        """Save the current state of the model pool to the given file path.
 
-        Parameters
-        ----------
-        path : str, optional
-            The file path to save the model pool to. If not provided,
-            the current state will not be saved.
+        Args:
+            path (str, optional, optional): The file path to save the model pool to. If not provided,
+        the current state will not be saved. (Default value = None)
 
-        Returns
-        -------
-        None
+        Returns:
+            None: 
 
-        Raises
-        ------
-        Exception
-            If the object is not serializable.
+        Raises:
+            Exception: If the object is not serializable.
+
+        
         """
         try:
             with open(path, "wb") as fp:
@@ -1212,65 +1106,52 @@ class ModelPool:
             raise Exception(f"The object {self} is not serializable.")
 
     def save_pool_config(self, path=None):
-        """
-        Save the configuration of the pool to the given file path.
+        """Save the configuration of the pool to the given file path.
 
-        Parameters
-        ----------
-        path : str, optional
-            The file path to save the configuration to. If not provided,
-            the configuration will be saved to the default path.
+        Args:
+            path (str, optional, optional): The file path to save the configuration to. If not provided,
+        the configuration will be saved to the default path.
+        
         """
         with open(path, "w") as fp:
             json.dump(self.config_pool, fp, indent=6)
 
     def save_model(self, path: str, model_id: str):
-        """
-        Save a specific model instance in the pool to the given file path.
+        """Save a specific model instance in the pool to the given file path.
 
-        Parameters
-        ----------
-        path : str
-            The file path to save the model to.
-        model_id : str
-            The ID of the model instance to save.
+        Args:
+            path (str): The file path to save the model to.
+            model_id (str): The ID of the model instance to save.
+        
         """
         return self.model_instances_list[model_id].save(
             save_path=path, model_name=model_id
         )
 
     def load_model(self, path: str, model_id: str, index: int = None) -> None:
-        """
-        Load a model from the given file path and add it to the pool.
+        """Load a model from the given file path and add it to the pool.
 
-        Parameters
-        ----------
-        path : str
-            The file path to load the model from.
-        model_id : str
-            The ID of the model to load.
-        index : int, optional
-            The index of the model instance in the pool. If not provided, the model
-            will be added to the pool using the provided model_id.
+        Args:
+            path (str): The file path to load the model from.
+            model_id (str): The ID of the model to load.
+            index (int, optional): The index of the model instance in the pool. If not provided, the model
+        will be added to the pool using the provided model_id. (Default value = None)
+        
         """
         regression = self._get_regression_class()
         model = regression.restore(path, model_id)
         self.load_model_instance(model, model_id, index)
 
     def load_model_instance(self, model, model_id=None, index: int = None) -> None:
-        """
-        Add a pre-trained model to the pool of models.
+        """Add a pre-trained model to the pool of models.
 
-        Parameters
-        ----------
-        model : object
-            The model instance to add to the pool.
-        model_id : str, optional
-            The ID to use for the model in the pool. If not provided and index is not provided,
-            the model will not be added to the pool
-        index : int, optional
-            The index of the model in the pool. If not provided, the model
-            will be added to the pool using the provided model_id.
+        Args:
+            model (object): The model instance to add to the pool.
+            model_id (str, optional, optional): The ID to use for the model in the pool. If not provided and index is not provided,
+        the model will not be added to the pool (Default value = None)
+            index (int, optional): The index of the model in the pool. If not provided, the model
+        will be added to the pool using the provided model_id. (Default value = None)
+        
         """
         if index is None:
             model_id_new = model_id
@@ -1279,20 +1160,15 @@ class ModelPool:
         self.model_instances_list[model_id_new] = model
 
     def get_model_instance(self, model_id=None, index: int = None):
-        """
-        Retrieves a model instance from the pool by ID or index.
+        """Retrieves a model instance from the pool by ID or index.
 
-        Parameters
-        ----------
-        model_id : str, optional
-            The ID of the model to retrieve.
-        index : int, optional
-            The index of the model in the pool.
+        Args:
+            model_id (str, optional, optional): The ID of the model to retrieve. (Default value = None)
+            index (int, optional): The index of the model in the pool. (Default value = None)
 
-        Returns
-        -------
-        model : object
-            The model instance retrieved from the pool.
+        Returns:
+            object: The model instance retrieved from the pool.
+        
         """
         if index is None:
             model_id_new = model_id

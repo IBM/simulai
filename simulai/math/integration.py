@@ -29,22 +29,16 @@ class ExplicitIntegrator(Integral):
     def __init__(
         self, coeffs: np.ndarray, weights: np.ndarray, right_operator: callable
     ) -> None:
-        """
-        Explicit time-integrator parent class.
+        """Explicit time-integrator parent class.
 
-        Parameters
-        ----------
-        coeffs: np.ndarray
-            Coefficients to shift time during integration.
-        weights: np.ndarray
-            The weights for penalizing each shifted state.
-        right_operator: callable
-            The callable for evaluating the residual in each iteration.
+        Args:
+            coeffs (np.ndarray): Coefficients to shift time during integration.
+            weights (np.ndarray): The weights for penalizing each shifted state.
+            right_operator (callable): The callable for evaluating the residual in each iteration.
 
-        Returns
-        -------
-        None
-
+        Returns:
+            None: 
+        
         """
         super().__init__()
 
@@ -57,20 +51,15 @@ class ExplicitIntegrator(Integral):
     def step(
         self, variables_state_initial: np.ndarray, dt: float
     ) -> Tuple[np.ndarray, np.ndarray]:
-        """
-        Marches a step in the time-integration.
+        """Marches a step in the time-integration.
 
-        Parameters
-        ----------
-        variables_state_initial: np.ndarray
-            Initial state.
-        dt: float
-            Timestep size.
+        Args:
+            variables_state_initial (np.ndarray): Initial state.
+            dt (float): Timestep size.
 
-        Returns
-        -------
-        (np.ndarray, np.ndarray)
-            The integrated state and its time-derivative.
+        Returns:
+            (np.ndarray, np.ndarray): The integrated state and its time-derivative.
+        
         """
         variables_state = variables_state_initial
         residuals_list = np.zeros((self.n_stages,) + variables_state.shape[1:])
@@ -89,22 +78,16 @@ class ExplicitIntegrator(Integral):
     def step_with_forcings(
         self, variables_state_initial: np.ndarray, forcing_state: np.ndarray, dt: float
     ) -> Tuple[np.ndarray, np.ndarray]:
-        """
-        Marches a step in the time-integration using a concatenated [variables, forcings] state.
+        """Marches a step in the time-integration using a concatenated [variables, forcings] state.
 
-        Parameters
-        ----------
-        variables_state_initial: np.ndarray
-            Initial state.
-        forcing_state: np.ndarray
-            The state of the forcing terms.
-        dt: float
-            Timestep size.
+        Args:
+            variables_state_initial (np.ndarray): Initial state.
+            forcing_state (np.ndarray): The state of the forcing terms.
+            dt (float): Timestep size.
 
-        Returns
-        -------
-        (np.ndarray, np.ndarray)
-            The integrated state and its time-derivative.
+        Returns:
+            (np.ndarray, np.ndarray): The integrated state and its time-derivative.
+        
         """
         variables_state = np.concatenate(
             [variables_state_initial, forcing_state], axis=-1
@@ -125,22 +108,16 @@ class ExplicitIntegrator(Integral):
     def step_with_forcings_separated(
         self, variables_state_initial: np.ndarray, forcing_state: np.ndarray, dt: float
     ) -> Tuple[np.ndarray, np.ndarray]:
-        """
-        March a single step in the time-integration process, with variables and forcings being treated separately.
+        """March a single step in the time-integration process, with variables and forcings being treated separately.
 
-        Parameters
-        ----------
-        variables_state_initial : np.ndarray
-            Initial state of the variables.
-        forcing_state : np.ndarray
-            State of the forcing terms.
-        dt : float
-            Timestep size.
+        Args:
+            variables_state_initial (np.ndarray): Initial state of the variables.
+            forcing_state (np.ndarray): State of the forcing terms.
+            dt (float): Timestep size.
 
-        Returns
-        -------
-        tuple
-            Integrated state and its time-derivative.
+        Returns:
+            tuple: Integrated state and its time-derivative.
+        
         """
 
         variables_state = {
@@ -167,22 +144,16 @@ class ExplicitIntegrator(Integral):
 
     # Looping over multiple steps without using forcings
     def _loop(self, initial_state: np.ndarray, epochs: int, dt: float) -> list:
-        """
-        Time-integration loop.
+        """Time-integration loop.
 
-        Parameters
-        ----------
-        initial_state : np.ndarray
-            Initial state of the system.
-        epochs : int
-            Number of steps to be used in the time-integration.
-        dt : float
-            Timestep size.
+        Args:
+            initial_state (np.ndarray): Initial state of the system.
+            epochs (int): Number of steps to be used in the time-integration.
+            dt (float): Timestep size.
 
-        Returns
-        -------
-        list
-            List of integrated states.
+        Returns:
+            list: List of integrated states.
+        
         """
 
         ii = 0
@@ -204,24 +175,17 @@ class ExplicitIntegrator(Integral):
     def _loop_forcings(
         self, initial_state: np.ndarray, forcings: np.ndarray, epochs: int, dt: float
     ) -> list:
-        """
-        Forced time-integration loop.
+        """Forced time-integration loop.
 
-        Parameters
-        ----------
-        initial_state : np.ndarray
-            Initial state of the system.
-        forcings : np.ndarray
-            Array containing all the forcing states.
-        epochs : int
-            Number of steps to be used in the time-integration.
-        dt : float
-            Timestep size.
+        Args:
+            initial_state (np.ndarray): Initial state of the system.
+            forcings (np.ndarray): Array containing all the forcing states.
+            epochs (int): Number of steps to be used in the time-integration.
+            dt (float): Timestep size.
 
-        Returns
-        -------
-        list
-            List of integrated states.
+        Returns:
+            list: List of integrated states.
+        
         """
 
         ii = 0
@@ -250,26 +214,18 @@ class ExplicitIntegrator(Integral):
         resolution: float = None,
         forcings: np.ndarray = None,
     ) -> np.ndarray:
-        """
-        Determine the proper time-integration loop to use and execute it.
+        """Determine the proper time-integration loop to use and execute it.
 
-        Parameters
-        ----------
-        initial_state : np.ndarray, optional
-            Initial state of the system.
-        forcings : np.ndarray, optional
-            Array containing all the forcing states.
-        epochs : int, optional
-            Number of steps to be used in the time-integration.
-        dt : float, optional
-            Timestep size.
-        resolution : float, optional
-            Resolution at which to return the integrated states.
+        Args:
+            initial_state (np.ndarray, optional): Initial state of the system. (Default value = None)
+            epochs (int, optional): Number of steps to be used in the time-integration. (Default value = None)
+            dt (float, optional): Timestep size. (Default value = None)
+            resolution (float, optional): Resolution at which to return the integrated states. (Default value = None)
+            forcings (np.ndarray, optional): Array containing all the forcing states. (Default value = None)
 
-        Returns
-        -------
-        np.ndarray
-            Array of integrated states.
+        Returns:
+            np.ndarray: Array of integrated states.
+        
         """
 
         if forcings is None:
@@ -294,13 +250,11 @@ class RK4(ExplicitIntegrator):
     name = "rk4_int"
 
     def __init__(self, right_operator: callable = None) -> None:
-        """
-        Initialize a 4th-order Runge-Kutta time-integrator.
+        """Initialize a 4th-order Runge-Kutta time-integrator.
 
-        Parameters
-        ----------
-        right_operator : callable
-            An operator representing the right-hand side of a dynamic system.
+        Args:
+            right_operator (callable, optional): An operator representing the right-hand side of a dynamic system. (Default value = None)
+        
         """
         weights = np.array(
             [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [1 / 6, 2 / 6, 2 / 6, 1 / 6]]
@@ -526,18 +480,13 @@ class LSODA:
     def run(self, current_state: np.ndarray = None, t: np.ndarray = None) -> np.ndarray:
         """
 
-        Parameters
-        ----------
-        current_state : np.ndarray, optional
-            The initial state of the system.
-        t : np.ndarray, optional
-            The time points at which to solve the system.
+        Args:
+            current_state (np.ndarray, optional): The initial state of the system. (Default value = None)
+            t (np.ndarray, optional): The time points at which to solve the system. (Default value = None)
 
-        Returns
-        -------
-        solution : np.ndarray
-            The solution to the system at the specified time points.
-
+        Returns:
+            np.ndarray: The solution to the system at the specified time points.
+        
         """
         if hasattr(self.right_operator, "jacobian"):
             Jacobian = self.right_operator.jacobian
@@ -555,20 +504,14 @@ class LSODA:
     ) -> np.ndarray:
         """
 
-        Parameters
-        ----------
-        current_state : np.ndarray, optional
-            The initial state of the system.
-        t : np.ndarray, optional
-            The time points at which to solve the system.
-        forcing : np.ndarray, optional
-            The forcing terms to use in the differential equation.
+        Args:
+            current_state (np.ndarray, optional): The initial state of the system. (Default value = None)
+            t (np.ndarray, optional): The time points at which to solve the system. (Default value = None)
+            forcing (np.ndarray, optional): The forcing terms to use in the differential equation. (Default value = None)
 
-        Returns
-        -------
-        solutions : np.ndarray
-            The solution to the system at the specified time points with the forcing terms applied.
-
+        Returns:
+            np.ndarray: The solution to the system at the specified time points with the forcing terms applied.
+        
         """
         assert isinstance(
             forcing, np.ndarray

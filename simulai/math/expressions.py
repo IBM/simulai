@@ -22,19 +22,15 @@ from sympy.parsing.sympy_parser import parse_expr
 
 class FromSymbol2FLambda:
     def __init__(self, engine: str = "numpy", variables: List[str] = None) -> None:
-        """
-        Initialize a lambda function from a string.
+        """Initialize a lambda function from a string.
 
-        Parameters
-        ----------
-        engine : str, optional
-            The low level engine used, e. g. numpy, torch ... The default value is 'numpy'.
-        variables : list of str, optional
-            The list of definition variables. The default value is None.
+        Args:
+            engine (str, optional): The low level engine used, e. g. numpy, torch ... The default value is 'numpy'.
+            variables (List[str], optional): The list of definition variables. The default value is None.
 
-        Returns
-        -------
-        None
+        Returns:
+            None: 
+        
         """
 
         self.engine = engine
@@ -51,21 +47,15 @@ class FromSymbol2FLambda:
     def _handle_composite_function(
         self, func_expr: str = None
     ) -> Tuple[List[str], bool]:
-        """
-        Handle composite functions such as g(x) = f_1 o f_2 o ... o f_n(x) = f_1(f_2( ... f_n(x) ... )).
+        """Handle composite functions such as g(x) = f_1 o f_2 o ... o f_n(x) = f_1(f_2( ... f_n(x) ... )).
 
-        Parameters
-        ----------
-        func_expr : str, optional
-            String containing the definition expression of a function.
+        Args:
+            func_expr (str, optional): String containing the definition expression of a function. (Default value = None)
 
-        Returns
-        -------
-        functions : list of str
-            List of functions names.
-        success : bool
-            Boolean indicating success.
-
+        Returns:
+            list of str: List of functions names.
+            bool: Boolean indicating success.
+        
         """
 
         splits = func_expr.split(self.func_sep)
@@ -76,25 +66,19 @@ class FromSymbol2FLambda:
     from typing import Tuple
 
     def _get_function_name(self, func_expr: str = None) -> Tuple[str, bool]:
-        """
-        Get the input name of a function and return its corresponding standard name.
+        """Get the input name of a function and return its corresponding standard name.
 
-        Parameters
-        ----------
-        func_expr : str, optional
-            Function name provided as input.
+        Args:
+            func_expr (str, optional): Function name provided as input. (Default value = None)
 
-        Returns
-        -------
-        function_name : str
-            Corresponding function name.
-        is_composite : bool
-            Boolean indicating whether the function is composite or not.
+        Returns:
+            str: Corresponding function name.
+            bool: Boolean indicating whether the function is composite or not.
 
-        Raises
-        ------
-        Exception
-            If the expression is not valid.
+        Raises:
+            Exception: If the expression is not valid.
+
+        
         """
         splits = func_expr.split(self.func_sep)
 
@@ -108,32 +92,26 @@ class FromSymbol2FLambda:
             raise Exception(f"The expression {func_expr} is not valid.")
 
     def clean_engines(self) -> None:
-        """
-        Clean all the pre-defined engines.
+        """Clean all the pre-defined engines.
 
-        Returns
-        -------
-        None
-            This function does not return anything.
+
+        Returns:
+            None: This function does not return anything.
+        
         """
         self.engine_module = None
         self.aux_engine_module = None
         self.tokens_module = None
 
     def convert(self, expression: str = None) -> Callable:
-        """
-        Receive a string mathematical expression and convert it into a callable function.
+        """Receive a string mathematical expression and convert it into a callable function.
 
-        Parameters
-        ----------
-        expression : str, optional
-            String containing the mathematical expression definition.
+        Args:
+            expression (str, optional): String containing the mathematical expression definition. (Default value = None)
 
-        Returns
-        -------
-        callable
-            Callable function equivalent to the string expression.
-
+        Returns:
+            callable: Callable function equivalent to the string expression.
+        
         """
         expression_names, is_function = self._get_function_name(func_expr=expression)
         symbol_expression = parse_expr(expression, evaluate=0)
