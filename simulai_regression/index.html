@@ -2216,7 +2216,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            layers_units (list, optional): List with the number of neurons for each layer. (Default value = None)</span>
 <span class="sd">            activations (Union[list, str], optional): List of activations for each layer or a single string</span>
-<span class="sd">        informing the activation used for all of them. (Default value = None)</span>
+<span class="sd">            informing the activation used for all of them. (Default value = None)</span>
 <span class="sd">            input_size (int, optional): Dimension of the input. (Default value = None)</span>
 <span class="sd">            output_size (int, optional): Dimension of the output. (Default value = None)</span>
 <span class="sd">            normalization (str, optional): Kind of normalization used between two layers. (Default value = &quot;bypass&quot;)</span>
@@ -2486,16 +2486,92 @@
                 <code>None</code>
           </td>
         </tr>
+        <tr>
+          <td><code>input_size</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Dimension of the input. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>output_size</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Dimension of the output. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>normalization</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Kind of normalization used between two layers. (Default value = "bypass")</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;bypass&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>name</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>A name for identifying the model. (Default value = "")</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>last_bias</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Using bias in the last layer or not. (Default value = True)</p>
+            </div>
+          </td>
+          <td>
+                <code>True</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>last_activation</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Activation for the last layer (default is 'identity').</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;identity&#39;</code>
+          </td>
+        </tr>
     </tbody>
   </table>
-      <p>informing the activation used for all of them. (Default value = None)
-    input_size (int, optional): Dimension of the input. (Default value = None)
-    output_size (int, optional): Dimension of the output. (Default value = None)
-    normalization (str, optional): Kind of normalization used between two layers. (Default value = "bypass")
-    name (str, optional): A name for identifying the model. (Default value = "")
-    last_bias (bool, optional): Using bias in the last layer or not. (Default value = True)
-    last_activation (str, optional): Activation for the last layer (default is 'identity').
-    **kwargs</p>
 
           <details class="quote">
             <summary>Source code in <code>simulai/regression/_pytorch/_dense.py</code></summary>
@@ -2597,7 +2673,7 @@
 <span class="sd">    Args:</span>
 <span class="sd">        layers_units (list, optional): List with the number of neurons for each layer. (Default value = None)</span>
 <span class="sd">        activations (Union[list, str], optional): List of activations for each layer or a single string</span>
-<span class="sd">    informing the activation used for all of them. (Default value = None)</span>
+<span class="sd">        informing the activation used for all of them. (Default value = None)</span>
 <span class="sd">        input_size (int, optional): Dimension of the input. (Default value = None)</span>
 <span class="sd">        output_size (int, optional): Dimension of the output. (Default value = None)</span>
 <span class="sd">        normalization (str, optional): Kind of normalization used between two layers. (Default value = &quot;bypass&quot;)</span>
@@ -2934,7 +3010,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            layers_units (list, optional): List with the number of neurons for each layer. (Default value = None)</span>
 <span class="sd">            activations (Union[list, str], optional): List of activations for each layer or a single string</span>
-<span class="sd">        informing the activation used for all of them. (Default value = None)</span>
+<span class="sd">            informing the activation used for all of them. (Default value = None)</span>
 <span class="sd">            input_size (int, optional): Dimension of the input. (Default value = None)</span>
 <span class="sd">            output_size (int, optional): Dimension of the output. (Default value = None)</span>
 <span class="sd">            normalization (str, optional): Kind of normalization used between two layers. (Default value = &quot;bypass&quot;)</span>
@@ -3109,17 +3185,106 @@
                 <code>None</code>
           </td>
         </tr>
+        <tr>
+          <td><code>input_size</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Dimension of the input. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>output_size</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Dimension of the output. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>normalization</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Kind of normalization used between two layers. (Default value = "bypass")</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;bypass&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>name</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>A name for identifying the model. (Default value = "")</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>last_bias</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Using bias in the last layer or not. (Default value = True)</p>
+            </div>
+          </td>
+          <td>
+                <code>True</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>last_activation</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Activation for the last layer (default is 'identity').</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;identity&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>residual_size</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Size of the residual block. (Default value = 1)</p>
+            </div>
+          </td>
+          <td>
+                <code>1</code>
+          </td>
+        </tr>
     </tbody>
   </table>
-      <p>informing the activation used for all of them. (Default value = None)
-    input_size (int, optional): Dimension of the input. (Default value = None)
-    output_size (int, optional): Dimension of the output. (Default value = None)
-    normalization (str, optional): Kind of normalization used between two layers. (Default value = "bypass")
-    name (str, optional): A name for identifying the model. (Default value = "")
-    last_bias (bool, optional): Using bias in the last layer or not. (Default value = True)
-    last_activation (str, optional): Activation for the last layer (default is 'identity').
-    residual_size (int, optional): Size of the residual block. (Default value = 1)
-    **kwargs</p>
 
           <details class="quote">
             <summary>Source code in <code>simulai/regression/_pytorch/_dense.py</code></summary>
@@ -3207,7 +3372,7 @@
 <span class="sd">    Args:</span>
 <span class="sd">        layers_units (list, optional): List with the number of neurons for each layer. (Default value = None)</span>
 <span class="sd">        activations (Union[list, str], optional): List of activations for each layer or a single string</span>
-<span class="sd">    informing the activation used for all of them. (Default value = None)</span>
+<span class="sd">        informing the activation used for all of them. (Default value = None)</span>
 <span class="sd">        input_size (int, optional): Dimension of the input. (Default value = None)</span>
 <span class="sd">        output_size (int, optional): Dimension of the output. (Default value = None)</span>
 <span class="sd">        normalization (str, optional): Kind of normalization used between two layers. (Default value = &quot;bypass&quot;)</span>
@@ -3555,7 +3720,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            layers_units (list, optional): List with the number of neurons for each layer. (Default value = None)</span>
 <span class="sd">            activations (Union[list, str], optional): List of activations for each layer or a single string</span>
-<span class="sd">        informing the activation used for all of them. (Default value = None)</span>
+<span class="sd">            informing the activation used for all of them. (Default value = None)</span>
 <span class="sd">            input_size (int, optional): Dimension of the input. (Default value = None)</span>
 <span class="sd">            output_size (int, optional): Dimension of the output. (Default value = None)</span>
 <span class="sd">            normalization (str, optional): Kind of normalization used between two layers. (Default value = &quot;bypass&quot;)</span>
@@ -3712,16 +3877,92 @@ This architecture is useful when combined to the Improved Version of DeepONets</
                 <code>None</code>
           </td>
         </tr>
+        <tr>
+          <td><code>input_size</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Dimension of the input. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>output_size</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Dimension of the output. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>normalization</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Kind of normalization used between two layers. (Default value = "bypass")</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;bypass&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>name</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>A name for identifying the model. (Default value = "")</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>last_bias</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Using bias in the last layer or not. (Default value = True)</p>
+            </div>
+          </td>
+          <td>
+                <code>True</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>last_activation</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Activation for the last layer (default is 'identity').</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;identity&#39;</code>
+          </td>
+        </tr>
     </tbody>
   </table>
-      <p>informing the activation used for all of them. (Default value = None)
-    input_size (int, optional): Dimension of the input. (Default value = None)
-    output_size (int, optional): Dimension of the output. (Default value = None)
-    normalization (str, optional): Kind of normalization used between two layers. (Default value = "bypass")
-    name (str, optional): A name for identifying the model. (Default value = "")
-    last_bias (bool, optional): Using bias in the last layer or not. (Default value = True)
-    last_activation (str, optional): Activation for the last layer (default is 'identity').
-    **kwargs</p>
 
           <details class="quote">
             <summary>Source code in <code>simulai/regression/_pytorch/_dense.py</code></summary>
@@ -3789,7 +4030,7 @@ This architecture is useful when combined to the Improved Version of DeepONets</
 <span class="sd">    Args:</span>
 <span class="sd">        layers_units (list, optional): List with the number of neurons for each layer. (Default value = None)</span>
 <span class="sd">        activations (Union[list, str], optional): List of activations for each layer or a single string</span>
-<span class="sd">    informing the activation used for all of them. (Default value = None)</span>
+<span class="sd">        informing the activation used for all of them. (Default value = None)</span>
 <span class="sd">        input_size (int, optional): Dimension of the input. (Default value = None)</span>
 <span class="sd">        output_size (int, optional): Dimension of the output. (Default value = None)</span>
 <span class="sd">        normalization (str, optional): Kind of normalization used between two layers. (Default value = &quot;bypass&quot;)</span>
