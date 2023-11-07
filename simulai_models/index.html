@@ -5344,7 +5344,7 @@ An autoencoder architecture consists of three stages:</p>
 <p>The bottleneck stage, subdivided in:
     * Fully-connected encoder
     * Fully connected decoder
-    * The convolutional decoder</p>
+    * The convolutional decoder </p>
 <p>SCHEME</p>
 <p>Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | |  | -&gt; [Conv.T] -&gt; [Conv.T] -&gt; ... [Conv.T] -&gt; Z_til</p>
 <pre><code>            ENCODER               DENSE BOTTLENECK           DECODER
@@ -5654,7 +5654,7 @@ An autoencoder architecture consists of three stages:</p>
 <span class="normal">482</span>
 <span class="normal">483</span>
 <span class="normal">484</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AutoencoderCNN</span><span class="p">(</span><span class="n">NetworkTemplate</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;This is an implementation of a convolutional autoencoder as Reduced Order Model.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This is an implementation of a convolutional autoencoder as Reduced Order Model.</span>
 <span class="sd">    An autoencoder architecture consists of three stages:</span>
 
 <span class="sd">    * The convolutional encoder</span>
@@ -5662,7 +5662,7 @@ An autoencoder architecture consists of three stages:</p>
 <span class="sd">    The bottleneck stage, subdivided in:</span>
 <span class="sd">        * Fully-connected encoder</span>
 <span class="sd">        * Fully connected decoder</span>
-<span class="sd">        * The convolutional decoder</span>
+<span class="sd">        * The convolutional decoder </span>
 
 <span class="sd">    SCHEME</span>
 
