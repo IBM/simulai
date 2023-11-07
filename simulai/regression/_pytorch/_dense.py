@@ -36,19 +36,14 @@ class Linear(NetworkTemplate):
         name: str = None,
     ) -> None:
 
-        """
-        Linear operator F(u) = Au + b
+        """Linear operator F(u) = Au + b
 
-        Parameters
-        ----------
-        input_size : int
-            Dimension of the input.
-        output_size : int
-            Dimension of the output.
-        bias : bool
-            Using bias tensor or not.
-        name : str
-            A name for identifying the model.
+        Args:
+            input_size (int, optional): Dimension of the input. (Default value = None)
+            output_size (int, optional): Dimension of the output. (Default value = None)
+            bias (bool, optional): Using bias tensor or not. (Default value = True)
+            name (str, optional): A name for identifying the model. (Default value = None)
+        
         """
 
         super(Linear, self).__init__(name=name)
@@ -73,30 +68,18 @@ class Linear(NetworkTemplate):
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
 
-        """
-        Applying the operator Linear.
+        """Applying the operator Linear.
 
-        Parameters
-        ----------
-        input_data : Union[torch.Tensor, np.ndarray]
-            Data to be processed using Linear.
-
-        Returns
-        -------
-            The output after the application of Linear.
+        Args:
+            input_data (Union[torch.Tensor, np.ndarray], optional): Data to be processed using Linear. (Default value = None)
+        
         """
 
         return self.layers[0](input_data)
 
     def to_numpy(self):
 
-        """
-        It converts the tensors in Linear to numpy.ndarray. 
-
-        Returns
-        -------
-            An object LinearNumpy, which reproduces Linear. 
-        """
+        """It converts the tensors in Linear to numpy.ndarray."""
 
         return LinearNumpy(layer=self.layers[0], name=self.name)
 
@@ -110,21 +93,15 @@ class SLFNN(Linear):
         name: str = None,
         activation: str = "tanh",
     ) -> None:
-        """
-        Single layer fully-connected (dense) neural network
+        """Single layer fully-connected (dense) neural network
 
-        Parameters
-        ----------
-        input_size : int
-            Dimension of the input.
-        output_size : int
-            Dimension of the output.
-        bias : bool
-            Using bias tensor or not. 
-        name : str
-            A name for identifying the model.
-        activation : str
-            Activation function.
+        Args:
+            input_size (int, optional): Dimension of the input. (Default value = None)
+            output_size (int, optional): Dimension of the output. (Default value = None)
+            bias (bool, optional): Using bias tensor or not. (Default value = True)
+            name (str, optional): A name for identifying the model. (Default value = None)
+            activation (str, optional): Activation function. (Default value = "tanh")
+        
         """
 
         super(SLFNN, self).__init__(
@@ -137,17 +114,11 @@ class SLFNN(Linear):
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
 
-        """
-        Applying the operator Linear.
+        """Applying the operator Linear.
 
-        Parameters
-        ----------
-        input_data : Union[torch.Tensor, np.ndarray]
-            Data to be processed using SLFNN.
-
-        Returns
-        -------
-            The output after the application of SLFNN.
+        Args:
+            input_data (Union[torch.Tensor, np.ndarray], optional): Data to be processed using SLFNN. (Default value = None)
+        
         """
 
 
@@ -165,23 +136,16 @@ class ShallowNetwork(SLFNN):
         activation: str = "tanh",
     ) -> None:
 
-        """
-        ELM-like (Extreme Learning Machine) shallow network
+        """ELM-like (Extreme Learning Machine) shallow network
 
-        Parameters
-        ----------
-        input_size : int
-            Dimension of the input.
-        hidden_size : int
-            Dimension of the hidden (intermediary) state.
-        output_size : int
-            Dimension of the output.
-        bias : bool
-            Using bias or not for the last layer.
-        name : str
-            A name for identifying the model. 
-        activation : str
-            Activation function.
+        Args:
+            input_size (int, optional): Dimension of the input. (Default value = None)
+            hidden_size (int, optional): Dimension of the hidden (intermediary) state. (Default value = None)
+            output_size (int, optional): Dimension of the output. (Default value = None)
+            bias (bool, optional): Using bias or not for the last layer. (Default value = True)
+            name (str, optional): A name for identifying the model. (Default value = None)
+            activation (str, optional): Activation function. (Default value = "tanh")
+        
         """
 
         super(ShallowNetwork, self).__init__(
@@ -199,13 +163,9 @@ class ShallowNetwork(SLFNN):
     ) -> torch.Tensor:
         """
 
-        Parameters
-        ----------
-        input_data : Union[torch.Tensor, np.ndarray]
-            Input data to be processed using ShallowNetwork.
-        Returns
-        -------
-            The output of ShallowNetwork.
+        Args:
+            input_data (Union[torch.Tensor, np.ndarray], optional):  (Default value = None)
+        
         """
 
         hidden_state = self.activation(super().forward(input_data=input_data))
@@ -231,28 +191,20 @@ class DenseNetwork(NetworkTemplate):
         **kwargs,
     ) -> None:
 
-        """
-        Dense (fully-connected) neural network written in PyTorch
+        """Dense (fully-connected) neural network written in PyTorch
 
-        Parameters
-        ----------
-        layers_units : list
-            List with the number of neurons for each layer.
-        activations : Union[list, str]
-            List of activations for each layer or a single string 
-            informing the activation used for all of them.
-        input_size : int
-            Dimension of the input.
-        output_size : int
-            Dimension of the output.
-        normalization : str
-            Kind of normalization used between two layers.
-        name : str
-            A name for identifying the model.
-        last_bias : bool
-            Using bias in the last layer or not.
-        last_activation : str
-            Activation for the last layer (default is 'identity').
+        Args:
+            layers_units (list, optional): List with the number of neurons for each layer. (Default value = None)
+            activations (Union[list, str], optional): List of activations for each layer or a single string
+        informing the activation used for all of them. (Default value = None)
+            input_size (int, optional): Dimension of the input. (Default value = None)
+            output_size (int, optional): Dimension of the output. (Default value = None)
+            normalization (str, optional): Kind of normalization used between two layers. (Default value = "bypass")
+            name (str, optional): A name for identifying the model. (Default value = "")
+            last_bias (bool, optional): Using bias in the last layer or not. (Default value = True)
+            last_activation (str, optional): Activation for the last layer (default is 'identity').
+            **kwargs 
+        
         """
 
         super(DenseNetwork, self).__init__()
@@ -310,18 +262,13 @@ class DenseNetwork(NetworkTemplate):
 
     def _calculate_gain(self, activation: str = "Tanh") -> float:
 
-        """
-        It evaluates a multiplier coefficient, named as `gain`, 
+        """It evaluates a multiplier coefficient, named as `gain`,
         which is used to enhance the funcionality of each kind of activation
         function.
 
-        Parameters
-        ----------
-        activation : str
-            Activation function.
-        Returns
-        -------
-            The value of the gain associated to that activation.
+        Args:
+            activation (str, optional):  (Default value = "Tanh")
+        
         """
 
         if type(activation) is not str:
@@ -340,18 +287,12 @@ class DenseNetwork(NetworkTemplate):
     @staticmethod
     def _determine_initialization(activation: str = "Tanh") -> str:
 
-        """
-        It determines the most proper initialization method for each 
+        """It determines the most proper initialization method for each
         activation function.
 
-        Parameters
-        ----------
-        activation : str
-            Activation function.
-
-        Returns
-        -------
-            The initialization method most indicated for that activation.
+        Args:
+            activation (str, optional): Activation function. (Default value = "Tanh")
+        
         """
 
         if type(activation) is not str:
@@ -380,22 +321,13 @@ class DenseNetwork(NetworkTemplate):
 
         """
 
-        Parameters
-        ----------
-        input_size : int
-            Dimension of the input.
-        output_size : int
-            Dimension of the output.
-        initialization : str
-            Initialization method.
-        bias : bool
-            Using bias tensor or not.
-        first_layer : bool
-            Is this layer the first layer or not.
-
-        Returns
-        -------
-            An instance of torch.nn.Linear.
+        Args:
+            input_size (int, optional): Dimension of the input. (Default value = 0)
+            output_size (int, optional): Dimension of the output. (Default value = 0)
+            initialization (str, optional): Initialization method. (Default value = None)
+            bias (bool, optional): Using bias tensor or not. (Default value = True)
+            first_layer (bool, optional): Is this layer the first layer or not. (Default value = False)
+        
         """
 
         # It instantiates a linear operation
@@ -444,18 +376,11 @@ class DenseNetwork(NetworkTemplate):
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
 
-        """
-        It executes the forward step for the DenseNetwork.
+        """It executes the forward step for the DenseNetwork.
 
-        Parameters
-        ----------
-        input_data : Union[torch.Tensor, np.ndarray]
-            The input tensor to be processed by DenseNetwork.
-
-        Returns
-        -------
-            A torch.Tensor object representing the output of the 
-            network. 
+        Args:
+            input_data (Union[torch.Tensor, np.ndarray], optional): The input tensor to be processed by DenseNetwork. (Default value = None)
+        
         """
 
         input_tensor_ = input_data
@@ -489,30 +414,21 @@ class ResDenseNetwork(DenseNetwork):
         **kwargs,
     ) -> None:
 
-        """
-        Residual Dense (fully-connected) neural network written in PyTorch
+        """Residual Dense (fully-connected) neural network written in PyTorch
 
-        Parameters
-        ----------
-        layers_units : list
-            List with the number of neurons for each layer.
-        activations : Union[list, str]
-            List of activations for each layer or a single string 
-            informing the activation used for all of them.
-        input_size : int
-            Dimension of the input.
-        output_size : int
-            Dimension of the output.
-        normalization : str
-            Kind of normalization used between two layers.
-        name : str
-            A name for identifying the model.
-        last_bias : bool
-            Using bias in the last layer or not.
-        last_activation : str
-            Activation for the last layer (default is 'identity').
-        residual_size : int
-            Size of the residual block. 
+        Args:
+            layers_units (list, optional): List with the number of neurons for each layer. (Default value = None)
+            activations (Union[list, str], optional): List of activations for each layer or a single string
+        informing the activation used for all of them. (Default value = None)
+            input_size (int, optional): Dimension of the input. (Default value = None)
+            output_size (int, optional): Dimension of the output. (Default value = None)
+            normalization (str, optional): Kind of normalization used between two layers. (Default value = "bypass")
+            name (str, optional): A name for identifying the model. (Default value = "")
+            last_bias (bool, optional): Using bias in the last layer or not. (Default value = True)
+            last_activation (str, optional): Activation for the last layer (default is 'identity').
+            residual_size (int, optional): Size of the residual block. (Default value = 1)
+            **kwargs 
+        
         """
 
         super().__init__(
@@ -554,19 +470,12 @@ class ResDenseNetwork(DenseNetwork):
     # Merging the layers into a reasonable sequence
     def _merge(self, layer: list = None, act: list = None) -> list:
 
-        """
-        It merges the dense layers and the activations into a single block.
+        """It merges the dense layers and the activations into a single block.
 
-        Parameters
-        ----------
-        layer : list
-            List of dense layers.
-        act : list
-            List of activation functions.
-
-        Returns
-        -------
-            The merged list of layers and activations.
+        Args:
+            layer (list, optional): List of dense layers. (Default value = None)
+            act (list, optional): List of activation functions. (Default value = None)
+        
         """
 
         merged_list = list()
@@ -579,9 +488,7 @@ class ResDenseNetwork(DenseNetwork):
 
     def summary(self):
 
-        """
-        It prints a summary of the network.
-        """
+        """It prints a summary of the network."""
 
         super().summary()
 
@@ -597,13 +504,10 @@ class ResDenseNetwork(DenseNetwork):
     ) -> torch.Tensor:
 
         """
-        Parameters
-        ----------
-        input_data : Union[torch.Tensor, np.ndarray]
-            Input data to be processed using ResDenseNetwork.
-        Returns
-        -------
-            The output of ResDenseNetwork.
+
+        Args:
+            input_data (Union[torch.Tensor, np.ndarray], optional):  (Default value = None)
+        
         """
 
         input_tensor_ = input_data
@@ -637,29 +541,21 @@ class ConvexDenseNetwork(DenseNetwork):
         **kwargs,
     ) -> None:
 
-        """
-        Dense network with convex combinations in the hidden layers.
+        """Dense network with convex combinations in the hidden layers.
         This architecture is useful when combined to the Improved Version of DeepONets
 
-        Parameters
-        ----------
-        layers_units : list
-            List with the number of neurons for each layer.
-        activations : Union[list, str]
-            List of activations for each layer or a single string 
-            informing the activation used for all of them.
-        input_size : int
-            Dimension of the input.
-        output_size : int
-            Dimension of the output.
-        normalization : str
-            Kind of normalization used between two layers.
-        name : str
-            A name for identifying the model.
-        last_bias : bool
-            Using bias in the last layer or not.
-        last_activation : str
-            Activation for the last layer (default is 'identity').
+        Args:
+            layers_units (list, optional): List with the number of neurons for each layer. (Default value = None)
+            activations (Union[list, str], optional): List of activations for each layer or a single string
+        informing the activation used for all of them. (Default value = None)
+            input_size (int, optional): Dimension of the input. (Default value = None)
+            output_size (int, optional): Dimension of the output. (Default value = None)
+            normalization (str, optional): Kind of normalization used between two layers. (Default value = "bypass")
+            name (str, optional): A name for identifying the model. (Default value = "")
+            last_bias (bool, optional): Using bias in the last layer or not. (Default value = True)
+            last_activation (str, optional): Activation for the last layer (default is 'identity').
+            **kwargs 
+        
         """
 
         self.hidden_size = None
@@ -681,16 +577,11 @@ class ConvexDenseNetwork(DenseNetwork):
 
     def _check_regular_net(self, layers_units: list) -> bool:
 
-        """
-        It checks if all the layers has the same number of neurons.
+        """It checks if all the layers has the same number of neurons.
 
-        Parameters
-        ----------
-        layers_units : list
-            List of layers sizes.
-        Returns
-        -------
-            If the network is regular or not.
+        Args:
+            layers_units (list): 
+        
         """
 
         mean = int(sum(layers_units) / len(layers_units))
@@ -711,18 +602,11 @@ class ConvexDenseNetwork(DenseNetwork):
 
         """
 
-        Parameters
-        ----------
-        input_data : Union[torch.Tensor, np.ndarray]
-            Input data to be processed using ConvexDenseNetwork.
-        u : Union[torch.Tensor, np.ndarray]
-            Input generated by the first auxiliar encoder (external model).
-        v : Union[torch.Tensor, np.ndarray]
-            Input generated by the second auxiliar encoder (external model).
-
-        Returns
-        -------
-            The output of ConvexDenseNetwork.
+        Args:
+            input_data (Union[torch.Tensor, np.ndarray], optional): Input data to be processed using ConvexDenseNetwork. (Default value = None)
+            u (Union[torch.Tensor, np.ndarray], optional): Input generated by the first auxiliar encoder (external model). (Default value = None)
+            v (Union[torch.Tensor, np.ndarray], optional): Input generated by the second auxiliar encoder (external model). (Default value = None)
+        
         """
 
         input_tensor_ = input_data

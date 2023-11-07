@@ -24,31 +24,20 @@ class CNNUnetEncoder(ConvolutionalNetwork):
         intermediary_outputs_indices: List[int] = None,
         name: str = None,
     ) -> None:
-        """
-        A CNN encoder for U-Nets.
+        """A CNN encoder for U-Nets.
 
-        Parameters
-        ----------
-        layers : List[Dict] 
-            A list of configurations dictionaries for instantiating the layers.
-        activations :
-            A string or a list of strings defining the kind of activation to be used.
-        pre_layer : Optional[torch.nn.Module]
-            A layer for pre-processing the input.
-        case : str
-            The kind of CNN to be used, in ["1d", "2d", "3d"].
-        last_activation : str
-            The kind of activation to be used after the last layer.
-        transpose : bool
-            Using transposed convolution or not.
-        flatten : bool
-            Flattening the output or not.
-        intermediary_outputs_indices : List[int],
-            A list of indices for indicating what are the encoder outputs, which will be
-            subsequently inputted in the decoder stage.
-        name : str
-            A name for the model. 
-
+        Args:
+            layers (List[Dict], optional): A list of configurations dictionaries for instantiating the layers. (Default value = None)
+            activations (Union[str, List[str]], optional): A string or a list of strings defining the kind of activation to be used. (Default value = None)
+            pre_layer (Optional[torch.nn.Module], optional): A layer for pre-processing the input. (Default value = None)
+            case (str, optional): The kind of CNN to be used, in ["1d", "2d", "3d"]. (Default value = "2d")
+            last_activation (str, optional): The kind of activation to be used after the last layer. (Default value = "identity")
+            transpose (bool, optional): Using transposed convolution or not. (Default value = False)
+            flatten (bool, optional): Flattening the output or not. (Default value = False)
+            intermediary_outputs_indices (List[int], optional): A list of indices for indicating what are the encoder outputs, which will be
+        subsequently inputted in the decoder stage. (Default value = None)
+            name (str, optional): A name for the model. (Default value = None)
+        
         """
 
         super(CNNUnetEncoder, self).__init__(layers=layers,
@@ -70,20 +59,16 @@ class CNNUnetEncoder(ConvolutionalNetwork):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> [torch.Tensor, List[torch.Tensor]]:
-        """
-        The CNN U-Net encoder forward method. 
+        """The CNN U-Net encoder forward method.
 
-        Parameters
-        ----------
-        input_data : Union[torch.Tensor, np.ndarray],
-            A dataset to be inputted in the CNN U-Net encoder.
+        Args:
+            input_data (Union[torch.Tensor, np.ndarray], optional): A dataset to be inputted in the CNN U-Net encoder. (Default value = None)
 
-        Returns
-        -------
-        [torch.Tensor, List[torch.Tensor]]
-            A list containing the main encoder output (latent space) and 
+        Returns:
+            [torch.Tensor, List[torch.Tensor]]: A list containing the main encoder output (latent space) and
             another list of outputs, corresponding to the intermediary encoder
-            outputs. 
+            outputs.
+        
         """
 
         intermediary_outputs = list()
@@ -112,30 +97,20 @@ class CNNUnetDecoder(ConvolutionalNetwork):
         name: str = None,
         channels_last=False, 
     ) -> None:
-        """
-        A CNN decoder for U-Nets.
+        """A CNN decoder for U-Nets.
 
-        Parameters
-        ----------
-        layers : List[Dict] 
-            A list of configurations dictionaries for instantiating the layers.
-        activations :
-            A string or a list of strings defining the kind of activation to be used.
-        pre_layer : Optional[torch.nn.Module]
-            A layer for pre-processing the input.
-        case : str
-            The kind of CNN to be used, in ["1d", "2d", "3d"].
-        last_activation : str
-            The kind of activation to be used after the last layer.
-        transpose : bool
-            Using transposed convolution or not.
-        flatten : bool
-            Flattening the output or not.
-        intermediary_inputs_indices : List[int],
-            A list of indices for indicating what are the decoder outputs.
-        name : str
-            A name for the model. 
-
+        Args:
+            layers (list, optional): A list of configurations dictionaries for instantiating the layers. (Default value = None)
+            activations (list, optional): A string or a list of strings defining the kind of activation to be used. (Default value = None)
+            pre_layer (Optional[torch.nn.Module], optional): A layer for pre-processing the input. (Default value = None)
+            case (str, optional): The kind of CNN to be used, in ["1d", "2d", "3d"]. (Default value = "2d")
+            last_activation (str, optional): The kind of activation to be used after the last layer. (Default value = "identity")
+            transpose (bool, optional): Using transposed convolution or not. (Default value = False)
+            flatten (bool, optional): Flattening the output or not. (Default value = False)
+            intermediary_inputs_indices (List[int], optional): A list of indices for indicating what are the decoder outputs. (Default value = None)
+            name (str, optional): A name for the model. (Default value = None)
+            channels_last:  (Default value = False)
+        
         """
 
 
@@ -164,21 +139,15 @@ class CNNUnetDecoder(ConvolutionalNetwork):
         self, input_data: Union[torch.Tensor, np.ndarray] = None,
         intermediary_encoder_outputs:List[torch.Tensor] = None,
     ) -> torch.Tensor:
-        """
-        The CNN U-Net decoder forward method. 
+        """The CNN U-Net decoder forward method.
 
-        Parameters
-        ----------
-        input_data : Union[torch.Tensor, np.ndarray],
-            A dataset to be inputted in the CNN U-Net decoder.
+        Args:
+            input_data (Union[torch.Tensor, np.ndarray], optional): A dataset to be inputted in the CNN U-Net decoder. (Default value = None)
+            intermediary_encoder_outputs (List[torch.Tensor], optional): A list of tensors, corresponding to the intermediary encoder outputs. (Default value = None)
 
-        intermediary_encoder_outputs : List[torch.Tensor]
-            A list of tensors, corresponding to the intermediary encoder outputs.
-
-        Returns
-        -------
-        torch.Tensor
-            The decoder (and U-Net) output.        
+        Returns:
+            torch.Tensor: The decoder (and U-Net) output.
+        
         """
 
         current_input = input_data
@@ -206,23 +175,16 @@ class UNet(NetworkTemplate):
                  intermediary_inputs_indices:List[int]=None,
                  encoder_extra_args:Dict=dict(),
                  decoder_extra_args:Dict=dict()) -> None:
-        """
-        U-Net. 
+        """U-Net.
 
-        Parameters
-        ----------
-        layers_config : Dict
-            A dictionary containing the complete configuration for the 
-            U-Net encoder and decoder.
-        intermediary_outputs_indices : List[int]
-            A list of indices for indicating the encoder outputs.
-        intermediary_inputs_indices : List[int]
-            A list of indices for indicating the decoder inputs.
-        encoder_extra_args : Dict
-            A dictionary containing extra arguments for the encoder.
-        decoder_extra_args : Dict
-            A dictionary containing extra arguments for the decoder. 
-
+        Args:
+            layers_config (Dict, optional): A dictionary containing the complete configuration for the
+        U-Net encoder and decoder. (Default value = None)
+            intermediary_outputs_indices (List[int], optional): A list of indices for indicating the encoder outputs. (Default value = None)
+            intermediary_inputs_indices (List[int], optional): A list of indices for indicating the decoder inputs. (Default value = None)
+            encoder_extra_args (Dict, optional): A dictionary containing extra arguments for the encoder. (Default value = dict())
+            decoder_extra_args (Dict, optional): A dictionary containing extra arguments for the decoder. (Default value = dict())
+        
         """
 
         super(UNet, self).__init__()
@@ -271,18 +233,14 @@ class UNet(NetworkTemplate):
     @as_tensor
     def forward(self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
-        """
-        The U-Net forward method. 
+        """The U-Net forward method.
 
-        Parameters
-        ----------
-        input_data : Union[torch.Tensor, np.ndarray],
-            A dataset to be inputted in the CNN U-Net encoder.
+        Args:
+            input_data (Union[torch.Tensor, np.ndarray], optional): A dataset to be inputted in the CNN U-Net encoder. (Default value = None)
 
-        Returns
-        -------
-        torch.Tensor
-            The U-Net output. 
+        Returns:
+            torch.Tensor: The U-Net output.
+        
         """
 
         encoder_main_output, encoder_intermediary_outputs = self.encoder(input_data=input_data)
@@ -292,8 +250,6 @@ class UNet(NetworkTemplate):
         return output
         
     def summary(self):
-        """
-        It shows a general view of the architecture.
-        """
+        """It shows a general view of the architecture."""
 
         print(self)
