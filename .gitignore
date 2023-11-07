@@ -94,4 +94,4 @@ run_examples.txt
 **/_build/*
 
 # MKDocs
-mkdocs/site/*
+mkdocs/site/**/
