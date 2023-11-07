@@ -2967,7 +2967,7 @@
 <span class="sd">            trunk_network (NetworkTemplate, optional): Subnetwork for processing the coordinates inputs. (Default value = None)</span>
 <span class="sd">            branch_network (NetworkTemplate, optional): Subnetwork for processing the forcing/conditioning inputs. (Default value = None)</span>
 <span class="sd">            decoder_network (NetworkTemplate, optional): Subnetworks for converting the embedding to the output (optional). (Default value = None)</span>
-<span class="sd">            # (Union[str, list], optional):  (Default value = &quot;cpu&quot;)</span>
+<span class="sd">            devices (Union[str, list], optional):  Devices in which the model will be executed. (Default value = &quot;cpu&quot;)</span>
 <span class="sd">            product_type (str, optional): Type of product to execute in the embedding space. (Default value = None)</span>
 <span class="sd">            rescale_factors (np.ndarray, optional): Values used for rescaling the network outputs for a given order of magnitude. (Default value = None)</span>
 <span class="sd">            model_id (str, optional): Name for the model (Default value = None)</span>
@@ -3453,17 +3453,17 @@ of the Universal Approximation Theorem.</p>
           </td>
         </tr>
         <tr>
-          <td><code>#</code></td>
+          <td><code>devices</code></td>
           <td>
                 <code><span title="typing.Union">Union</span>[str, list]</code>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>(Default value = "cpu")</p>
+              <p>Devices in which the model will be executed. (Default value = "cpu")</p>
             </div>
           </td>
           <td>
-              <em>required</em>
+                <code>&#39;cpu&#39;</code>
           </td>
         </tr>
         <tr>
@@ -3688,7 +3688,7 @@ of the Universal Approximation Theorem.</p>
 <span class="sd">        trunk_network (NetworkTemplate, optional): Subnetwork for processing the coordinates inputs. (Default value = None)</span>
 <span class="sd">        branch_network (NetworkTemplate, optional): Subnetwork for processing the forcing/conditioning inputs. (Default value = None)</span>
 <span class="sd">        decoder_network (NetworkTemplate, optional): Subnetworks for converting the embedding to the output (optional). (Default value = None)</span>
-<span class="sd">        # (Union[str, list], optional):  (Default value = &quot;cpu&quot;)</span>
+<span class="sd">        devices (Union[str, list], optional):  Devices in which the model will be executed. (Default value = &quot;cpu&quot;)</span>
 <span class="sd">        product_type (str, optional): Type of product to execute in the embedding space. (Default value = None)</span>
 <span class="sd">        rescale_factors (np.ndarray, optional): Values used for rescaling the network outputs for a given order of magnitude. (Default value = None)</span>
 <span class="sd">        model_id (str, optional): Name for the model (Default value = None)</span>
