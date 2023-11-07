@@ -48,7 +48,7 @@ class DeepONet(NetworkTemplate):
             trunk_network (NetworkTemplate, optional): Subnetwork for processing the coordinates inputs. (Default value = None)
             branch_network (NetworkTemplate, optional): Subnetwork for processing the forcing/conditioning inputs. (Default value = None)
             decoder_network (NetworkTemplate, optional): Subnetworks for converting the embedding to the output (optional). (Default value = None)
-            # (Union[str, list], optional):  (Default value = "cpu")
+            devices (Union[str, list], optional):  Devices in which the model will be executed. (Default value = "cpu")
             product_type (str, optional): Type of product to execute in the embedding space. (Default value = None)
             rescale_factors (np.ndarray, optional): Values used for rescaling the network outputs for a given order of magnitude. (Default value = None)
             model_id (str, optional): Name for the model (Default value = None)

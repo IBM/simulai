@@ -35,7 +35,7 @@ class CNNUnetEncoder(ConvolutionalNetwork):
             transpose (bool, optional): Using transposed convolution or not. (Default value = False)
             flatten (bool, optional): Flattening the output or not. (Default value = False)
             intermediary_outputs_indices (List[int], optional): A list of indices for indicating what are the encoder outputs, which will be
-        subsequently inputted in the decoder stage. (Default value = None)
+            subsequently inputted in the decoder stage. (Default value = None)
             name (str, optional): A name for the model. (Default value = None)
         
         """
