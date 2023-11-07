@@ -2043,7 +2043,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            layers_config (Dict, optional): A dictionary containing the complete configuration for the</span>
-<span class="sd">        U-Net encoder and decoder. (Default value = None)</span>
+<span class="sd">            U-Net encoder and decoder. (Default value = None)</span>
 <span class="sd">            intermediary_outputs_indices (List[int], optional): A list of indices for indicating the encoder outputs. (Default value = None)</span>
 <span class="sd">            intermediary_inputs_indices (List[int], optional): A list of indices for indicating the decoder inputs. (Default value = None)</span>
 <span class="sd">            encoder_extra_args (Dict, optional): A dictionary containing extra arguments for the encoder. (Default value = dict())</span>
@@ -2175,13 +2175,64 @@
                 <code>None</code>
           </td>
         </tr>
+        <tr>
+          <td><code>intermediary_outputs_indices</code></td>
+          <td>
+                <code><span title="typing.List">List</span>[int]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>A list of indices for indicating the encoder outputs. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>intermediary_inputs_indices</code></td>
+          <td>
+                <code><span title="typing.List">List</span>[int]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>A list of indices for indicating the decoder inputs. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>encoder_extra_args</code></td>
+          <td>
+                <code><span title="typing.Dict">Dict</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>A dictionary containing extra arguments for the encoder. (Default value = dict())</p>
+            </div>
+          </td>
+          <td>
+                <code>dict()</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>decoder_extra_args</code></td>
+          <td>
+                <code><span title="typing.Dict">Dict</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>A dictionary containing extra arguments for the decoder. (Default value = dict())</p>
+            </div>
+          </td>
+          <td>
+                <code>dict()</code>
+          </td>
+        </tr>
     </tbody>
   </table>
-      <p>U-Net encoder and decoder. (Default value = None)
-    intermediary_outputs_indices (List[int], optional): A list of indices for indicating the encoder outputs. (Default value = None)
-    intermediary_inputs_indices (List[int], optional): A list of indices for indicating the decoder inputs. (Default value = None)
-    encoder_extra_args (Dict, optional): A dictionary containing extra arguments for the encoder. (Default value = dict())
-    decoder_extra_args (Dict, optional): A dictionary containing extra arguments for the decoder. (Default value = dict())</p>
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_unet.py</code></summary>
@@ -2252,7 +2303,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        layers_config (Dict, optional): A dictionary containing the complete configuration for the</span>
-<span class="sd">    U-Net encoder and decoder. (Default value = None)</span>
+<span class="sd">        U-Net encoder and decoder. (Default value = None)</span>
 <span class="sd">        intermediary_outputs_indices (List[int], optional): A list of indices for indicating the encoder outputs. (Default value = None)</span>
 <span class="sd">        intermediary_inputs_indices (List[int], optional): A list of indices for indicating the decoder inputs. (Default value = None)</span>
 <span class="sd">        encoder_extra_args (Dict, optional): A dictionary containing extra arguments for the encoder. (Default value = dict())</span>
@@ -4365,7 +4416,7 @@ Reduced Order Model;</p>
 <span class="normal">178</span>
 <span class="normal">179</span>
 <span class="normal">180</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AutoencoderMLP</span><span class="p">(</span><span class="n">NetworkTemplate</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;This is an implementation of a Fully-connected AutoEncoder as</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;This is an implementation of a Fully-connected AutoEncoder as</span>
 <span class="sd">    Reduced Order Model;</span>
 
 <span class="sd">    A MLP autoencoder architecture consists of two stages:</span>
@@ -5605,7 +5656,7 @@ An autoencoder architecture consists of three stages:</p>
 <span class="normal">482</span>
 <span class="normal">483</span>
 <span class="normal">484</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AutoencoderCNN</span><span class="p">(</span><span class="n">NetworkTemplate</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;This is an implementation of a convolutional autoencoder as Reduced Order Model.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;This is an implementation of a convolutional autoencoder as Reduced Order Model.</span>
 <span class="sd">    An autoencoder architecture consists of three stages:</span>
 
 <span class="sd">    * The convolutional encoder</span>
@@ -7755,7 +7806,7 @@ An autoencoder architecture consists of three stages:</p>
 <span class="normal">909</span>
 <span class="normal">910</span>
 <span class="normal">911</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AutoencoderKoopman</span><span class="p">(</span><span class="n">NetworkTemplate</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;This is an implementation of a Koopman autoencoder as a Reduced Order Model.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;This is an implementation of a Koopman autoencoder as a Reduced Order Model.</span>
 
 <span class="sd">    A Koopman autoencoder architecture consists of five stages:</span>
 
