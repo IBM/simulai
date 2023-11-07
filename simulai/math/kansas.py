@@ -31,23 +31,16 @@ class Kansas:
         kernel: str = "gaussian",
         eps: float = 1e-8,
     ) -> None:
-        """
-        Initialize the radial basis function interpolator.
+        """Initialize the radial basis function interpolator.
 
-        Parameters
-        ----------
-        points : np.ndarray
-            The points at which to interpolate.
-        centers : np.ndarray
-            The centers of the kernel functions.
-        sigma2 : Union[str, float], optional
-            The variance of the kernel functions. If set to "auto", the variance is calculated from the maximum distance
-            between centers.
-        kernel : str, optional
-            The type of kernel function to use.
-        eps : float, optional
-            The tolerance for eliminating elements from the interpolation matrices.
-
+        Args:
+            points (np.ndarray, optional): The points at which to interpolate. (Default value = None)
+            centers (np.ndarray, optional): The centers of the kernel functions. (Default value = None)
+            sigma2 (Union[str, float], optional): The variance of the kernel functions. If set to "auto", the variance is calculated from the maximum distance
+        between centers. (Default value = "auto")
+            kernel (str, optional): The type of kernel function to use. (Default value = "gaussian")
+            eps (float, optional): The tolerance for eliminating elements from the interpolation matrices. (Default value = 1e-8)
+        
         """
 
         self.Nk = centers.shape[0]  # number of centers of kernels
@@ -102,12 +95,13 @@ class Kansas:
         return
 
     def get_interpolation_matrix(self) -> None:
-        """
-        Calculates and returns the interpolation matrix for the given set of points. If `self.use_optimized` is True,
+        """Calculates and returns the interpolation matrix for the given set of points. If `self.use_optimized` is True,
         the optimized version of the interpolation matrix is calculated and returned. Otherwise, the interpolation matrix
         is calculated using a lambda function that evaluates the kernel at every point on the radial function, and then
-        returning the resulting matrix after setting all elements with absolute value less than `self.eps` to 0.0 and
-        converting the matrix to a sparse CSC format.
+
+
+        Returns:
+            None: converting the matrix to a sparse CSC format.
         """
         if self.use_optimized:
             G = self.get_interpolation_matrix_optimized()
@@ -124,31 +118,25 @@ class Kansas:
         return G
 
     def get_interpolation_matrix_optimized(self) -> np.ndarray:
-        """
-        Calculate the interpolation matrix using an optimized method.
-
+        """Calculate the interpolation matrix using an optimized method.
+        
         Returns:
         ----------
             G : ndarray
             The interpolation matrix.
+
+        
         """
         G = self.Kernel(self.r2, self.sigma2, self.kernel)
 
         return G
 
     def get_first_derivative_matrix(self, var_index: int) -> np.ndarray:
-        """
-        Calculate the first derivative matrix of a specific variable.
+        """Calculate the first derivative matrix of a specific variable.
 
-        Parameters
-        ----------
-            var_index : int
-            The index of the variable for which to calculate the derivative matrix.
-
-        Returns:
-        ----------
-
-            ndarray: The first derivative matrix.
+        Args:
+            var_index (int): 
+        
         """
         if var_index > self.ndim:
             print("index of variable are higher than ")
@@ -163,19 +151,14 @@ class Kansas:
     def get_first_derivative_matrix_optimized(
         self, var_index: int = None
     ) -> csc_matrix:
-        """
-        Compute the first derivative matrix of the kernel function with respect to the variable at the given index.
+        """Compute the first derivative matrix of the kernel function with respect to the variable at the given index.
 
-        Parameters
-        ----------
-        var_index : int
-            The index of the variable to compute the first derivative with respect to.
+        Args:
+            var_index (int, optional): The index of the variable to compute the first derivative with respect to. (Default value = None)
 
-        Returns
-        -------
-        Dx : scipy.sparse.csc_matrix
-            The first derivative matrix.
-
+        Returns:
+            scipy.sparse.csc_matrix: The first derivative matrix.
+        
         """
 
         # rx = sp.spatial.distance.cdist(self.points[:, [var_index]], self.centers[:, [var_index]], lambda u, v: (u - v))
@@ -193,21 +176,15 @@ class Kansas:
     def get_first_derivative_matrix_aux(
         self, var_index: int = None
     ) -> Tuple[csc_matrix, np.ndarray]:
-        """
-        Compute the auxiliary matrices needed to compute the first derivative matrix of the kernel function with respect to the variable at the given index.
+        """Compute the auxiliary matrices needed to compute the first derivative matrix of the kernel function with respect to the variable at the given index.
 
-        Parameters
-        ----------
-        var_index : int
-            The index of the variable to compute the first derivative with respect to.
+        Args:
+            var_index (int, optional): The index of the variable to compute the first derivative with respect to. (Default value = None)
 
-        Returns
-        -------
-        Dx : scipy.sparse.csc_matrix
-            The first derivative matrix.
-        dr2dx : numpy.ndarray
-            The auxiliary array needed to compute the first derivative matrix.
-
+        Returns:
+            scipy.sparse.csc_matrix: The first derivative matrix.
+            numpy.ndarray: The auxiliary array needed to compute the first derivative matrix.
+        
         """
         self.gen_f1()
 
@@ -230,21 +207,15 @@ class Kansas:
     def get_cross_derivative_matrix(
         self, var_index1: int = None, var_index2: int = None
     ) -> csc_matrix:
-        """
-        Compute the cross derivative matrix of the kernel function with respect to the variables at the given indices.
+        """Compute the cross derivative matrix of the kernel function with respect to the variables at the given indices.
 
-        Parameters
-        ----------
-        var_index1 : int
-            The index of the first variable to compute the cross derivative with respect to.
-        var_index2 : int
-            The index of the second variable to compute the cross derivative with respect to.
+        Args:
+            var_index1 (int, optional): The index of the first variable to compute the cross derivative with respect to. (Default value = None)
+            var_index2 (int, optional): The index of the second variable to compute the cross derivative with respect to. (Default value = None)
 
-        Returns
-        -------
-        Dxy : scipy.sparse.csc_matrix
-            The cross derivative matrix.
-
+        Returns:
+            scipy.sparse.csc_matrix: The cross derivative matrix.
+        
         """
         if var_index1 > self.ndim or var_index2 > self.ndim:
             print("index of variable are higher than dimension")
@@ -274,21 +245,15 @@ class Kansas:
     def get_cross_derivative_matrix_optimized(
         self, var_index1: int = None, var_index2: int = None
     ) -> np.ndarray:
-        """
-        Compute the cross derivative matrix of the kernel function with respect to the variables at the given indices using an optimized method.
+        """Compute the cross derivative matrix of the kernel function with respect to the variables at the given indices using an optimized method.
 
-        Parameters
-        ----------
-        var_index1 : int
-            The index of the first variable to compute the cross derivative with respect to.
-        var_index2 : int
-            The index of the second variable to compute the cross derivative with respect to.
+        Args:
+            var_index1 (int, optional): The index of the first variable to compute the cross derivative with respect to. (Default value = None)
+            var_index2 (int, optional): The index of the second variable to compute the cross derivative with respect to. (Default value = None)
 
-        Returns
-        -------
-        Dxy : numpy.ndarray
-            The cross derivative matrix.
-
+        Returns:
+            numpy.ndarray: The cross derivative matrix.
+        
         """
         rx = self.points[:, [var_index1]] - self.centers[:, var_index1]
 
@@ -299,19 +264,14 @@ class Kansas:
         return Dxy
 
     def get_second_derivative_matrix(self, var_index: int) -> csc_matrix:
-        """
-        Compute the second derivative matrix of the kernel function with respect to the variable at the given index.
+        """Compute the second derivative matrix of the kernel function with respect to the variable at the given index.
 
-        Parameters
-        ----------
-        var_index : int
-            The index of the variable to compute the second derivative with respect to.
+        Args:
+            var_index (int): The index of the variable to compute the second derivative with respect to.
 
-        Returns
-        -------
-        Dxx : scipy.sparse.csc_matrix
-            The second derivative matrix.
-
+        Returns:
+            scipy.sparse.csc_matrix: The second derivative matrix.
+        
         """
         if var_index > self.ndim:
             print("index of variable are higher than dimension")
@@ -338,19 +298,14 @@ class Kansas:
         return Dxx
 
     def get_second_derivative_matrix_optimized(self, var_index: int) -> np.ndarray:
-        """
-        Compute the second derivative matrix of the kernel function with respect to the variable at the given index using an optimized method.
+        """Compute the second derivative matrix of the kernel function with respect to the variable at the given index using an optimized method.
 
-        Parameters
-        ----------
-        var_index : int
-            The index of the variable to compute the second derivative with respect to.
+        Args:
+            var_index (int): The index of the variable to compute the second derivative with respect to.
 
-        Returns
-        -------
-        Dxx : numpy.ndarray
-            The second derivative matrix.
-
+        Returns:
+            numpy.ndarray: The second derivative matrix.
+        
         """
         # rx2 = sp.spatial.distance.cdist(self.points[:, [var_index]], self.centers[:, [var_index]], lambda u, v: (u - v)**2)
 
@@ -361,14 +316,12 @@ class Kansas:
         return Dxx
 
     def get_laplacian_matrix(self) -> csc_matrix:
-        """
-        Compute the Laplacian matrix of the kernel function.
+        """Compute the Laplacian matrix of the kernel function.
 
-        Returns
-        -------
-        L : scipy.sparse.csc_matrix
-            The Laplacian matrix.
 
+        Returns:
+            scipy.sparse.csc_matrix: The Laplacian matrix.
+        
         """
         if self.use_optimized:
             L = self.kernel_Laplacian(self.r2, self.sigma2, self.kernel)
@@ -387,8 +340,7 @@ class Kansas:
         return L
 
     def gen_f1(self) -> None:
-        """
-        Generate the first derivative of the kernel function.
+        """Generate the first derivative of the kernel function.
 
         """
         if self.f1_was_gen == False:
@@ -405,22 +357,16 @@ class Kansas:
     def Kernel(
         self, r2: np.ndarray = None, sigma2: float = None, kernel_type: str = None
     ) -> np.ndarray:
-        """
-        Compute the kernel function.
+        """Compute the kernel function.
 
-        Parameters
-        ----------
-        r2 : numpy.ndarray
-            The array of squared distances.
-        sigma2 : float
-            The variance parameter of the kernel function.
-        kernel_type : str
-            The type of kernel function to use. Can be "gaussian", "MQ", or "IMQ".
+        Args:
+            r2 (np.ndarray, optional): The array of squared distances. (Default value = None)
+            sigma2 (float, optional): The variance parameter of the kernel function. (Default value = None)
+            kernel_type (str, optional): The type of kernel function to use. Can be "gaussian", "MQ", or "IMQ". (Default value = None)
 
-        Returns
-        -------
-        G : numpy.ndarray
-            The kernel function evaluated at the given squared distances.
+        Returns:
+            numpy.ndarray: The kernel function evaluated at the given squared distances.
+        
         """
 
         if kernel_type == "gaussian":
@@ -448,25 +394,17 @@ class Kansas:
         sigma2: float = None,
         kernel_type: str = None,
     ) -> float:
-        """
-        Calculate the derivative of a kernel function with respect to a distance value.
+        """Calculate the derivative of a kernel function with respect to a distance value.
 
-        Parameters
-        ----------
-        r2 : float
-            Squared distance between two points.
-        rx : float
-            Distance between two points in a single dimension.
-        sigma2 : float
-            Hyperparameter for the kernel function.
-        kernel_type : str
-            Type of kernel to use. Must be one of 'gaussian', 'MQ', or 'IMQ'.
+        Args:
+            r2 (float, optional): Squared distance between two points. (Default value = None)
+            rx (float, optional): Distance between two points in a single dimension. (Default value = None)
+            sigma2 (float, optional): Hyperparameter for the kernel function. (Default value = None)
+            kernel_type (str, optional): Type of kernel to use. Must be one of 'gaussian', 'MQ', or 'IMQ'. (Default value = None)
 
-        Returns
-        -------
-        Dx : float
-            Derivative of the kernel function with respect to `rx`.
-
+        Returns:
+            float: Derivative of the kernel function with respect to `rx`.
+        
         """
 
         if kernel_type == "gaussian":
@@ -495,26 +433,18 @@ class Kansas:
         sigma2: float = None,
         kernel_type: str = None,
     ) -> float:
-        """
-        Calculate the mixed second partial derivative of a kernel function.
+        """Calculate the mixed second partial derivative of a kernel function.
 
-        Parameters
-        ----------
-        r2 : float
-            Squared distance between two points.
-        rx : float
-            Distance between two points in a single dimension.
-        ry : float
-            Distance between two points in a single dimension.
-        sigma2 : float
-            Hyperparameter for the kernel function.
-        kernel_type : str
-            Type of kernel to use. Must be one of 'gaussian', 'MQ', or 'IMQ'.
+        Args:
+            r2 (float, optional): Squared distance between two points. (Default value = None)
+            rx (float, optional): Distance between two points in a single dimension. (Default value = None)
+            ry (float, optional): Distance between two points in a single dimension. (Default value = None)
+            sigma2 (float, optional): Hyperparameter for the kernel function. (Default value = None)
+            kernel_type (str, optional): Type of kernel to use. Must be one of 'gaussian', 'MQ', or 'IMQ'. (Default value = None)
 
-        Returns
-        -------
-        Dxy : float
-            Mixed second partial derivative of the kernel function with respect to `rx` and `ry`.
+        Returns:
+            float: Mixed second partial derivative of the kernel function with respect to `rx` and `ry`.
+        
         """
         if kernel_type == "gaussian":
             Dxy = ne.evaluate("((rx*ry)/(sigma2**2))*exp(-r2/(2*sigma2))")
@@ -539,25 +469,17 @@ class Kansas:
         sigma2: float = None,
         kernel_type: str = None,
     ) -> float:
-        """
-        Calculate the Dxx value for a given kernel type.
+        """Calculate the Dxx value for a given kernel type.
 
-        Parameters
-        ----------
-        r2 : float
-            The square of the distance between two points.
-        rx2 : float
-            The square of the distance between two points in the x direction.
-        sigma2 : float
-            The square of the kernel width.
-        kernel_type : str
-            The type of kernel to use. Can be either "gaussian", "MQ", or "IMQ".
+        Args:
+            r2 (float, optional): The square of the distance between two points. (Default value = None)
+            rx2 (float, optional): The square of the distance between two points in the x direction. (Default value = None)
+            sigma2 (float, optional): The square of the kernel width. (Default value = None)
+            kernel_type (str, optional): The type of kernel to use. Can be either "gaussian", "MQ", or "IMQ". (Default value = None)
 
-        Returns
-        -------
-        Dxx : float
-            The Dxx value for the given kernel type.
-
+        Returns:
+            float: The Dxx value for the given kernel type.
+        
         """
         if kernel_type == "gaussian":
             Dxx = ne.evaluate(
@@ -580,23 +502,16 @@ class Kansas:
     def kernel_Laplacian(
         self, r2: float = None, sigma2: float = None, kernel_type: str = None
     ) -> float:
-        """
-        Calculate the Laplacian value for a given kernel type.
+        """Calculate the Laplacian value for a given kernel type.
 
-        Parameters
-        ----------
-        r2 : float
-            The square of the distance between two points.
-        sigma2 : float
-            The square of the kernel width.
-        kernel_type : str
-            The type of kernel to use. Can be either "gaussian", "MQ", or "IMQ".
+        Args:
+            r2 (float, optional): The square of the distance between two points. (Default value = None)
+            sigma2 (float, optional): The square of the kernel width. (Default value = None)
+            kernel_type (str, optional): The type of kernel to use. Can be either "gaussian", "MQ", or "IMQ". (Default value = None)
 
-        Returns
-        -------
-        L : float
-            The Laplacian value for the given kernel type.
-
+        Returns:
+            float: The Laplacian value for the given kernel type.
+        
         """
         ndim = float(self.ndim)
 

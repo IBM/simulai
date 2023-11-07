@@ -52,25 +52,16 @@ class ImprovedDenseNetwork(NetworkTemplate):
         encoder_v: NetworkTemplate = None,
         devices: Union[str, list] = "cpu",
     ):
-        """
-
-        Improved DenseNetwork
-
+        """Improved DenseNetwork
+        
         It uses auxiliary encoder networks in order to enrich
         the hidden spaces
 
-        Parameters
-        ----------
-
-        network: ConvexDenseNetwork
-            A convex dense network (it supports convex sum operations in the hidden spaces).
-        encoder_u: NetworkTemplate
-            First auxiliary encoder.
-        encode_v: NetworkTemplate
-            Second auxiliary encoder.
-        devices: str
-            Devices in which the model will be executed.
-
+        Args:
+            network (ConvexDenseNetwork): A convex dense network (it supports convex sum operations in the hidden spaces).
+            encoder_u (NetworkTemplate, optional): First auxiliary encoder. (Default value = None)
+            encoder_v (NetworkTemplate, optional): (Default value = None)
+            devices (Union[str, list], optional): Devices in which the model will be executed. (Default value = "cpu")
         """
 
         super(ImprovedDenseNetwork, self).__init__(devices=devices)
@@ -108,22 +99,13 @@ class ImprovedDenseNetwork(NetworkTemplate):
     def forward(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
-        """
+        """Forward step
 
-        Forward step
+        Args:
+            input_data (Union[np.ndarray, torch.Tensor], optional): (Default value = None)
 
-        Parameters
-        ----------
-
-        input_data: Union[np.ndarray, torch.Tensor]
-            Input dataset.
-
-        Returns
-        -------
-
-        torch.Tensor
-            The output after the network evaluation.
-
+        Returns:
+            torch.Tensor: The output after the network evaluation.
         """
 
         # Forward method execution
@@ -137,22 +119,13 @@ class ImprovedDenseNetwork(NetworkTemplate):
 
     @guarantee_device
     def eval(self, input_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
-        """
+        """Forward step
 
-        Forward step
+        Args:
+            input_data (Union[np.ndarray, torch.Tensor], optional): (Default value = None)
 
-        Parameters
-        ----------
-
-        input_data: Union[np.ndarray, torch.Tensor]
-            Input dataset.
-
-        Returns
-        -------
-
-        torch.Tensor
-            The output after the network evaluation.
-
+        Returns:
+            torch.Tensor: The output after the network evaluation.
         """
 
         output = self.forward(input_data=input_data)
@@ -160,8 +133,8 @@ class ImprovedDenseNetwork(NetworkTemplate):
         return output.detach().cpu().numpy()
 
     def summary(self) -> None:
-        """
-        It prints a general view of the architecture.
+        """It prints a general view of the architecture.
+
         """
 
         print(self)
@@ -221,32 +194,24 @@ class MoEPool(NetworkTemplate):
         binary_selection: bool = False,
         hidden_size: Optional[int] = None,
     ) -> None:
+
+        """Mixture of Experts
+
+        Args:
+            experts_list (List[NetworkTemplate]): The list of neural networks used as experts.
+            gating_network (Union[NetworkTemplate, callable], optional): Network or callable operation used for predicting
+        weights associated to the experts. (Default value = None)
+            input_size (int, optional): The number of dimensions of the input. (Default value = None)
+            devices (Union[list, str], optional): Device ("gpu" or "cpu") or list of devices in which
+        the model is placed. (Default value = None)
+            binary_selection (bool, optional): The weights will be forced to be binary or not. (Default value = False)
+            hidden_size (Optional[int], optional): If information about the experts hidden size is required, which occurs,
+        for instance, when they are ConvexDenseNetwork objects,
+        it is necessary to define this argument. (Default value = None)
+        
+        """
+
         super(MoEPool, self).__init__()
-
-        """
-        Mixture of Experts
-
-        Parameters
-        ----------
-
-        experts_list: List[NetworkTemplate]
-            The list of neural networks used as experts. 
-        gating_network: Union[NetworkTemplate, callable]
-            Network or callable operation used for predicting
-            weights associated to the experts.
-        input_size: int
-            The number of dimensions of the input.
-        devices: Union[list, str]
-            Device ("gpu" or "cpu") or list of devices in which
-            the model is placed.
-        binary_selection: bool
-            The weights will be forced to be binary or not.
-        hidden_size: Optional[int]
-            If information about the experts hidden size is required, which occurs, 
-            for instance, when they are ConvexDenseNetwork objects,
-            it is necessary to define this argument.
-
-        """
 
         # Determining the kind of device to be used for allocating the
         # subnetworks used in the DeepONet model
@@ -327,43 +292,27 @@ class MoEPool(NetworkTemplate):
             self.get_weights = self._get_weights_not_trainable
 
     def _get_weights_bypass(self, gating: torch.Tensor = None) -> torch.Tensor:
-        """
-        When the gating weights are trainable and no post-processing operation
+        """When the gating weights are trainable and no post-processing operation
         is applied over them.
 
-        Parameters
-        ----------
+        Args:
+            gating (torch.Tensor, optional): (Default value = None)
 
-        gating: torch.Tensor
-            The output of the gating operation.
-
-        Returns
-        -------
-
-        torch.Tensor:
-            The binary weights based on the clusters.
-
+        Returns:
+            : The binary weights based on the clusters.
         """
 
         return gating
 
     def _get_weights_binary(self, gating: torch.Tensor = None) -> torch.Tensor:
-        """
-        Even when the gating weights are trainable, they can be forced to became
+        """Even when the gating weights are trainable, they can be forced to became
         binary.
 
-        Parameters
-        ----------
+        Args:
+            gating (torch.Tensor, optional): (Default value = None)
 
-        gating: torch.Tensor
-            The output of the gating operation.
-
-        Returns
-        -------
-
-        torch.Tensor:
-            The binary weights based on the clusters.
-
+        Returns:
+            torch.Tensor: The binary weights based on the clusters.
         """
 
         maxs = torch.max(gating, dim=1).values[:, None]
@@ -371,23 +320,15 @@ class MoEPool(NetworkTemplate):
         return self.to_wrap(entity=torch.where(gating == maxs, 1, 0), device=self.device)
 
     def _get_weights_not_trainable(self, gating: torch.Tensor = None) -> torch.Tensor:
-        """
-        When the gating process is not trainable, it is considered some kind of
+        """When the gating process is not trainable, it is considered some kind of
         clustering approach, which will return integers corresponding to the
         cluster for each sample in the batch
 
-        Parameters
-        ----------
+        Args:
+            gating (torch.Tensor, optional): (Default value = None)
 
-        gating: torch.Tensor
-            The output of the gating operation.
-
-        Returns
-        -------
-
-        torch.Tensor:
-            The binary weights based on the clusters.
-
+        Returns:
+            torch.Tensor: The binary weights based on the clusters.
         """
 
         batches_size = gating.shape[0]
@@ -401,22 +342,15 @@ class MoEPool(NetworkTemplate):
         return self.to_wrap(entity=weights, device=self.device)
 
     def gate(self, input_data: Union[np.ndarray, torch.Tensor]) -> torch.Tensor:
-        """
-        Gating (routing) the input, it means, attributing a weight for the output of
+        """Gating (routing) the input, it means, attributing a weight for the output of
         each expert, which will be used for the allreduce operation executed on top
         of the MoE model.
 
-        Parameters
-        ----------
+        Args:
+            input_data (Union[np.ndarray, torch.Tensor]): 
 
-        input_data: Union[np.ndarray, torch.Tensor]
-            The input data that will be gated and distributed among the experts.
-
-        Returns
-        -------
-
-        torch.Tensor
-            The penalties used for weighting the input distributed among the experts.
+        Returns:
+            torch.Tensor: The penalties used for weighting the input distributed among the experts.
         """
 
         gating = self.gating_network.forward(input_data=input_data)
@@ -428,22 +362,14 @@ class MoEPool(NetworkTemplate):
     def forward(
         self, input_data: Union[np.ndarray, torch.Tensor], **kwargs
     ) -> torch.Tensor:
-        """
-        Forward method
+        """Forward method
 
-        Parameters
-        ----------
+        Args:
+            input_data (Union[np.ndarray, torch.Tensor]): Data to be evaluated using the MoE object.
+            **kwargs: 
 
-        input_data: Union[np.ndarray, torch.Tensor]
-            Data to be evaluated using the MoE object.
-        kwargs: dict
-            Used for bypassing arguments not defined in this model.
-
-        Returns
-        -------
-
-        torch.Tensor
-            The output of the MoE evaluation.
+        Returns:
+            torch.Tensor: The output of the MoE evaluation.
         """
 
         gating_weights_ = self.gate(input_data=input_data)
@@ -458,8 +384,8 @@ class MoEPool(NetworkTemplate):
         return sum([g * o for g, o in zip(gating_weights, output)])
 
     def summary(self) -> None:
-        """
-        It prints a general view of the architecture.
+        """It prints a general view of the architecture.
+
         """
 
         print(self)
@@ -476,27 +402,26 @@ class SplitPool(NetworkTemplate):
         devices: Union[list, str] = None,
         hidden_size: Optional[int] = None,
     ) -> None:
+
+        """Pool of experts to divide work
+
+        Args:
+            experts_list (List[NetworkTemplate]): The list of neural networks used as experts.
+        input_size: int
+        The number of dimensions of the input.
+            input_size (int, optional): (Default value = None)
+            aggregation (Union[callable, NetworkTemplate], optional): (Default value = None)
+            last_activation (str, optional): (Default value = "relu")
+            devices (Union[list, str], optional): Device ("gpu" or "cpu") or list of devices in which
+        the model is placed.
+        hidden_size: Optional[int]
+        If information about the experts hidden size is required, which occurs,
+        for instance, when they are ConvexDenseNetwork objects,
+        it is necessary to define this argument. (Default value = None)
+            hidden_size (Optional[int], optional): (Default value = None)
+        """
+
         super(SplitPool, self).__init__()
-
-        """
-        Pool of experts to divide work
-
-        Parameters
-        ----------
-
-        experts_list: List[NetworkTemplate]
-            The list of neural networks used as experts. 
-       input_size: int
-            The number of dimensions of the input.
-        devices: Union[list, str]
-            Device ("gpu" or "cpu") or list of devices in which
-            the model is placed.
-       hidden_size: Optional[int]
-            If information about the experts hidden size is required, which occurs, 
-            for instance, when they are ConvexDenseNetwork objects,
-            it is necessary to define this argument.
-
-        """
 
         # Determining the kind of device to be used for allocating the
         # subnetworks used in the DeepONet model
@@ -541,22 +466,14 @@ class SplitPool(NetworkTemplate):
     def forward(
         self, input_data: Union[np.ndarray, torch.Tensor], **kwargs
     ) -> torch.Tensor:
-        """
-        Forward method
+        """Forward method
 
-        Parameters
-        ----------
+        Args:
+            input_data (Union[np.ndarray, torch.Tensor]): Data to be evaluated using the MoE object.
+            **kwargs: 
 
-        input_data: Union[np.ndarray, torch.Tensor]
-            Data to be evaluated using the MoE object.
-        kwargs: dict
-            Used for bypassing arguments not defined in this model.
-
-        Returns
-        -------
-
-        torch.Tensor
-            The output of the SplitPool evaluation.
+        Returns:
+            torch.Tensor: The output of the SplitPool evaluation.
         """
 
         def _forward(worker: NetworkTemplate = None, index: int = None) -> torch.Tensor:
@@ -569,8 +486,8 @@ class SplitPool(NetworkTemplate):
         return self.last_activation(self.aggregate(output_))
 
     def summary(self) -> None:
-        """
-        It prints a general view of the architecture.
+        """It prints a general view of the architecture.
+
         """
 
         print(self)

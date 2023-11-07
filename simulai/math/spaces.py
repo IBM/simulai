@@ -21,22 +21,14 @@ class GaussianRandomFields:
     def __init__(
         self, x_interval=(0, 1), kernel="RBF", length_scale=1, N=None, interp="cubic"
     ):
-        """
-        Initialize a Gaussian process object.
+        """Initialize a Gaussian process object.
 
-        Parameters
-        ----------
-        x_interval: tuple, optional (default=(0, 1))
-            A tuple of two floats representing the range of the independent variable `x` over which the Gaussian process will be defined.
-        kernel: str, optional (default='RBF')
-            The type of kernel to use for the Gaussian process. Must be a string representing a kernel function available in `sklearn.gaussian_process.kernels`.
-        length_scale: int or float, optional (default=1)
-            The length scale parameter for the kernel function.
-        N: int, optional (default=None)
-            The number of points to sample from the independent variable `x`. If not provided, the number of points will be determined based on the `interp` parameter.
-        interp: str, optional (default='cubic')
-            The type of interpolation to use when generating points for the independent variable `x`. Must be a string representing a valid interpolation method.
-
+        Args:
+            x_interval (tuple, optional (default=(0, 1)), optional): A tuple of two floats representing the range of the independent variable `x` over which the Gaussian process will be defined. (Default value = (0, 1))
+            kernel (str, optional (default='RBF'), optional): The type of kernel to use for the Gaussian process. Must be a string representing a kernel function available in `sklearn.gaussian_process.kernels`. (Default value = "RBF")
+            length_scale (int or float, optional (default=1), optional): The length scale parameter for the kernel function. (Default value = 1)
+            N (int, optional (default=None), optional): The number of points to sample from the independent variable `x`. If not provided, the number of points will be determined based on the `interp` parameter. (Default value = None)
+            interp (str, optional (default='cubic'), optional): The type of interpolation to use when generating points for the independent variable `x`. Must be a string representing a valid interpolation method. (Default value = "cubic")
         Attributes
         ----------
         x_interval: tuple
@@ -78,15 +70,12 @@ class GaussianRandomFields:
     def random_u(self, n_features=None):
         """Generate random latent features using NumPy.
 
-        Parameters
-        ----------
-        n_features : int, optional
-            Number of latent features to generate. If None, defaults to the number of features in `self.space`.
+        Args:
+            n_features (int, optional, optional): Number of latent features to generate. If None, defaults to the number of features in `self.space`.
 
-        Returns
-        -------
-        u_ : ndarray, shape (n_features, N)
-            Array of random latent features.
+        Returns:
+            ndarray, shape (n_features, N): Array of random latent features.
+        
         """
         u_ = np.random.randn(self.N, n_features)
         return np.dot(self.space, u_).T
@@ -94,17 +83,13 @@ class GaussianRandomFields:
     def generate_u(self, features, sensors):
         """Generate latent features using NumPy and scipy.interpolate.
 
-        Parameters
-        ----------
-        features : ndarray, shape (n_features, M)
-            Array of input features.
-        sensors : ndarray, shape (N, )
-            Array of sensor locations.
+        Args:
+            features (ndarray, shape (n_features, M)): Array of input features.
+            sensors (ndarray, shape (N, )): Array of sensor locations.
 
-        Returns
-        -------
-        u : ndarray, shape (n_features, N)
-            Array of latent features.
+        Returns:
+            ndarray, shape (n_features, N): Array of latent features.
+        
         """
         values = map(
             lambda y: interpolate.interp1d(

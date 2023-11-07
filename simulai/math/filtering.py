@@ -26,32 +26,25 @@ from simulai.metrics import MemorySizeEval
 
 class HardPositivityLimiting:
     def __init__(self, tol: float = 1e-10) -> None:
-        """
-        Positivity limiting for avoiding negative values when they are physically inconsistent. It simply applies value >= tol for avoiding negative values.
+        """Positivity limiting for avoiding negative values when they are physically inconsistent. It simply applies value >= tol for avoiding negative values.
 
-        Parameters
-        ----------
-        tol : float, optional
-            The minimum acceptable value to ensure positivity.
+        Args:
+            tol (float, optional): The minimum acceptable value to ensure positivity. (Default value = 1e-10)
+        
         """
 
         self.tol = tol
 
     def _apply_limiting(self, data: np.ndarray = None) -> Tuple[np.ndarray, int]:
-        """
-        Effectively apply the limiting.
+        """Effectively apply the limiting.
 
-        Parameters
-        ----------
-        data : np.ndarray, optional
-            The data to be limited.
+        Args:
+            data (np.ndarray, optional): The data to be limited. (Default value = None)
 
-        Returns
-        -------
-        np.ndarray
-            The data limited.
-        int
-            The number of indices where the data was limited.
+        Returns:
+            np.ndarray: The data limited.
+            int: The number of indices where the data was limited.
+        
         """
 
         indices = np.where(data < self.tol)
@@ -62,22 +55,16 @@ class HardPositivityLimiting:
     def __call__(
         self, data: np.ndarray = None, batch_size: Union[int, MemorySizeEval] = None
     ) -> Tuple[np.ndarray, int]:
-        """
-        The main call method.
+        """The main call method.
 
-        Parameters
-        ----------
-        data : np.ndarray, optional
-            The data to be processed by the limiting.
-        batch_size : int or MemorySizeEval, optional
-            Size of each batch to be processed.
+        Args:
+            data (np.ndarray, optional): The data to be processed by the limiting. (Default value = None)
+            batch_size (Union[int, MemorySizeEval], optional): Size of each batch to be processed. (Default value = None)
 
-        Returns
-        -------
-        np.ndarray
-            The processed batch.
-        int
-            The number of points where the limiting was applied.
+        Returns:
+            np.ndarray: The processed batch.
+            int: The number of points where the limiting was applied.
+        
         """
         if isinstance(data, np.ndarray):
             return self._apply_limiting(data=data)
@@ -120,15 +107,12 @@ class HardPositivityLimiting:
 
 class TimeAveraging:
     def __init__(self, batch_size: int = None, axis: int = None) -> None:
-        """
-        Time-averaging along an axis.
+        """Time-averaging along an axis.
 
-        Parameters
-        ----------
-        batch_size : int, optional
-            The size of the batch to be processed at each time.
-        axis : int, optional
-            The axis along which to apply time-averaging.
+        Args:
+            batch_size (int, optional): The size of the batch to be processed at each time. (Default value = None)
+            axis (int, optional): The axis along which to apply time-averaging. (Default value = None)
+        
         """
         self.batch_size = batch_size
 
@@ -140,20 +124,15 @@ class TimeAveraging:
     def exec(
         self, dataset: Union[np.ndarray, h5py.Dataset], path: str = None
     ) -> h5py.Dataset:
-        """
-        Execute time-averaging.
+        """Execute time-averaging.
 
-        Parameters
-        ----------
-        dataset : Union[np.ndarray, h5py.Dataset]
-            The dataset to be time-averaged.
-        path : str, optional
-            Path to save the output into an HDF5 file.
+        Args:
+            dataset (Union[np.ndarray, h5py.Dataset]): The dataset to be time-averaged.
+            path (str, optional): Path to save the output into an HDF5 file. (Default value = None)
 
-        Returns
-        -------
-        h5py.Dataset
-            HDF5 dataset with the time-averaged original data.
+        Returns:
+            h5py.Dataset: HDF5 dataset with the time-averaged original data.
+        
         """
         fp = h5py.File(path, "w")
 
@@ -184,28 +163,24 @@ class TimeAveraging:
 
 class SVDThreshold:
     def __init__(self) -> None:
-        """
-        Methodology for defining a threshold for de-noising data via SVD decomposition.
+        """Methodology for defining a threshold for de-noising data via SVD decomposition.
 
-        Returns
-        -------
-        None
+
+        Returns:
+            None: 
+        
         """
         self.limit_aspect_ratio = 0.1
 
     def lambda_special(self, beta: float = None) -> float:
-        """
-        Evaluate the special lambda parameter.
+        """Evaluate the special lambda parameter.
 
-        Parameters
-        ----------
-        beta : float
-            Parameter beta.
+        Args:
+            beta (float, optional): Parameter beta. (Default value = None)
 
-        Returns
-        -------
-        float
-            Special lambda.
+        Returns:
+            float: Special lambda.
+        
         """
         return np.sqrt(
             2 * (beta + 1)
@@ -215,20 +190,15 @@ class SVDThreshold:
     def lambda_function(
         self, beta: float = None, shape: Union[tuple, list] = None
     ) -> float:
-        """
-        Calculate the lambda function.
+        """Calculate the lambda function.
 
-        Parameters
-        ----------
-        beta : float
-            Beta parameter.
-        shape : tuple or list
-            Shape of the data matrix.
+        Args:
+            beta (float, optional): Beta parameter. (Default value = None)
+            shape (Union[tuple, list], optional): Shape of the data matrix. (Default value = None)
 
-        Returns
-        -------
-        float
-            Lambda function value.
+        Returns:
+            float: Lambda function value.
+        
         """
         if shape[0] == shape[1]:
             return beta
@@ -241,18 +211,14 @@ class SVDThreshold:
             )
 
     def beta_parameter(self, shape: Union[list, tuple] = None) -> float:
-        """
-        Calculate the beta parameter.
+        """Calculate the beta parameter.
 
-        Parameters
-        ----------
-        shape : tuple or list
-            Shape of the data matrix.
+        Args:
+            shape (Union[list, tuple], optional): Shape of the data matrix. (Default value = None)
 
-        Returns
-        -------
-        float
-            Beta parameter value.
+        Returns:
+            float: Beta parameter value.
+        
         """
         n, m = shape
         # In case of square data matrices
@@ -266,17 +232,13 @@ class SVDThreshold:
     def integrand(self, t: float, beta: float = None) -> np.ndarray:
         """Calculate the integrand for the Marcenko-Pastur integral.
 
-        Parameters
-        ----------
-        t : float
-            The integration variable.
-        beta : float, optional
-            The parameter beta. If not provided, default value is None.
+        Args:
+            t (float): The integration variable.
+            beta (float, optional): The parameter beta. If not provided, default value is None.
 
-        Returns
-        -------
-        np.ndarray
-            The value of the integrand.
+        Returns:
+            np.ndarray: The value of the integrand.
+        
         """
         monomial_upper = float((1 + np.sqrt(beta)) ** 2)
         monomial_lower = float((1 - np.sqrt(beta)) ** 2)
@@ -293,17 +255,13 @@ class SVDThreshold:
     def Marcenko_Pastur_integral(self, t: float, beta: float = None) -> float:
         """Calculate the Marcenko-Pastur integral
 
-        Parameters
-        ----------
-        t: float
-            integration variable
-        beta : float
-            The parameter beta.
+        Args:
+            t (float): integration variable
+            beta (float, optional): The parameter beta. (Default value = None)
 
-        Returns
-        -------
-        float
-            The evaluation of the Marcenko-Pastur integral.
+        Returns:
+            float: The evaluation of the Marcenko-Pastur integral.
+        
         """
 
         upper_lim = (1 + np.sqrt(beta)) ** 2
@@ -315,15 +273,12 @@ class SVDThreshold:
     def MedianMarcenkoPastur(self, beta: float) -> float:
         """Calculate the Marcenko-Pastur median.
 
-        Parameters
-        ----------
-        beta : float
-            The parameter beta.
+        Args:
+            beta (float): The parameter beta.
 
-        Returns
-        -------
-        float
-            The evaluation of the Marcenko-Pastur median.
+        Returns:
+            float: The evaluation of the Marcenko-Pastur median.
+        
         """
         MarPas = lambda t: 1 - self.Marcenko_Pastur_integral(beta, t)
         lobnd = (1 - np.sqrt(beta)) ** 2
@@ -364,19 +319,14 @@ class SVDThreshold:
     ) -> np.ndarray:
         """Filter singular values using the Marcenko-Pastur distribution.
 
-        Parameters
-        ----------
-        singular_values : np.ndarray, optional
-            The singular values to be filtered. If not provided, default value is None.
-        data_shape : tuple or list, optional
-            The shape of the data matrix. If not provided, default value is None.
-        gamma : float, optional
-            The parameter gamma. If not provided, default value is None.
+        Args:
+            singular_values (np.ndarray, optional): The singular values to be filtered. If not provided, default value is None.
+            data_shape (Union[tuple, list], optional): The shape of the data matrix. If not provided, default value is None.
+            gamma (float, optional): The parameter gamma. If not provided, default value is None.
 
-        Returns
-        -------
-        np.ndarray
-            The filtered singular values.
+        Returns:
+            np.ndarray: The filtered singular values.
+        
         """
         print("Executing SVD filtering.")
 
@@ -405,17 +355,13 @@ class SVDThreshold:
     def apply(self, pca: ROM = None, data_shape: Union[tuple, list] = None) -> ROM:
         """Filter the singular values of a ROM object.
 
-        Parameters
-        ----------
-        pca : ROM, optional
-            The ROM object to be filtered. If not provided, default value is None.
-        data_shape : tuple or list, optional
-            The shape of the data matrix. If not provided, default value is None.
+        Args:
+            pca (ROM, optional): The ROM object to be filtered. If not provided, default value is None.
+            data_shape (Union[tuple, list], optional): The shape of the data matrix. If not provided, default value is None.
 
-        Returns
-        -------
-        ROM
-            The filtered ROM object.
+        Returns:
+            ROM: The filtered ROM object.
+        
         """
         assert hasattr(
             pca, "singular_values"
@@ -432,9 +378,7 @@ class SVDThreshold:
 
 class TimeSeriesExtremes:
 
-    """
-    Getting up the indices corresponding to the extremes of time-series
-    """
+    """Getting up the indices corresponding to the extremes of time-series"""
 
     def __init__(self):
         pass
@@ -444,17 +388,13 @@ class TimeSeriesExtremes:
     ) -> np.ndarray:
         """Calculate the curvature change indicator for a given index.
 
-        Parameters
-        ----------
-        data : np.ndarray, optional
-            The data array. If not provided, default value is None.
-        index : int
-            The index to be used.
+        Args:
+            data (np.ndarray, optional): The data array. If not provided, default value is None.
+            index (int, optional): The index to be used. (Default value = None)
 
-        Returns
-        -------
-        np.ndarray
-            The curvature change indicator.
+        Returns:
+            np.ndarray: The curvature change indicator.
+        
         """
         assert (
             type(index) == int
@@ -468,17 +408,13 @@ class TimeSeriesExtremes:
     def _get_indices_for_extremes(self, data: np.ndarray = None, index: int = None):
         """Get the indices for the extrema in the data array for a given index.
 
-        Parameters
-        ----------
-        data : np.ndarray, optional
-            The data array. If not provided, default value is None.
-        index : int
-            The index to be used.
+        Args:
+            data (np.ndarray, optional): The data array. If not provided, default value is None.
+            index (int, optional): The index to be used. (Default value = None)
 
-        Returns
-        -------
-        np.ndarray
-            The indices for the extrema.
+        Returns:
+            np.ndarray: The indices for the extrema.
+        
         """
 
         z = np.zeros(data.shape[0])
@@ -489,24 +425,19 @@ class TimeSeriesExtremes:
         return indices
 
     def apply(self, gradient_input_data: np.ndarray = None, column: int = None):
-        """
-        Apply the gradient filter to the input data.
+        """Apply the gradient filter to the input data.
 
-        Parameters
-        ----------
-        gradient_input_data : numpy.ndarray, optional
-            The input data to filter. If not provided, the filter will use the data
-            provided during initialization.
-        column : int, optional
-            The column of the input data to filter. If not provided, all columns will
-            be filtered.
+        Args:
+            gradient_input_data (np.ndarray, optional): The input data to filter. If not provided, the filter will use the data
+        provided during initialization. (Default value = None)
+            column (int, optional): The column of the input data to filter. If not provided, all columns will
+        be filtered. (Default value = None)
 
-        Returns
-        -------
-        tuple
-            Tuple containing the indices of the extreme values in the filtered data.
+        Returns:
+            tuple: Tuple containing the indices of the extreme values in the filtered data.
             If a column is specified, the tuple will contain a single list of indices.
             If no column is specified, the tuple will contain a list of indices for each column.
+        
         """
 
         if column is not None:
