@@ -168,6 +168,10 @@ class Transformer(NetworkTemplate):
                        number_of_decoders:int=1) -> None:
         r"""A classical encoder-decoder transformer:
         
+        Graphical example:
+
+        Example::
+
              U -> ( Encoder_1 -> Encoder_2 -> ... -> Encoder_N ) -> u_e
         
             (u_e, U) -> ( Decoder_1 -> Decoder_2 -> ... Decoder_N ) -> V

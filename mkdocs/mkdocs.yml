@@ -2,6 +2,9 @@ site_name: SimulAI Docs
 
 theme:
   name: "material"
+  features:
+      - search.highlight
+      - search.suggest
 
 plugins:
   - search
@@ -10,6 +13,7 @@ plugins:
 
 nav:
   - index.md
-  - simulai_models.md
+  - simulai_io.md
   - simulai_residuals.md
   - simulai_regression.md
+  - simulai_models.md

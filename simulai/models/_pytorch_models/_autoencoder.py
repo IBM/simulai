@@ -181,22 +181,21 @@ class AutoencoderMLP(NetworkTemplate):
 
 
 class AutoencoderCNN(NetworkTemplate):
-    """This is an implementation of a convolutional autoencoder as Reduced Order Model.
+    r"""This is an implementation of a convolutional autoencoder as Reduced Order Model.
     An autoencoder architecture consists of three stages:
     
-    * The convolutional encoder
-    
-    The bottleneck stage, subdivided in:
-        * Fully-connected encoder
-        * Fully connected decoder
-        * The convolutional decoder 
+    - The convolutional encoder
+    - The bottleneck stage, subdivided in:
+        - Fully-connected encoder
+        - Fully connected decoder
+    - The convolutional decoder 
 
-    SCHEME
+    Graphical scheme
 
-    Z -> [Conv] -> [Conv] -> ... [Conv] -> |  | | |  | -> [Conv.T] -> [Conv.T] -> ... [Conv.T] -> Z_til
-    
-    
-                    ENCODER               DENSE BOTTLENECK           DECODER
+        Z -> [Conv] -> [Conv] -> ... [Conv] -> |  | | |  | -> [Conv.T] -> [Conv.T] -> ... [Conv.T] -> Z_til
+        
+        
+                        ENCODER               DENSE BOTTLENECK           DECODER
 
     """
 
@@ -489,22 +488,23 @@ class AutoencoderKoopman(NetworkTemplate):
     
     A Koopman autoencoder architecture consists of five stages:
     
-    * The convolutional encoder [Optional]
-    * Fully-connected encoder
-    * Koopman operator
-    * Fully connected decoder
-    * The convolutional decoder [Optional]
+    - The convolutional encoder [Optional]
+    - Fully-connected encoder
+    - Koopman operator
+    - Fully connected decoder
+    - The convolutional decoder [Optional]
     
-    SCHEME
-                                    (Koopman OPERATOR)
-                                             ^
-                                      |      |      |
-                                      |  |   |   |  |
-    Z -> [Conv] -> [Conv] -> ... [Conv] -> |  | | - | |  | -> [Conv.T] -> [Conv.T] -> ... [Conv.T] -> Z_til
-                                      |  |       |  |
-                                      |             |
-    
-                    ENCODER          DENSE BOTTLENECK        DECODER
+    Graphical scheme
+
+                                                (Koopman OPERATOR)
+                                                         ^
+                                                  |      |      |
+                                                  |  |   |   |  |
+           Z -> [Conv] -> [Conv] -> ... [Conv] -> |  | | - | |  | -> [Conv.T] -> [Conv.T] -> ... [Conv.T] -> Z_til
+                                                  |  |       |  |
+                                                  |             |
+                
+                                ENCODER          DENSE BOTTLENECK        DECODER
 
     """
 
@@ -786,7 +786,7 @@ class AutoencoderKoopman(NetworkTemplate):
     def latent_forward_m(
         self, input_data: Union[np.ndarray, torch.Tensor] = None, m: int = 1
     ) -> torch.Tensor:
-        """Evaluates the operation u^{u+m} = K^m u^{i}
+        """Evaluates the operation $u^{u+m} = K^m u^{i}$
 
         Args:
             input_data (Union[np.ndarray, torch.Tensor], optional): The input data. Defaults to None.
@@ -915,22 +915,24 @@ class AutoencoderVariational(NetworkTemplate):
     r"""This is an implementation of a Koopman autoencoder as a reduced order model.
     
     A variational autoencoder architecture consists of five stages:
-    --> The convolutional encoder [Optional]
-    --> Fully-connected encoder
-    --> Gaussian noise
-    --> Fully connected decoder
-    --> The convolutional decoder [Optional]
+
+    - The convolutional encoder [Optional]
+    - Fully-connected encoder
+    - Gaussian noise
+    - Fully connected decoder
+    - The convolutional decoder [Optional]
     
-    SCHEME
-                                                  Gaussian noise
-                                                  ^
-                                           |      |      |
-                                           |  |   |   |  |
-    Z -> [Conv] -> [Conv] -> ... [Conv] -> |  | | - | |  | -> [Conv.T] -> [Conv.T] -> ... [Conv.T] -> Z_til
-                                           |  |       |  |
-                                           |             |
-    
-                   ENCODER               DENSE BOTTLENECK           DECODER
+    Graphical scheme
+
+                                                      Gaussian noise
+                                                      ^
+                                               |      |      |
+                                               |  |   |   |  |
+        Z -> [Conv] -> [Conv] -> ... [Conv] -> |  | | - | |  | -> [Conv.T] -> [Conv.T] -> ... [Conv.T] -> Z_til
+                                               |  |       |  |
+                                               |             |
+        
+                       ENCODER               DENSE BOTTLENECK           DECODER
 
     """
 
