@@ -133,6 +133,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" data-md-scrollfix>
@@ -7402,15 +7404,15 @@ An autoencoder architecture consists of three stages:</p>
 <li>The convolutional decoder [Optional]</li>
 </ul>
 <p>Graphical scheme</p>
-<pre><code>                                    (Koopman OPERATOR)
-                                             ^
-                                      |      |      |
-                                      |  |   |   |  |
-</code></pre>
-<p>Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T] -&gt; [Conv.T] -&gt; ... [Conv.T] -&gt; Z_til
+<pre><code>                                        (Koopman OPERATOR)
+                                                 ^
+                                          |      |      |
+                                          |  |   |   |  |
+   Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T] -&gt; [Conv.T] -&gt; ... [Conv.T] -&gt; Z_til
                                           |  |       |  |
-                                          |             |</p>
-<pre><code>                    ENCODER          DENSE BOTTLENECK        DECODER
+                                          |             |
+
+                        ENCODER          DENSE BOTTLENECK        DECODER
 </code></pre>
 
             <details class="quote">
@@ -7853,15 +7855,15 @@ An autoencoder architecture consists of three stages:</p>
 
 <span class="sd">    Graphical scheme</span>
 
-<span class="sd">                                            (Koopman OPERATOR)</span>
-<span class="sd">                                                     ^</span>
-<span class="sd">                                              |      |      |</span>
-<span class="sd">                                              |  |   |   |  |</span>
-<span class="sd">       Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T] -&gt; [Conv.T] -&gt; ... [Conv.T] -&gt; Z_til</span>
-<span class="sd">                                              |  |       |  |</span>
-<span class="sd">                                              |             |</span>
+<span class="sd">                                                (Koopman OPERATOR)</span>
+<span class="sd">                                                         ^</span>
+<span class="sd">                                                  |      |      |</span>
+<span class="sd">                                                  |  |   |   |  |</span>
+<span class="sd">           Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T] -&gt; [Conv.T] -&gt; ... [Conv.T] -&gt; Z_til</span>
+<span class="sd">                                                  |  |       |  |</span>
+<span class="sd">                                                  |             |</span>
 
-<span class="sd">                            ENCODER          DENSE BOTTLENECK        DECODER</span>
+<span class="sd">                                ENCODER          DENSE BOTTLENECK        DECODER</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -9639,12 +9641,14 @@ An autoencoder architecture consists of three stages:</p>
 
   
       <p>This is an implementation of a Koopman autoencoder as a reduced order model.</p>
-<p>A variational autoencoder architecture consists of five stages:
-- The convolutional encoder [Optional]
-- Fully-connected encoder
-- Gaussian noise
-- Fully connected decoder
-- The convolutional decoder [Optional]</p>
+<p>A variational autoencoder architecture consists of five stages:</p>
+<ul>
+<li>The convolutional encoder [Optional]</li>
+<li>Fully-connected encoder</li>
+<li>Gaussian noise</li>
+<li>Fully connected decoder</li>
+<li>The convolutional decoder [Optional]</li>
+</ul>
 <p>Graphical scheme</p>
 <pre><code>                                              Gaussian noise
                                               ^
@@ -10260,10 +10264,12 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 <span class="normal">1512</span>
 <span class="normal">1513</span>
 <span class="normal">1514</span>
-<span class="normal">1515</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AutoencoderVariational</span><span class="p">(</span><span class="n">NetworkTemplate</span><span class="p">):</span>
+<span class="normal">1515</span>
+<span class="normal">1516</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AutoencoderVariational</span><span class="p">(</span><span class="n">NetworkTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;This is an implementation of a Koopman autoencoder as a reduced order model.</span>
 
 <span class="sd">    A variational autoencoder architecture consists of five stages:</span>
+
 <span class="sd">    - The convolutional encoder [Optional]</span>
 <span class="sd">    - Fully-connected encoder</span>
 <span class="sd">    - Gaussian noise</span>
@@ -10982,8 +10988,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1343</span>
-<span class="normal">1344</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1344</span>
 <span class="normal">1345</span>
 <span class="normal">1346</span>
 <span class="normal">1347</span>
@@ -11014,7 +11019,8 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 <span class="normal">1372</span>
 <span class="normal">1373</span>
 <span class="normal">1374</span>
-<span class="normal">1375</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">CoVariance</span><span class="p">(</span>
+<span class="normal">1375</span>
+<span class="normal">1376</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">CoVariance</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">inv</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -11144,8 +11150,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1295</span>
-<span class="normal">1296</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1296</span>
 <span class="normal">1297</span>
 <span class="normal">1298</span>
 <span class="normal">1299</span>
@@ -11166,7 +11171,8 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 <span class="normal">1314</span>
 <span class="normal">1315</span>
 <span class="normal">1316</span>
-<span class="normal">1317</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">Mu</span><span class="p">(</span>
+<span class="normal">1317</span>
+<span class="normal">1318</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">Mu</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">to_numpy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the mean of the encoded input data.</span>
@@ -11286,8 +11292,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1319</span>
-<span class="normal">1320</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1320</span>
 <span class="normal">1321</span>
 <span class="normal">1322</span>
 <span class="normal">1323</span>
@@ -11308,7 +11313,8 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 <span class="normal">1338</span>
 <span class="normal">1339</span>
 <span class="normal">1340</span>
-<span class="normal">1341</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">Sigma</span><span class="p">(</span>
+<span class="normal">1341</span>
+<span class="normal">1342</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">Sigma</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">to_numpy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the standard deviation of the encoded input data.</span>
@@ -11623,8 +11629,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 938</span>
-<span class="normal"> 939</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 939</span>
 <span class="normal"> 940</span>
 <span class="normal"> 941</span>
 <span class="normal"> 942</span>
@@ -11767,7 +11772,8 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 <span class="normal">1079</span>
 <span class="normal">1080</span>
 <span class="normal">1081</span>
-<span class="normal">1082</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">1082</span>
+<span class="normal">1083</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">encoder</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ConvolutionalNetwork</span><span class="p">,</span> <span class="n">DenseNetwork</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">bottleneck_encoder</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Linear</span><span class="p">,</span> <span class="n">DenseNetwork</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -11995,8 +12001,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1495</span>
-<span class="normal">1496</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1496</span>
 <span class="normal">1497</span>
 <span class="normal">1498</span>
 <span class="normal">1499</span>
@@ -12015,7 +12020,8 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 <span class="normal">1512</span>
 <span class="normal">1513</span>
 <span class="normal">1514</span>
-<span class="normal">1515</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="normal">1515</span>
+<span class="normal">1516</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reconstructs the input data using the mean of the encoded data.</span>
 
 <span class="sd">    Args:</span>
@@ -12121,8 +12127,7 @@ Example::</p>
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1377</span>
-<span class="normal">1378</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1378</span>
 <span class="normal">1379</span>
 <span class="normal">1380</span>
 <span class="normal">1381</span>
@@ -12145,7 +12150,8 @@ Example::</p>
 <span class="normal">1398</span>
 <span class="normal">1399</span>
 <span class="normal">1400</span>
-<span class="normal">1401</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">latent_gaussian_noisy</span><span class="p">(</span>
+<span class="normal">1401</span>
+<span class="normal">1402</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">latent_gaussian_noisy</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Generates a noisy latent representation of the input data.</span>
@@ -12253,8 +12259,7 @@ Example::</p>
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1447</span>
-<span class="normal">1448</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1448</span>
 <span class="normal">1449</span>
 <span class="normal">1450</span>
 <span class="normal">1451</span>
@@ -12274,7 +12279,8 @@ Example::</p>
 <span class="normal">1465</span>
 <span class="normal">1466</span>
 <span class="normal">1467</span>
-<span class="normal">1468</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="normal">1468</span>
+<span class="normal">1469</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Projects the input data onto the autoencoder&#39;s latent space.</span>
 
 <span class="sd">    Args:</span>
@@ -12379,8 +12385,7 @@ Example::</p>
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1470</span>
-<span class="normal">1471</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1471</span>
 <span class="normal">1472</span>
 <span class="normal">1473</span>
 <span class="normal">1474</span>
@@ -12402,7 +12407,8 @@ Example::</p>
 <span class="normal">1490</span>
 <span class="normal">1491</span>
 <span class="normal">1492</span>
-<span class="normal">1493</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">reconstruct</span><span class="p">(</span>
+<span class="normal">1493</span>
+<span class="normal">1494</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">reconstruct</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reconstructs the input data using the trained autoencoder.</span>
@@ -12509,8 +12515,7 @@ Example::</p>
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1425</span>
-<span class="normal">1426</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1426</span>
 <span class="normal">1427</span>
 <span class="normal">1428</span>
 <span class="normal">1429</span>
@@ -12529,7 +12534,8 @@ Example::</p>
 <span class="normal">1442</span>
 <span class="normal">1443</span>
 <span class="normal">1444</span>
-<span class="normal">1445</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">reconstruction_eval</span><span class="p">(</span>
+<span class="normal">1445</span>
+<span class="normal">1446</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">reconstruction_eval</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Applies the encoder, computes the mean of the encoded data, and then applies the decoder to generate a reconstructed output.</span>
@@ -12633,8 +12639,7 @@ Example::</p>
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1403</span>
-<span class="normal">1404</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1404</span>
 <span class="normal">1405</span>
 <span class="normal">1406</span>
 <span class="normal">1407</span>
@@ -12653,7 +12658,8 @@ Example::</p>
 <span class="normal">1420</span>
 <span class="normal">1421</span>
 <span class="normal">1422</span>
-<span class="normal">1423</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">reconstruction_forward</span><span class="p">(</span>
+<span class="normal">1423</span>
+<span class="normal">1424</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">reconstruction_forward</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Applies the encoder, adds Gaussian noise to the encoded data, and then applies the decoder to generate a reconstructed output.</span>
@@ -12837,8 +12843,7 @@ Example::</p>
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_autoencoder.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1084</span>
-<span class="normal">1085</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1085</span>
 <span class="normal">1086</span>
 <span class="normal">1087</span>
 <span class="normal">1088</span>
@@ -12943,7 +12948,8 @@ Example::</p>
 <span class="normal">1187</span>
 <span class="normal">1188</span>
 <span class="normal">1189</span>
-<span class="normal">1190</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">summary</span><span class="p">(</span>
+<span class="normal">1190</span>
+<span class="normal">1191</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">summary</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">input_shape</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -13101,7 +13107,7 @@ Example::</p>
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["search.highlight", "search.suggest"], "search": "../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../assets/javascripts/bundle.aecac24b.min.js"></script>
