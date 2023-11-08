@@ -1334,10 +1334,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare input data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            data (np.ndarray): </span>
+<span class="sd">            data (np.ndarray):</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            numpy.ndarray: </span>
+<span class="sd">            numpy.ndarray:</span>
 <span class="sd">        Example::</span>
 
 <span class="sd">            &gt;&gt;&gt; import numpy as np</span>
@@ -1354,7 +1354,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare output data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            data (np.ndarray): </span>
+<span class="sd">            data (np.ndarray):</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            numpy.ndarray: The output data in the original format</span>
@@ -1375,14 +1375,14 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare structured input data by converting it to an ndarray.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            data (np.recarray): </span>
+<span class="sd">            data (np.recarray):</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            np.ndarray: numpy ndarray version of the input data.</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            This function is used when the input data is in the form of a structured array and needs to be converted to a regular numpy ndarray.</span>
-<span class="sd">        Example::        </span>
+<span class="sd">        Example::</span>
 
 <span class="sd">            &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">            &gt;&gt;&gt; data = np.array([(1, &#39;a&#39;, 0.5), (2, &#39;b&#39;, 0.6)], dtype=[(&#39;a&#39;, int), (&#39;b&#39;, &#39;|S1&#39;), (&#39;c&#39;, float)])</span>
@@ -1398,12 +1398,12 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare structured output data by converting it to a recarray.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            data (np.ndarray): </span>
+<span class="sd">            data (np.ndarray):</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            np.recarray: numpy recarray version of the output data.</span>
 
-<span class="sd">        Note: </span>
+<span class="sd">        Note:</span>
 <span class="sd">            This function is used when the output data needs to be in the form of a structured array and is currently in the form of a regular numpy ndarray.</span>
 <span class="sd">        Example::</span>
 
@@ -1493,7 +1493,7 @@
           </td>
           <td>
             <div class="doc-md-description">
-              <p>numpy.ndarray: </p>
+              <p>numpy.ndarray:</p>
             </div>
           </td>
         </tr>
@@ -1532,10 +1532,10 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Prepare input data.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        data (np.ndarray): </span>
+<span class="sd">        data (np.ndarray):</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        numpy.ndarray: </span>
+<span class="sd">        numpy.ndarray:</span>
 <span class="sd">    Example::</span>
 
 <span class="sd">        &gt;&gt;&gt; import numpy as np</span>
@@ -1626,7 +1626,7 @@
 <details class="note" open>
   <summary>Note</summary>
   <p>This function is used when the input data is in the form of a structured array and needs to be converted to a regular numpy ndarray.</p>
-</details>      <p>Example::        </p>
+</details>      <p>Example::</p>
 <pre><code>&gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; data = np.array([(1, 'a', 0.5), (2, 'b', 0.6)], dtype=[('a', int), ('b', '|S1'), ('c', float)])
 &gt;&gt;&gt; preparer = ByPassPreparer()
@@ -1662,14 +1662,14 @@ array([[1, 'a', 0.5],
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Prepare structured input data by converting it to an ndarray.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        data (np.recarray): </span>
+<span class="sd">        data (np.recarray):</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        np.ndarray: numpy ndarray version of the input data.</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        This function is used when the input data is in the form of a structured array and needs to be converted to a regular numpy ndarray.</span>
-<span class="sd">    Example::        </span>
+<span class="sd">    Example::</span>
 
 <span class="sd">        &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">        &gt;&gt;&gt; data = np.array([(1, &#39;a&#39;, 0.5), (2, &#39;b&#39;, 0.6)], dtype=[(&#39;a&#39;, int), (&#39;b&#39;, &#39;|S1&#39;), (&#39;c&#39;, float)])</span>
@@ -1789,7 +1789,7 @@ array([[1, 'a', 0.5],
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Prepare output data.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        data (np.ndarray): </span>
+<span class="sd">        data (np.ndarray):</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        numpy.ndarray: The output data in the original format</span>
@@ -1919,12 +1919,12 @@ dtype=[('f0', '&lt;i4'), ('f1', 'S1'), ('f2', '&lt;f8')])
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Prepare structured output data by converting it to a recarray.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        data (np.ndarray): </span>
+<span class="sd">        data (np.ndarray):</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        np.recarray: numpy recarray version of the output data.</span>
 
-<span class="sd">    Note: </span>
+<span class="sd">    Note:</span>
 <span class="sd">        This function is used when the output data needs to be in the form of a structured array and is currently in the form of a regular numpy ndarray.</span>
 <span class="sd">    Example::</span>
 
@@ -2206,7 +2206,7 @@ dtype=[('f0', '&lt;i4'), ('f1', 'S1'), ('f2', '&lt;f8')])
 <span class="sd">            data (np.ndarray, optional):  (Default value = None)</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            np.ndarray: </span>
+<span class="sd">            np.ndarray:</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            This function reshapes the input data to (n0, prod(n1, ..., nm)) shape.</span>
@@ -2229,10 +2229,10 @@ dtype=[('f0', '&lt;i4'), ('f1', 'S1'), ('f2', '&lt;f8')])
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare input data for reshaping.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            data (Union[np.ndarray, np.recarray]): </span>
+<span class="sd">            data (Union[np.ndarray, np.recarray]):</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            np.ndarray: </span>
+<span class="sd">            np.ndarray:</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            - If `data` is a structured numpy array, it will be passed to `_prepare_input_structured_data` function.</span>
@@ -2260,10 +2260,10 @@ dtype=[('f0', '&lt;i4'), ('f1', 'S1'), ('f2', '&lt;f8')])
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reshape the data to its original shape before reshaping.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            data (np.ndarray): </span>
+<span class="sd">            data (np.ndarray):</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            np.ndarray: </span>
+<span class="sd">            np.ndarray:</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            The original shape of the data is stored in `collapsible_shapes` attribute.</span>
@@ -2444,7 +2444,7 @@ dtype=[('f0', '&lt;i4'), ('f1', 'S1'), ('f2', '&lt;f8')])
           </td>
           <td>
             <div class="doc-md-description">
-              <p>np.ndarray: </p>
+              <p>np.ndarray:</p>
             </div>
           </td>
         </tr>
@@ -2504,10 +2504,10 @@ array([[ 0.948...,  0.276...,  0.967...,  0.564...],
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Prepare input data for reshaping.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        data (Union[np.ndarray, np.recarray]): </span>
+<span class="sd">        data (Union[np.ndarray, np.recarray]):</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        np.ndarray: </span>
+<span class="sd">        np.ndarray:</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        - If `data` is a structured numpy array, it will be passed to `_prepare_input_structured_data` function.</span>
@@ -3071,8 +3071,8 @@ array([[ 0.948...,  0.276...,  0.967...,  0.564...],
 
 <span class="sd">        Args:</span>
 <span class="sd">            data (Union[np.ndarray, np.recarray], optional): The input data to be prepared (Default value = None)</span>
-<span class="sd">            *args: </span>
-<span class="sd">            **kwargs: </span>
+<span class="sd">            *args:</span>
+<span class="sd">            **kwargs:</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            np.ndarray: The prepared input data</span>
@@ -3100,8 +3100,8 @@ array([[ 0.948...,  0.276...,  0.967...,  0.564...],
 
 <span class="sd">        Args:</span>
 <span class="sd">            data (Union[np.ndarray, np.recarray], optional): The output data to be prepared (Default value = None)</span>
-<span class="sd">            *args: </span>
-<span class="sd">            **kwargs </span>
+<span class="sd">            *args:</span>
+<span class="sd">            **kwargs</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            np.ndarray: The prepared output data</span>
@@ -3156,11 +3156,11 @@ array([[ 0.948...,  0.276...,  0.967...,  0.564...],
 
 <span class="sd">        Args:</span>
 <span class="sd">            data (np.recarray, optional): structured data to be transformed (Default value = None)</span>
-<span class="sd">            *args (Additional arguments passed to the parent class): </span>
-<span class="sd">            **kwargs </span>
+<span class="sd">            *args (Additional arguments passed to the parent class):</span>
+<span class="sd">            **kwargs</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            np.ndarray: </span>
+<span class="sd">            np.ndarray:</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            The bias and scale parameters are expected to be provided in the form of dictionaries, where keys are field names and values are the corresponding bias and scale values for those fields.</span>
@@ -3189,11 +3189,11 @@ array([[ 0.948...,  0.276...,  0.967...,  0.564...],
 
 <span class="sd">        Args:</span>
 <span class="sd">            data (np.ndarray, optional): structured data to be transformed (Default value = None)</span>
-<span class="sd">            *args (Additional arguments passed to the parent class): </span>
-<span class="sd">            **kwargs: </span>
+<span class="sd">            *args (Additional arguments passed to the parent class):</span>
+<span class="sd">            **kwargs:</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            np.recarray: </span>
+<span class="sd">            np.recarray:</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            - The bias and scale parameters are expected to be provided in the form of dictionaries, where keys are field names and values are the corresponding bias and scale values for those fields.</span>
@@ -3481,8 +3481,8 @@ array([-4.5, -3.5, -2.5])
 
 <span class="sd">    Args:</span>
 <span class="sd">        data (Union[np.ndarray, np.recarray], optional): The input data to be prepared (Default value = None)</span>
-<span class="sd">        *args: </span>
-<span class="sd">        **kwargs: </span>
+<span class="sd">        *args:</span>
+<span class="sd">        **kwargs:</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        np.ndarray: The prepared input data</span>
@@ -3585,7 +3585,7 @@ array([-4.5, -3.5, -2.5])
           </td>
           <td>
             <div class="doc-md-description">
-              <p>np.ndarray: </p>
+              <p>np.ndarray:</p>
             </div>
           </td>
         </tr>
@@ -3643,11 +3643,11 @@ array([-4.5, -3.5, -2.5])
 
 <span class="sd">    Args:</span>
 <span class="sd">        data (np.recarray, optional): structured data to be transformed (Default value = None)</span>
-<span class="sd">        *args (Additional arguments passed to the parent class): </span>
-<span class="sd">        **kwargs </span>
+<span class="sd">        *args (Additional arguments passed to the parent class):</span>
+<span class="sd">        **kwargs</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        np.ndarray: </span>
+<span class="sd">        np.ndarray:</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        The bias and scale parameters are expected to be provided in the form of dictionaries, where keys are field names and values are the corresponding bias and scale values for those fields.</span>
@@ -3802,8 +3802,8 @@ array([12., 14., 16.])
 
 <span class="sd">    Args:</span>
 <span class="sd">        data (Union[np.ndarray, np.recarray], optional): The output data to be prepared (Default value = None)</span>
-<span class="sd">        *args: </span>
-<span class="sd">        **kwargs </span>
+<span class="sd">        *args:</span>
+<span class="sd">        **kwargs</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        np.ndarray: The prepared output data</span>
@@ -3919,7 +3919,7 @@ array([12., 14., 16.])
           </td>
           <td>
             <div class="doc-md-description">
-              <p>np.recarray: </p>
+              <p>np.recarray:</p>
             </div>
           </td>
         </tr>
@@ -3981,11 +3981,11 @@ rec.array([(0., 2.,  6.), (6., 8., 12.)],
 
 <span class="sd">    Args:</span>
 <span class="sd">        data (np.ndarray, optional): structured data to be transformed (Default value = None)</span>
-<span class="sd">        *args (Additional arguments passed to the parent class): </span>
-<span class="sd">        **kwargs: </span>
+<span class="sd">        *args (Additional arguments passed to the parent class):</span>
+<span class="sd">        **kwargs:</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        np.recarray: </span>
+<span class="sd">        np.recarray:</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        - The bias and scale parameters are expected to be provided in the form of dictionaries, where keys are field names and values are the corresponding bias and scale values for those fields.</span>
@@ -4289,7 +4289,7 @@ This class is useful for datasets in which there are invalid data.</p>
 <span class="sd">            data (np.ndarray, optional):  (Default value = None)</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            np.ndarray: </span>
+<span class="sd">            np.ndarray:</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            - MapValid converts n-dimensional arrays to two-dimensional ones performing a valid values</span>
@@ -4333,7 +4333,7 @@ This class is useful for datasets in which there are invalid data.</p>
 <span class="sd">            data (np.ndarray, optional):  (Default value = None)</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            np.ndarray: </span>
+<span class="sd">            np.ndarray:</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            - The reshaped data will have shape (n0, n_valids) where n0 is the number of samples and n_valids are the number of valid values in the data.</span>
@@ -4380,7 +4380,7 @@ This class is useful for datasets in which there are invalid data.</p>
 <span class="sd">            data (np.recarray, optional):  (Default value = None)</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            np.ndarray: </span>
+<span class="sd">            np.ndarray:</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            This function is a wrapper function that calls the &#39;prepare_input_data&#39; function internally.</span>
@@ -4404,7 +4404,7 @@ This class is useful for datasets in which there are invalid data.</p>
 <span class="sd">            data (np.ndarray, optional):  (Default value = None)</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            np.ndarray: </span>
+<span class="sd">            np.ndarray:</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            This function is a wrapper function that calls the &#39;prepare_output_data&#39; function internally.</span>
@@ -4663,7 +4663,7 @@ This class is useful for datasets in which there are invalid data.</p>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>np.ndarray: </p>
+              <p>np.ndarray:</p>
             </div>
           </td>
         </tr>
@@ -4737,7 +4737,7 @@ array([[1, 2, 3],
 <span class="sd">        data (np.ndarray, optional):  (Default value = None)</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        np.ndarray: </span>
+<span class="sd">        np.ndarray:</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        - MapValid converts n-dimensional arrays to two-dimensional ones performing a valid values</span>
@@ -4842,7 +4842,7 @@ array([[1, 2, 3],
           </td>
           <td>
             <div class="doc-md-description">
-              <p>np.ndarray: </p>
+              <p>np.ndarray:</p>
             </div>
           </td>
         </tr>
@@ -4893,7 +4893,7 @@ array([[1, 2, 3],
 <span class="sd">        data (np.recarray, optional):  (Default value = None)</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        np.ndarray: </span>
+<span class="sd">        np.ndarray:</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        This function is a wrapper function that calls the &#39;prepare_input_data&#39; function internally.</span>
@@ -4978,7 +4978,7 @@ array([[1, 2, 3],
           </td>
           <td>
             <div class="doc-md-description">
-              <p>np.ndarray: </p>
+              <p>np.ndarray:</p>
             </div>
           </td>
         </tr>
@@ -5054,7 +5054,7 @@ array([[[ 1.,  2.,  3.],
 <span class="sd">        data (np.ndarray, optional):  (Default value = None)</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        np.ndarray: </span>
+<span class="sd">        np.ndarray:</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        - The reshaped data will have shape (n0, n_valids) where n0 is the number of samples and n_valids are the number of valid values in the data.</span>
@@ -5162,7 +5162,7 @@ array([[[ 1.,  2.,  3.],
           </td>
           <td>
             <div class="doc-md-description">
-              <p>np.ndarray: </p>
+              <p>np.ndarray:</p>
             </div>
           </td>
         </tr>
@@ -5213,7 +5213,7 @@ array([[1, 2, 3],
 <span class="sd">        data (np.ndarray, optional):  (Default value = None)</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        np.ndarray: </span>
+<span class="sd">        np.ndarray:</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        This function is a wrapper function that calls the &#39;prepare_output_data&#39; function internally.</span>
@@ -5455,7 +5455,7 @@ array([[1, 2, 3],
 
 <span class="sd">        Note:</span>
 <span class="sd">            The indices are generated by calling the &#39;prepare_input_data&#39; or &#39;prepare_input_structured_data&#39; functions.</span>
-<span class="sd">        Example:: </span>
+<span class="sd">        Example::</span>
 
 <span class="sd">            &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">            &gt;&gt;&gt; data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])</span>
@@ -5484,7 +5484,7 @@ array([[1, 2, 3],
 <span class="sd">            numpy.ndarray: The sampled data.</span>
 <span class="sd">        Note:</span>
 <span class="sd">            The `data_interval` parameter must be a list of two integers, specifying the start and end of the interval.</span>
-<span class="sd">         Example:: </span>
+<span class="sd">         Example::</span>
 
 <span class="sd">            &gt;&gt;&gt; data = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])</span>
 <span class="sd">            &gt;&gt;&gt; data_interval = [3, 7]</span>
@@ -5525,7 +5525,7 @@ array([[1, 2, 3],
 <span class="sd">            dump_path (str, optional):  (Default value = None)</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            np.recarray: </span>
+<span class="sd">            np.recarray:</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            - The features dimensions of the input data should be 1 in NumPy structured arrays.</span>
@@ -5672,7 +5672,7 @@ array([[1, 2, 3],
 <details class="note" open>
   <summary>Note</summary>
   <p>The indices are generated by calling the 'prepare_input_data' or 'prepare_input_structured_data' functions.</p>
-</details>      <p>Example:: </p>
+</details>      <p>Example::</p>
 <pre><code>&gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 &gt;&gt;&gt; sampler = Sampling(choices_fraction=0.5, shuffling=True)
@@ -5866,7 +5866,7 @@ array([[1, 2, 3],
   </table>
       <p>Note:
     The <code>data_interval</code> parameter must be a list of two integers, specifying the start and end of the interval.
- Example:: </p>
+ Example::</p>
 <pre><code>&gt;&gt;&gt; data = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 &gt;&gt;&gt; data_interval = [3, 7]
 &gt;&gt;&gt; input_data = sampler.prepare_input_data(data, data_interval)
@@ -5923,7 +5923,7 @@ array([[1, 2, 3],
 <span class="sd">        numpy.ndarray: The sampled data.</span>
 <span class="sd">    Note:</span>
 <span class="sd">        The `data_interval` parameter must be a list of two integers, specifying the start and end of the interval.</span>
-<span class="sd">     Example:: </span>
+<span class="sd">     Example::</span>
 
 <span class="sd">        &gt;&gt;&gt; data = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])</span>
 <span class="sd">        &gt;&gt;&gt; data_interval = [3, 7]</span>
@@ -6058,7 +6058,7 @@ array([[1, 2, 3],
           </td>
           <td>
             <div class="doc-md-description">
-              <p>np.recarray: </p>
+              <p>np.recarray:</p>
             </div>
           </td>
         </tr>
@@ -6177,7 +6177,7 @@ array([[1, 2, 3],
 <span class="sd">        dump_path (str, optional):  (Default value = None)</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        np.recarray: </span>
+<span class="sd">        np.recarray:</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        - The features dimensions of the input data should be 1 in NumPy structured arrays.</span>
@@ -6268,7 +6268,7 @@ array([[1, 2, 3],
 creating the necessary augmented data used for LSTM networks, replicating the training
 windows for each sample in the dataset.</p>
 <p>See a graphical example:</p>
-<p>Example::    </p>
+<p>Example::</p>
 <pre><code>batch n
 ---------|---
 history  | horizon
@@ -6279,7 +6279,7 @@ history  | horizon
 ----
 skip
 </code></pre>
-<p>Example:: </p>
+<p>Example::</p>
 <pre><code>&gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; data = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 &gt;&gt;&gt; window = MovingWindow(history_size=3, horizon_size=1)
@@ -6475,7 +6475,7 @@ array([[1, 2, 3],
 
 <span class="sd">    See a graphical example:</span>
 
-<span class="sd">    Example::    </span>
+<span class="sd">    Example::</span>
 
 <span class="sd">        batch n</span>
 <span class="sd">        ---------|---</span>
@@ -6487,7 +6487,7 @@ array([[1, 2, 3],
 <span class="sd">        ----</span>
 <span class="sd">        skip</span>
 
-<span class="sd">    Example:: </span>
+<span class="sd">    Example::</span>
 
 <span class="sd">        &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">        &gt;&gt;&gt; data = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])</span>
@@ -6541,7 +6541,7 @@ array([[1, 2, 3],
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Applies the moving window over the time_series array.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            time_series (np.ndarray): </span>
+<span class="sd">            time_series (np.ndarray):</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            np.ndarray: the transformed array with the windows.</span>
@@ -6553,7 +6553,7 @@ array([[1, 2, 3],
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Does nothing, returns the input batch.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            batch (np.ndarray): </span>
+<span class="sd">            batch (np.ndarray):</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            np.ndarray: the input array</span>
@@ -6565,10 +6565,10 @@ array([[1, 2, 3],
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get the last item of a batch</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            batch (np.ndarray): </span>
+<span class="sd">            batch (np.ndarray):</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            np.ndarray: </span>
+<span class="sd">            np.ndarray:</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            - This method is used internally by the MovingWindow class</span>
@@ -7138,7 +7138,7 @@ array([[[ 7,  8,  9],
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Does nothing, returns the input batch.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        batch (np.ndarray): </span>
+<span class="sd">        batch (np.ndarray):</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        np.ndarray: the input array</span>
@@ -7214,7 +7214,7 @@ array([[[ 7,  8,  9],
           </td>
           <td>
             <div class="doc-md-description">
-              <p>np.ndarray: </p>
+              <p>np.ndarray:</p>
             </div>
           </td>
         </tr>
@@ -7256,10 +7256,10 @@ array([[7, 8, 9]])
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get the last item of a batch</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        batch (np.ndarray): </span>
+<span class="sd">        batch (np.ndarray):</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        np.ndarray: </span>
+<span class="sd">        np.ndarray:</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        - This method is used internally by the MovingWindow class</span>
@@ -7363,7 +7363,7 @@ array([[7, 8, 9]])
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Applies the moving window over the time_series array.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        time_series (np.ndarray): </span>
+<span class="sd">        time_series (np.ndarray):</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        np.ndarray: the transformed array with the windows.</span>
@@ -7588,9 +7588,7 @@ history  | horizon
 <span class="normal">1178</span>
 <span class="normal">1179</span>
 <span class="normal">1180</span>
-<span class="normal">1181</span>
-<span class="normal">1182</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SlidingWindow</span><span class="p">:</span>
-
+<span class="normal">1181</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SlidingWindow</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;SlidingWindow is applied over a time-series array (2D array), and it is used for</span>
 <span class="sd">    creating the necessary augmented data used for LSTM networks, replicating the training</span>
 <span class="sd">    windows for each sample in the dataset. The difference between SlidingWindow and MovingWindow</span>
@@ -7647,10 +7645,10 @@ history  | horizon
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Applies the sliding window to the given time series.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            time_series (List[int]): </span>
+<span class="sd">            time_series (List[int]):</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            List[List[int]]: </span>
+<span class="sd">            List[List[int]]:</span>
 <span class="sd">        Example::</span>
 
 <span class="sd">            &gt;&gt;&gt; window = SlidingWindow(history_size=3, skip_size=1)</span>
@@ -7682,7 +7680,7 @@ history  | horizon
 <span class="sd">            - history_size and horizon_size should be positive integers</span>
 <span class="sd">            - history_size should be less than the length of input_data</span>
 <span class="sd">            - input_data and output_data should have the same number of rows</span>
-<span class="sd">        Example:: </span>
+<span class="sd">        Example::</span>
 
 <span class="sd">            &gt;&gt;&gt; data = np.random.rand(10,3)</span>
 <span class="sd">            &gt;&gt;&gt; history_size = 3</span>
@@ -7829,7 +7827,7 @@ history  | horizon
 <li>history_size should be less than the length of input_data</li>
 <li>input_data and output_data should have the same number of rows</li>
 </ul>
-</details>      <p>Example:: </p>
+</details>      <p>Example::</p>
 <pre><code>&gt;&gt;&gt; data = np.random.rand(10,3)
 &gt;&gt;&gt; history_size = 3
 &gt;&gt;&gt; horizon_size = 2
@@ -7843,7 +7841,8 @@ history  | horizon
 
           <details class="quote">
             <summary>Source code in <code>simulai/io.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1126</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1125</span>
+<span class="normal">1126</span>
 <span class="normal">1127</span>
 <span class="normal">1128</span>
 <span class="normal">1129</span>
@@ -7898,8 +7897,7 @@ history  | horizon
 <span class="normal">1178</span>
 <span class="normal">1179</span>
 <span class="normal">1180</span>
-<span class="normal">1181</span>
-<span class="normal">1182</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
+<span class="normal">1181</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">output_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Applies a sliding window operation on the given time series and returns the windowed samples.</span>
@@ -7915,7 +7913,7 @@ history  | horizon
 <span class="sd">        - history_size and horizon_size should be positive integers</span>
 <span class="sd">        - history_size should be less than the length of input_data</span>
 <span class="sd">        - input_data and output_data should have the same number of rows</span>
-<span class="sd">    Example:: </span>
+<span class="sd">    Example::</span>
 
 <span class="sd">        &gt;&gt;&gt; data = np.random.rand(10,3)</span>
 <span class="sd">        &gt;&gt;&gt; history_size = 3</span>
@@ -8024,7 +8022,8 @@ history  | horizon
 
           <details class="quote">
             <summary>Source code in <code>simulai/io.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1085</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1084</span>
+<span class="normal">1085</span>
 <span class="normal">1086</span>
 <span class="normal">1087</span>
 <span class="normal">1088</span>
@@ -8039,8 +8038,7 @@ history  | horizon
 <span class="normal">1097</span>
 <span class="normal">1098</span>
 <span class="normal">1099</span>
-<span class="normal">1100</span>
-<span class="normal">1101</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">history_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">skip_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">1100</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">history_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">skip_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Initialize the SlidingWindow object.</span>
 
 <span class="sd">    Args:</span>
@@ -8126,7 +8124,7 @@ history  | horizon
           </td>
           <td>
             <div class="doc-md-description">
-              <p>List[List[int]]: </p>
+              <p>List[List[int]]:</p>
             </div>
           </td>
         </tr>
@@ -8142,7 +8140,8 @@ history  | horizon
 
           <details class="quote">
             <summary>Source code in <code>simulai/io.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1103</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1102</span>
+<span class="normal">1103</span>
 <span class="normal">1104</span>
 <span class="normal">1105</span>
 <span class="normal">1106</span>
@@ -8162,15 +8161,14 @@ history  | horizon
 <span class="normal">1120</span>
 <span class="normal">1121</span>
 <span class="normal">1122</span>
-<span class="normal">1123</span>
-<span class="normal">1124</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_series</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="normal">1123</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_series</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Applies the sliding window to the given time series.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        time_series (List[int]): </span>
+<span class="sd">        time_series (List[int]):</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List[List[int]]: </span>
+<span class="sd">        List[List[int]]:</span>
 <span class="sd">    Example::</span>
 
 <span class="sd">        &gt;&gt;&gt; window = SlidingWindow(history_size=3, skip_size=1)</span>
@@ -8212,7 +8210,8 @@ history  | horizon
 
             <details class="quote">
               <summary>Source code in <code>simulai/io.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1185</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1184</span>
+<span class="normal">1185</span>
 <span class="normal">1186</span>
 <span class="normal">1187</span>
 <span class="normal">1188</span>
@@ -8298,8 +8297,7 @@ history  | horizon
 <span class="normal">1268</span>
 <span class="normal">1269</span>
 <span class="normal">1270</span>
-<span class="normal">1271</span>
-<span class="normal">1272</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">IntersectingBatches</span><span class="p">:</span>
+<span class="normal">1271</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">IntersectingBatches</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;IntersectingBatches is a class that is applied over a time-series array (2D array) to create batches of input data for training or testing purposes.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -8357,7 +8355,7 @@ history  | horizon
 <span class="sd">            Union[list, np.ndarray]: A list of batches or a single batch if `full` attribute is set to False.</span>
 <span class="sd">        Note:</span>
 <span class="sd">            - If the `full` attribute is set to True, the last batch will be included even if it&#39;s not full.</span>
-<span class="sd">        Example:: </span>
+<span class="sd">        Example::</span>
 
 <span class="sd">            &gt;&gt;&gt; input_data = np.array([[1,2,3], [4,5,6], [7,8,9], [10,11,12]])</span>
 <span class="sd">            &gt;&gt;&gt; batches = IntersectingBatches(skip_size=1, batch_size=2)</span>
@@ -8473,7 +8471,7 @@ history  | horizon
   </table>
       <p>Note:
     - If the <code>full</code> attribute is set to True, the last batch will be included even if it's not full.
-Example:: </p>
+Example::</p>
 <pre><code>&gt;&gt;&gt; input_data = np.array([[1,2,3], [4,5,6], [7,8,9], [10,11,12]])
 &gt;&gt;&gt; batches = IntersectingBatches(skip_size=1, batch_size=2)
 &gt;&gt;&gt; batches(input_data)
@@ -8487,7 +8485,8 @@ array([[ 7,  8,  9],
 
           <details class="quote">
             <summary>Source code in <code>simulai/io.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1233</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1232</span>
+<span class="normal">1233</span>
 <span class="normal">1234</span>
 <span class="normal">1235</span>
 <span class="normal">1236</span>
@@ -8525,8 +8524,7 @@ array([[ 7,  8,  9],
 <span class="normal">1268</span>
 <span class="normal">1269</span>
 <span class="normal">1270</span>
-<span class="normal">1271</span>
-<span class="normal">1272</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="normal">1271</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Applies the batching strategy to the input data.</span>
 
 <span class="sd">    Args:</span>
@@ -8536,7 +8534,7 @@ array([[ 7,  8,  9],
 <span class="sd">        Union[list, np.ndarray]: A list of batches or a single batch if `full` attribute is set to False.</span>
 <span class="sd">    Note:</span>
 <span class="sd">        - If the `full` attribute is set to True, the last batch will be included even if it&#39;s not full.</span>
-<span class="sd">    Example:: </span>
+<span class="sd">    Example::</span>
 
 <span class="sd">        &gt;&gt;&gt; input_data = np.array([[1,2,3], [4,5,6], [7,8,9], [10,11,12]])</span>
 <span class="sd">        &gt;&gt;&gt; batches = IntersectingBatches(skip_size=1, batch_size=2)</span>
@@ -8648,7 +8646,8 @@ array([[ 7,  8,  9],
 
           <details class="quote">
             <summary>Source code in <code>simulai/io.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1188</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1187</span>
+<span class="normal">1188</span>
 <span class="normal">1189</span>
 <span class="normal">1190</span>
 <span class="normal">1191</span>
@@ -8664,8 +8663,7 @@ array([[ 7,  8,  9],
 <span class="normal">1201</span>
 <span class="normal">1202</span>
 <span class="normal">1203</span>
-<span class="normal">1204</span>
-<span class="normal">1205</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">1204</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">skip_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">full</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Initializes the IntersectingBatches class</span>
@@ -8761,7 +8759,8 @@ array([[ 7,  8,  9],
 
           <details class="quote">
             <summary>Source code in <code>simulai/io.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1207</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1206</span>
+<span class="normal">1207</span>
 <span class="normal">1208</span>
 <span class="normal">1209</span>
 <span class="normal">1210</span>
@@ -8784,8 +8783,7 @@ array([[ 7,  8,  9],
 <span class="normal">1227</span>
 <span class="normal">1228</span>
 <span class="normal">1229</span>
-<span class="normal">1230</span>
-<span class="normal">1231</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="normal">1230</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;It gets just the indices of the shifting</span>
 
 <span class="sd">    Args:</span>
@@ -8877,7 +8875,8 @@ MovingWindow to continuously extrapolate a dataset.</p>
 
             <details class="quote">
               <summary>Source code in <code>simulai/io.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1275</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1274</span>
+<span class="normal">1275</span>
 <span class="normal">1276</span>
 <span class="normal">1277</span>
 <span class="normal">1278</span>
@@ -9003,8 +9002,7 @@ MovingWindow to continuously extrapolate a dataset.</p>
 <span class="normal">1398</span>
 <span class="normal">1399</span>
 <span class="normal">1400</span>
-<span class="normal">1401</span>
-<span class="normal">1402</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BatchwiseExtrapolation</span><span class="p">:</span>
+<span class="normal">1401</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BatchwiseExtrapolation</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;BatchwiseExtraplation uses a time-series regression model and inputs as generated by</span>
 <span class="sd">    MovingWindow to continuously extrapolate a dataset.</span>
 
@@ -9072,7 +9070,7 @@ MovingWindow to continuously extrapolate a dataset.</p>
 <span class="sd">            testing_data_size (int, optional):  (Default value = None)</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            np.ndarray: </span>
+<span class="sd">            np.ndarray:</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            The number of series in the initial state must be equal to the number of series in the auxiliary data, if it is provided.</span>
@@ -9252,7 +9250,7 @@ MovingWindow to continuously extrapolate a dataset.</p>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>np.ndarray: </p>
+              <p>np.ndarray:</p>
             </div>
           </td>
         </tr>
@@ -9277,7 +9275,8 @@ MovingWindow to continuously extrapolate a dataset.</p>
 
           <details class="quote">
             <summary>Source code in <code>simulai/io.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1327</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1326</span>
+<span class="normal">1327</span>
 <span class="normal">1328</span>
 <span class="normal">1329</span>
 <span class="normal">1330</span>
@@ -9351,8 +9350,7 @@ MovingWindow to continuously extrapolate a dataset.</p>
 <span class="normal">1398</span>
 <span class="normal">1399</span>
 <span class="normal">1400</span>
-<span class="normal">1401</span>
-<span class="normal">1402</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
+<span class="normal">1401</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">init_state</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">history_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -9368,7 +9366,7 @@ MovingWindow to continuously extrapolate a dataset.</p>
 <span class="sd">        testing_data_size (int, optional):  (Default value = None)</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        np.ndarray: </span>
+<span class="sd">        np.ndarray:</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        The number of series in the initial state must be equal to the number of series in the auxiliary data, if it is provided.</span>
@@ -9709,9 +9707,9 @@ MovingWindow to continuously extrapolate a dataset.</p>
 <span class="sd">            h5py.Dataset: The new h5py.Dataset after the copy process.</span>
 
 <span class="sd">        Note:</span>
-<span class="sd">            - Copy data from data_file.h5/data to data_copy.h5/data with a batch size of 1000: </span>
+<span class="sd">            - Copy data from data_file.h5/data to data_copy.h5/data with a batch size of 1000:</span>
 <span class="sd">            - The input must be an h5py.Dataset.</span>
-<span class="sd">        Example:: </span>
+<span class="sd">        Example::</span>
 
 <span class="sd">            &gt;&gt;&gt; data = h5py.File(&quot;data_file.h5&quot;, &quot;r&quot;)</span>
 <span class="sd">            &gt;&gt;&gt; batch_copy = BatchCopy()</span>
@@ -9883,7 +9881,7 @@ MovingWindow to continuously extrapolate a dataset.</p>
 <span class="sd">            h5py.Dataset: The copied data</span>
 <span class="sd">        Note:</span>
 <span class="sd">            - If the data is a list of h5py.Dataset, it will call the `_multiple_copy` function.</span>
-<span class="sd">        Example:: </span>
+<span class="sd">        Example::</span>
 
 <span class="sd">            &gt;&gt;&gt; data = h5py.File(&#39;data.h5&#39;, &#39;r&#39;)</span>
 <span class="sd">            &gt;&gt;&gt; data_interval = [0, 100]</span>
@@ -10053,7 +10051,7 @@ It allows to apply a transformation function to the data.</p>
   </table>
       <p>Note:
     - If the data is a list of h5py.Dataset, it will call the <code>_multiple_copy</code> function.
-Example:: </p>
+Example::</p>
 <pre><code>&gt;&gt;&gt; data = h5py.File('data.h5', 'r')
 &gt;&gt;&gt; data_interval = [0, 100]
 &gt;&gt;&gt; batch_size = 1000
@@ -10134,7 +10132,7 @@ Example:: </p>
 <span class="sd">        h5py.Dataset: The copied data</span>
 <span class="sd">    Note:</span>
 <span class="sd">        - If the data is a list of h5py.Dataset, it will call the `_multiple_copy` function.</span>
-<span class="sd">    Example:: </span>
+<span class="sd">    Example::</span>
 
 <span class="sd">        &gt;&gt;&gt; data = h5py.File(&#39;data.h5&#39;, &#39;r&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; data_interval = [0, 100]</span>
@@ -10463,10 +10461,10 @@ Example:: </p>
 <span class="sd">            device (str, optional):  (Default value = &quot;cpu&quot;)</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Union[List[torch.Tensor], dict]: </span>
+<span class="sd">            Union[List[torch.Tensor], dict]:</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            - Exception: </span>
+<span class="sd">            - Exception:</span>
 
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -10584,7 +10582,7 @@ Example:: </p>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>Union[List[torch.Tensor], dict]: </p>
+              <p>Union[List[torch.Tensor], dict]:</p>
             </div>
           </td>
         </tr>
@@ -10669,10 +10667,10 @@ Example:: </p>
 <span class="sd">        device (str, optional):  (Default value = &quot;cpu&quot;)</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Union[List[torch.Tensor], dict]: </span>
+<span class="sd">        Union[List[torch.Tensor], dict]:</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        - Exception: </span>
+<span class="sd">        - Exception:</span>
 
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -10725,7 +10723,7 @@ Example:: </p>
   
       <p>GaussianNoise(stddev=0.01, input_data=None)
 A dataset that applies Gaussian noise to input data.</p>
-<p>Example:: </p>
+<p>Example::</p>
 <pre><code>&gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; input_data = np.random.rand(100,100)
 &gt;&gt;&gt; dataset = GaussianNoise(stddev=0.05, input_data=input_data)
@@ -10772,7 +10770,7 @@ A dataset that applies Gaussian noise to input data.</p>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;GaussianNoise(stddev=0.01, input_data=None)</span>
 <span class="sd">    A dataset that applies Gaussian noise to input data.</span>
 
-<span class="sd">    Example:: </span>
+<span class="sd">    Example::</span>
 
 <span class="sd">        &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">        &gt;&gt;&gt; input_data = np.random.rand(100,100)</span>

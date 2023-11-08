@@ -1062,9 +1062,7 @@
 <span class="normal">616</span>
 <span class="normal">617</span>
 <span class="normal">618</span>
-<span class="normal">619</span>
-<span class="normal">620</span>
-<span class="normal">621</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SymbolicOperator</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="normal">619</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SymbolicOperator</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The SymbolicOperatorClass is a class that constructs tensor operators using symbolic expressions written in PyTorch.</span>
 
 
@@ -1243,8 +1241,7 @@
 
         <span class="k">return</span> <span class="n">protected_operators</span>
 
-    <span class="k">def</span> <span class="nf">_parse_key_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intv</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
-
+    <span class="k">def</span> <span class="nf">_parse_key_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intv</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
         <span class="n">begin</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">intv</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
 
         <span class="n">end</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">end</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
@@ -1283,7 +1280,6 @@
                         <span class="n">keys_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
 
                 <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">intv</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-
                     <span class="n">key</span><span class="p">,</span> <span class="n">interval_str</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">intv</span><span class="p">)</span>
                     <span class="n">interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_key_interval</span><span class="p">(</span><span class="n">interval_str</span><span class="p">)</span>
                     <span class="n">keys_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">interval</span>
@@ -1486,7 +1482,7 @@
 <span class="sd">            inputs_list (list): either a list of arrays, an np.ndarray, or a dict containing the inputs to the function</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            the result of evaluating the expression using the inputs.: </span>
+<span class="sd">            the result of evaluating the expression using the inputs.:</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -1777,7 +1773,9 @@
 
           <details class="quote">
             <summary>Source code in <code>simulai/residuals/_pytorch_residuals.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">387</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">385</span>
+<span class="normal">386</span>
+<span class="normal">387</span>
 <span class="normal">388</span>
 <span class="normal">389</span>
 <span class="normal">390</span>
@@ -1831,9 +1829,7 @@
 <span class="normal">438</span>
 <span class="normal">439</span>
 <span class="normal">440</span>
-<span class="normal">441</span>
-<span class="normal">442</span>
-<span class="normal">443</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
+<span class="normal">441</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">inputs_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate the symbolic expression.</span>
@@ -1981,7 +1977,9 @@
 
           <details class="quote">
             <summary>Source code in <code>simulai/residuals/_pytorch_residuals.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">445</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">443</span>
+<span class="normal">444</span>
+<span class="normal">445</span>
 <span class="normal">446</span>
 <span class="normal">447</span>
 <span class="normal">448</span>
@@ -2106,9 +2104,7 @@
 <span class="normal">567</span>
 <span class="normal">568</span>
 <span class="normal">569</span>
-<span class="normal">570</span>
-<span class="normal">571</span>
-<span class="normal">572</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">eval_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">inputs_list</span><span class="p">):</span>
+<span class="normal">570</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">eval_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">inputs_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This function evaluates an expression stored in the class attribute &#39;g_expressions&#39; using the inputs in &#39;inputs_list&#39;. If the expression has a periodic boundary condition, the function evaluates the expression at the lower and upper boundaries and returns the difference. If the inputs are provided as a list, they are split into individual tensors and stored in a dictionary with the keys as the input names. If the inputs are provided as an np.ndarray, they are converted to tensors and split along the second axis. If the inputs are provided as a dict, they are extracted using the &#39;inputs_key&#39; attribute. The inputs, along with the outputs obtained from running the function, are then passed as arguments to the expression using the &#39;g(**feed_vars)&#39; syntax.</span>
 
 <span class="sd">    Args:</span>
@@ -2116,7 +2112,7 @@
 <span class="sd">        inputs_list (list): either a list of arrays, an np.ndarray, or a dict containing the inputs to the function</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        the result of evaluating the expression using the inputs.: </span>
+<span class="sd">        the result of evaluating the expression using the inputs.:</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2337,7 +2333,9 @@ tensor([1., 1., 1.], grad_fn=&lt;AddBackward0&gt;)
 
           <details class="quote">
             <summary>Source code in <code>simulai/residuals/_pytorch_residuals.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">574</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">572</span>
+<span class="normal">573</span>
+<span class="normal">574</span>
 <span class="normal">575</span>
 <span class="normal">576</span>
 <span class="normal">577</span>
@@ -2361,9 +2359,7 @@ tensor([1., 1., 1.], grad_fn=&lt;AddBackward0&gt;)
 <span class="normal">595</span>
 <span class="normal">596</span>
 <span class="normal">597</span>
-<span class="normal">598</span>
-<span class="normal">599</span>
-<span class="normal">600</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="normal">598</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
 <span class="k">def</span> <span class="nf">gradient</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculates the gradient of the given feature with respect to the given parameter.</span>
 
@@ -2473,7 +2469,9 @@ tensor([[1., 1., 1.],
 
           <details class="quote">
             <summary>Source code in <code>simulai/residuals/_pytorch_residuals.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">602</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">600</span>
+<span class="normal">601</span>
+<span class="normal">602</span>
 <span class="normal">603</span>
 <span class="normal">604</span>
 <span class="normal">605</span>
@@ -2490,9 +2488,7 @@ tensor([[1., 1., 1.],
 <span class="normal">616</span>
 <span class="normal">617</span>
 <span class="normal">618</span>
-<span class="normal">619</span>
-<span class="normal">620</span>
-<span class="normal">621</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">jac</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+<span class="normal">619</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">jac</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculates the Jacobian of the forward function of the model with respect to its inputs.</span>
 
 <span class="sd">    Args:</span>
