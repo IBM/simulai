@@ -75,7 +75,7 @@ class GaussianRandomFields:
 
         Returns:
             ndarray, shape (n_features, N): Array of random latent features.
-        
+
         """
         u_ = np.random.randn(self.N, n_features)
         return np.dot(self.space, u_).T
@@ -89,7 +89,7 @@ class GaussianRandomFields:
 
         Returns:
             ndarray, shape (n_features, N): Array of latent features.
-        
+
         """
         values = map(
             lambda y: interpolate.interp1d(

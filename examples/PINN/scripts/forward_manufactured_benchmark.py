@@ -42,7 +42,8 @@ pi = np.pi
 time_train = (np.random.rand(n) * T_max)[:, None]
 time_eval = np.linspace(0, T_max, N)[:, None]
 time_ext = np.linspace(T_max, T_max + 0.5, N)[:, None]
-T_eval = np.sin(4*np.pi*time_eval)
+T_eval = np.sin(4 * np.pi * time_eval)
+
 
 def dataset(t: np.ndarray = None) -> np.ndarray:
     return (t - mu) ** 2 * np.cos(omega * np.pi * t)
@@ -60,8 +61,10 @@ u_data_ext = dataset_2(t=time_ext)
 def k1(t: torch.Tensor) -> torch.Tensor:
     return 2 * (t - mu) * torch.cos(omega * pi * t)
 
+
 def k2(t: torch.Tensor) -> torch.Tensor:
     return torch.sin(omega * pi * t)
+
 
 def k3(t: torch.Tensor, T: torch.Tensor) -> torch.Tensor:
     interp = interp1d(t, T)

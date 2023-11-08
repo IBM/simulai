@@ -29,8 +29,8 @@ class FromSymbol2FLambda:
             variables (List[str], optional): The list of definition variables. The default value is None.
 
         Returns:
-            None: 
-        
+            None:
+
         """
 
         self.engine = engine
@@ -55,7 +55,7 @@ class FromSymbol2FLambda:
         Returns:
             list of str: List of functions names.
             bool: Boolean indicating success.
-        
+
         """
 
         splits = func_expr.split(self.func_sep)
@@ -78,7 +78,7 @@ class FromSymbol2FLambda:
         Raises:
             Exception: If the expression is not valid.
 
-        
+
         """
         splits = func_expr.split(self.func_sep)
 
@@ -97,7 +97,7 @@ class FromSymbol2FLambda:
 
         Returns:
             None: This function does not return anything.
-        
+
         """
         self.engine_module = None
         self.aux_engine_module = None
@@ -111,7 +111,7 @@ class FromSymbol2FLambda:
 
         Returns:
             callable: Callable function equivalent to the string expression.
-        
+
         """
         expression_names, is_function = self._get_function_name(func_expr=expression)
         symbol_expression = parse_expr(expression, evaluate=0)

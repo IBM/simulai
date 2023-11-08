@@ -28,7 +28,7 @@ def gp(init, factor, n) -> list:
     Raises:
         Exception: If `n` is not higher than 0.
 
-    
+
     """
     if n == 1:
         return [init]

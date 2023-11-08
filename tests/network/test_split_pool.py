@@ -6,8 +6,8 @@ from simulai.models import SplitPool
 from simulai.optimization import Optimizer
 from simulai.regression import DenseNetwork
 
-class TestSplitPool(TestCase):
 
+class TestSplitPool(TestCase):
     def test_split_pool(self):
         n_inputs_b = 10
         n_latent = 1
@@ -28,14 +28,17 @@ class TestSplitPool(TestCase):
             experts_list.append(DenseNetwork(**config))
 
         for device in ["cpu", "gpu", None]:
-
-            net = SplitPool(experts_list=experts_list, input_size=n_inputs_b, devices=device)
+            net = SplitPool(
+                experts_list=experts_list, input_size=n_inputs_b, devices=device
+            )
 
             # Checking if the model is coretly placed when no device is
             # informed
             if not device:
-                assert net.device == "cpu", ("When no device is provided it is expected the model"+
-                                             f"being on cpu, but received {net.device}.")
+                assert net.device == "cpu", (
+                    "When no device is provided it is expected the model"
+                    + f"being on cpu, but received {net.device}."
+                )
 
             input_data = np.random.rand(1_000, n_inputs_b)
 
@@ -94,7 +97,6 @@ class TestSplitPool(TestCase):
         )
 
     def test_split_pool_optimization_bce(self):
-
         lr = 1e-3
         optimizer_config = {"lr": lr}
 
@@ -188,8 +190,12 @@ class TestSplitPool(TestCase):
         for ex in range(n_experts):
             experts_list.append(DenseNetwork(**config))
 
-        net = SplitPool(experts_list=experts_list, aggregation=aggregation,
-                        input_size=n_inputs_b, devices="gpu")
+        net = SplitPool(
+            experts_list=experts_list,
+            aggregation=aggregation,
+            input_size=n_inputs_b,
+            devices="gpu",
+        )
 
         input_data = np.random.rand(1_000, n_inputs_b)
         target_data = np.random.rand(1_000, n_outputs)
@@ -205,6 +211,3 @@ class TestSplitPool(TestCase):
             loss="rmse",
             device="gpu",
         )
-
-
-

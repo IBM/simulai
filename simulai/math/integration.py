@@ -37,8 +37,8 @@ class ExplicitIntegrator(Integral):
             right_operator (callable): The callable for evaluating the residual in each iteration.
 
         Returns:
-            None: 
-        
+            None:
+
         """
         super().__init__()
 
@@ -59,7 +59,7 @@ class ExplicitIntegrator(Integral):
 
         Returns:
             (np.ndarray, np.ndarray): The integrated state and its time-derivative.
-        
+
         """
         variables_state = variables_state_initial
         residuals_list = np.zeros((self.n_stages,) + variables_state.shape[1:])
@@ -87,7 +87,7 @@ class ExplicitIntegrator(Integral):
 
         Returns:
             (np.ndarray, np.ndarray): The integrated state and its time-derivative.
-        
+
         """
         variables_state = np.concatenate(
             [variables_state_initial, forcing_state], axis=-1
@@ -117,7 +117,7 @@ class ExplicitIntegrator(Integral):
 
         Returns:
             tuple: Integrated state and its time-derivative.
-        
+
         """
 
         variables_state = {
@@ -153,7 +153,7 @@ class ExplicitIntegrator(Integral):
 
         Returns:
             list: List of integrated states.
-        
+
         """
 
         ii = 0
@@ -185,7 +185,7 @@ class ExplicitIntegrator(Integral):
 
         Returns:
             list: List of integrated states.
-        
+
         """
 
         ii = 0
@@ -225,7 +225,7 @@ class ExplicitIntegrator(Integral):
 
         Returns:
             np.ndarray: Array of integrated states.
-        
+
         """
 
         if forcings is None:
@@ -254,7 +254,7 @@ class RK4(ExplicitIntegrator):
 
         Args:
             right_operator (callable, optional): An operator representing the right-hand side of a dynamic system. (Default value = None)
-        
+
         """
         weights = np.array(
             [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [1 / 6, 2 / 6, 2 / 6, 1 / 6]]
@@ -486,7 +486,7 @@ class LSODA:
 
         Returns:
             np.ndarray: The solution to the system at the specified time points.
-        
+
         """
         if hasattr(self.right_operator, "jacobian"):
             Jacobian = self.right_operator.jacobian
@@ -511,7 +511,7 @@ class LSODA:
 
         Returns:
             np.ndarray: The solution to the system at the specified time points with the forcing terms applied.
-        
+
         """
         assert isinstance(
             forcing, np.ndarray

@@ -28,15 +28,17 @@ class TestMoEPool(TestCase):
             experts_list.append(DenseNetwork(**config))
 
         for device in ["cpu", "gpu", None]:
-
-            net = MoEPool(experts_list=experts_list, input_size=n_inputs_b, devices=device)
+            net = MoEPool(
+                experts_list=experts_list, input_size=n_inputs_b, devices=device
+            )
 
             # Checking if the model is coretly placed when no device is
             # informed
             if not device:
-                assert net.device == "cpu", ("When no device is provided it is expected the model"+
-                                             f"being on cpu, but received {net.device}.")
-
+                assert net.device == "cpu", (
+                    "When no device is provided it is expected the model"
+                    + f"being on cpu, but received {net.device}."
+                )
 
             input_data = np.random.rand(1_000, n_inputs_b)
 
@@ -68,7 +70,6 @@ class TestMoEPool(TestCase):
         input_data = np.random.rand(1_000, n_inputs_b)
 
         for device in ["cpu", "gpu", None]:
-
             net = MoEPool(
                 experts_list=experts_list,
                 input_size=n_inputs_b,
@@ -79,9 +80,10 @@ class TestMoEPool(TestCase):
             # Checking if the model is coretly placed when no device is
             # informed
             if not device:
-                assert net.device == "cpu", ("When no device is provided it is expected the model"+
-                                             f"being on cpu, but received {net.device}.")
-
+                assert net.device == "cpu", (
+                    "When no device is provided it is expected the model"
+                    + f"being on cpu, but received {net.device}."
+                )
 
             weights = net.gate(input_data=input_data)
             weights = weights.numpy()

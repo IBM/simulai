@@ -34,12 +34,12 @@ from simulai.templates import (
 class AutoencoderMLP(NetworkTemplate):
     r"""This is an implementation of a Fully-connected AutoEncoder as
     Reduced Order Model;
-    
+
     A MLP autoencoder architecture consists of two stages:
 
     - Fully-connected encoder
     - Fully connected decoder
-    
+
     Graphical scheme:
 
                 |         |
@@ -47,7 +47,7 @@ class AutoencoderMLP(NetworkTemplate):
         Z ->    |  | | |  |  -> Z_til
                 |  |   |  |
                 |         |
-    
+
     ENCODER       DECODER
 
     """
@@ -76,7 +76,7 @@ class AutoencoderMLP(NetworkTemplate):
             shallow (Optional[bool], optional): Whether the network should be shallow or not, by default False.
             devices (Union[str, list], optional): The device(s) to be used for allocating subnetworks, by default "cpu".
             name (str, optional): The name of the network, by default None.
-        
+
         """
 
         super(AutoencoderMLP, self).__init__(name=name)
@@ -112,9 +112,7 @@ class AutoencoderMLP(NetworkTemplate):
         self.shapes_dict = dict()
 
     def summary(self) -> None:
-        """Prints the summary of the network architecture
-
-        """
+        """Prints the summary of the network architecture"""
         self.encoder.summary()
         self.decoder.summary()
 
@@ -128,7 +126,7 @@ class AutoencoderMLP(NetworkTemplate):
 
         Returns:
             torch.Tensor: The dataset projected over the latent space.
-        
+
         """
         latent = self.encoder.forward(input_data=input_data)
 
@@ -144,7 +142,7 @@ class AutoencoderMLP(NetworkTemplate):
 
         Returns:
             torch.Tensor: The dataset reconstructed.
-        
+
         """
         reconstructed = self.decoder.forward(input_data=input_data)
 
@@ -160,7 +158,7 @@ class AutoencoderMLP(NetworkTemplate):
 
         Returns:
             torch.Tensor: The dataset reconstructed.
-        
+
         """
         latent = self.projection(input_data=input_data)
         reconstructed = self.reconstruction(input_data=latent)
@@ -177,7 +175,7 @@ class AutoencoderMLP(NetworkTemplate):
 
         Returns:
             np.ndarray: The dataset projected over the latent space.
-        
+
         """
         return self.projection(input_data=input_data).detach().numpy()
 
@@ -185,18 +183,18 @@ class AutoencoderMLP(NetworkTemplate):
 class AutoencoderCNN(NetworkTemplate):
     r"""This is an implementation of a convolutional autoencoder as Reduced Order Model.
     An autoencoder architecture consists of three stages:
-    
+
     - The convolutional encoder
     - The bottleneck stage, subdivided in:
         - Fully-connected encoder
         - Fully connected decoder
-    - The convolutional decoder 
+    - The convolutional decoder
 
     Graphical scheme
 
         Z -> [Conv] -> [Conv] -> ... [Conv] -> |  | | |  | -> [Conv.T] -> [Conv.T] -> ... [Conv.T] -> Z_til
-        
-        
+
+
                         ENCODER               DENSE BOTTLENECK           DECODER
 
     """
@@ -238,8 +236,8 @@ class AutoencoderCNN(NetworkTemplate):
             shallow (Optional[bool], optional): Whether the network should be shallow or not, by default False.
             devices (Union[str, list], optional): The device(s) to be used for allocating subnetworks, by default 'cpu'.
             name (str, optional): The name of the network, by default None.
-            **kwargs 
-        
+            **kwargs
+
         """
 
         super(AutoencoderCNN, self).__init__(name=name)
@@ -279,8 +277,12 @@ class AutoencoderCNN(NetworkTemplate):
             )
 
         self.encoder = self.to_wrap(entity=encoder, device=self.device)
-        self.bottleneck_encoder = self.to_wrap(entity=bottleneck_encoder, device=self.device)
-        self.bottleneck_decoder = self.to_wrap(entity=bottleneck_decoder, device=self.device)
+        self.bottleneck_encoder = self.to_wrap(
+            entity=bottleneck_encoder, device=self.device
+        )
+        self.bottleneck_decoder = self.to_wrap(
+            entity=bottleneck_decoder, device=self.device
+        )
         self.decoder = self.to_wrap(entity=decoder, device=self.device)
 
         self.add_module("encoder", self.encoder)
@@ -315,7 +317,7 @@ class AutoencoderCNN(NetworkTemplate):
 
         Returns:
             torch.Tensor: The dataset projected over the latent space.
-        
+
         """
 
         if verbose == True:
@@ -337,7 +339,9 @@ class AutoencoderCNN(NetworkTemplate):
                 input_shape = self.encoder.input_size
                 input_shape[0] = 1
 
-                input_data = self.to_wrap(entity=torch.ones(input_shape), device=self.device)
+                input_data = self.to_wrap(
+                    entity=torch.ones(input_shape), device=self.device
+                )
 
                 btnk_input = self.encoder.forward(input_data=input_data)
 
@@ -381,7 +385,7 @@ class AutoencoderCNN(NetworkTemplate):
 
         Returns:
             torch.Tensor: The dataset projected over the latent space.
-        
+
         """
 
         btnk_input = self.encoder.forward(input_data=input_data)
@@ -405,7 +409,7 @@ class AutoencoderCNN(NetworkTemplate):
 
         Returns:
             torch.Tensor: The reconstructed dataset.
-        
+
         """
 
         bottleneck_output = self.encoder_activation(
@@ -428,7 +432,7 @@ class AutoencoderCNN(NetworkTemplate):
 
         Returns:
             torch.Tensor: The reconstructed dataset.
-        
+
         """
 
         latent = self.projection(input_data=input_data)
@@ -444,7 +448,7 @@ class AutoencoderCNN(NetworkTemplate):
 
         Returns:
             np.ndarray: The dataset projected over the latent space.
-        
+
         """
 
         if isinstance(input_data, np.ndarray):
@@ -462,7 +466,7 @@ class AutoencoderCNN(NetworkTemplate):
 
         Returns:
             np.ndarray: The dataset projected over the latent space.
-        
+
         """
 
         projected_data = self.projection(input_data=input_data)
@@ -479,7 +483,7 @@ class AutoencoderCNN(NetworkTemplate):
 
         Returns:
             np.ndarray: The reconstructed dataset.
-        
+
         """
         reconstructed_data = self.reconstruction(input_data=input_data)
         return reconstructed_data.cpu().detach().numpy()
@@ -487,15 +491,15 @@ class AutoencoderCNN(NetworkTemplate):
 
 class AutoencoderKoopman(NetworkTemplate):
     r"""This is an implementation of a Koopman autoencoder as a Reduced Order Model.
-    
+
     A Koopman autoencoder architecture consists of five stages:
-    
+
     - The convolutional encoder [Optional]
     - Fully-connected encoder
     - Koopman operator
     - Fully connected decoder
     - The convolutional decoder [Optional]
-    
+
     Graphical scheme
 
                                                 (Koopman OPERATOR)
@@ -505,7 +509,7 @@ class AutoencoderKoopman(NetworkTemplate):
            Z -> [Conv] -> [Conv] -> ... [Conv] -> |  | | - | |  | -> [Conv.T] -> [Conv.T] -> ... [Conv.T] -> Z_til
                                                   |  |       |  |
                                                   |             |
-                
+
                                 ENCODER          DENSE BOTTLENECK        DECODER
 
     """
@@ -548,7 +552,7 @@ class AutoencoderKoopman(NetworkTemplate):
             encoder_activation (str, optional): The activation function for the encoder. Defaults to "relu".
             devices (Union[str, list], optional): The devices to use. Defaults to "cpu".
             name (str, optional): The name of the autoencoder. Defaults to None.
-        
+
         """
         super(AutoencoderKoopman, self).__init__(name=name)
 
@@ -593,8 +597,12 @@ class AutoencoderKoopman(NetworkTemplate):
 
         # These subnetworks are optional
         if bottleneck_encoder is not None and bottleneck_decoder is not None:
-            self.bottleneck_encoder = self.to_wrap(entity=bottleneck_encoder, device=self.device)
-            self.bottleneck_decoder = self.to_wrap(entity=bottleneck_decoder, device=self.device)
+            self.bottleneck_encoder = self.to_wrap(
+                entity=bottleneck_encoder, device=self.device
+            )
+            self.bottleneck_decoder = self.to_wrap(
+                entity=bottleneck_decoder, device=self.device
+            )
 
             self.add_module("bottleneck_encoder", self.bottleneck_encoder)
             self.add_module("bottleneck_decoder", self.bottleneck_decoder)
@@ -604,8 +612,12 @@ class AutoencoderKoopman(NetworkTemplate):
 
         # These subnetworks are optional
         if bottleneck_encoder is not None and bottleneck_decoder is not None:
-            self.bottleneck_encoder = self.to_wrap(entity=bottleneck_encoder, device=self.device)
-            self.bottleneck_decoder = self.to_wrap(entity=bottleneck_decoder, device=self.device)
+            self.bottleneck_encoder = self.to_wrap(
+                entity=bottleneck_encoder, device=self.device
+            )
+            self.bottleneck_decoder = self.to_wrap(
+                entity=bottleneck_decoder, device=self.device
+            )
 
             self.add_module("bottleneck_encoder", self.bottleneck_encoder)
             self.add_module("bottleneck_decoder", self.bottleneck_decoder)
@@ -630,9 +642,12 @@ class AutoencoderKoopman(NetworkTemplate):
         else:
             self.latent_dimension = self.encoder.output_size
 
-        self.K_op = self.to_wrap(entity=torch.nn.Linear(
-            self.latent_dimension, self.latent_dimension, bias=False
-        ).weight, device=self.device)
+        self.K_op = self.to_wrap(
+            entity=torch.nn.Linear(
+                self.latent_dimension, self.latent_dimension, bias=False
+            ).weight,
+            device=self.device,
+        )
 
         self.encoder_activation = self._get_operation(operation=encoder_activation)
 
@@ -665,7 +680,9 @@ class AutoencoderKoopman(NetworkTemplate):
                 input_shape = self.encoder.input_size
                 input_shape[0] = 1
 
-                input_data = self.to_wrap(entity=torch.ones(input_shape), device=self.device)
+                input_data = self.to_wrap(
+                    entity=torch.ones(input_shape), device=self.device
+                )
 
                 btnk_input = self.encoder.forward(input_data=input_data)
 
@@ -714,7 +731,7 @@ class AutoencoderKoopman(NetworkTemplate):
 
         Returns:
             torch.Tensor: The projected latent representation.
-        
+
         """
         btnk_input = self.encoder.forward(input_data=input_data)
 
@@ -737,7 +754,7 @@ class AutoencoderKoopman(NetworkTemplate):
 
         Returns:
             torch.Tensor: The projected latent representation.
-        
+
         """
         latent = self.encoder.forward(input_data=input_data)
 
@@ -754,7 +771,7 @@ class AutoencoderKoopman(NetworkTemplate):
 
         Returns:
             torch.Tensor: The reconstructed data.
-        
+
         """
         bottleneck_output = self.encoder_activation(
             self.bottleneck_decoder.forward(input_data=input_data)
@@ -779,7 +796,7 @@ class AutoencoderKoopman(NetworkTemplate):
 
         Returns:
             torch.Tensor: The reconstructed data.
-        
+
         """
         reconstructed = self.decoder.forward(input_data=input_data)
 
@@ -796,7 +813,7 @@ class AutoencoderKoopman(NetworkTemplate):
 
         Returns:
             torch.Tensor: The computed latent representation.
-        
+
         """
         return torch.matmul(input_data, torch.pow(self.K_op.T, m))
 
@@ -810,7 +827,7 @@ class AutoencoderKoopman(NetworkTemplate):
 
         Returns:
             torch.Tensor: The computed latent representation.
-        
+
         """
         return torch.matmul(input_data, self.K_op.T)
 
@@ -824,7 +841,7 @@ class AutoencoderKoopman(NetworkTemplate):
 
         Returns:
             torch.Tensor: The reconstructed data.
-        
+
         """
         latent = self.projection(input_data=input_data)
         reconstructed = self.reconstruction(input_data=latent)
@@ -842,7 +859,7 @@ class AutoencoderKoopman(NetworkTemplate):
 
         Returns:
             torch.Tensor: The reconstructed data.
-        
+
         """
         latent = self.projection(input_data=input_data)
         latent_m = self.latent_forward_m(input_data=latent, m=m)
@@ -861,7 +878,7 @@ class AutoencoderKoopman(NetworkTemplate):
 
         Returns:
             np.ndarray: The predicted reconstructed data.
-        
+
         """
         if isinstance(input_data, np.ndarray):
             input_data = torch.from_numpy(input_data.astype(ARRAY_DTYPE))
@@ -890,7 +907,7 @@ class AutoencoderKoopman(NetworkTemplate):
 
         Returns:
             np.ndarray: The projected data.
-        
+
         """
         projected_data = self.projection(input_data=input_data)
 
@@ -906,7 +923,7 @@ class AutoencoderKoopman(NetworkTemplate):
 
         Returns:
             np.ndarray: The reconstructed data.
-        
+
         """
         reconstructed_data = self.reconstruction(input_data=input_data)
 
@@ -915,7 +932,7 @@ class AutoencoderKoopman(NetworkTemplate):
 
 class AutoencoderVariational(NetworkTemplate):
     r"""This is an implementation of a Koopman autoencoder as a reduced order model.
-    
+
     A variational autoencoder architecture consists of five stages:
 
     - The convolutional encoder [Optional]
@@ -923,7 +940,7 @@ class AutoencoderVariational(NetworkTemplate):
     - Gaussian noise
     - Fully connected decoder
     - The convolutional decoder [Optional]
-    
+
     Graphical scheme
 
                                                       Gaussian noise
@@ -933,7 +950,7 @@ class AutoencoderVariational(NetworkTemplate):
         Z -> [Conv] -> [Conv] -> ... [Conv] -> |  | | - | |  | -> [Conv.T] -> [Conv.T] -> ... [Conv.T] -> Z_til
                                                |  |       |  |
                                                |             |
-        
+
                        ENCODER               DENSE BOTTLENECK           DECODER
 
     """
@@ -981,8 +998,8 @@ class AutoencoderVariational(NetworkTemplate):
             scale (float, optional): The scale of the initialization. Defaults to 1e-3.
             devices (Union[str, list], optional): The device(s) to use for computation. Defaults to "cpu".
             name (str, optional): The name of the autoencoder. Defaults to None.
-            **kwargs 
-        
+            **kwargs
+
         """
         super(AutoencoderVariational, self).__init__(name=name)
 
@@ -1016,7 +1033,7 @@ class AutoencoderVariational(NetworkTemplate):
                 shallow=shallow,
                 use_batch_norm=use_batch_norm,
                 name=self.name,
-                **kwargs
+                **kwargs,
             )
 
         self.encoder = self.to_wrap(entity=encoder, device=self.device)
@@ -1032,8 +1049,12 @@ class AutoencoderVariational(NetworkTemplate):
 
         # These subnetworks are optional
         if bottleneck_encoder is not None and bottleneck_decoder is not None:
-            self.bottleneck_encoder = self.to_wrap(entity=bottleneck_encoder, device=self.device)
-            self.bottleneck_decoder = self.to_wrap(entity=bottleneck_decoder, device=self.device)
+            self.bottleneck_encoder = self.to_wrap(
+                entity=bottleneck_encoder, device=self.device
+            )
+            self.bottleneck_decoder = self.to_wrap(
+                entity=bottleneck_decoder, device=self.device
+            )
 
             self.add_module("bottleneck_encoder", self.bottleneck_encoder)
             self.add_module("bottleneck_decoder", self.bottleneck_decoder)
@@ -1060,14 +1081,14 @@ class AutoencoderVariational(NetworkTemplate):
         else:
             self.latent_dimension = self.encoder.output_size
 
-        self.z_mean = self.to_wrap(entity=torch.nn.Linear(self.latent_dimension,
-                                                          self.latent_dimension),
-            device=self.device
+        self.z_mean = self.to_wrap(
+            entity=torch.nn.Linear(self.latent_dimension, self.latent_dimension),
+            device=self.device,
         )
 
-        self.z_log_var = self.to_wrap(entity=torch.nn.Linear(self.latent_dimension,
-                                                            self.latent_dimension),
-            device=self.device
+        self.z_log_var = self.to_wrap(
+            entity=torch.nn.Linear(self.latent_dimension, self.latent_dimension),
+            device=self.device,
         )
 
         self.add_module("z_mean", self.z_mean)
@@ -1129,7 +1150,10 @@ class AutoencoderVariational(NetworkTemplate):
                 pass
 
             self.encoder.summary(
-                input_data=input_data, input_shape=input_shape, device=self.device, display=display
+                input_data=input_data,
+                input_shape=input_shape,
+                device=self.device,
+                display=display,
             )
 
             if type(self.encoder.output_size) == tuple:
@@ -1149,7 +1173,9 @@ class AutoencoderVariational(NetworkTemplate):
 
                 input_shape[0] = 1
 
-                input_data = self.to_wrap(entity=torch.ones(input_shape), device=self.device)
+                input_data = self.to_wrap(
+                    entity=torch.ones(input_shape), device=self.device
+                )
 
                 btnk_input = self.encoder.forward(input_data=input_data)
 
@@ -1173,7 +1199,9 @@ class AutoencoderVariational(NetworkTemplate):
             else:
                 bottleneck_output = btnk_input
 
-            self.decoder.summary(input_data=bottleneck_output, device=self.device, display=display)
+            self.decoder.summary(
+                input_data=bottleneck_output, device=self.device, display=display
+            )
 
             # Saving the content of the subnetworks to the overall architecture dictionary
             self.shapes_dict.update({"encoder": self.encoder.shapes_dict})
@@ -1390,7 +1418,7 @@ class AutoencoderVariational(NetworkTemplate):
         Note:
             This function adds Gaussian noise to the mean and standard deviation of the encoded input data to generate a noisy latent representation.
         Example::
-    
+
             >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
             >>> input_data = np.random.rand(1, 28, 28, 1)
             >>> noisy_latent = autoencoder.latent_gaussian_noisy(input_data=input_data)
@@ -1517,24 +1545,26 @@ class AutoencoderVariational(NetworkTemplate):
 
         return self.reconstruction_eval(input_data=input_data).cpu().detach().numpy()
 
+
 ### Hybrid Autoencoder architectures
 
+
 class MultiScaleAutoencoder(NetworkTemplate):
-
-    def __init__(self,
-                 input_dim: Tuple[int, ...] = None, 
-                 output_dim: Optional[Tuple[int, ...]] = None,
-                 latent_dim: int=None,
-                 kernel_sizes_list: List[int] = None, 
-                 activation: str = None,
-                 case: str = "2d",
-                 shallow:bool=True,
-                 scale: float = 1e-3,
-                 devices:Union[str, List]="cpu",
-                 kind_of_ae: str = "variational",
-                 name:str=None,
-                 **kwargs) -> None:
-
+    def __init__(
+        self,
+        input_dim: Tuple[int, ...] = None,
+        output_dim: Optional[Tuple[int, ...]] = None,
+        latent_dim: int = None,
+        kernel_sizes_list: List[int] = None,
+        activation: str = None,
+        case: str = "2d",
+        shallow: bool = True,
+        scale: float = 1e-3,
+        devices: Union[str, List] = "cpu",
+        kind_of_ae: str = "variational",
+        name: str = None,
+        **kwargs,
+    ) -> None:
         super(MultiScaleAutoencoder, self).__init__(name=name)
 
         self.architecture = "cnn"
@@ -1552,33 +1582,32 @@ class MultiScaleAutoencoder(NetworkTemplate):
         self.AutoencodersList = torch.nn.ModuleList()
 
         for kernel_size in kernel_sizes_list:
-
             autoencoder = self.ae_class(
-                        input_dim=input_dim,
-                        output_dim=output_dim,
-                        latent_dim=latent_dim,
-                        kernel_size=kernel_size,
-                        activation=activation,
-                        architecture=self.architecture,
-                        case=case,
-                        devices=devices,
-                        shallow=shallow,
-                        name=name,
-                        **kwargs,
-                    )
+                input_dim=input_dim,
+                output_dim=output_dim,
+                latent_dim=latent_dim,
+                kernel_size=kernel_size,
+                activation=activation,
+                architecture=self.architecture,
+                case=case,
+                devices=devices,
+                shallow=shallow,
+                name=name,
+                **kwargs,
+            )
 
             self.AutoencodersList.append(autoencoder)
 
         ### These methods are used just when the architecture chosen is
         ### variational.
-        self.z_mean = self.to_wrap(entity=torch.nn.Linear(self.latent_dimension,
-                                                          self.latent_dimension),
-            device=self.device
+        self.z_mean = self.to_wrap(
+            entity=torch.nn.Linear(self.latent_dimension, self.latent_dimension),
+            device=self.device,
         )
 
-        self.z_log_var = self.to_wrap(entity=torch.nn.Linear(self.latent_dimension,
-                                                             self.latent_dimension),
-            device=self.device
+        self.z_log_var = self.to_wrap(
+            entity=torch.nn.Linear(self.latent_dimension, self.latent_dimension),
+            device=self.device,
         )
 
         self.add_module("z_mean", self.z_mean)
@@ -1607,7 +1636,7 @@ class MultiScaleAutoencoder(NetworkTemplate):
 
         Returns:
             Union[np.ndarray, torch.Tensor]: The mean of the encoded input data.
-        
+
         """
 
         latent_list = list()
@@ -1625,7 +1654,6 @@ class MultiScaleAutoencoder(NetworkTemplate):
     def latent_bypass(
         self, input_data: Union[np.ndarray, torch.Tensor] = None
     ) -> torch.Tensor:
-
         return input_data
 
     def latent_gaussian_noisy(
@@ -1660,7 +1688,7 @@ class MultiScaleAutoencoder(NetworkTemplate):
 
         Returns:
             torch.Tensor: The reconstructed output of the autoencoder.
-        
+
         """
 
         latent_list = list()
@@ -1690,7 +1718,7 @@ class MultiScaleAutoencoder(NetworkTemplate):
 
         Returns:
             torch.Tensor: The reconstructed output of the autoencoder.
-        
+
         """
 
         latent_list = list()
@@ -1710,7 +1738,6 @@ class MultiScaleAutoencoder(NetworkTemplate):
 
         return reconstructed
 
-
     def project(self, input_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
         r"""Projects the input data onto the autoencoder's latent space.
 
@@ -1719,7 +1746,7 @@ class MultiScaleAutoencoder(NetworkTemplate):
 
         Returns:
             np.ndarray: The input data projected onto the autoencoder's latent space.
-        
+
         """
 
         if isinstance(input_data, np.ndarray):
@@ -1741,7 +1768,7 @@ class MultiScaleAutoencoder(NetworkTemplate):
 
         Returns:
             np.ndarray: The reconstructed data.
-        
+
         """
 
         if isinstance(input_data, np.ndarray):
@@ -1749,8 +1776,9 @@ class MultiScaleAutoencoder(NetworkTemplate):
 
         input_data = input_data.to(self.device)
 
-        reconstructed_data = sum([ae.reconstruction(input_data=input_data)
-                                  for ae in self.AutoencodersList])
+        reconstructed_data = sum(
+            [ae.reconstruction(input_data=input_data) for ae in self.AutoencodersList]
+        )
 
         return reconstructed_data.cpu().detach().numpy()
 
@@ -1762,7 +1790,7 @@ class MultiScaleAutoencoder(NetworkTemplate):
 
         Returns:
             np.ndarray: The reconstructed data.
-        
+
         """
 
         if isinstance(input_data, np.ndarray):
@@ -1773,8 +1801,4 @@ class MultiScaleAutoencoder(NetworkTemplate):
         return self.reconstruction_eval(input_data=input_data).cpu().detach().numpy()
 
     def summary(self) -> None:
-
         print(self)
-
-
-

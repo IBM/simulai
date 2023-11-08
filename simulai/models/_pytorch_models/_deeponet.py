@@ -38,8 +38,8 @@ class DeepONet(NetworkTemplate):
         devices: Union[str, list] = "cpu",
         product_type: str = None,
         rescale_factors: np.ndarray = None,
-        model_id:str=None,
-        use_bias:bool=False,
+        model_id: str = None,
+        use_bias: bool = False,
     ) -> None:
         """Classical Deep Operator Network (DeepONet), a deep learning version
         of the Universal Approximation Theorem.
@@ -53,7 +53,7 @@ class DeepONet(NetworkTemplate):
             rescale_factors (np.ndarray, optional): Values used for rescaling the network outputs for a given order of magnitude. (Default value = None)
             model_id (str, optional): Name for the model (Default value = None)
             use_bias (bool, optional):  (Default value = False)
-        
+
         """
 
         super(DeepONet, self).__init__(devices=devices)
@@ -70,7 +70,9 @@ class DeepONet(NetworkTemplate):
         self.add_module("branch_network", self.branch_network)
 
         if decoder_network is not None:
-            self.decoder_network = self.to_wrap(entity=decoder_network, device=self.device)
+            self.decoder_network = self.to_wrap(
+                entity=decoder_network, device=self.device
+            )
             self.add_module("decoder_network", self.decoder_network)
         else:
             self.decoder_network = decoder_network
@@ -85,7 +87,9 @@ class DeepONet(NetworkTemplate):
                 len(rescale_factors) == var_dim
             ), "The number of rescaling factors must be equal to var_dim."
             rescale_factors = torch.from_numpy(rescale_factors.astype("float32"))
-            self.rescale_factors = self.to_wrap(entity=rescale_factors, device=self.device)
+            self.rescale_factors = self.to_wrap(
+                entity=rescale_factors, device=self.device
+            )
         else:
             self.rescale_factors = None
 
@@ -107,8 +111,10 @@ class DeepONet(NetworkTemplate):
         # If bias is being used, check whether the network outputs are compatible.
         if self.use_bias:
             print("Bias is being used.")
-            self._bias_compatibility_is_correct(dim_trunk=self.trunk_network.output_size,
-                                                dim_branch=self.branch_network.output_size)
+            self._bias_compatibility_is_correct(
+                dim_trunk=self.trunk_network.output_size,
+                dim_branch=self.branch_network.output_size,
+            )
             self.bias_wrapper = self._wrapper_bias_active
         else:
             self.bias_wrapper = self._wrapper_bias_inactive
@@ -162,7 +168,7 @@ class DeepONet(NetworkTemplate):
         self.output = None
         self.var_map = dict()
 
-        #TODO Checking up if the input of the decoder network has the correct dimension
+        # TODO Checking up if the input of the decoder network has the correct dimension
         if self.decoder_network is not None:
             print("Decoder is being used.")
         else:
@@ -181,7 +187,7 @@ class DeepONet(NetworkTemplate):
 
         Returns:
             bool: The confirmation about the dimensionality correctness.
-        
+
         """
 
         if type(dim) == int:
@@ -192,12 +198,14 @@ class DeepONet(NetworkTemplate):
             else:
                 return False
 
-    def _bias_compatibility_is_correct(self, dim_trunk: Union[int, tuple],
-                                       dim_branch: Union[int, tuple]) -> bool:
-
-        assert dim_branch == dim_trunk + self.var_dim, ("When using bias, the dimension"+
-                                                        "of the branch output should be" +
-                                                        "trunk output + var_dim.")
+    def _bias_compatibility_is_correct(
+        self, dim_trunk: Union[int, tuple], dim_branch: Union[int, tuple]
+    ) -> bool:
+        assert dim_branch == dim_trunk + self.var_dim, (
+            "When using bias, the dimension"
+            + "of the branch output should be"
+            + "trunk output + var_dim."
+        )
 
     def _forward_dense(
         self, output_trunk: torch.Tensor = None, output_branch: torch.Tensor = None
@@ -211,7 +219,7 @@ class DeepONet(NetworkTemplate):
 
         Returns:
             torch.Tensor: The product between the two embeddings.
-        
+
         """
 
         latent_dim = int(output_branch.shape[-1] / self.var_dim)
@@ -236,7 +244,7 @@ class DeepONet(NetworkTemplate):
 
         Returns:
             torch.Tensor: The product between the two embeddings.
-        
+
         """
 
         latent_dim = int(output_trunk.shape[-1] / self.var_dim)
@@ -263,7 +271,7 @@ class DeepONet(NetworkTemplate):
 
         Returns:
             torch.Tensor: The product between the two embeddings.
-        
+
         """
 
         output = torch.sum(output_trunk * output_branch, dim=-1, keepdim=True)
@@ -276,11 +284,10 @@ class DeepONet(NetworkTemplate):
 
         Returns:
             callable : The callable corresponding to the required forward method.
-        
+
         """
 
         if self.var_dim > 1:
-
             # It operates as a typical dense layer
             if self.product_type == "dense":
                 return self._forward_dense
@@ -321,7 +328,6 @@ class DeepONet(NetworkTemplate):
         output_trunk: Union[np.ndarray, torch.Tensor] = None,
         output_branch: Union[np.ndarray, torch.Tensor] = None,
     ) -> torch.Tensor:
-
         output = self._forward(output_trunk=output_trunk, output_branch=output_branch)
 
         return output
@@ -331,40 +337,38 @@ class DeepONet(NetworkTemplate):
         output_trunk: Union[np.ndarray, torch.Tensor] = None,
         output_branch: Union[np.ndarray, torch.Tensor] = None,
     ) -> torch.Tensor:
+        output_branch_ = output_branch[:, : -self.var_dim]
+        bias = output_branch[:, -self.var_dim :]
 
-        output_branch_ = output_branch[:, :-self.var_dim]
-        bias = output_branch[:, -self.var_dim:]
-
-        output = self._forward(output_trunk=output_trunk, output_branch=output_branch_) + bias
+        output = (
+            self._forward(output_trunk=output_trunk, output_branch=output_branch_)
+            + bias
+        )
 
         return output
 
     def _wrapper_decoder_active(
-        self, 
+        self,
         input_data: Union[np.ndarray, torch.Tensor] = None,
     ) -> torch.Tensor:
-
         return self.decoder_network.forward(input_data=input_data)
 
     def _wrapper_decoder_inactive(
-        self, 
+        self,
         input_data: Union[np.ndarray, torch.Tensor] = None,
     ) -> torch.Tensor:
-
         return input_data
 
     def _wrapper_rescale_active(
-        self, 
+        self,
         input_data: Union[np.ndarray, torch.Tensor] = None,
     ) -> torch.Tensor:
-
         return input_data * self.rescale_factors
 
     def _wrapper_rescale_inactive(
-        self, 
+        self,
         input_data: Union[np.ndarray, torch.Tensor] = None,
     ) -> torch.Tensor:
-
         return input_data
 
     def forward(
@@ -380,20 +384,24 @@ class DeepONet(NetworkTemplate):
 
         Returns:
             torch.Tensor: The result of all the hidden operations in the network.
-        
+
         """
 
         # Forward method execution
-        output_trunk = self.to_wrap(entity=self.trunk_network.forward(input_trunk),
-                                    device=self.device)
+        output_trunk = self.to_wrap(
+            entity=self.trunk_network.forward(input_trunk), device=self.device
+        )
 
-        output_branch = self.to_wrap(entity=self.branch_network.forward(input_branch),
-                                     device=self.device)
+        output_branch = self.to_wrap(
+            entity=self.branch_network.forward(input_branch), device=self.device
+        )
 
         # Wrappers are applied to execute user-defined operations.
         # When those operations are not selected, these wrappers simply
-        # bypass the inputs. 
-        output = self.bias_wrapper(output_trunk=output_trunk, output_branch=output_branch)
+        # bypass the inputs.
+        output = self.bias_wrapper(
+            output_trunk=output_trunk, output_branch=output_branch
+        )
 
         return self.rescale_wrapper(input_data=self.decoder_wrapper(input_data=output))
 
@@ -411,7 +419,7 @@ class DeepONet(NetworkTemplate):
 
         Returns:
             np.ndarray: The result of all the hidden operations in the network.
-        
+
         """
 
         output_tensor = self.forward(input_trunk=trunk_data, input_branch=branch_data)
@@ -430,7 +438,7 @@ class DeepONet(NetworkTemplate):
 
         Returns:
             np.ndarray: The evaluation performed by the subnetwork.
-        
+
         """
 
         assert (
@@ -463,11 +471,11 @@ class ResDeepONet(DeepONet):
         rescale_factors: np.ndarray = None,
         residual: bool = True,
         multiply_by_trunk: bool = False,
-        model_id:str=None,
-        use_bias:bool=False,
+        model_id: str = None,
+        use_bias: bool = False,
     ) -> None:
         """Residual Deep Operator Network (DeepONet)
-        
+
         The operation performed is: output = input_branch + D(param, input_branch)
 
         Args:
@@ -483,7 +491,7 @@ class ResDeepONet(DeepONet):
         `output*trunk_input + branch_input` (Default value = False)
             model_id (str, optional): Name for the model (Default value = None)
             use_bias (bool, optional):  (Default value = False)
-        
+
         """
 
         super(ResDeepONet, self).__init__(
@@ -528,7 +536,7 @@ class ResDeepONet(DeepONet):
 
         Returns:
             torch.Tensor: The product between the two embeddings.
-        
+
         """
 
         output_residual = self.forward_(
@@ -550,7 +558,7 @@ class ResDeepONet(DeepONet):
 
         Returns:
             torch.Tensor: The product between the two embeddings.
-        
+
         """
 
         output_residual = self.forward_(
@@ -572,7 +580,7 @@ class ResDeepONet(DeepONet):
 
         Returns:
             torch.Tensor: The product between the two embeddings.
-        
+
         """
 
         output = self.forward_(input_trunk=input_trunk, input_branch=input_branch)
@@ -597,8 +605,8 @@ class ImprovedDeepONet(ResDeepONet):
         rescale_factors: np.ndarray = None,
         residual: bool = False,
         multiply_by_trunk: bool = False,
-        model_id:str=None,
-        use_bias:bool=False,
+        model_id: str = None,
+        use_bias: bool = False,
     ) -> None:
         """The so-called Improved DeepONet architecture aims at enhancing the communication
         between the trunk and branch pipelines during the training process, thus allowing
@@ -620,7 +628,7 @@ class ImprovedDeepONet(ResDeepONet):
             multiply_by_trunk (bool, optional):  (Default value = False)
             model_id (str, optional): Name for the model (Default value = None)
             use_bias (bool, optional):  (Default value = False)
-        
+
         """
 
         # Guaranteeing the compatibility between the encoders and the branch and trunk networks
@@ -670,21 +678,21 @@ class ImprovedDeepONet(ResDeepONet):
 
         Returns:
             torch.Tensor: The product between the two embeddings.
-        
+
         """
 
         # Forward method execution
         v = self.encoder_trunk.forward(input_data=input_trunk)
         u = self.encoder_branch.forward(input_data=input_branch)
 
-        output_trunk = self.to_wrap(entity=self.trunk_network.forward(
-                                    input_data=input_trunk, u=u, v=v),
-                                    device=self.device
+        output_trunk = self.to_wrap(
+            entity=self.trunk_network.forward(input_data=input_trunk, u=u, v=v),
+            device=self.device,
         )
 
-        output_branch =  self.to_wrap(entity=self.branch_network.forward(
-                                      input_data=input_branch, u=u, v=v),
-                                      device=self.device
+        output_branch = self.to_wrap(
+            entity=self.branch_network.forward(input_data=input_branch, u=u, v=v),
+            device=self.device,
         )
 
         output = self._forward(output_trunk=output_trunk, output_branch=output_branch)
@@ -707,7 +715,7 @@ class ImprovedDeepONet(ResDeepONet):
 
         Returns:
             np.ndarray: The evaluation performed by the subnetwork.
-        
+
         """
 
         assert (
@@ -754,8 +762,8 @@ class FlexibleDeepONet(ResDeepONet):
         rescale_factors: np.ndarray = None,
         residual: bool = False,
         multiply_by_trunk: bool = False,
-        model_id:str=None,
-        use_bias:bool=False,
+        model_id: str = None,
+        use_bias: bool = False,
     ) -> None:
         """Flexible DeepONet uses a subnetwork called 'pre-network', which
                     plays the role of rescaling the trunk input according to the branch input.
@@ -776,7 +784,7 @@ class FlexibleDeepONet(ResDeepONet):
             multiply_by_trunk (bool, optional):  (Default value = False)
             model_id (str, optional): Name for the model (Default value = None)
             use_bias (bool, optional):  (Default value = False)
-        
+
         """
 
         # Guaranteeing the compatibility between the pre and the branch and trunk networks
@@ -833,23 +841,26 @@ class FlexibleDeepONet(ResDeepONet):
 
         Returns:
             torch.Tensor: The product between the two embeddings.
-        
+
         """
 
         # Forward method execution
-        output_branch = self.to_wrap(entity=self.branch_network.forward(input_data=input_branch),
-                                     device=self.device
+        output_branch = self.to_wrap(
+            entity=self.branch_network.forward(input_data=input_branch),
+            device=self.device,
         )
 
-        rescaling = self.to_wrap(entity=self.pre_network.forward(input_data=input_branch),
-                                 device=self.device)
+        rescaling = self.to_wrap(
+            entity=self.pre_network.forward(input_data=input_branch), device=self.device
+        )
 
         input_trunk_rescaled = self._rescaling_operation(
             input_data=input_trunk, rescaling_tensor=rescaling
         )
 
-        output_trunk = self.to_wrap(entity=self.trunk_network.forward(input_data=input_trunk_rescaled), 
-                                    device=self.device
+        output_trunk = self.to_wrap(
+            entity=self.trunk_network.forward(input_data=input_trunk_rescaled),
+            device=self.device,
         )
 
         output = self._forward(output_trunk=output_trunk, output_branch=output_branch)
@@ -872,7 +883,7 @@ class FlexibleDeepONet(ResDeepONet):
 
         Returns:
             np.ndarray: The evaluation performed by the subnetwork.
-        
+
         """
 
         assert (

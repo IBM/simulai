@@ -125,9 +125,9 @@ def _adjust_loss_function_to_model(
             recommended_loss = "wrmse"
         elif isinstance(model, simmod.MultiScaleAutoencoder):
             if model.kind_of_ae == "variational":
-                    recommended_loss = "vaermse"
+                recommended_loss = "vaermse"
             else:
-                    recommended_loss = "wrmse"
+                recommended_loss = "wrmse"
         else:
             if loss not in special_losses:
                 recommended_loss = loss
@@ -499,7 +499,6 @@ class Optimizer:
 
         self.loss_states = loss_states
 
-
     # Basic version of the mini-batch optimization loop
     # TODO It could be parallelized
     def _batchwise_optimization_loop(
@@ -714,10 +713,12 @@ class Optimizer:
         elif device == "cpu":
             print("Using CPU.")
         elif not device:
-            device="cpu"
+            device = "cpu"
             print("Received None, but using cpu instead.")
         else:
-            raise Exception(f"The device must be cpu or gpu, the device {device} is not supported.")
+            raise Exception(
+                f"The device must be cpu or gpu, the device {device} is not supported."
+            )
 
         if not "device" in params:
             params["device"] = device
@@ -932,7 +933,6 @@ class ScipyInterface:
         )
 
     def _update_and_set_parameters(self, parameters: np.ndarray) -> None:
-
         operators = [
             torch.from_numpy(
                 parameters[slice(*interval)].reshape(shape).astype(self.default_dtype)

@@ -41,33 +41,40 @@ mu = 0.25
 pi = np.pi
 
 time_train = (np.random.rand(n) * T_max)[:, None]
-T_train = np.sin(4*np.pi*time_train)
+T_train = np.sin(4 * np.pi * time_train)
 
 time_eval = np.linspace(0, T_max, N)[:, None]
-T_eval = np.sin(4*np.pi*time_eval)
+T_eval = np.sin(4 * np.pi * time_eval)
 
 input_train = np.hstack([time_train, T_train])
 input_eval = np.hstack([time_eval, T_eval])
 
+
 def dataset(t: np.ndarray = None) -> np.ndarray:
     return (t - mu) ** 2 * np.cos(omega * np.pi * t)
+
 
 def dataset_2(t: np.ndarray = None) -> np.ndarray:
     return np.sin(omega * np.pi * t)
 
+
 # Datasets used for comparison
 u_data = dataset_2(t=time_eval)
+
 
 def k1(t: torch.Tensor) -> torch.Tensor:
     return 2 * (t - mu) * torch.cos(omega * pi * t)
 
+
 def k2(t: torch.Tensor) -> torch.Tensor:
     return torch.sin(omega * pi * t)
 
+
 def k3(t: torch.Tensor, T: torch.Tensor) -> torch.Tensor:
-    interp = interp1d(t[:,0].detach(), T[:,0].detach())
-    v = torch.from_numpy(interp(t[:,0].detach()))
+    interp = interp1d(t[:, 0].detach(), T[:, 0].detach())
+    v = torch.from_numpy(interp(t[:, 0].detach()))
     return torch.sin(omega * pi * v)
+
 
 # The expression we aim at minimizing
 f = "u - k3(t, T)"

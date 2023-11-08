@@ -30,7 +30,7 @@ class HardPositivityLimiting:
 
         Args:
             tol (float, optional): The minimum acceptable value to ensure positivity. (Default value = 1e-10)
-        
+
         """
 
         self.tol = tol
@@ -44,7 +44,7 @@ class HardPositivityLimiting:
         Returns:
             np.ndarray: The data limited.
             int: The number of indices where the data was limited.
-        
+
         """
 
         indices = np.where(data < self.tol)
@@ -64,7 +64,7 @@ class HardPositivityLimiting:
         Returns:
             np.ndarray: The processed batch.
             int: The number of points where the limiting was applied.
-        
+
         """
         if isinstance(data, np.ndarray):
             return self._apply_limiting(data=data)
@@ -112,7 +112,7 @@ class TimeAveraging:
         Args:
             batch_size (int, optional): The size of the batch to be processed at each time. (Default value = None)
             axis (int, optional): The axis along which to apply time-averaging. (Default value = None)
-        
+
         """
         self.batch_size = batch_size
 
@@ -132,7 +132,7 @@ class TimeAveraging:
 
         Returns:
             h5py.Dataset: HDF5 dataset with the time-averaged original data.
-        
+
         """
         fp = h5py.File(path, "w")
 
@@ -167,8 +167,8 @@ class SVDThreshold:
 
 
         Returns:
-            None: 
-        
+            None:
+
         """
         self.limit_aspect_ratio = 0.1
 
@@ -180,7 +180,7 @@ class SVDThreshold:
 
         Returns:
             float: Special lambda.
-        
+
         """
         return np.sqrt(
             2 * (beta + 1)
@@ -198,7 +198,7 @@ class SVDThreshold:
 
         Returns:
             float: Lambda function value.
-        
+
         """
         if shape[0] == shape[1]:
             return beta
@@ -218,7 +218,7 @@ class SVDThreshold:
 
         Returns:
             float: Beta parameter value.
-        
+
         """
         n, m = shape
         # In case of square data matrices
@@ -238,7 +238,7 @@ class SVDThreshold:
 
         Returns:
             np.ndarray: The value of the integrand.
-        
+
         """
         monomial_upper = float((1 + np.sqrt(beta)) ** 2)
         monomial_lower = float((1 - np.sqrt(beta)) ** 2)
@@ -261,7 +261,7 @@ class SVDThreshold:
 
         Returns:
             float: The evaluation of the Marcenko-Pastur integral.
-        
+
         """
 
         upper_lim = (1 + np.sqrt(beta)) ** 2
@@ -278,7 +278,7 @@ class SVDThreshold:
 
         Returns:
             float: The evaluation of the Marcenko-Pastur median.
-        
+
         """
         MarPas = lambda t: 1 - self.Marcenko_Pastur_integral(beta, t)
         lobnd = (1 - np.sqrt(beta)) ** 2
@@ -326,7 +326,7 @@ class SVDThreshold:
 
         Returns:
             np.ndarray: The filtered singular values.
-        
+
         """
         print("Executing SVD filtering.")
 
@@ -361,7 +361,7 @@ class SVDThreshold:
 
         Returns:
             ROM: The filtered ROM object.
-        
+
         """
         assert hasattr(
             pca, "singular_values"
@@ -394,7 +394,7 @@ class TimeSeriesExtremes:
 
         Returns:
             np.ndarray: The curvature change indicator.
-        
+
         """
         assert (
             type(index) == int
@@ -414,7 +414,7 @@ class TimeSeriesExtremes:
 
         Returns:
             np.ndarray: The indices for the extrema.
-        
+
         """
 
         z = np.zeros(data.shape[0])
@@ -437,7 +437,7 @@ class TimeSeriesExtremes:
             tuple: Tuple containing the indices of the extreme values in the filtered data.
             If a column is specified, the tuple will contain a single list of indices.
             If no column is specified, the tuple will contain a list of indices for each column.
-        
+
         """
 
         if column is not None:

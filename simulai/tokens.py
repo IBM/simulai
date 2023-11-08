@@ -13,7 +13,7 @@
 #     limitations under the License.
 
 import sympy
-from typing import Union 
+from typing import Union
 import torch
 
 # Token used for representing the operator differentiation
@@ -92,19 +92,22 @@ def Div(u: sympy.Symbol, vars: tuple) -> callable:
 
     return l
 
-def Gp(g0:Union[torch.tensor,float], r:Union[torch.tensor, float], n:int) -> callable:
 
-    elements = (n+1)*[None]
+def Gp(
+    g0: Union[torch.tensor, float], r: Union[torch.tensor, float], n: int
+) -> callable:
+    elements = (n + 1) * [None]
     elements[0] = torch.ones(g0.shape)
 
-    for i in range(1, n+1):
-        elements[i] = r*elements[i-1]
+    for i in range(1, n + 1):
+        elements[i] = r * elements[i - 1]
 
     return torch.hstack(elements)
 
-def Dot(a:Union[list,torch.tensor], b:Union[list, torch.tensor]) -> torch.tensor:
 
-    return torch.sum(a*b, dim=1, keepdim=True)
+def Dot(a: Union[list, torch.tensor], b: Union[list, torch.tensor]) -> torch.tensor:
+    return torch.sum(a * b, dim=1, keepdim=True)
+
 
 def diff_op(func: callable) -> callable:
     """

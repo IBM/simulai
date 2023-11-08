@@ -17,10 +17,12 @@ from unittest import TestCase
 
 import numpy as np
 from tests.config import configure_dtype
+
 torch = configure_dtype()
 
 from simulai.residuals import SymbolicOperator
 from simulai.tokens import Dot, Gp
+
 
 def model(n_inputs: int = 1, n_outputs: int = 1):
     from simulai.regression import DenseNetwork
@@ -39,8 +41,8 @@ def model(n_inputs: int = 1, n_outputs: int = 1):
 
     return net
 
-def model_operator():
 
+def model_operator():
     import numpy as np
 
     from simulai.models import DeepONet, ImprovedDenseNetwork
@@ -140,7 +142,6 @@ class TestSymbolicOperator(TestCase):
         assert all([isinstance(item, torch.Tensor) for item in residual(t)])
 
     def test_symbolic_buitin_functions(self):
-
         f = f"D(u, t) - Dot(a, Gp(t, t, 4))"
 
         input_labels = ["t", "a"]

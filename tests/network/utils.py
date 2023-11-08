@@ -8,6 +8,7 @@ def configure_device():
         device = "cpu"
     else:
         from tests.config import configure_dtype
+
         torch = configure_dtype()
 
         if not torch.cuda.is_available():

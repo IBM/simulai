@@ -96,20 +96,19 @@ class sin(torch.nn.Module):
         """
         return torch.sin(input)
 
+
 class Wavelet(torch.nn.Module):
-    """Wavelet activation
-    """
+    """Wavelet activation"""
 
     name = "wavelet"
 
     def __init__(self) -> None:
-
         super(Wavelet, self).__init__()
 
         self.w1 = torch.nn.Parameter(torch.ones(1), requires_grad=True)
         self.w2 = torch.nn.Parameter(torch.ones(1), requires_grad=True)
 
-    def forward(self, input:torch.Tensor) -> torch.Tensor:
+    def forward(self, input: torch.Tensor) -> torch.Tensor:
         """Perform the forward pass of the Wavelet activation on the input.
 
         Parameters
@@ -125,4 +124,3 @@ class Wavelet(torch.nn.Module):
         """
 
         return self.w1 * torch.sin(input) + self.w2 * torch.cos(input)
-

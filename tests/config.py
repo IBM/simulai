@@ -19,10 +19,10 @@
 # Author: Joao Lucas S. Almeida <joao.lucas.sousa.almeida@ibm.com>
 
 import os
-import torch 
+import torch
+
 
 def configure_dtype():
-
     test_dtype_var = os.environ.get("TEST_DTYPE")
 
     if test_dtype_var is not None:
@@ -35,6 +35,3 @@ def configure_dtype():
     print(f"Using dtype {test_dtype} in tests.")
 
     return torch
-
-
-

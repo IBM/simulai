@@ -17,6 +17,7 @@ from unittest import TestCase
 
 import numpy as np
 from tests.config import configure_dtype
+
 torch = configure_dtype()
 
 from utils import configure_device
@@ -34,13 +35,13 @@ def generate_data(
     n_inputs: int = None,
     n_outputs: int = None,
 ) -> (torch.Tensor, torch.Tensor):
-
     input_data = np.random.rand(n_samples, n_inputs, *image_size)
     output_data = np.random.rand(n_samples, n_outputs, *image_size)
 
     return torch.from_numpy(input_data.astype(ARRAY_DTYPE)), torch.from_numpy(
         output_data.astype(ARRAY_DTYPE)
     )
+
 
 # Model template
 def model_2d():
@@ -53,9 +54,8 @@ def model_2d():
 
     layers = {
         "encoder": {
-            "type": "cnn", 
-            "architecture" :[
-
+            "type": "cnn",
+            "architecture": [
                 {
                     "in_channels": n_inputs,
                     "out_channels": n_ch_0,
@@ -63,7 +63,6 @@ def model_2d():
                     "stride": 1,
                     "padding": 1,
                 },
-               
                 {
                     "in_channels": n_ch_0,
                     "out_channels": n_ch_0,
@@ -72,212 +71,222 @@ def model_2d():
                     "padding": 1,
                     "after_conv": {"type": "maxpool2d", "kernel_size": 2, "stride": 2},
                 },
-
                 {
                     "in_channels": n_ch_0,
-                    "out_channels": 2*n_ch_0,
+                    "out_channels": 2 * n_ch_0,
                     "kernel_size": 3,
                     "stride": 1,
                     "padding": 1,
                 },
-              
                 {
-                    "in_channels": 2*n_ch_0,
-                    "out_channels": 2*n_ch_0,
+                    "in_channels": 2 * n_ch_0,
+                    "out_channels": 2 * n_ch_0,
                     "kernel_size": 3,
                     "stride": 1,
                     "padding": 1,
                     "after_conv": {"type": "maxpool2d", "kernel_size": 2, "stride": 2},
                 },
-
                 {
-                    "in_channels": 2*n_ch_0,
-                    "out_channels": 4*n_ch_0,
+                    "in_channels": 2 * n_ch_0,
+                    "out_channels": 4 * n_ch_0,
                     "kernel_size": 3,
                     "stride": 1,
                     "padding": 1,
                 },
-              
                 {
-                    "in_channels": 4*n_ch_0,
-                    "out_channels": 4*n_ch_0,
-                    "kernel_size": 3,
-                    "stride": 1,
-                    "padding": 1,
-                    "after_conv": {"type": "maxpool2d", "kernel_size": 2, "stride": 2},
-                },
-
-                {
-                    "in_channels": 4*n_ch_0,
-                    "out_channels": 8*n_ch_0,
-                    "kernel_size": 3,
-                    "stride": 1,
-                    "padding": 1,
-                },
-              
-                {
-                    "in_channels": 8*n_ch_0,
-                    "out_channels": 8*n_ch_0,
+                    "in_channels": 4 * n_ch_0,
+                    "out_channels": 4 * n_ch_0,
                     "kernel_size": 3,
                     "stride": 1,
                     "padding": 1,
                     "after_conv": {"type": "maxpool2d", "kernel_size": 2, "stride": 2},
                 },
-
                 {
-                    "in_channels": 8*n_ch_0,
-                    "out_channels": 16*n_ch_0,
+                    "in_channels": 4 * n_ch_0,
+                    "out_channels": 8 * n_ch_0,
                     "kernel_size": 3,
                     "stride": 1,
                     "padding": 1,
                 },
-
-            ]
+                {
+                    "in_channels": 8 * n_ch_0,
+                    "out_channels": 8 * n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+                    "after_conv": {"type": "maxpool2d", "kernel_size": 2, "stride": 2},
+                },
+                {
+                    "in_channels": 8 * n_ch_0,
+                    "out_channels": 16 * n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+                },
+            ],
         },
         "decoder": {
-            "type": "cnn", 
-            "architecture" :[
-
+            "type": "cnn",
+            "architecture": [
                 {
-                    "in_channels": 16*n_ch_0,
-                    "out_channels": 16*n_ch_0,
-                    "kernel_size": 3,
-                    "stride": 1,
-                    "padding": 1,
-
-                },
-
-                {
-                    "in_channels": 16*n_ch_0,
-                    "out_channels": 8*n_ch_0,
-                    "kernel_size": 3,
-                    "stride": 1,
-                    "padding": 1,
-                    "before_conv": {"type": "upsample", "scale_factor": 2, "mode": "bicubic"},
-                },
-
-                {
-                    "in_channels": 16*n_ch_0,
-                    "out_channels": 8*n_ch_0,
-                    "kernel_size": 3,
-                    "stride": 1,
-                    "padding": 1,
-
-                },
-
-                {
-                    "in_channels": 8*n_ch_0,
-                    "out_channels": 8*n_ch_0,
-                    "kernel_size": 3,
-                    "stride": 1,
-                    "padding": 1,
-
-                },
-
-                {
-                    "in_channels": 8*n_ch_0,
-                    "out_channels": 4*n_ch_0,
-                    "kernel_size": 3,
-                    "stride": 1,
-                    "padding": 1,
-                    "before_conv": {"type": "upsample", "scale_factor": 2, "mode": "bicubic"},
-                },
-
-                {
-                    "in_channels": 8*n_ch_0,
-                    "out_channels": 4*n_ch_0,
-                    "kernel_size": 3,
-                    "stride": 1,
-                    "padding": 1,
-
-                },
-
-                {
-                    "in_channels": 4*n_ch_0,
-                    "out_channels": 4*n_ch_0,
-                    "kernel_size": 3,
-                    "stride": 1,
-                    "padding": 1,
-
-                },
-
-                {
-                    "in_channels": 4*n_ch_0,
-                    "out_channels": 2*n_ch_0,
-                    "kernel_size": 3,
-                    "stride": 1,
-                    "padding": 1,
-                    "before_conv": {"type": "upsample", "scale_factor": 2, "mode": "bicubic"},
-                },
-
-                {
-                    "in_channels": 4*n_ch_0,
-                    "out_channels": 2*n_ch_0,
+                    "in_channels": 16 * n_ch_0,
+                    "out_channels": 16 * n_ch_0,
                     "kernel_size": 3,
                     "stride": 1,
                     "padding": 1,
                 },
-
                 {
-                    "in_channels": 2*n_ch_0,
-                    "out_channels": 2*n_ch_0,
+                    "in_channels": 16 * n_ch_0,
+                    "out_channels": 8 * n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+                    "before_conv": {
+                        "type": "upsample",
+                        "scale_factor": 2,
+                        "mode": "bicubic",
+                    },
+                },
+                {
+                    "in_channels": 16 * n_ch_0,
+                    "out_channels": 8 * n_ch_0,
                     "kernel_size": 3,
                     "stride": 1,
                     "padding": 1,
                 },
-
                 {
-                    "in_channels": 2*n_ch_0,
-                    "out_channels": 1*n_ch_0,
-                    "kernel_size": 3,
-                    "stride": 1,
-                    "padding": 1,
-                    "before_conv": {"type": "upsample", "scale_factor": 2, "mode": "bicubic"},
-                },
-
-                {
-                    "in_channels": 2*n_ch_0,
-                    "out_channels": 1*n_ch_0,
+                    "in_channels": 8 * n_ch_0,
+                    "out_channels": 8 * n_ch_0,
                     "kernel_size": 3,
                     "stride": 1,
                     "padding": 1,
                 },
-
                 {
-                    "in_channels": 1*n_ch_0,
-                    "out_channels": 1*n_ch_0,
+                    "in_channels": 8 * n_ch_0,
+                    "out_channels": 4 * n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+                    "before_conv": {
+                        "type": "upsample",
+                        "scale_factor": 2,
+                        "mode": "bicubic",
+                    },
+                },
+                {
+                    "in_channels": 8 * n_ch_0,
+                    "out_channels": 4 * n_ch_0,
                     "kernel_size": 3,
                     "stride": 1,
                     "padding": 1,
                 },
-
                 {
-                    "in_channels": 1*n_ch_0,
+                    "in_channels": 4 * n_ch_0,
+                    "out_channels": 4 * n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+                },
+                {
+                    "in_channels": 4 * n_ch_0,
+                    "out_channels": 2 * n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+                    "before_conv": {
+                        "type": "upsample",
+                        "scale_factor": 2,
+                        "mode": "bicubic",
+                    },
+                },
+                {
+                    "in_channels": 4 * n_ch_0,
+                    "out_channels": 2 * n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+                },
+                {
+                    "in_channels": 2 * n_ch_0,
+                    "out_channels": 2 * n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+                },
+                {
+                    "in_channels": 2 * n_ch_0,
+                    "out_channels": 1 * n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+                    "before_conv": {
+                        "type": "upsample",
+                        "scale_factor": 2,
+                        "mode": "bicubic",
+                    },
+                },
+                {
+                    "in_channels": 2 * n_ch_0,
+                    "out_channels": 1 * n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+                },
+                {
+                    "in_channels": 1 * n_ch_0,
+                    "out_channels": 1 * n_ch_0,
+                    "kernel_size": 3,
+                    "stride": 1,
+                    "padding": 1,
+                },
+                {
+                    "in_channels": 1 * n_ch_0,
                     "out_channels": n_outputs,
                     "kernel_size": 3,
                     "stride": 1,
                     "padding": 1,
                 },
-
-            ]
+            ],
         },
-        "encoder_activations": ["relu", "relu", "relu", "relu", "relu",
-                                "relu", "relu", "relu", "relu", "relu",
-                                "relu"
-                                ],
-
-        "decoder_activations": ["relu", "identity", "relu", "relu", "identity",
-                                "relu", "relu", "identity", "relu", "relu",
-                                "identity", "relu", "relu", "identity", 
-                                ],
+        "encoder_activations": [
+            "relu",
+            "relu",
+            "relu",
+            "relu",
+            "relu",
+            "relu",
+            "relu",
+            "relu",
+            "relu",
+            "relu",
+            "relu",
+        ],
+        "decoder_activations": [
+            "relu",
+            "identity",
+            "relu",
+            "relu",
+            "identity",
+            "relu",
+            "relu",
+            "identity",
+            "relu",
+            "relu",
+            "identity",
+            "relu",
+            "relu",
+            "identity",
+        ],
     }
 
-    unet = UNet(layers_config=layers,
-                intermediary_outputs_indices=[4, 9, 14, 19],
-                intermediary_inputs_indices=[4, 10, 16, 22],
-                )
+    unet = UNet(
+        layers_config=layers,
+        intermediary_outputs_indices=[4, 9, 14, 19],
+        intermediary_inputs_indices=[4, 10, 16, 22],
+    )
 
     return unet
+
 
 class TestConvNet2D(TestCase):
     def setUp(self) -> None:
@@ -303,5 +312,3 @@ class TestConvNet2D(TestCase):
             f" Expected {output_data.shape},"
             f" but received {estimated_output_data.shape}."
         )
-
-

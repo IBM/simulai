@@ -40,7 +40,7 @@ from simulai.residuals import SymbolicOperator
 # In[4]:
 
 
-save_path = '.'
+save_path = "."
 
 
 # In[5]:
@@ -194,7 +194,7 @@ residual = SymbolicOperator(
     output_vars=output_labels,
     function=manufactured_net,
     inputs_key="input_trunk|input_branch:0|input_branch:1",
-    constants={"pi":np.pi},
+    constants={"pi": np.pi},
     device="gpu",
     engine="torch",
 )
@@ -269,7 +269,10 @@ optimizer.fit(
 print("Saving model.")
 saver = SPFile(compact=False)
 saver.write(
-    save_dir=save_path, name="manufactured_deeponet", model=manufactured_net, template=model
+    save_dir=save_path,
+    name="manufactured_deeponet",
+    model=manufactured_net,
+    template=model,
 )
 
 
@@ -330,7 +333,6 @@ manufactured_net = saver.read(model_path=save_path)
 
 
 for j in range(N + 1):
-    
     exact_data = solver.run(U_s[j], t)
 
     initial_state_test = U_s[j]
@@ -396,4 +398,3 @@ for j in range(N + 1):
         plt.ylim(1.5 * exact_data[:, 1].min(), 1.5 * exact_data[:, 1].max())
         plt.savefig(f"{model_name}_s2_time_int_{j}.png")
         plt.close()
-

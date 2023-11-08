@@ -1,5 +1,6 @@
 from unittest import TestCase
 from tests.config import configure_dtype
+
 torch = configure_dtype()
 
 from simulai.metrics import MahalanobisDistance

@@ -46,20 +46,22 @@ k1 = 0.04
 k2 = 3e7
 k3 = 1e4
 
-Simulated_Time = 500           
+Simulated_Time = 500
 
 """    Differential Equations    """
 
-def model(t, y):
-  s1 =  y[0]
-  s2 =  y[1]
-  s3 =  y[2]
-  
-  ds1dt = -k1 * s1 + k3 * s2 * s3
-  ds2dt = k1 * s1 - k2 * (s2**2) - k3 * s2 * s3
-  ds3dt = k2 * (s2**2)
 
-  return [ds1dt, ds2dt, ds3dt]
+def model(t, y):
+    s1 = y[0]
+    s2 = y[1]
+    s3 = y[2]
+
+    ds1dt = -k1 * s1 + k3 * s2 * s3
+    ds2dt = k1 * s1 - k2 * (s2**2) - k3 * s2 * s3
+    ds3dt = k2 * (s2**2)
+
+    return [ds1dt, ds2dt, ds3dt]
+
 
 """     Initial Conditions    """
 s1_0 = 1.0
@@ -68,13 +70,15 @@ s3_0 = 0.0
 Initial_Conditions = [s1_0, s2_0, s3_0]
 
 # In order to use on Plots
-Variable_Names= ['s1', 's2', 's3']
+Variable_Names = ["s1", "s2", "s3"]
 
 """     Solve ODE       """
 
 t_eval = np.linspace(0, Simulated_Time, num=1000, endpoint=True)
 
-sol = solve_ivp(model, [0, Simulated_Time], Initial_Conditions, method = 'LSODA', t_eval=t_eval)
+sol = solve_ivp(
+    model, [0, Simulated_Time], Initial_Conditions, method="LSODA", t_eval=t_eval
+)
 
 """     Generating a More Usable Dataset    """
 
@@ -83,11 +87,11 @@ y = np.transpose(sol.y)
 
 y = y * np.array([1, 1e4, 1])
 
-df_time = pd.DataFrame({'Time':t})
+df_time = pd.DataFrame({"Time": t})
 
-df_num_sol = pd.DataFrame(y , columns = Variable_Names)
+df_num_sol = pd.DataFrame(y, columns=Variable_Names)
 
-Results = pd.concat([df_time,df_num_sol], axis=1)
+Results = pd.concat([df_time, df_num_sol], axis=1)
 
 """     Export Results for PINN Performance Evaluation    """
 

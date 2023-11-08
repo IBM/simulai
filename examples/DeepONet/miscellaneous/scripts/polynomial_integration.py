@@ -1,12 +1,12 @@
 import numpy as np
-import torch 
+import torch
 
 from simulai.residuals import SymbolicOperator
 from simulai.tokens import Dot, Gp
 from simulai.optimization import Optimizer
 
-def model():
 
+def model():
     import numpy as np
 
     from simulai.models import DeepONet
@@ -26,8 +26,9 @@ def model():
         "name": "trunk_net",
     }
 
-    branch_net = SLFNN(input_size=n_inputs_b, output_size=n_inputs_b,
-                       activation="identity")
+    branch_net = SLFNN(
+        input_size=n_inputs_b, output_size=n_inputs_b, activation="identity"
+    )
 
     # Instantiating and training the surrogate model
     trunk_net = DenseNetwork(**trunk_config)
@@ -45,6 +46,7 @@ def model():
     )
 
     return deep_o_net
+
 
 f = f"D(u, t) - Dot(a, Gp(t, t, 4))"
 
@@ -127,4 +129,3 @@ import matplotlib.pyplot as plt
 
 plt.plot(basis)
 plt.show()
-

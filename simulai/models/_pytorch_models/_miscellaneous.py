@@ -53,7 +53,7 @@ class ImprovedDenseNetwork(NetworkTemplate):
         devices: Union[str, list] = "cpu",
     ):
         """Improved DenseNetwork
-        
+
         It uses auxiliary encoder networks in order to enrich
         the hidden spaces
 
@@ -112,8 +112,10 @@ class ImprovedDenseNetwork(NetworkTemplate):
         v = self.encoder_v.forward(input_data=input_data)
         u = self.encoder_u.forward(input_data=input_data)
 
-        output = self.to_wrap(entity=self.network.forward(input_data=input_data, u=u, v=v),
-                              device=self.device)
+        output = self.to_wrap(
+            entity=self.network.forward(input_data=input_data, u=u, v=v),
+            device=self.device,
+        )
 
         return output
 
@@ -133,18 +135,19 @@ class ImprovedDenseNetwork(NetworkTemplate):
         return output.detach().cpu().numpy()
 
     def summary(self) -> None:
-        """It prints a general view of the architecture.
-
-        """
+        """It prints a general view of the architecture."""
 
         print(self)
 
+
 # Prototype for multi-fidelity network applied to time-series
 class MultiNetwork(NetworkTemplate):
-
-    def __init__(self, models_list:List[NetworkTemplate]=None,
-                 delta_t:float=None, device:str='cpu') -> None:
-
+    def __init__(
+        self,
+        models_list: List[NetworkTemplate] = None,
+        delta_t: float = None,
+        device: str = "cpu",
+    ) -> None:
         super(MultiNetwork, self).__init__()
 
         for i, model in enumerate(models_list):
@@ -153,33 +156,37 @@ class MultiNetwork(NetworkTemplate):
         self.delta_t = delta_t
         self.device = device
 
-    def set_network(self, net:NetworkTemplate=None, index:int=None) -> None:
-
+    def set_network(self, net: NetworkTemplate = None, index: int = None) -> None:
         setattr(self, f"worker_{index}", net)
 
         self.add_module(f"worker_{index}", net)
 
-    def _eval_interval(self, index:int=None, input_data:torch.Tensor=None) -> torch.Tensor:
-
+    def _eval_interval(
+        self, index: int = None, input_data: torch.Tensor = None
+    ) -> torch.Tensor:
         input_data = input_data[:, None]
         return getattr(self, f"worker_{index}").eval(input_data=input_data)
 
-    def eval(self, input_data:np.ndarray=None) -> np.ndarray:
-
-        eval_indices_float = input_data/delta_t
-        eval_indices = np.where(eval_indices_float > 0,
-                                np.floor(eval_indices_float - 1e-13).astype(int),
-                                eval_indices_float.astype(int))
+    def eval(self, input_data: np.ndarray = None) -> np.ndarray:
+        eval_indices_float = input_data / delta_t
+        eval_indices = np.where(
+            eval_indices_float > 0,
+            np.floor(eval_indices_float - 1e-13).astype(int),
+            eval_indices_float.astype(int),
+        )
 
         eval_indices = eval_indices.flatten().tolist()
 
-        input_data = input_data - self.delta_t*np.array(eval_indices)[:, None]
+        input_data = input_data - self.delta_t * np.array(eval_indices)[:, None]
 
-        return np.vstack([self._eval_interval(index=i, input_data=idata) \
-                                             for i, idata in zip(eval_indices, input_data)])
+        return np.vstack(
+            [
+                self._eval_interval(index=i, input_data=idata)
+                for i, idata in zip(eval_indices, input_data)
+            ]
+        )
 
     def summary(self):
-
         print(self)
 
 
@@ -194,7 +201,6 @@ class MoEPool(NetworkTemplate):
         binary_selection: bool = False,
         hidden_size: Optional[int] = None,
     ) -> None:
-
         """Mixture of Experts
 
         Args:
@@ -208,7 +214,7 @@ class MoEPool(NetworkTemplate):
             hidden_size (Optional[int], optional): If information about the experts hidden size is required, which occurs,
         for instance, when they are ConvexDenseNetwork objects,
         it is necessary to define this argument. (Default value = None)
-        
+
         """
 
         super(MoEPool, self).__init__()
@@ -239,12 +245,14 @@ class MoEPool(NetworkTemplate):
                 activation="softmax",
             )
 
-            self.gating_network = self.to_wrap(entity=gating_network,
-                                               device=self.device)
+            self.gating_network = self.to_wrap(
+                entity=gating_network, device=self.device
+            )
         else:
             try:
-                self.gating_network = self.to_wrap(entity=gating_network,
-                                                   device=self.device)
+                self.gating_network = self.to_wrap(
+                    entity=gating_network, device=self.device
+                )
             except:
                 self.gating_network = gating_network
                 print(
@@ -317,7 +325,9 @@ class MoEPool(NetworkTemplate):
 
         maxs = torch.max(gating, dim=1).values[:, None]
 
-        return self.to_wrap(entity=torch.where(gating == maxs, 1, 0), device=self.device)
+        return self.to_wrap(
+            entity=torch.where(gating == maxs, 1, 0), device=self.device
+        )
 
     def _get_weights_not_trainable(self, gating: torch.Tensor = None) -> torch.Tensor:
         """When the gating process is not trainable, it is considered some kind of
@@ -347,7 +357,7 @@ class MoEPool(NetworkTemplate):
         of the MoE model.
 
         Args:
-            input_data (Union[np.ndarray, torch.Tensor]): 
+            input_data (Union[np.ndarray, torch.Tensor]):
 
         Returns:
             torch.Tensor: The penalties used for weighting the input distributed among the experts.
@@ -366,7 +376,7 @@ class MoEPool(NetworkTemplate):
 
         Args:
             input_data (Union[np.ndarray, torch.Tensor]): Data to be evaluated using the MoE object.
-            **kwargs: 
+            **kwargs:
 
         Returns:
             torch.Tensor: The output of the MoE evaluation.
@@ -384,15 +394,13 @@ class MoEPool(NetworkTemplate):
         return sum([g * o for g, o in zip(gating_weights, output)])
 
     def summary(self) -> None:
-        """It prints a general view of the architecture.
-
-        """
+        """It prints a general view of the architecture."""
 
         print(self)
 
+
 # Splitting features among experts
 class SplitPool(NetworkTemplate):
-
     def __init__(
         self,
         experts_list: List[NetworkTemplate],
@@ -402,7 +410,6 @@ class SplitPool(NetworkTemplate):
         devices: Union[list, str] = None,
         hidden_size: Optional[int] = None,
     ) -> None:
-
         """Pool of experts to divide work
 
         Args:
@@ -459,8 +466,7 @@ class SplitPool(NetworkTemplate):
 
         self.last_activation = self._get_operation(operation=last_activation)
 
-    def _aggregate_default(self, output:List[torch.Tensor]) -> torch.Tensor:
-
+    def _aggregate_default(self, output: List[torch.Tensor]) -> torch.Tensor:
         return torch.prod(output, dim=1, keepdim=True)
 
     def forward(
@@ -470,7 +476,7 @@ class SplitPool(NetworkTemplate):
 
         Args:
             input_data (Union[np.ndarray, torch.Tensor]): Data to be evaluated using the MoE object.
-            **kwargs: 
+            **kwargs:
 
         Returns:
             torch.Tensor: The output of the SplitPool evaluation.
@@ -479,17 +485,17 @@ class SplitPool(NetworkTemplate):
         def _forward(worker: NetworkTemplate = None, index: int = None) -> torch.Tensor:
             return worker.forward(input_data=input_data[:, index][:, None], **kwargs)
 
-        output = list(map(_forward, self.experts_list, list(np.arange(self.n_experts).astype(int))))
+        output = list(
+            map(
+                _forward, self.experts_list, list(np.arange(self.n_experts).astype(int))
+            )
+        )
 
         output_ = torch.hstack(output)
 
         return self.last_activation(self.aggregate(output_))
 
     def summary(self) -> None:
-        """It prints a general view of the architecture.
-
-        """
+        """It prints a general view of the architecture."""
 
         print(self)
-
-

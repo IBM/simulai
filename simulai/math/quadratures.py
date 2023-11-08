@@ -24,7 +24,7 @@ class GaussLegendre:
 
         Args:
             p_order (int or tuple, optional, optional): Order of the polynomial. If a tuple is given, the quadrature is assumed to be adaptative. (Default value = None)
-        
+
         """
 
         self.p_order = p_order
@@ -83,7 +83,7 @@ class GaussLegendre:
 
         Returns:
             tuple: Tuple containing arrays for each dimension of the domain and weights.
-        
+
         """
 
         nodes = mesh.internal_product(self.poly_roots)
@@ -122,7 +122,7 @@ class GaussLegendre:
         Returns:
             dict: Dictionary of boundary nodes and weights, where the keys are the boundary tags and the values are tuples of
             (nodes, weights) arrays.
-        
+
         """
 
         boundaries_list = dict()

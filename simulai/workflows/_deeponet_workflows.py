@@ -18,23 +18,22 @@ from simulai.models import DeepONet
 from simulai.regression import ConvolutionalNetwork, DenseNetwork
 from simulai.templates import NetworkInstanceGen
 
-class ConvDeepONet:
 
+class ConvDeepONet:
     def __init__(
         self,
-        trunk_config:dict=None,
-        n_outputs:int=None,
-        dim:int=None,
-        n_latent:int=None,
-        branch_input_dim:Union[Tuple, List]=None,
+        trunk_config: dict = None,
+        n_outputs: int = None,
+        dim: int = None,
+        n_latent: int = None,
+        branch_input_dim: Union[Tuple, List] = None,
         shallow: bool = True,
         use_batch_norm: bool = True,
         branch_activation: str = "tanh",
-        model_id:str="cnn_deeponet",
-        product_type:str=None,
-        cnn_flatten:bool=True,
+        model_id: str = "cnn_deeponet",
+        product_type: str = None,
+        cnn_flatten: bool = True,
     ) -> None:
-
         self.trunk_config = trunk_config
         self.n_outputs = n_outputs
         self.dim = dim
@@ -48,18 +47,22 @@ class ConvDeepONet:
         self.model_id = model_id
 
     def __call__(self):
-
         n_inputs = self.trunk_config["input_size"]
         n_latent = self.trunk_config["output_size"]
 
-        netgen = NetworkInstanceGen(architecture="cnn",
-                                    dim=self.dim,
-                                    shallow=self.shallow, 
-                                    use_batch_norm=self.use_batch_norm)
+        netgen = NetworkInstanceGen(
+            architecture="cnn",
+            dim=self.dim,
+            shallow=self.shallow,
+            use_batch_norm=self.use_batch_norm,
+        )
 
-        branch_net = netgen(input_dim=self.branch_input_dim,
-                            output_dim=self.n_latent*self.n_outputs,
-                            activation=self.branch_activation, flatten=self.cnn_flatten)
+        branch_net = netgen(
+            input_dim=self.branch_input_dim,
+            output_dim=self.n_latent * self.n_outputs,
+            activation=self.branch_activation,
+            flatten=self.cnn_flatten,
+        )
 
         # Instantiating and training the surrogate model
         trunk_net = DenseNetwork(**self.trunk_config)
@@ -76,4 +79,3 @@ class ConvDeepONet:
         )
 
         return net
-

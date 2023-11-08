@@ -40,7 +40,7 @@ class Kansas:
         between centers. (Default value = "auto")
             kernel (str, optional): The type of kernel function to use. (Default value = "gaussian")
             eps (float, optional): The tolerance for eliminating elements from the interpolation matrices. (Default value = 1e-8)
-        
+
         """
 
         self.Nk = centers.shape[0]  # number of centers of kernels
@@ -119,13 +119,13 @@ class Kansas:
 
     def get_interpolation_matrix_optimized(self) -> np.ndarray:
         """Calculate the interpolation matrix using an optimized method.
-        
+
         Returns:
         ----------
             G : ndarray
             The interpolation matrix.
 
-        
+
         """
         G = self.Kernel(self.r2, self.sigma2, self.kernel)
 
@@ -135,8 +135,8 @@ class Kansas:
         """Calculate the first derivative matrix of a specific variable.
 
         Args:
-            var_index (int): 
-        
+            var_index (int):
+
         """
         if var_index > self.ndim:
             print("index of variable are higher than ")
@@ -158,7 +158,7 @@ class Kansas:
 
         Returns:
             scipy.sparse.csc_matrix: The first derivative matrix.
-        
+
         """
 
         # rx = sp.spatial.distance.cdist(self.points[:, [var_index]], self.centers[:, [var_index]], lambda u, v: (u - v))
@@ -184,7 +184,7 @@ class Kansas:
         Returns:
             scipy.sparse.csc_matrix: The first derivative matrix.
             numpy.ndarray: The auxiliary array needed to compute the first derivative matrix.
-        
+
         """
         self.gen_f1()
 
@@ -215,7 +215,7 @@ class Kansas:
 
         Returns:
             scipy.sparse.csc_matrix: The cross derivative matrix.
-        
+
         """
         if var_index1 > self.ndim or var_index2 > self.ndim:
             print("index of variable are higher than dimension")
@@ -253,7 +253,7 @@ class Kansas:
 
         Returns:
             numpy.ndarray: The cross derivative matrix.
-        
+
         """
         rx = self.points[:, [var_index1]] - self.centers[:, var_index1]
 
@@ -271,7 +271,7 @@ class Kansas:
 
         Returns:
             scipy.sparse.csc_matrix: The second derivative matrix.
-        
+
         """
         if var_index > self.ndim:
             print("index of variable are higher than dimension")
@@ -305,7 +305,7 @@ class Kansas:
 
         Returns:
             numpy.ndarray: The second derivative matrix.
-        
+
         """
         # rx2 = sp.spatial.distance.cdist(self.points[:, [var_index]], self.centers[:, [var_index]], lambda u, v: (u - v)**2)
 
@@ -321,7 +321,7 @@ class Kansas:
 
         Returns:
             scipy.sparse.csc_matrix: The Laplacian matrix.
-        
+
         """
         if self.use_optimized:
             L = self.kernel_Laplacian(self.r2, self.sigma2, self.kernel)
@@ -340,9 +340,7 @@ class Kansas:
         return L
 
     def gen_f1(self) -> None:
-        """Generate the first derivative of the kernel function.
-
-        """
+        """Generate the first derivative of the kernel function."""
         if self.f1_was_gen == False:
             d1expr = self.expr.diff(self.x)
 
@@ -366,7 +364,7 @@ class Kansas:
 
         Returns:
             numpy.ndarray: The kernel function evaluated at the given squared distances.
-        
+
         """
 
         if kernel_type == "gaussian":
@@ -404,7 +402,7 @@ class Kansas:
 
         Returns:
             float: Derivative of the kernel function with respect to `rx`.
-        
+
         """
 
         if kernel_type == "gaussian":
@@ -444,7 +442,7 @@ class Kansas:
 
         Returns:
             float: Mixed second partial derivative of the kernel function with respect to `rx` and `ry`.
-        
+
         """
         if kernel_type == "gaussian":
             Dxy = ne.evaluate("((rx*ry)/(sigma2**2))*exp(-r2/(2*sigma2))")
@@ -479,7 +477,7 @@ class Kansas:
 
         Returns:
             float: The Dxx value for the given kernel type.
-        
+
         """
         if kernel_type == "gaussian":
             Dxx = ne.evaluate(
@@ -511,7 +509,7 @@ class Kansas:
 
         Returns:
             float: The Laplacian value for the given kernel type.
-        
+
         """
         ndim = float(self.ndim)
 

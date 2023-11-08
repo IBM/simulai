@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from tests.config import configure_dtype
+
 torch = configure_dtype()
 
 torch.autograd.set_detect_anomaly(True)

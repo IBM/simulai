@@ -16,6 +16,7 @@ from unittest import TestCase
 from typing import Optional
 import numpy as np
 from tests.config import configure_dtype
+
 torch = configure_dtype()
 
 from utils import configure_device
@@ -28,7 +29,7 @@ def model(
     product_type=None,
     multiply_by_trunk: bool = False,
     n_outputs: int = 4,
-    use_bias:bool=False,
+    use_bias: bool = False,
     residual: bool = False,
 ):
     from simulai.models import FlexibleDeepONet
@@ -93,23 +94,23 @@ def model(
 
     return net
 
+
 class TestImprovedDeeponet(TestCase):
     def setUp(self) -> None:
         pass
 
     def test_deeponet_forward(self):
-
         for device in ["cpu", "gpu", None]:
-
             net = model()
             net.summary()
 
             # Checking if the model is coretly placed when no device is
             # informed
             if not device:
-                assert net.device == "cpu", ("When no device is provided it is expected the model"+
-                                             f"being on cpu, but received {net.device}.")
-
+                assert net.device == "cpu", (
+                    "When no device is provided it is expected the model"
+                    + f"being on cpu, but received {net.device}."
+                )
 
             data_trunk = torch.rand(1_000, 1)
             data_branch = torch.rand(1_000, 4)
@@ -156,9 +157,7 @@ class TestImprovedDeeponet(TestCase):
         optimizer = Optimizer("adam", params=optimizer_config)
 
         for product_type in [None, "dense"]:
-
             for multiply_by_trunk in [True, False]:
-
                 print(
                     f"Multiply by trunk: {multiply_by_trunk}, Product type: {product_type}"
                 )
@@ -182,14 +181,9 @@ class TestImprovedDeeponet(TestCase):
                 assert output.shape[1] == 4, "The network output is not like expected."
 
             for use_bias in [False]:
+                print(f"use_bias: {use_bias}, Product type: {product_type}")
 
-                print(
-                    f"use_bias: {use_bias}, Product type: {product_type}"
-                )
-
-                net = model(
-                    use_bias=use_bias, product_type=product_type
-                )
+                net = model(use_bias=use_bias, product_type=product_type)
 
                 optimizer.fit(
                     op=net,
@@ -204,7 +198,6 @@ class TestImprovedDeeponet(TestCase):
                 output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
 
                 assert output.shape[1] == 4, "The network output is not like expected."
-
 
     # Vanilla DeepONets are single output
     def test_vanilla_deeponet_train(self):

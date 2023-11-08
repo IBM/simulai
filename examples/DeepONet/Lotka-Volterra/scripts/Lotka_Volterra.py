@@ -128,10 +128,12 @@ input_dataset = list()
 for ff, function in enumerate(functions):
     print(f"Solving system using input function {ff}")
 
-    solver = LotkaVolterra(alpha=alpha, beta=beta, gamma=gamma, delta=delta, forcing=function, lambd=lambd)
-    #solver = LotkaVolterra(
+    solver = LotkaVolterra(
+        alpha=alpha, beta=beta, gamma=gamma, delta=delta, forcing=function, lambd=lambd
+    )
+    # solver = LotkaVolterra(
     #    alpha=alpha, beta=beta, gamma=gamma, delta=delta, lambd=lambd
-    #)
+    # )
 
     solution, forcing = solver.run(initial_state, t)
 

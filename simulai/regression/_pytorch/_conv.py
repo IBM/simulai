@@ -20,9 +20,10 @@ import torch
 
 from simulai.templates import ConvNetworkTemplate, as_tensor
 
+
 def channels_dim(method):
     def inside(self, input_data=None):
-        if self.case == '1d':
+        if self.case == "1d":
             if len(input_data.shape) < self.n_dimensions:
                 return method(self, input_data=input_data[:, None, ...])
             else:
@@ -30,12 +31,14 @@ def channels_dim(method):
         else:
             # Any input must be at least 3D to allow the creation
             # of a 'channels dim'. Otherwise use a Unflatten operation
-            # at the bottom of the model. 
+            # at the bottom of the model.
             if 3 <= len(input_data.shape) < self.n_dimensions:
                 return method(self, input_data=input_data[:, None, ...])
             else:
                 return method(self, input_data=input_data)
+
     return inside
+
 
 # High-level class for assembling different kinds of convolutional networks
 class ConvolutionalNetwork(ConvNetworkTemplate):
@@ -111,7 +114,6 @@ class ConvolutionalNetwork(ConvNetworkTemplate):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
-
         return self.flattener(input_data=self.pipeline(input_data))
 
 

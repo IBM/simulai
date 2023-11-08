@@ -27,13 +27,13 @@ version = "latest"
 # -- General configuration
 
 extensions = [
-    #"numpydoc",
+    # "numpydoc",
     "sphinx.ext.napoleon",
     "sphinx.ext.doctest",
     "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
     "sphinx.ext.autosectionlabel",
-    'sphinx.ext.autosummary',
+    "sphinx.ext.autosummary",
 ]
 
 napoleon_use_param = True
@@ -44,7 +44,7 @@ suppress_warnings = ["autosectionlabel.*"]
 
 
 # Napoleon settings
-#napoleon_numpy_docstring = True
+# napoleon_numpy_docstring = True
 
 # html_context configuration for GitHub edit link
 html_context = {
@@ -77,21 +77,23 @@ html_theme = "press"
 # Below html_theme_options config depends on the theme.
 html_logo = "../assets/logo.png"
 
-gettext_additional_targets = ['literal-block', 'image']
+gettext_additional_targets = ["literal-block", "image"]
 
-html_theme_options = {"logo_only": True,
-                      "display_version": True,
-                        "sidebarbgcolor":'#FFF8DC',
-                        "sidebartextcolor": "#000000",
-                        "sidebarlinkcolor": "#444444",
-                        "relbartextcolor": "#000000",
-                        "collapsiblesidebar": True,
-                        "body_max_width": '90%',
-                        "sidebarwidth": '30%',
-                        "globaltoc_maxdepth":10}
+html_theme_options = {
+    "logo_only": True,
+    "display_version": True,
+    "sidebarbgcolor": "#FFF8DC",
+    "sidebartextcolor": "#000000",
+    "sidebarlinkcolor": "#444444",
+    "relbartextcolor": "#000000",
+    "collapsiblesidebar": True,
+    "body_max_width": "90%",
+    "sidebarwidth": "30%",
+    "globaltoc_maxdepth": 10,
+}
 
 
-autodoc_typehints_format = 'short'
+autodoc_typehints_format = "short"
 python_use_unqualified_type_names = True
 
 # -- Options for EPUB output

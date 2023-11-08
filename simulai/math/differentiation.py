@@ -61,7 +61,7 @@ class LeleDerivative:
         Args:
             N (int, optional): The number of mesh nodes. The default value is 1.
             h (float, optional): The mesh size. The default value is 1.
-        
+
         """
         self.RightVector = np.array(N)
 
@@ -112,7 +112,7 @@ class LeleDerivative:
 
         Returns:
             np.ndarray: The derivatives of f.
-        
+
         """
 
         b = self.RightMatrix @ f
@@ -129,7 +129,7 @@ class LeleDerivative:
 
         Returns:
             float: The evaluation of delta_1.
-        
+
         """
 
         if j == 0 or j == N - 1:
@@ -152,7 +152,7 @@ class LeleDerivative:
 
         Returns:
             float: The evaluation of delta_2.
-        
+
         """
 
         if j == 0 or j == N - 1:
@@ -176,7 +176,7 @@ class LeleDerivative:
 
         Returns:
             float: The evaluation of delta_3.
-        
+
         """
 
         if j == 0 or j == N - 1:
@@ -200,7 +200,7 @@ class LeleDerivative:
 
         Returns:
             float: The evaluation of delta_4.
-        
+
         """
 
         if j == 0:
@@ -226,7 +226,7 @@ class LeleDerivative:
 
         Returns:
             float: The evaluation of delta_5.
-        
+
         """
 
         if j == 0:
@@ -277,8 +277,8 @@ class CenteredDerivative:
             config (dict, optional): Configuration dictionary. If not provided, default value is None.
 
         Returns:
-            None: 
-        
+            None:
+
         """
         self.step = config["step"]
         assert self.step, "A value for the differentiation step must be provided."
@@ -292,7 +292,7 @@ class CenteredDerivative:
 
         Returns:
             np.ndarray: The derivatives of data.
-        
+
         """
         print("Performing Second-Order Centered Derivation.")
         return np.gradient(data, self.step, axis=axis)
@@ -305,7 +305,7 @@ class CenteredDerivative:
 
         Returns:
             np.ndarray: The derivatives of data.
-        
+
         """
         return self.solve(data=data)
 
@@ -318,7 +318,7 @@ class CollocationDerivative:
         Args:
             config (dict, optional): A dictionary containing some parameters to be passed to the Scipy engine. (Default value = None)
             k (int, optional): The degree of the spline interpolation. (Default value = 3)
-        
+
         """
         self.step = None
         self.t = None
@@ -332,20 +332,20 @@ class CollocationDerivative:
     @staticmethod
     def _guarantee_correct_shape(data: np.ndarray) -> np.ndarray:
         """Ensure that the input data is a one-dimensional array.
-        
+
         This method ensures that the input data is a one-dimensional array, since the scipy.interpolate.InterpolatedUnivariateSpline class requires it. If the input data is already one-dimensional, it is returned as is. If the input data has more than one dimension, it is reshaped into a one-dimensional array by collapsing all dimensions except the first one.
-        
+
         Parameters:
         ----------
             data (np.ndarray): The input data to be reshaped.
-        
+
         Returns:
         ----------
             The input data (np.ndarray), reshaped as a one-dimensional array if necessary.
 
         Args:
-            data (np.ndarray): 
-        
+            data (np.ndarray):
+
         """
         if data.ndim <= 1:
             return data
@@ -357,24 +357,24 @@ class CollocationDerivative:
 
     def solve(self, data: np.ndarray, x: Optional[np.ndarray] = None) -> np.ndarray:
         """Perform differentiation using a non-linear method.
-        
+
         Parameters:
         ----------
             data (np.ndarray): The values to be differentiated.
             x (np.ndarray, optional): The axis to be used for executing the differentiation. If not provided, the 'step' attribute of the object will be used.
-        
+
         Returns:
         ----------
             The derivatives of the input data along the chosen axis.
-        
+
         Raises:
         ----------
             Exception: If there is no way to evaluate the derivatives (i.e., 'x' and 'step' attributes are not provided).
 
         Args:
-            data (np.ndarray): 
+            data (np.ndarray):
             x (Optional[np.ndarray], optional):  (Default value = None)
-        
+
         """
         print("Performing Collocation Derivation.")
 
@@ -406,17 +406,17 @@ class CollocationDerivative:
         self, data: np.ndarray = None, x_grid: np.ndarray = None, x: np.ndarray = None
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Perform interpolation and differentiation using a non-linear method.
-        
+
         Parameters:
         ----------
             data (np.ndarray): The values to be interpolated and differentiated.
             x_grid (np.ndarray): The grid in which the input data is defined.
             x (np.ndarray): The grid in which to interpolate the input data.
-        
+
         Returns:
         ----------
             A tuple containing the interpolated and differentiated data.
-        
+
         Raises:
         ----------
             AssertionError: If the length of the data array is greater than the length of the x array.
@@ -425,7 +425,7 @@ class CollocationDerivative:
             data (np.ndarray, optional):  (Default value = None)
             x_grid (np.ndarray, optional):  (Default value = None)
             x (np.ndarray, optional):  (Default value = None)
-        
+
         """
         if data.shape[0] > x.shape[0]:
             raise AssertionError(
@@ -469,7 +469,7 @@ class CollocationDerivative:
 
         Returns:
             np.ndarray: The derivatives of data.
-        
+
         """
 
         derivative_data = self.solve(data=data)

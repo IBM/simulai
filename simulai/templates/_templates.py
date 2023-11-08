@@ -74,7 +74,6 @@ class NetworkInstanceGen:
         unflattened_size: Tuple[int] = None,
         **kwargs,
     ) -> None:
-
         """
 
         Parameters
@@ -85,7 +84,7 @@ class NetworkInstanceGen:
             When 'cnn' is used as architecture, it is necessary to provide the dimensionality
             as an element of ['1d', '2d', '3d'].
         shallow : bool
-            The network will be shallow or not.  
+            The network will be shallow or not.
         use_batch_norm : bool
             Batch normalization will be used or not.
         kernel_size : Optional[int]
@@ -161,7 +160,6 @@ class NetworkInstanceGen:
         activation: str = None,
         name: str = None,
     ) -> dict:
-
         """
         Creating a configuration for instantiating a dense network.
 
@@ -178,7 +176,7 @@ class NetworkInstanceGen:
 
         Returns
         -------
-            A dictionary containing the configuration of the 
+            A dictionary containing the configuration of the
             network.
 
         """
@@ -225,10 +223,9 @@ class NetworkInstanceGen:
         return config_dict
 
     def _is_div_cnn_dims(self, dim: Tuple[int, ...]) -> bool:
-
         """
         Checking if the CNN dimension is divisible according to
-        the default rule. 
+        the default rule.
 
         Parameters
         ----------
@@ -244,7 +241,6 @@ class NetworkInstanceGen:
         return all([idim % self.divisor == 0 for idim in reduce_dims])
 
     def _div_cnn_dims(self, dim: Tuple[int, ...]) -> Tuple[int, ...]:
-
         """
         It creates the intermediary CNN dimensions according to the default
         dimensionality reduction rule.
@@ -255,7 +251,7 @@ class NetworkInstanceGen:
             The dimension of the CNN input
         Returns
         -------
-            A tuple containing the intermediary dimensions of the CNN network. 
+            A tuple containing the intermediary dimensions of the CNN network.
         """
 
         reduce_dims = dim[2:]
@@ -263,7 +259,6 @@ class NetworkInstanceGen:
         return dim[:2] + tuple([int(idim / self.divisor) for idim in reduce_dims])
 
     def _multiply_cnn_dims(self, dim: Tuple[int, ...]) -> Tuple[int, ...]:
-
         """
         It creates the intermediary CNN dimensions according to the default
         dimensionality increasing rule.
@@ -274,7 +269,7 @@ class NetworkInstanceGen:
             The dimension of the CNN input
         Returns
         -------
-            A tuple containing the intermediary dimensions of the CNN network. 
+            A tuple containing the intermediary dimensions of the CNN network.
         """
 
         reduce_dims = dim[2:]
@@ -284,10 +279,9 @@ class NetworkInstanceGen:
     def _gen_cnn_layer_increase_dimensionality(
         self, channels_in: int = None, channels_out: int = None
     ) -> dict:
-
         """
         It creates the layers configuration dictionary
-        used for instantiating CNN networks which perform dimensionality amplification. 
+        used for instantiating CNN networks which perform dimensionality amplification.
 
         Parameters
         ----------
@@ -299,7 +293,7 @@ class NetworkInstanceGen:
         Returns
         -------
             A dictionary containing the configuration used to instantiate the
-            network layers. 
+            network layers.
         """
 
         if channels_out == None:
@@ -334,10 +328,9 @@ class NetworkInstanceGen:
     def _gen_cnn_layer_reduce_dimensionality(
         self, channels_in: int = None, channels_out: int = None
     ) -> dict:
-
         """
-        It creates the layers configuration dictionary used 
-        for instantiating CNN networks which perform dimensionality reduction. 
+        It creates the layers configuration dictionary used
+        for instantiating CNN networks which perform dimensionality reduction.
 
         Parameters
         ----------
@@ -349,7 +342,7 @@ class NetworkInstanceGen:
         Returns
         -------
             A dictionary containing the configuration used to instantiate the
-            network layers. 
+            network layers.
         """
 
         if channels_out == None:
@@ -386,7 +379,6 @@ class NetworkInstanceGen:
         name: str = None,
         **kwargs,
     ) -> dict:
-
         """
         It creates a configuration dictionary to instantiate a CNN network
         aimed at performing dimensionality reduction.
@@ -405,7 +397,7 @@ class NetworkInstanceGen:
         Returns
         -------
             A complete configuration dictionary to instantiate the
-            CNN network. 
+            CNN network.
         """
 
         assert type(input_dim) == tuple
@@ -453,7 +445,6 @@ class NetworkInstanceGen:
         name: str = None,
         **kwargs,
     ) -> dict:
-
         """
         It creates a configuration dictionary to instantiate a CNN network.
         aimed at performing dimensionality increase.
@@ -472,9 +463,8 @@ class NetworkInstanceGen:
         Returns
         -------
             A complete configuration dictionary to instantiate the
-            CNN network. 
+            CNN network.
         """
-
 
         assert type(input_dim) in (int, tuple)
         assert type(output_dim) == tuple
@@ -486,9 +476,13 @@ class NetworkInstanceGen:
 
         if type(input_dim) == int:
             if self.unflattened_size:
-                unflatten_layer = torch.nn.Unflatten(dim=1, unflattened_size=self.unflattened_size)
+                unflatten_layer = torch.nn.Unflatten(
+                    dim=1, unflattened_size=self.unflattened_size
+                )
             else:
-                unflatten_layer = torch.nn.Unflatten(dim=1, unflattened_size=(input_dim,) + self.n_dims*(1,))
+                unflatten_layer = torch.nn.Unflatten(
+                    dim=1, unflattened_size=(input_dim,) + self.n_dims * (1,)
+                )
         else:
             unflatten_layer = None
 
@@ -500,7 +494,10 @@ class NetworkInstanceGen:
                 ref_dim = (None,) + self.unflattened_size
                 channels = self.unflattened_size[0]
             else:
-                ref_dim = (None, input_dim,) + self.n_dims*(1,)
+                ref_dim = (
+                    None,
+                    input_dim,
+                ) + self.n_dims * (1,)
                 channels = input_dim
 
         while not (sum(ref_dim[2:]) >= int(sum(output_dim[2:]) / self.multiplier)):
@@ -527,7 +524,7 @@ class NetworkInstanceGen:
         }
 
         if isinstance(unflatten_layer, torch.nn.Module):
-            config_dict['pre_layer'] = unflatten_layer
+            config_dict["pre_layer"] = unflatten_layer
 
         config_dict.update(kwargs)
 
@@ -543,9 +540,8 @@ class NetworkInstanceGen:
         reduce_dimensionality: bool = True,
         **kwargs,
     ) -> NetworkTemplate:
-
         """
-        The execution method. 
+        The execution method.
 
         Parameters
         ----------
@@ -560,11 +556,11 @@ class NetworkInstanceGen:
         name : str
             A name for identifying the network.
         reduce_dimensionality : bool
-            Reducing dimensionality or not. 
+            Reducing dimensionality or not.
 
         Returns
         -------
-            An instance of neural network created in accordance with 
+            An instance of neural network created in accordance with
             the provided configurations.
         """
 
@@ -619,7 +615,6 @@ def mlp_autoencoder_auto(
     shallow: bool = False,
     name: str = None,
 ) -> Tuple[NetworkTemplate, ...]:
-
     """
     Template for easily instantiating a MLP (dense) autoencoder.
 
@@ -702,7 +697,6 @@ def cnn_autoencoder_auto(
     name: str = None,
     **kwargs,
 ) -> Tuple[NetworkTemplate, ...]:
-
     """
     A template for easily instantiating a CNN autoencoder
 
@@ -711,7 +705,7 @@ def cnn_autoencoder_auto(
     input_dim : Tuple[int, ...]
         The autoencoder input dimension.
     latent_dim : int
-        The autoencoder latent (or embedding) dimension. 
+        The autoencoder latent (or embedding) dimension.
     output_dim : Optional[Tuple[int, ...]]
         The autoencoder output dimension.
     activation : str
@@ -725,7 +719,7 @@ def cnn_autoencoder_auto(
     use_batch_norm : bool
         Using batch normalization or not.
     shallow : bool
-        Using a shallow bottleneck autoencoder or not. 
+        Using a shallow bottleneck autoencoder or not.
     name : str
         A name for identifying the model.
 
@@ -764,8 +758,11 @@ def cnn_autoencoder_auto(
     last_channels = output_dim[1]
 
     autogen_cnn = NetworkInstanceGen(
-        architecture="cnn", dim=case, use_batch_norm=use_batch_norm,
-        kernel_size=kernel_size, **kwargs,
+        architecture="cnn",
+        dim=case,
+        use_batch_norm=use_batch_norm,
+        kernel_size=kernel_size,
+        **kwargs,
     )
 
     autogen_dense = NetworkInstanceGen(architecture="dense", shallow=shallow)
@@ -828,17 +825,16 @@ def autoencoder_auto(
     name: str = None,
     **kwargs,
 ) -> Tuple[Union[NetworkTemplate, None], ...]:
-
     """
-    A higher level template for easily instantiating an autoencoder, 
-    both CNN and MLP. 
+    A higher level template for easily instantiating an autoencoder,
+    both CNN and MLP.
 
     Parameters
     ----------
     input_dim : Tuple[int, ...]
         The autoencoder input dimension.
     latent_dim : int
-        The autoencoder latent (or embedding) dimension. 
+        The autoencoder latent (or embedding) dimension.
     output_dim : Optional[Tuple[int, ...]]
         The autoencoder output dimension.
     activation : str
@@ -854,7 +850,7 @@ def autoencoder_auto(
     use_batch_norm : bool
         Using batch normalization or not.
     shallow : bool
-        Using a shallow bottleneck autoencoder or not. 
+        Using a shallow bottleneck autoencoder or not.
     name : str
         A name for identifying the model.
 

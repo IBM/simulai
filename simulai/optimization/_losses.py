@@ -26,8 +26,8 @@ from simulai.models import AutoencoderKoopman, AutoencoderVariational, DeepONet
 from simulai.residuals import SymbolicOperator
 from simulai.optimization._adjusters import AnnealingWeights
 
-class LossBasics:
 
+class LossBasics:
     def __init__(self):
         """
         Loss functions parent class
@@ -35,18 +35,16 @@ class LossBasics:
         self.loss_states = None
         self.tol = 1e-16
 
-    def _single_term_loss(self, res:torch.Tensor) -> torch.Tensor:
-
+    def _single_term_loss(self, res: torch.Tensor) -> torch.Tensor:
         return torch.square(res)
 
-    def _two_term_loss(self, res_a:torch.Tensor, res_b:torch.Tensor) -> torch.Tensor:
-
+    def _two_term_loss(self, res_a: torch.Tensor, res_b: torch.Tensor) -> torch.Tensor:
         return torch.square(res_a - res_b)
 
-    def _two_term_log_loss(self, res_a:torch.Tensor, res_b:torch.Tensor) -> torch.Tensor:
-
+    def _two_term_log_loss(
+        self, res_a: torch.Tensor, res_b: torch.Tensor
+    ) -> torch.Tensor:
         if torch.all(res_a <= self.tol) or torch.all(res_b <= self.tol):
-
             return self._two_term_loss(res_a, res_b)
         else:
             return torch.square(torch.log(res_a) - torch.log(res_b))
@@ -97,32 +95,26 @@ class LossBasics:
             )
 
     @staticmethod
-    def _eval_weighted_loss(losses:List[torch.tensor], weights:List[float]) -> torch.tensor:
-
-        residual_loss = [
-                weight * loss
-                for weight, loss in zip(weights, losses)
-            ]
+    def _eval_weighted_loss(
+        losses: List[torch.tensor], weights: List[float]
+    ) -> torch.tensor:
+        residual_loss = [weight * loss for weight, loss in zip(weights, losses)]
 
         return [sum(residual_loss)]
 
     @staticmethod
-    def _bypass_weighted_loss(losses:List[torch.tensor], *args) -> torch.tensor:
-
+    def _bypass_weighted_loss(losses: List[torch.tensor], *args) -> torch.tensor:
         return losses
 
     @staticmethod
     def _aggregate_terms(*args) -> List[torch.tensor]:
-
         return list(args)
 
     @staticmethod
-    def _formatter(value:torch.tensor=None, n_decimals:int=2) -> str:
-
+    def _formatter(value: torch.tensor = None, n_decimals: int = 2) -> str:
         value = torch.tensor(value)
 
         if value > 0:
-
             exp = float(torch.log10(value))
             base = int(exp)
             res = round(exp - base, n_decimals)
@@ -132,27 +124,41 @@ class LossBasics:
             return str(round(float(value)))
 
     @staticmethod
-    def _pprint_simple(loss_str:str=None,
-                       losses_list:List[torch.tensor]=None,
-                       call_back:str=None,
-                       loss_indices:List[int]=None, **kwargs) -> None:
+    def _pprint_simple(
+        loss_str: str = None,
+        losses_list: List[torch.tensor] = None,
+        call_back: str = None,
+        loss_indices: List[int] = None,
+        **kwargs,
+    ) -> None:
+        sys.stdout.write((loss_str).format(*losses_list[loss_indices]) + call_back)
 
-       sys.stdout.write((loss_str).format(*losses_list[loss_indices]) + call_back)
+        sys.stdout.flush()
 
-       sys.stdout.flush()
-
-    def _pprint_verbose(self, loss_terms:List[torch.tensor]=None, loss_weights:List[torch.tensor]=None, **kwargs) -> None:
-
-        terms_str_list = [f"|L_{i}: {{}} | w_{i}: {{}}|" for i in range(len(loss_terms))] 
+    def _pprint_verbose(
+        self,
+        loss_terms: List[torch.tensor] = None,
+        loss_weights: List[torch.tensor] = None,
+        **kwargs,
+    ) -> None:
+        terms_str_list = [
+            f"|L_{i}: {{}} | w_{i}: {{}}|" for i in range(len(loss_terms))
+        ]
 
         formatted_loss_terms = [self._formatter(value=l) for l in loss_terms]
         formatted_weights = [self._formatter(value=w) for w in loss_weights]
 
-        terms_list = [str_term.format(l, w) for str_term, l, w in zip(terms_str_list,
-                                                                      formatted_loss_terms,
-                                                                      formatted_weights)]
+        terms_list = [
+            str_term.format(l, w)
+            for str_term, l, w in zip(
+                terms_str_list, formatted_loss_terms, formatted_weights
+            )
+        ]
 
-        print((len(terms_list))*"\033[F" + '\n'.join(terms_list), end='\n', flush=True)
+        print(
+            (len(terms_list)) * "\033[F" + "\n".join(terms_list), end="\n", flush=True
+        )
+
 
 # Classic RMSE Loss with regularization for PyTorch
 class RMSELoss(LossBasics):
@@ -543,9 +549,10 @@ class PIRMSELoss(LossBasics):
         return [self._convert(input_data=arg, device=device) for arg in args]
 
     def _data_loss(
-        self, output_tilde: torch.Tensor = None,
-              target_data_tensor: torch.Tensor = None,
-              weights: List[float]=None,
+        self,
+        output_tilde: torch.Tensor = None,
+        target_data_tensor: torch.Tensor = None,
+        weights: List[float] = None,
     ) -> torch.Tensor:
         """
 
@@ -564,16 +571,18 @@ class PIRMSELoss(LossBasics):
         target_split = torch.split(target_data_tensor, self.split_dim, dim=-1)
 
         data_losses = [
-            self.loss_evaluator_data((out_split, tgt_split)) / (self.norm_evaluator(tgt_split) or torch.tensor(1.0).to(self.device))
+            self.loss_evaluator_data((out_split, tgt_split))
+            / (self.norm_evaluator(tgt_split) or torch.tensor(1.0).to(self.device))
             for i, (out_split, tgt_split) in enumerate(zip(output_split, target_split))
         ]
 
         return self.weighted_loss_evaluator(data_losses, weights)
 
     def _data_loss_adaptive(
-        self, output_tilde: torch.Tensor = None,
-              target_data_tensor: torch.Tensor = None,
-              **kwargs,
+        self,
+        output_tilde: torch.Tensor = None,
+        target_data_tensor: torch.Tensor = None,
+        **kwargs,
     ) -> torch.Tensor:
         """
 
@@ -596,24 +605,26 @@ class PIRMSELoss(LossBasics):
             for i, (out_split, tgt_split) in enumerate(zip(output_split, target_split))
         ]
 
-        weights = self.data_weights_estimator(residual=data_discrepancy,
-                                         loss_evaluator=self.loss_evaluator,
-                                         loss_history=self.loss_states,
-                                         operator=self.operator)
+        weights = self.data_weights_estimator(
+            residual=data_discrepancy,
+            loss_evaluator=self.loss_evaluator,
+            loss_history=self.loss_states,
+            operator=self.operator,
+        )
 
         data_losses = [
-            weights[i]*self.loss_evaluator_data((out_split, tgt_split))
+            weights[i] * self.loss_evaluator_data((out_split, tgt_split))
             for i, (out_split, tgt_split) in enumerate(zip(output_split, target_split))
         ]
 
         return [sum(data_losses)]
 
-    def _global_weights_bypass(self, initial_penalty:float=None, **kwargs) -> List[float]:
-
+    def _global_weights_bypass(
+        self, initial_penalty: float = None, **kwargs
+    ) -> List[float]:
         return [1.0, initial_penalty, 1.0, 1.0]
 
     def _global_weights_estimator(self, **kwargs) -> List[float]:
-
         weights = self.global_weights_estimator(**kwargs)
 
         return weights
@@ -634,10 +645,7 @@ class PIRMSELoss(LossBasics):
         :rtype: torch.Tensor
 
         """
-        residual_losses = [
-            self.loss_evaluator(res)
-            for res in residual_approximation
-        ]
+        residual_losses = [self.loss_evaluator(res) for res in residual_approximation]
 
         return self.weighted_loss_evaluator(residual_losses, weights)
 
@@ -658,10 +666,12 @@ class PIRMSELoss(LossBasics):
 
         """
 
-        weights = self.residual_weights_estimator(residual=residual_approximation,
-                                         loss_evaluator=self.loss_evaluator,
-                                         loss_history=self.loss_states,
-                                         operator=self.operator)
+        weights = self.residual_weights_estimator(
+            residual=residual_approximation,
+            loss_evaluator=self.loss_evaluator,
+            loss_history=self.loss_states,
+            operator=self.operator,
+        )
 
         residual_loss = [
             weight * self.loss_evaluator(res)
@@ -767,7 +777,7 @@ class PIRMSELoss(LossBasics):
         self,
         input_data: Union[dict, torch.Tensor] = None,
         target_data: Union[dict, torch.Tensor] = None,
-        verbose:bool=False,
+        verbose: bool = False,
         call_back: str = "",
         residual: Callable = None,
         initial_input: Union[dict, torch.Tensor] = None,
@@ -802,8 +812,10 @@ class PIRMSELoss(LossBasics):
         # are used together.
         if isinstance(global_weights_estimator, AnnealingWeights):
             if split_losses:
-                raise RuntimeError("Global weights estimator, AnnealingWeights, is not"+\
-                                   "compatible with split loss terms.")
+                raise RuntimeError(
+                    "Global weights estimator, AnnealingWeights, is not"
+                    + "compatible with split loss terms."
+                )
             else:
                 pass
 
@@ -954,7 +966,8 @@ class PIRMSELoss(LossBasics):
             # Evaluating loss approximation for initial condition
             initial_data_loss = self.data_loss(
                 output_tilde=initial_output_tilde,
-                target_data_tensor=initial_state, weights=weights,
+                target_data_tensor=initial_state,
+                weights=weights,
             )
 
             # Evaluating extra data loss, when appliable
@@ -978,12 +991,18 @@ class PIRMSELoss(LossBasics):
             loss_terms = self._aggregate_terms(*pde, *init, *bound, *extra_data)
 
             # Updating the loss weights if necessary
-            loss_weights = self.global_weights(initial_penalty=initial_penalty,
-                                               operator=self.operator,
-                                               loss_evaluator=self.loss_evaluator,
-                                               residual=loss_terms)
+            loss_weights = self.global_weights(
+                initial_penalty=initial_penalty,
+                operator=self.operator,
+                loss_evaluator=self.loss_evaluator,
+                residual=loss_terms,
+            )
             # Overall loss function
-            loss = sum(self._eval_weighted_loss(loss_terms, loss_weights)) + l2_reg + l1_reg
+            loss = (
+                sum(self._eval_weighted_loss(loss_terms, loss_weights))
+                + l2_reg
+                + l1_reg
+            )
 
             # Back-propagation
             loss.backward()
@@ -1002,12 +1021,14 @@ class PIRMSELoss(LossBasics):
                 [pde_detach, init_detach, bound_detach, extra_data_detach]
             )
 
-            self.pprint(loss_str=loss_str,
-                        losses_list=losses_list,
-                        call_back=call_back,
-                        loss_indices=loss_indices,
-                        loss_terms=loss_terms,
-                        loss_weights=loss_weights)
+            self.pprint(
+                loss_str=loss_str,
+                losses_list=losses_list,
+                call_back=call_back,
+                loss_indices=loss_indices,
+                loss_terms=loss_terms,
+                loss_weights=loss_weights,
+            )
 
             _current_loss = loss
 
@@ -1532,7 +1553,6 @@ class VAERMSELoss(LossBasics):
         use_mean: bool = True,
         beta: float = 1,
     ) -> Callable:
-
         """
 
         Parameters
@@ -1554,7 +1574,7 @@ class VAERMSELoss(LossBasics):
         use_mean : bool
             Use a mean operation or not. In negative case, a sum is used.
         beta : float
-            Penalty for the Kulback-Leibler term. 
+            Penalty for the Kulback-Leibler term.
         Returns
         -------
             A callable object used to evaluate the global loss function.
@@ -1618,20 +1638,22 @@ class VAERMSELoss(LossBasics):
 
         return closure
 
+
 # Wrapper for the Binary Cross-entropy loss function
 class BCELoss(LossBasics):
     def __init__(self, operator: torch.nn.Module) -> None:
-
         super().__init__()
 
-        self.loss_states = {"loss":list()}
+        self.loss_states = {"loss": list()}
         self.operator = operator
 
-    def __call__(self,
-                 input_data: Union[dict, torch.Tensor] = None,
-                 target_data: Union[dict, torch.Tensor] = None,
-                 call_back: str = "",
-                 **kwargs) -> None:
+    def __call__(
+        self,
+        input_data: Union[dict, torch.Tensor] = None,
+        target_data: Union[dict, torch.Tensor] = None,
+        call_back: str = "",
+        **kwargs,
+    ) -> None:
         """
 
         Parameters
@@ -1647,9 +1669,7 @@ class BCELoss(LossBasics):
             A callable object used to evaluate the global loss function.
         """
 
-
         def closure():
-
             output_tilde = self.operator.forward(**input_data)
             loss = F.binary_cross_entropy(output_tilde, target_data)
 
@@ -1663,4 +1683,3 @@ class BCELoss(LossBasics):
             sys.stdout.flush()
 
         return closure
-

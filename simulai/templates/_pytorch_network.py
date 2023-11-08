@@ -23,6 +23,7 @@ from torch.nn.parameter import Parameter
 import simulai.activations as simulact
 from simulai import ARRAY_DTYPE
 
+
 # Template for a generic neural network
 class NetworkTemplate(torch.nn.Module):
     def __init__(self, name: str = None, devices: str = None) -> None:
@@ -62,13 +63,12 @@ class NetworkTemplate(torch.nn.Module):
 
     @property
     def n_parameters(self):
-
         try:
-            return int(sum([np.prod(tuple(param.shape)) for param in
-                    self.parameters()]))
+            return int(
+                sum([np.prod(tuple(param.shape)) for param in self.parameters()])
+            )
 
         except Exception:
-
             print(f"Class {self} has no torch.nn.Parameter or attribute self.weights.")
 
     def _set_device(self, devices: Union[str, list] = "cpu") -> str:
@@ -159,7 +159,9 @@ class NetworkTemplate(torch.nn.Module):
         ):
             activations_list = list()
             for activation_name in activation:
-                activation_op = self._get_operation(operation=activation_name, is_activation=True)
+                activation_op = self._get_operation(
+                    operation=activation_name, is_activation=True
+                )
 
                 activations_list.append(activation_op)
 
@@ -256,14 +258,14 @@ class NetworkTemplate(torch.nn.Module):
 
         return stitch_indices
 
-    def _to_explicit_device(self, entity:Union[torch.nn.Module, torch.Tensor],
-                            device:str=None) -> Union[torch.nn.Module, torch.Tensor]:
-
+    def _to_explicit_device(
+        self, entity: Union[torch.nn.Module, torch.Tensor], device: str = None
+    ) -> Union[torch.nn.Module, torch.Tensor]:
         return entity.to(device)
 
-    def _to_bypass(self, entity:Union[torch.nn.Module, torch.Tensor],
-                   device:str=None) -> Union[torch.nn.Module, torch.Tensor]:
-
+    def _to_bypass(
+        self, entity: Union[torch.nn.Module, torch.Tensor], device: str = None
+    ) -> Union[torch.nn.Module, torch.Tensor]:
         return entity
 
     # It returns all the model parameters in a single array.
@@ -297,9 +299,7 @@ class NetworkTemplate(torch.nn.Module):
 
     # Detaching parameters from the backpropagation pipeline
     def detach_parameters(self) -> None:
-
         for param in self.parameters():
-
             param.requires_grad = False
             param.data.copy_(param.data.detach())
 
@@ -313,7 +313,7 @@ class NetworkTemplate(torch.nn.Module):
         return output_tensor.detach().numpy()
 
     # It prints a summary of the network architecture.
-    def summary(self, display:bool=True, **kwargs) -> None:
+    def summary(self, display: bool = True, **kwargs) -> None:
         import pprint
 
         if display:

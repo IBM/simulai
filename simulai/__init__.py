@@ -20,7 +20,7 @@
 
 import os
 import numpy as np
-import torch 
+import torch
 
 engine_var = os.environ.get("engine")
 
@@ -40,4 +40,3 @@ elif TENSOR_DTYPE == torch.float64:
     ARRAY_DTYPE = np.float64
 else:
     ARRAY_DTYPE = np.float64
-

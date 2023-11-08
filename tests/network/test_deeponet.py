@@ -16,6 +16,7 @@ from unittest import TestCase
 from typing import Union, Optional
 import numpy as np
 from tests.config import configure_dtype
+
 torch = configure_dtype()
 from utils import configure_device
 
@@ -29,7 +30,7 @@ def model(
     residual: bool = False,
     multiply_by_trunk: bool = False,
     use_bias: bool = False,
-    device:Optional[str]="cpu"
+    device: Optional[str] = "cpu",
 ):
     import importlib
 
@@ -99,7 +100,9 @@ def model(
     return net
 
 
-def model_dense_product(product_type=None, n_outputs: int = 2, device:Optional[str]="cpu"):
+def model_dense_product(
+    product_type=None, n_outputs: int = 2, device: Optional[str] = "cpu"
+):
     from simulai.models import DeepONet
     from simulai.regression import DenseNetwork
 
@@ -142,7 +145,7 @@ def model_dense_product(product_type=None, n_outputs: int = 2, device:Optional[s
     return net
 
 
-def model_conv(product_type=None, device:Optional[str]="cpu"):
+def model_conv(product_type=None, device: Optional[str] = "cpu"):
     from simulai.models import DeepONet
     from simulai.regression import ConvolutionalNetwork, DenseNetwork
 
@@ -216,13 +219,15 @@ def model_conv(product_type=None, device:Optional[str]="cpu"):
 
     return net
 
-def model_conv_template(product_type:Optional[str]=None, device:Optional[str]=None):
 
+def model_conv_template(
+    product_type: Optional[str] = None, device: Optional[str] = None
+):
     from simulai.workflows import ConvDeepONet
 
     n_inputs = 1
     n_outputs = 2
-    dim="2d"
+    dim = "2d"
     n_latent = 64
     product_type = None
 
@@ -235,16 +240,17 @@ def model_conv_template(product_type:Optional[str]=None, device:Optional[str]=No
         "name": "trunk_net",
     }
 
-    net_template = ConvDeepONet(trunk_config=trunk_config,
-                     n_outputs=n_outputs,
-                     dim=dim,
-                     n_latent = n_latent,
-                     branch_input_dim=(None,1,16,16),
-                     shallow=True,
-                     product_type=product_type,
-                     use_batch_norm=True,
-                     branch_activation="elu",
-                     )
+    net_template = ConvDeepONet(
+        trunk_config=trunk_config,
+        n_outputs=n_outputs,
+        dim=dim,
+        n_latent=n_latent,
+        branch_input_dim=(None, 1, 16, 16),
+        shallow=True,
+        product_type=product_type,
+        use_batch_norm=True,
+        branch_activation="elu",
+    )
 
     return net_template()
 
@@ -254,17 +260,17 @@ class TestDeeponet(TestCase):
         pass
 
     def test_deeponet_forward(self):
-
         for device in ["cpu", "gpu", None]:
-
             net = model(device=device)
             net.summary()
 
             # Checking if the model is coretly placed when no device is
             # informed
             if not device:
-                assert net.device == "cpu", ("When no device is provided it is expected the model"+
-                                             f"being on cpu, but received {net.device}.")
+                assert net.device == "cpu", (
+                    "When no device is provided it is expected the model"
+                    + f"being on cpu, but received {net.device}."
+                )
 
             print(f"Network has {net.n_parameters} parameters.")
 
@@ -352,7 +358,6 @@ class TestDeeponet(TestCase):
             output = net.forward(input_trunk=data_trunk, input_branch=data_branch)
 
             assert output.shape[1] == 4, "The network output is not like expected."
-
 
     # Vanilla DeepONets are single output
     def test_vanilla_deeponet_train(self):

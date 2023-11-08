@@ -98,7 +98,7 @@ input_dataset_test = input_dataset_parameter[n_cases:]
 
 
 # In[9]:
-# Sampling over time (we will not use all the available samples, since the 
+# Sampling over time (we will not use all the available samples, since the
 # final datasets can became large to much for our purposes)
 
 output_dataset_time_sampled = output_dataset_train[time_indices, ...]
@@ -110,17 +110,17 @@ input_dataset_sensor_sampled = input_dataset_train
 # parameters scenario for all the time samples
 input_dataset = input_dataset_train[:, None, :]
 input_dataset = np.tile(input_dataset, (1, n_time_samples, 1))
-input_dataset = input_dataset.reshape((n_time_samples*n_cases, -1))
+input_dataset = input_dataset.reshape((n_time_samples * n_cases, -1))
 input_branch = torch.from_numpy(input_dataset.astype("float32"))
 
 # The input dataset for trunk is the repetition of the time array (our
 # coordinates) for each parameters scenario (the branch inputs)
 input_trunk = np.tile(time[:, None], (n_cases, 1))
 
-# The target dataset is organized in the way that we have the 
+# The target dataset is organized in the way that we have the
 # correspondency: target_data(parameters, t) = G(parameters)(t)
-target_data = output_dataset_time_sampled.transpose((2,0,1))
-target_data = target_data.reshape((n_time_samples*n_cases, -1))
+target_data = output_dataset_time_sampled.transpose((2, 0, 1))
+target_data = target_data.reshape((n_time_samples * n_cases, -1))
 
 # In[11]:
 # Verifying the dimensions of the final datasets

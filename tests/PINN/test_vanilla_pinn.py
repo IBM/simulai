@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from tests.config import configure_dtype
+
 torch = configure_dtype()
 
 from simulai.optimization import Optimizer

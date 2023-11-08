@@ -207,8 +207,7 @@ class SymbolicOperator(torch.nn.Module):
 
         return protected_operators
 
-    def _parse_key_interval(self, intv:str) -> List:
-
+    def _parse_key_interval(self, intv: str) -> List:
         begin, end = intv.split(",")
 
         end = int(end[:-1])
@@ -247,7 +246,6 @@ class SymbolicOperator(torch.nn.Module):
                         keys_dict[key].append(int(index))
 
                 elif len(s.split(intv)) > 1:
-
                     key, interval_str = s.split(intv)
                     interval = self._parse_key_interval(interval_str)
                     keys_dict[key] = interval
@@ -287,7 +285,7 @@ class SymbolicOperator(torch.nn.Module):
         Raises:
             Exception: If the `constants` attribute is not defined, and the input expression is a string.
 
-        
+
         """
         if isinstance(expr, str):
             try:
@@ -326,7 +324,7 @@ class SymbolicOperator(torch.nn.Module):
 
         Returns:
             sympy.Symbol: A SymPy Symbol representing the input variable.
-        
+
         """
         if isinstance(var, str):
             return sympy.Symbol(var)
@@ -341,7 +339,7 @@ class SymbolicOperator(torch.nn.Module):
 
         Returns:
             torch.Tensor: The output tensor after forward pass.
-        
+
         """
         return self.function.forward(input_data=input_data)
 
@@ -353,7 +351,7 @@ class SymbolicOperator(torch.nn.Module):
 
         Returns:
             torch.Tensor: The output tensor after forward pass.
-        
+
         """
         return self.function.forward(**input_data)
 
@@ -365,7 +363,7 @@ class SymbolicOperator(torch.nn.Module):
 
         Returns:
             List[torch.Tensor]: A list of tensors after evaluating the expressions serially.
-        
+
         """
         return [f(**feed_vars).to(self.device) for f in self.f_expressions]
 
@@ -380,7 +378,7 @@ class SymbolicOperator(torch.nn.Module):
 
         Returns:
             torch.Tensor: Result of evaluating the specified expression with given feed variables
-        
+
         """
         return self.f_expressions[index](**feed_vars).to(self.device)
 
@@ -388,7 +386,7 @@ class SymbolicOperator(torch.nn.Module):
         self, inputs_data: Union[np.ndarray, dict] = None
     ) -> List[torch.Tensor]:
         """Evaluate the symbolic expression.
-        
+
         This function takes either a numpy array or a dictionary of numpy arrays as input.
 
         Args:
@@ -396,7 +394,7 @@ class SymbolicOperator(torch.nn.Module):
 
         Returns:
             List[torch.Tensor]: List[torch.Tensor]: A list of tensors containing the evaluated expressions.
-            
+
             Raises:
 
         Raises:
@@ -450,8 +448,8 @@ class SymbolicOperator(torch.nn.Module):
             inputs_list (list): either a list of arrays, an np.ndarray, or a dict containing the inputs to the function
 
         Returns:
-            the result of evaluating the expression using the inputs.: 
-        
+            the result of evaluating the expression using the inputs.:
+
         """
 
         try:

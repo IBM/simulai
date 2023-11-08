@@ -50,7 +50,7 @@ def exec_model_wrapper(input_data=None, target_data=None, model=None, key=None):
 
     Returns:
         dict: It takes input_data, target_data, model, key as input and fits the provided model with the given data. The model is then returned in a dictionary with the key provided.
-    
+
     """
     model.fit(input_data=input_data, target_data=target_data)
     return {key: model}
@@ -72,7 +72,7 @@ class ModelPool:
             model_type (str, optional): Type of model, by default 'EchoStateNetwork'
             model_config (dict, optional): Dictionary of the model configuration, by default None
             parallel (str, optional): String to specify parallel computation, by default None
-        
+
         """
         self.config = config
         self.model_type = model_type
@@ -177,7 +177,7 @@ class ModelPool:
 
         Returns:
             list: List of instances of the sub models
-        
+
         """
         return list(self.model_instances_list.values())
 
@@ -188,7 +188,7 @@ class ModelPool:
 
         Returns:
             list: List of keys of the model instances list
-        
+
         """
         return list(self.model_instances_list.keys())
 
@@ -200,7 +200,7 @@ class ModelPool:
 
         Returns:
             dict: Dictionary of the template.
-        
+
         """
         templates = {
             "independent_series": {"group_size": 1, "stencil_size": 0, "skip_size": 1},
@@ -229,7 +229,7 @@ class ModelPool:
 
         Returns:
             dict: Dictionary of subdatasets with dataset_id as key and subgroup as value
-        
+
         """
         sub_datasets = OrderedDict()
         for ig, group in enumerate(groups_indices):
@@ -249,7 +249,7 @@ class ModelPool:
 
         Returns:
             dict: Dictionary of subdatasets with dataset_id as key and truncated subgroup as value
-        
+
         """
         new_sub_datasets = OrderedDict()
         for group_id, dataset in sub_datasets.items():
@@ -268,7 +268,7 @@ class ModelPool:
 
         Returns:
             list: List of tuple of the indices intervals of the input datasets for each sub-group
-        
+
         """
         groups_indices_input = []
 
@@ -312,7 +312,7 @@ class ModelPool:
 
         Returns:
             Complex -> List[Tuple[int, int]]: A list of tuple of indices intervals for each sub-group
-        
+
         """
         indices = np.arange(0, self.n_outputs + self.group_size, self.group_size)
         indices_first = indices[:-1]
@@ -334,7 +334,7 @@ class ModelPool:
 
         Returns:
             Dict: A dictionary of the valid keyword arguments of the method
-        
+
         """
         kwargs = inspect.getfullargspec(method).args
 
@@ -350,7 +350,7 @@ class ModelPool:
 
         Returns:
             ndarray: The input data concatenated with the previous data, only containing the last history_size data.
-        
+
         """
         history_size_ = self.history_sizes.get(model_id)
 
@@ -367,7 +367,7 @@ class ModelPool:
 
         Returns:
             ndarray: The first history_size data.
-        
+
         """
         history_data = self.history_sizes.get(model_id)
 
@@ -383,7 +383,7 @@ class ModelPool:
 
         Returns:
             ndarray: The input data.
-        
+
         """
         return data
 
@@ -402,7 +402,7 @@ class ModelPool:
 
         Returns:
             str: A unique identifier for the model instance.
-        
+
         """
         return f"{self.model_type}_{idx}"
 
@@ -415,7 +415,7 @@ class ModelPool:
 
         Returns:
             tuple: A tuple of the prepared input dataset.
-        
+
         """
         assert (
             type(data) is list
@@ -773,7 +773,7 @@ class ModelPool:
 
         Returns:
             numpy.ndarray: The concatenated data of input and auxiliary data for the given step
-        
+
         """
         return np.hstack([data, auxiliary_data[step][None, ...]])
 
@@ -783,11 +783,11 @@ class ModelPool:
 
         Args:
             data (numpy.ndarray, optional): Input data (Default value = None)
-            **kwargs: 
+            **kwargs:
 
         Returns:
             numpy.ndarray: Input data
-        
+
         """
         return data
 
@@ -799,7 +799,7 @@ class ModelPool:
 
         Returns:
             bool: True if all models in the pool are auto-executable
-        
+
         """
         all_autoexecutable = sum(
             [hasattr(inst, "fit") for inst in self.model_instances_list.values()]
@@ -815,7 +815,7 @@ class ModelPool:
         Raises:
             AssertionError: If one of the models in the pool does not have a 'set_parameters' method
 
-        
+
         """
         for model_id, model in self.model_instances_list.items():
             assert hasattr(
@@ -935,7 +935,7 @@ class ModelPool:
             AssertionError: If `auxiliary_data` is provided and does not have 2 columns
             AssertionError: If `index` is provided and `horizon` is different from 1
 
-        
+
         """
 
         assert len(initial_state.shape) >= 2, "Input must have two dimensions at most."
@@ -1055,8 +1055,8 @@ class ModelPool:
 
 
         Returns:
-            None: 
-        
+            None:
+
         """
         for model_id, model in self.model_instances_list.items():
             assert hasattr(model, "reset"), f"The moodel {model} has no method reset."
@@ -1072,8 +1072,8 @@ class ModelPool:
         the current state will be used as the reference state. (Default value = None)
 
         Returns:
-            None: 
-        
+            None:
+
         """
         for model_id, model in self.model_instances_list.items():
             assert hasattr(
@@ -1091,12 +1091,12 @@ class ModelPool:
         the current state will not be saved. (Default value = None)
 
         Returns:
-            None: 
+            None:
 
         Raises:
             Exception: If the object is not serializable.
 
-        
+
         """
         try:
             with open(path, "wb") as fp:
@@ -1111,7 +1111,7 @@ class ModelPool:
         Args:
             path (str, optional, optional): The file path to save the configuration to. If not provided,
         the configuration will be saved to the default path.
-        
+
         """
         with open(path, "w") as fp:
             json.dump(self.config_pool, fp, indent=6)
@@ -1122,7 +1122,7 @@ class ModelPool:
         Args:
             path (str): The file path to save the model to.
             model_id (str): The ID of the model instance to save.
-        
+
         """
         return self.model_instances_list[model_id].save(
             save_path=path, model_name=model_id
@@ -1136,7 +1136,7 @@ class ModelPool:
             model_id (str): The ID of the model to load.
             index (int, optional): The index of the model instance in the pool. If not provided, the model
         will be added to the pool using the provided model_id. (Default value = None)
-        
+
         """
         regression = self._get_regression_class()
         model = regression.restore(path, model_id)
@@ -1151,7 +1151,7 @@ class ModelPool:
         the model will not be added to the pool (Default value = None)
             index (int, optional): The index of the model in the pool. If not provided, the model
         will be added to the pool using the provided model_id. (Default value = None)
-        
+
         """
         if index is None:
             model_id_new = model_id
@@ -1168,7 +1168,7 @@ class ModelPool:
 
         Returns:
             object: The model instance retrieved from the pool.
-        
+
         """
         if index is None:
             model_id_new = model_id
