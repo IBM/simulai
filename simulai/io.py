@@ -1789,7 +1789,6 @@ class GaussianNoise(Dataset):
     def __call__(self):
         return (1 + self.stddev * torch.randn(*self.data_shape)) * self.input_data
 
-
 class Tokenizer:
 
     """Wrapper for multiple tokenization approaches"""
@@ -1797,29 +1796,37 @@ class Tokenizer:
     def __init__(self, kind: str = "time_indexer"):
         """
         Args:
-            kind (str): The kind of tokenization to be used.
+            kind (str): The kind of tokenization to be used. (Default value = "time_indexer")
         """
         self.kind = kind
 
         # Tokenizer selection
         if self.kind == "time_indexer":
-            self.tokenizer = self._make_time_input_sequence
+            self.input_tokenizer = self._make_time_input_sequence
+            self.target_tokenizer = self._make_time_target_sequence
         else:
             raise Exception(f"The tokenization option {self.kind} is not available.")
 
-    def __call__(self, input_data: Union[np.ndarray, torch.Tensor], **kwargs):
-        """Global call method."""
+    def generate_input_tokens(self, input_data: Union[np.ndarray, torch.Tensor], **kwargs) -> torch.Tensor:
 
-        return tokenizer(input_data, **kwargs)
+        """Generating the input sequence of tokens."""
 
-    def _make_time_input_sequence(
-        src: Union[np.ndarray, torch.Tensor], num_step=None, step=None
+        return self.input_tokenizer(input_data, **kwargs)
+    
+    def generate_target_tokens(self, target_data: Union[np.ndarray, torch.Tensor], **kwargs) -> torch.Tensor: 
+
+        """Generating the target sequence of tokens."""
+
+        return self.target_tokenizer(target_data, **kwargs)
+
+    def _make_time_input_sequence(self,
+        src: Union[np.ndarray, torch.Tensor], num_step:int=None, step:float=None
     ) -> Union[np.ndarray, torch.Tensor]:
         """Simple tokenization based on repeating samples
            and time-indexing them.
         Args:
             src (Union[np.ndarray, torch.Tensor]): The dataset to be tokenized.
-            num_step (int): number of timesteps for each repetition. (Default value: None)
+            num_step (int): number of timesteps for each batch. (Default value: None)
             step (float): Size of the timestep. (Default value: None)
         Returns:
             Union[np.ndarray, torch.Tensor]: The tokenized input dataset.
@@ -1828,12 +1835,28 @@ class Tokenizer:
         dim = num_step
         src = np.repeat(np.expand_dims(src, axis=1), dim, axis=1)
         src_shape = src.shape
-        src_shape[-1] += 1
+        src_shape_list = list(src_shape)
+        src_shape_list[-1] += 1
 
-        src_finel = np.zeros(src_shape)
+        src_final = np.zeros(tuple(src_shape_list))
         src_final[:, :, :-1] = src
 
         for i in range(num_step):
             src_final[:, i, -1] += step * i
 
         return src
+
+    def _make_time_target_sequence(self, 
+        src: Union[np.ndarray, torch.Tensor], num_step:int=None) ->  Union[np.ndarray, torch.Tensor]:
+        """Simple tokenization based on repeating samples
+           and time-indexing them.
+        Args:
+            src (Union[np.ndarray, torch.Tensor]): The dataset to be tokenized.
+            num_step (int): number of timesteps for each batch. (Default value: None)
+        Returns:
+            Union[np.ndarray, torch.Tensor]: The tokenized target dataset.
+        """
+        moving_window = MovingWindow(history_size=1, skip_size=1, horizon_size=num_step) 
+        _, output = moving_window(input_data=src, output_data=src)
+
+        return output
