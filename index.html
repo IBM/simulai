@@ -1,275 +1,89 @@
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="None">
-  
-  <link rel="shortcut icon" href="img/favicon.ico">
-  <title>Welcome to SimulAI - SimulAI Docs</title>
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
-  <link href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
-
-  <link rel="stylesheet" href="css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-  <link href="assets/_mkdocstrings.css" rel="stylesheet">
-  
-  <script>
-    // Current page data
-    var mkdocs_page_name = "Welcome to SimulAI";
-    var mkdocs_page_input_path = "index.md";
-    var mkdocs_page_url = null;
-  </script>
-  
-  <script src="js/jquery-2.1.1.min.js" defer></script>
-  <script src="js/modernizr-2.8.3.min.js" defer></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-  <script>hljs.initHighlightingOnLoad();</script> 
-  
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="None" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>SimulAI Docs</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Welcome to SimulAI";
+        var mkdocs_page_input_path = "index.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
   <div class="wy-grid-for-nav">
-
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
-        <a href="." class="icon icon-home"> SimulAI Docs</a>
-        <div role="search">
+          <a href="." class="icon icon-home"> SimulAI Docs
+        </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
 
-      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-	<ul class="tocbase current">
-    
-    
-      
-
-
-  
-    
-    <li class="navtree toctree-l1 page current">
-      <a class="current" href=".">
-        Welcome to SimulAI
-      </a>
-    </li>
-    
-      
-
-
-
-      
-
-  <li class="toctree-l1">
-    <a href="#installing">
-      Installing
-      <span class="toctree-expand"></span>
-    </a>
-  </li>
-
-
-
-  <li class="toctree-l1">
-    <ul class="subnav-l1 toc-hidden">
-    
-      
-        <li class="toctree-l2">
-          <a class="toctree-l3" href="#using-pip">Using pip</a>
-        </li>
-    
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href=".">Welcome to SimulAI</a>
+    <ul class="current">
     </ul>
-  </li>
-
-      
-
-  <li class="toctree-l1">
-    <a href="#contributing-code-to-simulai">
-      Contributing code to SimulAI
-      <span class="toctree-expand"></span>
-    </a>
-  </li>
-
-
-
-      
-
-  <li class="toctree-l1">
-    <a href="#using-mpi">
-      Using MPI
-      <span class="toctree-expand"></span>
-    </a>
-  </li>
-
-
-
-  <li class="toctree-l1">
-    <ul class="subnav-l1 toc-hidden">
-    
-      
-        <li class="toctree-l2">
-          <a class="toctree-l3" href="#issues-with-macos">Issues with macOS</a>
-        </li>
-    
-    </ul>
-  </li>
-
-      
-
-  <li class="toctree-l1">
-    <a href="#using-tensorboard">
-      Using Tensorboard
-      <span class="toctree-expand"></span>
-    </a>
-  </li>
-
-
-
-      
-
-  <li class="toctree-l1">
-    <a href="#documentation">
-      Documentation
-      <span class="toctree-expand"></span>
-    </a>
-  </li>
-
-
-
-      
-
-  <li class="toctree-l1">
-    <a href="#examples">
-      Examples
-      <span class="toctree-expand"></span>
-    </a>
-  </li>
-
-
-
-      
-
-  <li class="toctree-l1">
-    <a href="#license">
-      License
-      <span class="toctree-expand"></span>
-    </a>
-  </li>
-
-
-
-  <li class="toctree-l1">
-    <ul class="subnav-l1 toc-hidden">
-    
-      
-        <li class="toctree-l2">
-          <a class="toctree-l3" href="#contributing-code-to-simulai_1">Contributing code to SimulAI</a>
-        </li>
-    
-    </ul>
-  </li>
-
-      
-
-  <li class="toctree-l1">
-    <a href="#how-to-cite-simulai-in-your-publications">
-      How to cite SimulAI in your publications
-      <span class="toctree-expand"></span>
-    </a>
-  </li>
-
-
-
-      
-
-  <li class="toctree-l1">
-    <a href="#publications">
-      Publications
-      <span class="toctree-expand"></span>
-    </a>
-  </li>
-
-
-
-      
-
-  <li class="toctree-l1">
-    <a href="#references">
-      References
-      <span class="toctree-expand"></span>
-    </a>
-  </li>
-
-
-
-
-  
-    
-      
-
-
-  <li class="navtree toctree-l1 inactive">
-    <a class="" href="simulai_io/">simulai.io</a>
-  </li>
-    
-      
-
-
-  <li class="navtree toctree-l1 inactive">
-    <a class="" href="simulai_residuals/">simulai.residuals</a>
-  </li>
-    
-      
-
-
-  <li class="navtree toctree-l1 inactive">
-    <a class="" href="simulai_regression/">simulai.regression</a>
-  </li>
-    
-      
-
-
-  <li class="navtree toctree-l1 inactive">
-    <a class="" href="simulai_models/">simulai.models</a>
-  </li>
-    
-  </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="simulai_io/">simulai.io</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="simulai_residuals/">simulai.residuals</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="simulai_regression/">simulai.regression</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="simulai_models/">simulai.models</a>
+                </li>
+              </ul>
       </div>
-      &nbsp;
+    </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href=".">SimulAI Docs</a>
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href=".">SimulAI Docs</a>
+        
       </nav>
-
-      
       <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="breadcrumbs navigation">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".">Docs</a> &raquo;</li>
-    
-      
-    
-    <li>Welcome to SimulAI</li>
+    <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Welcome to SimulAI</li>
     <li class="wy-breadcrumbs-aside">
-      
     </li>
   </ul>
   <hr/>
 </div>
-          <div role="main">
-            <div class="section">
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
               
                 <h1 id="welcome-to-simulai">Welcome to SimulAI<a class="headerlink" href="#welcome-to-simulai" title="Permanent link">#</a></h1>
 <p><a href="https://badge.fury.io/py/simulai-toolkit"><img alt="image" src="https://badge.fury.io/py/simulai-toolkit.svg" /></a></p>
@@ -422,27 +236,20 @@ New Zealand</em>, <strong>51</strong>(2): 194-211. ISSN: 0303-6758.
 \&lt;<a href="https://doi.org/10.1080/03036758.2020.1863237">https://doi.org/10.1080/03036758.2020.1863237</a>&gt;`_. </p>
               
             </div>
-          </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="simulai_io/" class="btn btn-neutral float-right" title="simulai.io">Next <span class="icon icon-circle-arrow-right"></span></a>
-      
-      
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-    
   </div>
 
-  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
-      
+          
         </div>
       </div>
 
@@ -450,23 +257,30 @@ New Zealand</em>, <strong>51</strong>(2): 194-211. ISSN: 0303-6758.
 
   </div>
 
-  <div class="rst-versions" role="note" style="cursor: pointer">
-    <span class="rst-current-version" data-toggle="rst-current-version">
-      
-      
-      
-        <span style="margin-left: 15px"><a href="simulai_io/" style="color: #fcfcfc">Next &raquo;</a></span>
-      
-    </span>
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+      <span><a href="simulai_io/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
 </div>
-    <script>var base_url = '.';</script>
-    <script src="js/theme.js" defer></script>
-      <script src="search/main.js" defer></script>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = ".";</script>
+    <script src="js/theme_extra.js"></script>
+    <script src="js/theme.js"></script>
+      <script src="search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
 
 </body>
 </html>
 
 <!--
 MkDocs version : 1.5.3
-Build Date UTC : 2023-11-08 14:39:30.858079+00:00
+Build Date UTC : 2023-11-08 14:41:35.065216+00:00
 -->
