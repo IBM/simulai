@@ -1,211 +1,1210 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>simulai.io - SimulAI Docs</title>
-    <link rel="stylesheet" href="../css/theme.css" />
-    <link rel="stylesheet" href="../css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
-        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
     
-      <script>
-        // Current page data
-        var mkdocs_page_name = "simulai.io";
-        var mkdocs_page_input_path = "simulai_io.md";
-        var mkdocs_page_url = null;
-      </script>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../simulai_residuals/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.7">
     
-    <!--[if lt IE 9]>
-      <script src="../js/html5shiv.min.js"></script>
-    <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-      <script>hljs.highlightAll();</script> 
-</head>
+    
+      
+        <title>simulai.io - SimulAI Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.4b4a2bd9.min.css">
+      
+      
 
-<body class="wy-body-for-nav" role="document">
 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
-    <div class="wy-side-scroll">
-      <div class="wy-side-nav-search">
-          <a href=".." class="icon icon-home"> SimulAI Docs
-        </a><div role="search">
-  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
-  </form>
-</div>
-      </div>
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
 
-      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="..">Welcome to SimulAI</a>
-                </li>
-              </ul>
-              <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="./">simulai.io</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#bypasspreparer">ByPassPreparer</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.ByPassPreparer">ByPassPreparer</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.ByPassPreparer.prepare_input_data">prepare_input_data()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.ByPassPreparer.prepare_input_structured_data">prepare_input_structured_data()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.ByPassPreparer.prepare_output_data">prepare_output_data()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.ByPassPreparer.prepare_output_structured_data">prepare_output_structured_data()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#reshaper">Reshaper</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.Reshaper">Reshaper</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.Reshaper.prepare_input_data">prepare_input_data()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.Reshaper.prepare_input_structured_data">prepare_input_structured_data()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.Reshaper.prepare_output_data">prepare_output_data()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.Reshaper.prepare_output_structured_data">prepare_output_structured_data()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#scalerreshaper">ScalerReshaper</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.ScalerReshaper">ScalerReshaper</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.ScalerReshaper.__init__">__init__()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.ScalerReshaper.prepare_input_data">prepare_input_data()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.ScalerReshaper.prepare_input_structured_data">prepare_input_structured_data()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.ScalerReshaper.prepare_output_data">prepare_output_data()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.ScalerReshaper.prepare_output_structured_data">prepare_output_structured_data()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#mapvalid">MapValid</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.MapValid">MapValid</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.MapValid.__init__">__init__()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.MapValid.prepare_input_data">prepare_input_data()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.MapValid.prepare_input_structured_data">prepare_input_structured_data()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.MapValid.prepare_output_data">prepare_output_data()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.MapValid.prepare_output_structured_data">prepare_output_structured_data()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#sampling">Sampling</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.Sampling">Sampling</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.Sampling.indices">indices</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.Sampling.__init__">__init__()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.Sampling.prepare_input_data">prepare_input_data()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.Sampling.prepare_input_structured_data">prepare_input_structured_data()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#movingwindow">MovingWindow</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.MovingWindow">MovingWindow</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.MovingWindow.__call__">__call__()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.MovingWindow.__init__">__init__()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.MovingWindow.bypass">bypass()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.MovingWindow.get_last_item">get_last_item()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.MovingWindow.transform">transform()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#slidingwindow">SlidingWindow</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.SlidingWindow">SlidingWindow</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.SlidingWindow.__call__">__call__()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.SlidingWindow.__init__">__init__()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.SlidingWindow.apply">apply()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#intersectingbatches">IntersectingBatches</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.IntersectingBatches">IntersectingBatches</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.IntersectingBatches.__call__">__call__()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.IntersectingBatches.__init__">__init__()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.IntersectingBatches.get_indices">get_indices()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#batchwiseextrapolation">BatchwiseExtrapolation</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.BatchwiseExtrapolation">BatchwiseExtrapolation</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.BatchwiseExtrapolation.__call__">__call__()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#batchcopy">BatchCopy</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.BatchCopy">BatchCopy</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.BatchCopy.copy">copy()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#maketensor">MakeTensor</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.MakeTensor">MakeTensor</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.MakeTensor.__call__">__call__()</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#gaussiannoise">GaussianNoise</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#simulai.io.GaussianNoise">GaussianNoise</a>
-    </li>
-    </ul>
-                </li>
-              </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../simulai_residuals/">simulai.residuals</a>
-                </li>
-              </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../simulai_regression/">simulai.regression</a>
-                </li>
-              </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../simulai_models/">simulai.models</a>
-                </li>
-              </ul>
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#simulaiio" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="SimulAI Docs" class="md-header__button md-logo" aria-label="SimulAI Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SimulAI Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              simulai.io
+            
+          </span>
+        </div>
       </div>
     </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="..">SimulAI Docs</a>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
         
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
       </nav>
-      <div class="wy-nav-content">
-        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
-  <ul class="wy-breadcrumbs">
-    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">simulai.io</li>
-    <li class="wy-breadcrumbs-aside">
-    </li>
-  </ul>
-  <hr/>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-            <div class="section" itemprop="articleBody">
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
               
-                <h1 id="simulaiio">simulai.io<a class="headerlink" href="#simulaiio" title="Permanent link">#</a></h1>
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="SimulAI Docs" class="md-nav__button md-logo" aria-label="SimulAI Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    SimulAI Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Welcome to SimulAI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    simulai.io
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    simulai.io
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bypasspreparer" class="md-nav__link">
+    ByPassPreparer
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ByPassPreparer" class="md-nav__link">
+    ByPassPreparer
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ByPassPreparer.prepare_input_data" class="md-nav__link">
+    prepare_input_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ByPassPreparer.prepare_input_structured_data" class="md-nav__link">
+    prepare_input_structured_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ByPassPreparer.prepare_output_data" class="md-nav__link">
+    prepare_output_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ByPassPreparer.prepare_output_structured_data" class="md-nav__link">
+    prepare_output_structured_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reshaper" class="md-nav__link">
+    Reshaper
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Reshaper" class="md-nav__link">
+    Reshaper
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Reshaper.prepare_input_data" class="md-nav__link">
+    prepare_input_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Reshaper.prepare_input_structured_data" class="md-nav__link">
+    prepare_input_structured_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Reshaper.prepare_output_data" class="md-nav__link">
+    prepare_output_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Reshaper.prepare_output_structured_data" class="md-nav__link">
+    prepare_output_structured_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scalerreshaper" class="md-nav__link">
+    ScalerReshaper
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ScalerReshaper" class="md-nav__link">
+    ScalerReshaper
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ScalerReshaper.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ScalerReshaper.prepare_input_data" class="md-nav__link">
+    prepare_input_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ScalerReshaper.prepare_input_structured_data" class="md-nav__link">
+    prepare_input_structured_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ScalerReshaper.prepare_output_data" class="md-nav__link">
+    prepare_output_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ScalerReshaper.prepare_output_structured_data" class="md-nav__link">
+    prepare_output_structured_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mapvalid" class="md-nav__link">
+    MapValid
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MapValid" class="md-nav__link">
+    MapValid
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MapValid.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MapValid.prepare_input_data" class="md-nav__link">
+    prepare_input_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MapValid.prepare_input_structured_data" class="md-nav__link">
+    prepare_input_structured_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MapValid.prepare_output_data" class="md-nav__link">
+    prepare_output_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MapValid.prepare_output_structured_data" class="md-nav__link">
+    prepare_output_structured_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sampling" class="md-nav__link">
+    Sampling
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Sampling" class="md-nav__link">
+    Sampling
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Sampling.indices" class="md-nav__link">
+    indices
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Sampling.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Sampling.prepare_input_data" class="md-nav__link">
+    prepare_input_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Sampling.prepare_input_structured_data" class="md-nav__link">
+    prepare_input_structured_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#movingwindow" class="md-nav__link">
+    MovingWindow
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MovingWindow" class="md-nav__link">
+    MovingWindow
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MovingWindow.__call__" class="md-nav__link">
+    __call__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MovingWindow.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MovingWindow.bypass" class="md-nav__link">
+    bypass()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MovingWindow.get_last_item" class="md-nav__link">
+    get_last_item()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MovingWindow.transform" class="md-nav__link">
+    transform()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#slidingwindow" class="md-nav__link">
+    SlidingWindow
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.SlidingWindow" class="md-nav__link">
+    SlidingWindow
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.SlidingWindow.__call__" class="md-nav__link">
+    __call__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.SlidingWindow.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.SlidingWindow.apply" class="md-nav__link">
+    apply()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#intersectingbatches" class="md-nav__link">
+    IntersectingBatches
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.IntersectingBatches" class="md-nav__link">
+    IntersectingBatches
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.IntersectingBatches.__call__" class="md-nav__link">
+    __call__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.IntersectingBatches.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.IntersectingBatches.get_indices" class="md-nav__link">
+    get_indices()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#batchwiseextrapolation" class="md-nav__link">
+    BatchwiseExtrapolation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.BatchwiseExtrapolation" class="md-nav__link">
+    BatchwiseExtrapolation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.BatchwiseExtrapolation.__call__" class="md-nav__link">
+    __call__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#batchcopy" class="md-nav__link">
+    BatchCopy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.BatchCopy" class="md-nav__link">
+    BatchCopy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.BatchCopy.copy" class="md-nav__link">
+    copy()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maketensor" class="md-nav__link">
+    MakeTensor
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MakeTensor" class="md-nav__link">
+    MakeTensor
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MakeTensor.__call__" class="md-nav__link">
+    __call__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gaussiannoise" class="md-nav__link">
+    GaussianNoise
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.GaussianNoise" class="md-nav__link">
+    GaussianNoise
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../simulai_residuals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    simulai.residuals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../simulai_regression/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    simulai.regression
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../simulai_models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    simulai.models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bypasspreparer" class="md-nav__link">
+    ByPassPreparer
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ByPassPreparer" class="md-nav__link">
+    ByPassPreparer
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ByPassPreparer.prepare_input_data" class="md-nav__link">
+    prepare_input_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ByPassPreparer.prepare_input_structured_data" class="md-nav__link">
+    prepare_input_structured_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ByPassPreparer.prepare_output_data" class="md-nav__link">
+    prepare_output_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ByPassPreparer.prepare_output_structured_data" class="md-nav__link">
+    prepare_output_structured_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reshaper" class="md-nav__link">
+    Reshaper
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Reshaper" class="md-nav__link">
+    Reshaper
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Reshaper.prepare_input_data" class="md-nav__link">
+    prepare_input_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Reshaper.prepare_input_structured_data" class="md-nav__link">
+    prepare_input_structured_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Reshaper.prepare_output_data" class="md-nav__link">
+    prepare_output_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Reshaper.prepare_output_structured_data" class="md-nav__link">
+    prepare_output_structured_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scalerreshaper" class="md-nav__link">
+    ScalerReshaper
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ScalerReshaper" class="md-nav__link">
+    ScalerReshaper
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ScalerReshaper.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ScalerReshaper.prepare_input_data" class="md-nav__link">
+    prepare_input_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ScalerReshaper.prepare_input_structured_data" class="md-nav__link">
+    prepare_input_structured_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ScalerReshaper.prepare_output_data" class="md-nav__link">
+    prepare_output_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.ScalerReshaper.prepare_output_structured_data" class="md-nav__link">
+    prepare_output_structured_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mapvalid" class="md-nav__link">
+    MapValid
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MapValid" class="md-nav__link">
+    MapValid
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MapValid.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MapValid.prepare_input_data" class="md-nav__link">
+    prepare_input_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MapValid.prepare_input_structured_data" class="md-nav__link">
+    prepare_input_structured_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MapValid.prepare_output_data" class="md-nav__link">
+    prepare_output_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MapValid.prepare_output_structured_data" class="md-nav__link">
+    prepare_output_structured_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sampling" class="md-nav__link">
+    Sampling
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Sampling" class="md-nav__link">
+    Sampling
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Sampling.indices" class="md-nav__link">
+    indices
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Sampling.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Sampling.prepare_input_data" class="md-nav__link">
+    prepare_input_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.Sampling.prepare_input_structured_data" class="md-nav__link">
+    prepare_input_structured_data()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#movingwindow" class="md-nav__link">
+    MovingWindow
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MovingWindow" class="md-nav__link">
+    MovingWindow
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MovingWindow.__call__" class="md-nav__link">
+    __call__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MovingWindow.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MovingWindow.bypass" class="md-nav__link">
+    bypass()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MovingWindow.get_last_item" class="md-nav__link">
+    get_last_item()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MovingWindow.transform" class="md-nav__link">
+    transform()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#slidingwindow" class="md-nav__link">
+    SlidingWindow
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.SlidingWindow" class="md-nav__link">
+    SlidingWindow
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.SlidingWindow.__call__" class="md-nav__link">
+    __call__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.SlidingWindow.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.SlidingWindow.apply" class="md-nav__link">
+    apply()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#intersectingbatches" class="md-nav__link">
+    IntersectingBatches
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.IntersectingBatches" class="md-nav__link">
+    IntersectingBatches
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.IntersectingBatches.__call__" class="md-nav__link">
+    __call__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.IntersectingBatches.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.IntersectingBatches.get_indices" class="md-nav__link">
+    get_indices()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#batchwiseextrapolation" class="md-nav__link">
+    BatchwiseExtrapolation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.BatchwiseExtrapolation" class="md-nav__link">
+    BatchwiseExtrapolation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.BatchwiseExtrapolation.__call__" class="md-nav__link">
+    __call__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#batchcopy" class="md-nav__link">
+    BatchCopy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.BatchCopy" class="md-nav__link">
+    BatchCopy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.BatchCopy.copy" class="md-nav__link">
+    copy()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maketensor" class="md-nav__link">
+    MakeTensor
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MakeTensor" class="md-nav__link">
+    MakeTensor
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.MakeTensor.__call__" class="md-nav__link">
+    __call__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gaussiannoise" class="md-nav__link">
+    GaussianNoise
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulai.io.GaussianNoise" class="md-nav__link">
+    GaussianNoise
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="simulaiio">simulai.io<a class="headerlink" href="#simulaiio" title="Permanent link">#</a></h1>
 <h2 id="bypasspreparer">ByPassPreparer<a class="headerlink" href="#bypasspreparer" title="Permanent link">#</a></h2>
 
 
@@ -449,53 +1448,58 @@
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>data</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>)
-              –
-              <div class="doc-md-description">
-                
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
                 <code><span title="numpy.ndarray">ndarray</span></code>
-            –
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>numpy.ndarray: </p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>      <p>Example::</p>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+      <p>Example::</p>
 <pre><code>&gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; data = np.random.rand(5, 3, 4, 2)
 &gt;&gt;&gt; preparer = ByPassPreparer()
@@ -505,7 +1509,7 @@
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">49</span>
 <span class="normal">50</span>
 <span class="normal">51</span>
@@ -567,53 +1571,58 @@
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>data</code></b>
-                  (<code><span title="numpy.recarray">recarray</span></code>)
-              –
-              <div class="doc-md-description">
-                
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
+                <code><span title="numpy.recarray">recarray</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
                 <code><span title="numpy.ndarray">ndarray</span></code>
-            –
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.ndarray: numpy ndarray version of the input data.</p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
 <details class="note" open>
   <summary>Note</summary>
   <p>This function is used when the input data is in the form of a structured array and needs to be converted to a regular numpy ndarray.</p>
@@ -627,7 +1636,7 @@ array([[1, 'a', 0.5],
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 90</span>
 <span class="normal"> 91</span>
 <span class="normal"> 92</span>
@@ -695,53 +1704,58 @@ array([[1, 'a', 0.5],
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>data</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>)
-              –
-              <div class="doc-md-description">
-                
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
                 <code><span title="numpy.ndarray">ndarray</span></code>
-            –
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>numpy.ndarray: The output data in the original format</p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>      <p>Example::</p>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+      <p>Example::</p>
 <pre><code>&gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; data = np.random.rand(5, 3)
 &gt;&gt;&gt; preparer = ByPassPreparer()
@@ -751,7 +1765,7 @@ array([[1, 'a', 0.5],
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">69</span>
 <span class="normal">70</span>
 <span class="normal">71</span>
@@ -815,53 +1829,58 @@ array([[1, 'a', 0.5],
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>data</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>)
-              –
-              <div class="doc-md-description">
-                
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
                 <code><span title="numpy.recarray">recarray</span></code>
-            –
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.recarray: numpy recarray version of the output data.</p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
 <details class="note" open>
   <summary>Note</summary>
   <p>This function is used when the output data needs to be in the form of a structured array and is currently in the form of a regular numpy ndarray.</p>
@@ -875,7 +1894,7 @@ dtype=[('f0', '&lt;i4'), ('f1', 'S1'), ('f2', '&lt;f8')])
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">113</span>
 <span class="normal">114</span>
 <span class="normal">115</span>
@@ -1380,53 +2399,58 @@ dtype=[('f0', '&lt;i4'), ('f1', 'S1'), ('f2', '&lt;f8')])
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>data</code></b>
-                  (<code><span title="typing.Union">Union</span>[<span title="numpy.ndarray">ndarray</span>, <span title="numpy.recarray">recarray</span>]</code>)
-              –
-              <div class="doc-md-description">
-                
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[<span title="numpy.ndarray">ndarray</span>, <span title="numpy.recarray">recarray</span>]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
                 <code><span title="numpy.ndarray">ndarray</span></code>
-            –
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.ndarray: </p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
 <details class="note" open>
   <summary>Note</summary>
   <ul>
@@ -1446,7 +2470,7 @@ array([[ 0.948...,  0.276...,  0.967...,  0.564...],
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">196</span>
 <span class="normal">197</span>
 <span class="normal">198</span>
@@ -1530,57 +2554,60 @@ array([[ 0.948...,  0.276...,  0.967...,  0.564...],
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>data</code></b>
-                  (<code><span title="numpy.recarray">recarray</span></code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>(Default value = None)</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
+                <code><span title="numpy.recarray">recarray</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
                 <code><span title="numpy.ndarray">ndarray</span></code>
-            –
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.ndarray: The prepared input structured data</p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">297</span>
 <span class="normal">298</span>
 <span class="normal">299</span>
@@ -1626,65 +2653,74 @@ array([[ 0.948...,  0.276...,  0.967...,  0.564...],
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>data</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>)
-              –
-              <div class="doc-md-description">
-                <p>The input data to be prepared</p>
-              </div>
-            </li>
-            <li>
-              <b><code>single</code></b>
-                  (<code>bool</code>, default:
-                      <code>False</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>(Default value = False)</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
                 <code><span title="numpy.ndarray">ndarray</span></code>
-            –
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The input data to be prepared</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>single</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = False)</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.ndarray: The prepared input data</p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">268</span>
 <span class="normal">269</span>
 <span class="normal">270</span>
@@ -1732,57 +2768,60 @@ array([[ 0.948...,  0.276...,  0.967...,  0.564...],
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>data</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>(Default value = None)</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
                 <code><span title="numpy.recarray">recarray</span></code>
-            –
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.recarray: The prepared output structured data</p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">309</span>
 <span class="normal">310</span>
 <span class="normal">311</span>
@@ -2210,53 +3249,64 @@ simple reshaping operation F: (n0, n1, ..., nm) -&gt; (n0, prod(n1, ..., nm))</p
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>bias</code></b>
-                  (<code>float</code>, default:
-                      <code>0.0</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>(Default value = 0.0)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>scale</code></b>
-                  (<code>float</code>, default:
-                      <code>1.0</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>(Default value = 1.0)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>channels_last</code></b>
-                  (<code>bool</code>, default:
-                      <code>False</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>(Default value = False)</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>bias</code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = 0.0)</p>
+            </div>
+          </td>
+          <td>
+                <code>0.0</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>scale</code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = 1.0)</p>
+            </div>
+          </td>
+          <td>
+                <code>1.0</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>channels_last</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = False)</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">345</span>
 <span class="normal">346</span>
 <span class="normal">347</span>
@@ -2308,69 +3358,84 @@ simple reshaping operation F: (n0, n1, ..., nm) -&gt; (n0, prod(n1, ..., nm))</p
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>data</code></b>
-                  (<code><span title="typing.Union">Union</span>[<span title="numpy.ndarray">ndarray</span>, <span title="numpy.recarray">recarray</span>]</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>The input data to be prepared (Default value = None)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>*args</code></b>
-              –
-              <div class="doc-md-description">
-                
-              </div>
-            </li>
-            <li>
-              <b><code>**kwargs</code></b>
-              –
-              <div class="doc-md-description">
-                
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[<span title="numpy.ndarray">ndarray</span>, <span title="numpy.recarray">recarray</span>]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The input data to be prepared (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>*args</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+          <td>
+                <code>()</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>**kwargs</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+          <td>
+                <code>{}</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
                 <code><span title="numpy.ndarray">ndarray</span></code>
-            –
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.ndarray: The prepared input data</p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
 <details class="note" open>
   <summary>Note</summary>
   <p>If the input data is a structured array, the method 'prepare_input_structured_data' will be called instead.</p>
@@ -2381,7 +3446,7 @@ array([-4.5, -3.5, -2.5])
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">360</span>
 <span class="normal">361</span>
 <span class="normal">362</span>
@@ -2461,65 +3526,72 @@ array([-4.5, -3.5, -2.5])
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>data</code></b>
-                  (<code><span title="numpy.recarray">recarray</span></code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>structured data to be transformed (Default value = None)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>*args</code></b>
-                  (<code>Additional arguments passed to the parent class</code>, default:
-                      <code>()</code>
-)
-              –
-              <div class="doc-md-description">
-                
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
+                <code><span title="numpy.recarray">recarray</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>structured data to be transformed (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>*args</code></td>
+          <td>
+                <code>Additional arguments passed to the parent class</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+          <td>
+                <code>()</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
                 <code><span title="numpy.ndarray">ndarray</span></code>
-            –
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.ndarray: </p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
 <details class="note" open>
   <summary>Note</summary>
   <p>The bias and scale parameters are expected to be provided in the form of dictionaries, where keys are field names and values are the corresponding bias and scale values for those fields.</p>
@@ -2532,7 +3604,7 @@ array([-4.5, -3.5, -2.5])
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">445</span>
 <span class="normal">446</span>
 <span class="normal">447</span>
@@ -2620,62 +3692,71 @@ array([-4.5, -3.5, -2.5])
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>data</code></b>
-                  (<code><span title="typing.Union">Union</span>[<span title="numpy.ndarray">ndarray</span>, <span title="numpy.recarray">recarray</span>]</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>The output data to be prepared (Default value = None)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>*args</code></b>
-              –
-              <div class="doc-md-description">
-                
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[<span title="numpy.ndarray">ndarray</span>, <span title="numpy.recarray">recarray</span>]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The output data to be prepared (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>*args</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+          <td>
+                <code>()</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
                 <code><span title="numpy.ndarray">ndarray</span></code>
-            –
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.ndarray: The prepared output data</p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
 <details class="note" open>
   <summary>Note</summary>
   <p>If the input data is a structured array, the method 'prepare_output_structured_data' will be called</p>
@@ -2686,7 +3767,7 @@ array([12., 14., 16.])
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">389</span>
 <span class="normal">390</span>
 <span class="normal">391</span>
@@ -2766,72 +3847,85 @@ array([12., 14., 16.])
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>data</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>structured data to be transformed (Default value = None)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>*args</code></b>
-                  (<code>Additional arguments passed to the parent class</code>, default:
-                      <code>()</code>
-)
-              –
-              <div class="doc-md-description">
-                
-              </div>
-            </li>
-            <li>
-              <b><code>**kwargs</code></b>
-              –
-              <div class="doc-md-description">
-                
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>structured data to be transformed (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>*args</code></td>
+          <td>
+                <code>Additional arguments passed to the parent class</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+          <td>
+                <code>()</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>**kwargs</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+          <td>
+                <code>{}</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
                 <code><span title="numpy.recarray">recarray</span></code>
-            –
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.recarray: </p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
 <details class="note" open>
   <summary>Note</summary>
   <ul>
@@ -2847,7 +3941,7 @@ rec.array([(0., 2.,  6.), (6., 8., 12.)],
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">478</span>
 <span class="normal">479</span>
 <span class="normal">480</span>
@@ -3359,53 +4453,64 @@ This class is useful for datasets in which there are invalid data.</p>
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>config</code></b>
-                  (<code>dict</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>configurations dictionary, by default None</p>
-              </div>
-            </li>
-            <li>
-              <b><code>mask</code></b>
-                  (<code>(int, <span title="numpy.NaN">NaN</span>, <span title="numpy.inf">inf</span>, optional)</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>mask to select the invalid values, by default None</p>
-              </div>
-            </li>
-            <li>
-              <b><code>channels_last</code></b>
-                  (<code>bool</code>, default:
-                      <code>True</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>if set to True, move the channel dimension to the last, by default True</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>config</code></td>
+          <td>
+                <code>dict</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>configurations dictionary, by default None</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>mask</code></td>
+          <td>
+                <code>(int, <span title="numpy.NaN">NaN</span>, <span title="numpy.inf">inf</span>, optional)</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>mask to select the invalid values, by default None</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>channels_last</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>if set to True, move the channel dimension to the last, by default True</p>
+            </div>
+          </td>
+          <td>
+                <code>True</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">523</span>
 <span class="normal">524</span>
 <span class="normal">525</span>
@@ -3513,55 +4618,58 @@ This class is useful for datasets in which there are invalid data.</p>
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>data</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>(Default value = None)</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
                 <code><span title="numpy.ndarray">ndarray</span></code>
-            –
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.ndarray: </p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
 <details class="note" open>
   <summary>Note</summary>
   <ul>
@@ -3579,7 +4687,7 @@ array([[1, 2, 3],
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">566</span>
 <span class="normal">567</span>
 <span class="normal">568</span>
@@ -3689,55 +4797,58 @@ array([[1, 2, 3],
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>data</code></b>
-                  (<code><span title="numpy.recarray">recarray</span></code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>(Default value = None)</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
+                <code><span title="numpy.recarray">recarray</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
                 <code><span title="numpy.ndarray">ndarray</span></code>
-            –
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.ndarray: </p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
 <details class="note" open>
   <summary>Note</summary>
   <p>This function is a wrapper function that calls the 'prepare_input_data' function internally.</p>
@@ -3752,7 +4863,7 @@ array([[1, 2, 3],
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">657</span>
 <span class="normal">658</span>
 <span class="normal">659</span>
@@ -3822,55 +4933,58 @@ array([[1, 2, 3],
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>data</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>(Default value = None)</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
                 <code><span title="numpy.ndarray">ndarray</span></code>
-            –
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.ndarray: </p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
 <details class="note" open>
   <summary>Note</summary>
   <ul>
@@ -3887,7 +5001,7 @@ array([[[ 1.,  2.,  3.],
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">610</span>
 <span class="normal">611</span>
 <span class="normal">612</span>
@@ -4003,55 +5117,58 @@ array([[[ 1.,  2.,  3.],
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>data</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>(Default value = None)</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
                 <code><span title="numpy.ndarray">ndarray</span></code>
-            –
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.ndarray: </p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
 <details class="note" open>
   <summary>Note</summary>
   <p>This function is a wrapper function that calls the 'prepare_output_data' function internally.</p>
@@ -4066,7 +5183,7 @@ array([[1, 2, 3],
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">681</span>
 <span class="normal">682</span>
 <span class="normal">683</span>
@@ -4506,52 +5623,52 @@ array([[1, 2, 3],
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
-<b><code>list</code></b>(                <code>list</code>
-)            –
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+<th>Name</th>        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+<td><code>list</code></td>          <td>
+                <code>list</code>
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>The indices of the data that have been sampled.</p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Raises:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-                  <code>AssertionError</code>
-              –
-              <div class="doc-md-description">
-                <p>If the indices have not been generated yet.</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+
+  <p><strong>Raises:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>AssertionError</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>If the indices have not been generated yet.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
 <details class="note" open>
   <summary>Note</summary>
   <p>The indices are generated by calling the 'prepare_input_data' or 'prepare_input_structured_data' functions.</p>
@@ -4587,43 +5704,50 @@ array([[1, 2, 3],
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>choices_fraction</code></b>
-                  (<code>float</code>, default:
-                      <code>0.1</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>The fraction of the dataset to be sampled, by default 0.1</p>
-              </div>
-            </li>
-            <li>
-              <b><code>shuffling</code></b>
-                  (<code>bool</code>, default:
-                      <code>False</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>Whether to shuffle the data before sampling, by default False</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>choices_fraction</code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The fraction of the dataset to be sampled, by default 0.1</p>
+            </div>
+          </td>
+          <td>
+                <code>0.1</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>shuffling</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Whether to shuffle the data before sampling, by default False</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">711</span>
 <span class="normal">712</span>
 <span class="normal">713</span>
@@ -4675,65 +5799,72 @@ array([[1, 2, 3],
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>data</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>The input data. Default is None.</p>
-              </div>
-            </li>
-            <li>
-              <b><code>data_interval</code></b>
-                  (<code>list</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>The interval of data that should be selected. Default is None,</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
                 <code><span title="numpy.ndarray">ndarray</span></code>
-            –
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The input data. Default is None.</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>data_interval</code></td>
+          <td>
+                <code>list</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The interval of data that should be selected. Default is None,</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>numpy.ndarray: The sampled data.</p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>      <p>Note:
+          </td>
+        </tr>
+    </tbody>
+  </table>
+      <p>Note:
     The <code>data_interval</code> parameter must be a list of two integers, specifying the start and end of the interval.
  Example:: </p>
 <pre><code>&gt;&gt;&gt; data = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
@@ -4742,7 +5873,7 @@ array([[1, 2, 3],
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">754</span>
 <span class="normal">755</span>
 <span class="normal">756</span>
@@ -4840,85 +5971,100 @@ array([[1, 2, 3],
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>data</code></b>
-                  (<code><span title="h5py.Dataset">Dataset</span></code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>Structured array to be prepared, the default shape is (n_samples, 1, *other_dimensions)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>data_interval</code></b>
-                  (<code>list</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>The interval of the data to be prepared, the default shape is [0, data.shape[0]]</p>
-              </div>
-            </li>
-            <li>
-              <b><code>batch_size</code></b>
-                  (<code>int</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>The size of the batches to be processed, defaults to None</p>
-              </div>
-            </li>
-            <li>
-              <b><code>dump_path</code></b>
-                  (<code>str</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>(Default value = None)</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
+                <code><span title="h5py.Dataset">Dataset</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Structured array to be prepared, the default shape is (n_samples, 1, *other_dimensions)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>data_interval</code></td>
+          <td>
+                <code>list</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The interval of the data to be prepared, the default shape is [0, data.shape[0]]</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>batch_size</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The size of the batches to be processed, defaults to None</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>dump_path</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
                 <code><span title="numpy.recarray">recarray</span></code>
-            –
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.recarray: </p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
 <details class="note" open>
   <summary>Note</summary>
   <ul>
@@ -4935,7 +6081,7 @@ array([[1, 2, 3],
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">792</span>
 <span class="normal">793</span>
 <span class="normal">794</span>
@@ -5528,65 +6674,72 @@ array([[1, 2, 3],
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>input_data</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>2D array (time-series) to be used for constructing the history size (Default value = None)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>output_data</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>(Default value = None)</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>input_data</code></td>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>2D array (time-series) to be used for constructing the history size (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>output_data</code></td>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
                 <code><span title="typing.Tuple">Tuple</span>[<span title="numpy.ndarray">ndarray</span>, <span title="numpy.ndarray">ndarray</span>]</code>
-            –
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>Tuple of np.ndarray: The tuple contains two arrays with shapes (n_samples, n_history, n_features) and</p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
 <details class="note" open>
   <summary>Note</summary>
   <ul>
@@ -5612,7 +6765,7 @@ array([[[ 7,  8,  9],
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 987</span>
 <span class="normal"> 988</span>
 <span class="normal"> 989</span>
@@ -5756,63 +6909,78 @@ array([[[ 7,  8,  9],
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>history_size</code></b>
-                  (<code>int</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>the size of the history window, by default None</p>
-              </div>
-            </li>
-            <li>
-              <b><code>skip_size</code></b>
-                  (<code>int</code>, default:
-                      <code>1</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>the number of steps to skip between windows, by default 1</p>
-              </div>
-            </li>
-            <li>
-              <b><code>horizon_size</code></b>
-                  (<code>int</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>the size of the horizon window, by default None</p>
-              </div>
-            </li>
-            <li>
-              <b><code>full_output</code></b>
-                  (<code>bool</code>, default:
-                      <code>True</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>flag to use the full output or only the last item, by default True</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>history_size</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the size of the history window, by default None</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>skip_size</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the number of steps to skip between windows, by default 1</p>
+            </div>
+          </td>
+          <td>
+                <code>1</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>horizon_size</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the size of the horizon window, by default None</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>full_output</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>flag to use the full output or only the last item, by default True</p>
+            </div>
+          </td>
+          <td>
+                <code>True</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">909</span>
 <span class="normal">910</span>
 <span class="normal">911</span>
@@ -5902,55 +7070,60 @@ array([[[ 7,  8,  9],
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>batch</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>)
-              –
-              <div class="doc-md-description">
-                
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>batch</code></td>
+          <td>
                 <code><span title="numpy.ndarray">ndarray</span></code>
-            –
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.ndarray: the input array</p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">955</span>
 <span class="normal">956</span>
 <span class="normal">957</span>
@@ -5996,53 +7169,58 @@ array([[[ 7,  8,  9],
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>batch</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>)
-              –
-              <div class="doc-md-description">
-                
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>batch</code></td>
+          <td>
                 <code><span title="numpy.ndarray">ndarray</span></code>
-            –
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.ndarray: </p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
 <details class="note" open>
   <summary>Note</summary>
   <ul>
@@ -6055,7 +7233,7 @@ array([[7, 8, 9]])
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">967</span>
 <span class="normal">968</span>
 <span class="normal">969</span>
@@ -6117,55 +7295,60 @@ array([[7, 8, 9]])
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>time_series</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>)
-              –
-              <div class="doc-md-description">
-                
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>time_series</code></td>
+          <td>
                 <code><span title="numpy.ndarray">ndarray</span></code>
-            –
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.ndarray: the transformed array with the windows.</p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">943</span>
 <span class="normal">944</span>
 <span class="normal">945</span>
@@ -6217,37 +7400,41 @@ is that here there is no intersection between two sequential batches</p>
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Attributes:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>history_size</code></b>
-              –
-              <div class="doc-md-description">
-                <p>int
+  <p><strong>Attributes:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>history_size</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>int
 The number of history samples to include in each window.</p>
-              </div>
-            </li>
-            <li>
-              <b><code>skip_size</code></b>
-              –
-              <div class="doc-md-description">
-                <p>int
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>skip_size</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>int
 The number of samples to skip between each window.</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>      <p>Note:
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+      <p>Note:
     - The difference between SlidingWindow and MovingWindow is that here there is no intersection between two sequential batches.</p>
 <p>See a graphical example:</p>
 <p>Example::</p>
@@ -6569,65 +7756,72 @@ history  | horizon
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>input_data</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>2D array (time-series) to be used for constructing the history size (Default value = None)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>output_data</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>(Default value = None)</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>input_data</code></td>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>2D array (time-series) to be used for constructing the history size (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>output_data</code></td>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
                 <code><span title="typing.Tuple">Tuple</span>[<span title="numpy.ndarray">ndarray</span>, <span title="numpy.ndarray">ndarray</span>]</code>
-            –
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>Tuple[np.ndarray, np.ndarray]: tuple of np.ndarray with shapes (n_samples, n_history, n_features) and (n_samples, n_horizon, n_features)</p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
 <details class="note" open>
   <summary>Note</summary>
   <ul>
@@ -6648,7 +7842,7 @@ history  | horizon
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1126</span>
 <span class="normal">1127</span>
 <span class="normal">1128</span>
@@ -6786,43 +7980,50 @@ history  | horizon
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>history_size</code></b>
-                  (<code>int</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>The number of history samples to include in each window. (Default value = None)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>skip_size</code></b>
-                  (<code>int</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>The number of samples to skip between each window. (Default value = None)</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>history_size</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The number of history samples to include in each window. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>skip_size</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The number of samples to skip between each window. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1085</span>
 <span class="normal">1086</span>
 <span class="normal">1087</span>
@@ -6880,53 +8081,58 @@ history  | horizon
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>time_series</code></b>
-                  (<code><span title="typing.List">List</span>[int]</code>)
-              –
-              <div class="doc-md-description">
-                
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>time_series</code></td>
+          <td>
+                <code><span title="typing.List">List</span>[int]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
                 <code><span title="typing.List">List</span>[<span title="typing.List">List</span>[int]]</code>
-            –
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>List[List[int]]: </p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>      <p>Example::</p>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+      <p>Example::</p>
 <pre><code>&gt;&gt;&gt; window = SlidingWindow(history_size=3, skip_size=1)
 &gt;&gt;&gt; time_series = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 &gt;&gt;&gt; windows = window.apply(time_series)
@@ -6935,7 +8141,7 @@ history  | horizon
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1103</span>
 <span class="normal">1104</span>
 <span class="normal">1105</span>
@@ -7214,55 +8420,58 @@ history  | horizon
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>input_data</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>(Default value = None)</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>input_data</code></td>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
                 <code><span title="typing.Union">Union</span>[list, <span title="numpy.ndarray">ndarray</span>]</code>
-            –
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>Union[list, np.ndarray]: A list of batches or a single batch if <code>full</code> attribute is set to False.</p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>      <p>Note:
+          </td>
+        </tr>
+    </tbody>
+  </table>
+      <p>Note:
     - If the <code>full</code> attribute is set to True, the last batch will be included even if it's not full.
 Example:: </p>
 <pre><code>&gt;&gt;&gt; input_data = np.array([[1,2,3], [4,5,6], [7,8,9], [10,11,12]])
@@ -7277,7 +8486,7 @@ array([[ 7,  8,  9],
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1233</span>
 <span class="normal">1234</span>
 <span class="normal">1235</span>
@@ -7381,53 +8590,64 @@ array([[ 7,  8,  9],
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>skip_size</code></b>
-                  (<code>int</code>, default:
-                      <code>1</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>Number of samples to skip between two windows. (Default value = 1)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>batch_size</code></b>
-                  (<code>int</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>Number of samples to use in each batch. (Default value = None)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>full</code></b>
-                  (<code>bool</code>, default:
-                      <code>True</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>Whether to include the last batch or not, even if it's not full. (Default value = True)</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>skip_size</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Number of samples to skip between two windows. (Default value = 1)</p>
+            </div>
+          </td>
+          <td>
+                <code>1</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>batch_size</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Number of samples to use in each batch. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>full</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Whether to include the last batch or not, even if it's not full. (Default value = True)</p>
+            </div>
+          </td>
+          <td>
+                <code>True</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1188</span>
 <span class="normal">1189</span>
 <span class="normal">1190</span>
@@ -7487,57 +8707,60 @@ array([[ 7,  8,  9],
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>dim</code></b>
-                  (<code>int</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>total dimension (Default value = None)</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>dim</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>total dimension (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
                 <code><span title="numpy.ndarray">ndarray</span></code>
-            –
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.ndarray: the shifted indices</p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1207</span>
 <span class="normal">1208</span>
 <span class="normal">1209</span>
@@ -7615,28 +8838,29 @@ MovingWindow to continuously extrapolate a dataset.</p>
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Attributes:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>time_id</code></b>
-              –
-              <div class="doc-md-description">
-                <p>int</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>      <p>Examples::</p>
+  <p><strong>Attributes:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>time_id</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>int</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+      <p>Examples::</p>
 <pre><code>&gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; from sklearn.linear_model import LinearRegression
 &gt;&gt;&gt; model = LinearRegression()
@@ -7941,85 +9165,100 @@ MovingWindow to continuously extrapolate a dataset.</p>
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>init_state</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>initial state of the time series. It should have the shape (batch_size, history_size, n_series) (Default value = None)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>history_size</code></b>
-                  (<code>int</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>the size of the history window used in the extrapolation. (Default value = None)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>horizon_size</code></b>
-                  (<code>int</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>the size of the horizon window used in the extrapolation. (Default value = None)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>testing_data_size</code></b>
-                  (<code>int</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>(Default value = None)</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>init_state</code></td>
+          <td>
                 <code><span title="numpy.ndarray">ndarray</span></code>
-            –
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>initial state of the time series. It should have the shape (batch_size, history_size, n_series) (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>history_size</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the size of the history window used in the extrapolation. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>horizon_size</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the size of the horizon window used in the extrapolation. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>testing_data_size</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>np.ndarray: </p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
 <details class="note" open>
   <summary>Note</summary>
   <p>The number of series in the initial state must be equal to the number of series in the auxiliary data, if it is provided.</p>
@@ -8037,7 +9276,7 @@ MovingWindow to continuously extrapolate a dataset.</p>
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1327</span>
 <span class="normal">1328</span>
 <span class="normal">1329</span>
@@ -8705,95 +9944,114 @@ It allows to apply a transformation function to the data.</p>
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>data</code></b>
-                  (<code><span title="h5py.Dataset">Dataset</span></code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>input data to be copied (Default value = None)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>data_interval</code></b>
-                  (<code>list</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>the range of the data to be copied (Default value = None)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>batch_size</code></b>
-                  (<code>int</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>the size of the batches to be used to copy the data (Default value = None)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>dump_path</code></b>
-                  (<code>str</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>the path of the file where the data will be copied (Default value = None)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>transformation</code></b>
-                  (<code>callable</code>, default:
-                      <code>lambda : data</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>(Default value = lambda data: data)</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>data</code></td>
+          <td>
                 <code><span title="h5py.Dataset">Dataset</span></code>
-            –
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>input data to be copied (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>data_interval</code></td>
+          <td>
+                <code>list</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the range of the data to be copied (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>batch_size</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the size of the batches to be used to copy the data (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>dump_path</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the path of the file where the data will be copied (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>transformation</code></td>
+          <td>
+                <code>callable</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = lambda data: data)</p>
+            </div>
+          </td>
+          <td>
+                <code>lambda : data</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="h5py.Dataset">Dataset</span></code>
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>h5py.Dataset: The copied data</p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>      <p>Note:
+          </td>
+        </tr>
+    </tbody>
+  </table>
+      <p>Note:
     - If the data is a list of h5py.Dataset, it will call the <code>_multiple_copy</code> function.
 Example:: </p>
 <pre><code>&gt;&gt;&gt; data = h5py.File('data.h5', 'r')
@@ -8805,7 +10063,7 @@ Example:: </p>
 </code></pre>
 
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1586</span>
 <span class="normal">1587</span>
 <span class="normal">1588</span>
@@ -8930,41 +10188,48 @@ Example:: </p>
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>input_names</code></b>
-                  (<code><span title="typing.List">List</span>[str]</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>list of input names.</p>
-              </div>
-            </li>
-            <li>
-              <b><code>output_names</code></b>
-                  (<code><span title="typing.List">List</span>[str]</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>list of output names.</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>input_names</code></td>
+          <td>
+                <code><span title="typing.List">List</span>[str]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>list of input names.</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>output_names</code></td>
+          <td>
+                <code><span title="typing.List">List</span>[str]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>list of output names.</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
 <details class="note" open>
   <summary>Note</summary>
   <ul>
@@ -9260,91 +10525,98 @@ Example:: </p>
 
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>input_data</code></b>
-                  (<code><span title="typing.Union">Union</span>[<span title="numpy.ndarray">ndarray</span>, <span title="torch.Tensor">Tensor</span>, <span title="typing.Dict">Dict</span>[str, <span title="numpy.ndarray">ndarray</span>]]</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>input data to be converted. (Default value = None)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>device</code></b>
-                  (<code>str</code>, default:
-                      <code>&#39;cpu&#39;</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>(Default value = "cpu")</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>input_data</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[<span title="numpy.ndarray">ndarray</span>, <span title="torch.Tensor">Tensor</span>, <span title="typing.Dict">Dict</span>[str, <span title="numpy.ndarray">ndarray</span>]]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>input data to be converted. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>device</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = "cpu")</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;cpu&#39;</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-    <th class="field-name">Returns:</th>
-    <td class="field-body">
-      <ul class="first simple">
-          <li>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
                 <code><span title="typing.List">List</span>[<span title="torch.Tensor">Tensor</span>]</code>
-            –
+          </td>
+          <td>
             <div class="doc-md-description">
               <p>Union[List[torch.Tensor], dict]: </p>
             </div>
-          </li>
-      </ul>
-    </td>
-    </tr>
-  </tbody>
-</table>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
 
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Raises:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-                  <code>-Exception</code>
-              –
-              <div class="doc-md-description">
-                
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
+
+  <p><strong>Raises:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>-Exception</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
           <details class="quote">
-            <summary> <code>simulai/io.py</code></summary>
+            <summary>Source code in <code>simulai/io.py</code></summary>
             <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1714</span>
 <span class="normal">1715</span>
 <span class="normal">1716</span>
@@ -9552,51 +10824,49 @@ A dataset that applies Gaussian noise to input data.</p>
   </div>
 
 </div>
-              
+
+
+
+
+
+                
+              </article>
             </div>
-          </div><footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href=".." class="btn btn-neutral float-left" title="Welcome to SimulAI"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../simulai_residuals/" class="btn btn-neutral float-right" title="simulai.residuals">Next <span class="icon icon-circle-arrow-right"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <!-- Copyright etc -->
-  </div>
-
-  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
-</footer>
+          
           
         </div>
-      </div>
-
-    </section>
-
-  </div>
-
-  <div class="rst-versions" role="note" aria-label="Versions">
-  <span class="rst-current-version" data-toggle="rst-current-version">
-    
-    
-      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
-    
-    
-      <span><a href="../simulai_residuals/" style="color: #fcfcfc">Next &raquo;</a></span>
-    
-  </span>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
 </div>
-    <script src="../js/jquery-3.6.0.min.js"></script>
-    <script>var base_url = "..";</script>
-    <script src="../js/theme_extra.js"></script>
-    <script src="../js/theme.js"></script>
-      <script src="../search/main.js"></script>
-    <script>
-        jQuery(function () {
-            SphinxRtdTheme.Navigation.enable(true);
-        });
-    </script>
-
-</body>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["search.highlight", "search.suggest"], "search": "../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.aecac24b.min.js"></script>
+      
+    
+  </body>
 </html>
