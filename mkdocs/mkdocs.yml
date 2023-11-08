@@ -6,6 +6,10 @@ theme:
       - search.highlight
       - search.suggest
 
+markdown_extensions:
+  - toc:
+      permalink: "#"
+
 plugins:
   - search
   - autorefs

@@ -30,7 +30,7 @@ The SimulAI toolkit provides easy access to state-of-the-art models and algorith
 - `Transformers`
 - `U-Nets`
 
-In addition to the methods above, many more techniques for model reduction and regularization are included in SimulAI. See `documentation <https://simulai-toolkit.readthedocs.io/>`_.
+In addition to the methods above, many more techniques for model reduction and regularization are included in SimulAI. See `documentation <https://IBM.github.io/simulai/>`_.
 
 Installing
 ==========
@@ -82,7 +82,7 @@ Using Tensorboard
 Documentation
 =============
 
-Please, refer to the SimulAI API `documentation <https://ibm.github.io/simulai>`_ before using the toolkit.
+Please, refer to the SimulAI API `documentation <https://simulai-toolkit.readthedocs.io>`_ before using the toolkit.
 
 Examples
 ========

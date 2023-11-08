@@ -36,15 +36,17 @@ class AutoencoderMLP(NetworkTemplate):
     Reduced Order Model;
     
     A MLP autoencoder architecture consists of two stages:
-    --> Fully-connected encoder
-    --> Fully connected decoder
+
+    - Fully-connected encoder
+    - Fully connected decoder
     
-    SCHEME
-            |         |
-            |  |   |  |
-    Z ->    |  | | |  |  -> Z_til
-            |  |   |  |
-            |         |
+    Graphical scheme:
+
+                |         |
+                |  |   |  |
+        Z ->    |  | | |  |  -> Z_til
+                |  |   |  |
+                |         |
     
     ENCODER       DECODER
 
