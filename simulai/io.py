@@ -1788,3 +1788,51 @@ class GaussianNoise(Dataset):
 
     def __call__(self):
         return (1 + self.stddev * torch.randn(*self.data_shape)) * self.input_data
+
+class Tokenizer:
+
+    """Wrapper for multiple tokenization approaches"""
+
+    def __init__(self, kind:str="time_indexer"):
+        """
+        Args:
+            kind (str): The kind of tokenization to be used.
+        """
+        self.kind = kind
+
+        # Tokenizer selection
+        if self.kind == "time_indexer":
+            self.tokenizer = self._make_time_input_sequence
+        else:
+            raise Exception(f"The tokenization option {self.kind} is not available.")
+
+    def __call__(self, input_data:Union[np.ndarray, torch.Tensor], **kwargs):
+        """Global call method."""
+        
+        return tokenizer(input_data, **kwargs)
+
+    def _make_time_input_sequence(src:Union[np.ndarray, torch.Tensor], num_step=None, step=None) -> Union[np.ndarray, torch.Tensor]:
+
+        """Simple tokenization based on repeating samples
+           and time-indexing them.
+        Args:
+            src (Union[np.ndarray, torch.Tensor]): The dataset to be tokenized.
+            num_step (int): number of timesteps for each repetition. (Default value: None)
+            step (float): Size of the timestep. (Default value: None)
+        Returns:
+            Union[np.ndarray, torch.Tensor]: The tokenized input dataset.
+        """
+
+        dim = num_step
+        src = np.repeat(np.expand_dims(src, axis=1), dim, axis=1) 
+        src_shape = src.shape
+        src_shape[-1] += 1
+
+        src_finel = np.zeros(src_shape)
+        src_final[:, :, :-1] = src
+
+        for i in range(num_step):
+            src_final[:,i,-1] += step*i
+
+        return src
+
