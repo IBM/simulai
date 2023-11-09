@@ -1,0 +1,1146 @@
+<!doctype html>
+<html>
+    <head>
+                <title>Transformer - SimulAI's Documentation</title>
+
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+            
+            
+            
+
+            
+                <link  rel="icon" type="image/x-icon" href="../../assets/img/favicon.ico">
+            
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+                        <script>hljs.initHighlightingOnLoad();</script>
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono:400,700">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+            <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+            <link rel="stylesheet" href="../../assets/css/main.min.css">
+                <link href="../../assets/_mkdocstrings.css" rel="stylesheet">
+                <script src="../../search/main.js"></script>
+
+            
+                
+            
+    </head>
+
+    <body>
+        <div class="container py-3">
+            <header>
+                    <!-- block header -->
+<nav class="navbar navbar-expand-xl border-bottom">
+    <div class="container-fluid">
+        
+
+        
+            <span class="normal fs-4 title-color site-name" id="component-site-name" style="text-transform: uppercase;">SimulAI's Documentation</span>
+        
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsMenu"
+            aria-controls="navbarsMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse flex-column ml-auto" id="navbarsMenu">
+            <ul class="navbar-nav">
+
+                <!-- block menu -->
+                <li class="nav-item">
+                    <!-- block menu -->
+    
+        <li class="nav-item" id="component-menu">
+            <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="
+                            nav-link text-gray text-decoration-none" href="../..">[Home]</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="
+                            nav-link dropdown-toggle text-decoration-none" href="#" data-bs-toggle="dropdown">[Modules]</a>
+                            <ul class="dropdown-menu">
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">IO &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_io/" class="dropdown-item text-decoration-none ">simulai.io</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Symbolic Manipulation &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_residuals/" class="dropdown-item text-decoration-none ">simulai.residuals</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Regression/Neural Networks &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_regression/" class="dropdown-item text-decoration-none ">simulai.regression</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class=" active 
+                            nav-link dropdown-toggle text-decoration-none" href="#" data-bs-toggle="dropdown">[Subpackages]</a>
+                            <ul class="dropdown-menu">
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Models &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Transformer &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="./" class="dropdown-item text-decoration-none  active ">Transformer</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">DeepONet &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../simulai_models_deeponet/" class="dropdown-item text-decoration-none ">DeepONets</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">AutoEncoder &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../simulai_models_autoencoder/" class="dropdown-item text-decoration-none ">AutoEncoder</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">UNet &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../simulai_models_unet/" class="dropdown-item text-decoration-none ">U-Net</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                            </ul>
+                        </li>
+            </ul>
+        </li>
+<!-- endblock -->
+                </li>
+                <!-- endblock -->
+
+                <!-- block search -->
+                <li class="nav-item">
+                    <a class="collapsed" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                        <div class="md-search-icon">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                        </div>
+                    </a>
+                </li>
+                <!--  endblock -->
+
+                <!-- block source -->
+                <li class="nav-item">
+                    
+                        
+                            <!-- block source -->
+<div class="md-source source-detail">
+  <div class="md-source-repo-icon">
+    <i class="fa fa-github-alt" aria-hidden="true"></i>
+  </div>
+
+  <div class="md-source-repo-url">
+    <a href="https://github.com/IBM/simulai" class="md-source">
+      IBM/simulai
+    </a>
+
+    <ul class="md-source-repo-text">
+      <li>
+        <i class="fa fa-tag" aria-hidden="true"></i>
+        <img alt="GitHub tag (latest by date)"
+          src="https://img.shields.io/github/v/tag/IBM/simulai?color=white&label=%20&style=flat-square">
+      </li>
+
+      <li>
+        <i class="fa fa-star" aria-hidden="true"></i>
+        <img alt="GitHub Repo stars"
+          src="https://img.shields.io/github/stars/IBM/simulai?color=white&label=%20&style=flat-square">
+      </li>
+
+      <li>
+        <i class="fa fa-code-fork" aria-hidden="true"></i>
+        <img alt="GitHub forks"
+          src="https://img.shields.io/github/forks/IBM/simulai?color=white&label=%20&style=flat-square">
+      </li>
+    </ul>
+  </div>
+
+</div>
+<!--  endblock -->
+                        
+                    
+                </li>
+                <!--  endblock -->
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--  endblock -->
+            </header>
+
+            <main><!-- block search -->
+<div class="collapse" id="collapseExample">
+    <div role="search" class="search-box">
+        <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+            <input type="text" name="q" class="search-query"
+            placeholder="Search docs" title="Type search term here" />
+        </form>
+    </div>
+</div>
+<!-- endblock -->
+                    <!-- block content -->
+<section class="container post">
+    <article>
+        <header>
+            
+                <h1 class="bold title" id="component-title">Transformer</h1>
+            
+        </header>
+        <p><h1 id="transformer">Transformer<a class="headerlink" href="#transformer" title="Permanent link">#</a></h1>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<a id="simulai.models.Transformer"></a>
+  <div class="doc doc-contents first">
+          <p class="doc doc-class-bases">
+            Bases: <code><span title="simulai.templates.NetworkTemplate">NetworkTemplate</span></code></p>
+
+
+            <details class="quote">
+              <summary>Source code in <code>simulai/models/_pytorch_models/_transformer.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Transformer</span><span class="p">(</span><span class="n">NetworkTemplate</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">num_heads_encoder</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">num_heads_decoder</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">embed_dim_encoder</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">],</span>
+        <span class="n">embed_dim_decoder</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">],</span>
+        <span class="n">encoder_activation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;relu&quot;</span><span class="p">,</span>
+        <span class="n">decoder_activation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;relu&quot;</span><span class="p">,</span>
+        <span class="n">encoder_mlp_layer_config</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">decoder_mlp_layer_config</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">number_of_encoders</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">number_of_decoders</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;A classical encoder-decoder transformer:</span>
+
+<span class="sd">        Graphical example:</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">             U -&gt; ( Encoder_1 -&gt; Encoder_2 -&gt; ... -&gt; Encoder_N ) -&gt; u_e</span>
+
+<span class="sd">            (u_e, U) -&gt; ( Decoder_1 -&gt; Decoder_2 -&gt; ... Decoder_N ) -&gt; V</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_heads_encoder (int, optional): The number of heads for the self-attention layer of the encoder. (Default value = 1)</span>
+<span class="sd">            num_heads_decoder (int, optional): The number of heads for the self-attention layer of the decoder. (Default value = 1)</span>
+<span class="sd">            embed_dim_encoder (int, optional): The dimension of the embedding for the encoder. (Default value = Union[int, Tuple])</span>
+<span class="sd">            embed_dim_decoder (int, optional): The dimension of the embedding for the decoder. (Default value = Union[int, Tuple])</span>
+<span class="sd">            encoder_activation (Union[str, torch.nn.Module], optional): The activation to be used in all the encoder layers. (Default value = &#39;relu&#39;)</span>
+<span class="sd">            decoder_activation (Union[str, torch.nn.Module], optional): The activation to be used in all the decoder layers. (Default value = &#39;relu&#39;)</span>
+<span class="sd">            encoder_mlp_layer_config (dict, optional): A configuration dictionary to instantiate the encoder MLP layer.weights (Default value = None)</span>
+<span class="sd">            decoder_mlp_layer_config (dict, optional): A configuration dictionary to instantiate the encoder MLP layer.weights (Default value = None)</span>
+<span class="sd">            number_of_encoders (int, optional): The number of encoders to be used. (Default value = 1)</span>
+<span class="sd">            number_of_decoders (int, optional): The number of decoders to be used. (Default value = 1)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">Transformer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_heads_encoder</span> <span class="o">=</span> <span class="n">num_heads_encoder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_heads_decoder</span> <span class="o">=</span> <span class="n">num_heads_decoder</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_encoder</span> <span class="o">=</span> <span class="n">embed_dim_encoder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_decoder</span> <span class="o">=</span> <span class="n">embed_dim_decoder</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_mlp_layer_dict</span> <span class="o">=</span> <span class="n">encoder_mlp_layer_config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder_mlp_layer_dict</span> <span class="o">=</span> <span class="n">decoder_mlp_layer_config</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_of_encoders</span> <span class="o">=</span> <span class="n">number_of_encoders</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_of_decoders</span> <span class="o">=</span> <span class="n">number_of_encoders</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_activation</span> <span class="o">=</span> <span class="n">encoder_activation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder_activation</span> <span class="o">=</span> <span class="n">decoder_activation</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_mlp_layers_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder_mlp_layers_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+        <span class="c1"># Creating independent copies for the MLP layers which will be used</span>
+        <span class="c1"># by the multiple encoders/decoders.</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_encoders</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">encoder_mlp_layers_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">DenseNetwork</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder_mlp_layer_dict</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_decoders</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">decoder_mlp_layers_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">DenseNetwork</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">decoder_mlp_layer_dict</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Defining the encoder architecture</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">EncoderStage</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="o">*</span><span class="p">[</span>
+                <span class="n">BasicEncoder</span><span class="p">(</span>
+                    <span class="n">num_heads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_heads_encoder</span><span class="p">,</span>
+                    <span class="n">activation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder_activation</span><span class="p">,</span>
+                    <span class="n">mlp_layer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder_mlp_layers_list</span><span class="p">[</span><span class="n">e</span><span class="p">],</span>
+                    <span class="n">embed_dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_encoder</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_encoders</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Defining the decoder architecture</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DecoderStage</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">BasicDecoder</span><span class="p">(</span>
+                    <span class="n">num_heads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_heads_decoder</span><span class="p">,</span>
+                    <span class="n">activation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decoder_activation</span><span class="p">,</span>
+                    <span class="n">mlp_layer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decoder_mlp_layers_list</span><span class="p">[</span><span class="n">d</span><span class="p">],</span>
+                    <span class="n">embed_dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_decoder</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_decoders</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">encoder_e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">EncoderStage</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">+=</span> <span class="n">encoder_e</span><span class="o">.</span><span class="n">weights</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;encoder_</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">encoder_e</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">decoder_d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DecoderStage</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">+=</span> <span class="n">decoder_d</span><span class="o">.</span><span class="n">weights</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;decoder_</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">decoder_d</span><span class="p">)</span>
+
+    <span class="nd">@as_tensor</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_data (Union[torch.Tensor, np.ndarray], optional): The input dataset. (Default value = None)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: The transformer output.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">encoder_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">EncoderStage</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+
+        <span class="n">current_input</span> <span class="o">=</span> <span class="n">input_data</span>
+        <span class="k">for</span> <span class="n">decoder</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">DecoderStage</span><span class="p">:</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">decoder</span><span class="p">(</span><span class="n">input_data</span><span class="o">=</span><span class="n">current_input</span><span class="p">,</span> <span class="n">encoder_output</span><span class="o">=</span><span class="n">encoder_output</span><span class="p">)</span>
+            <span class="n">current_input</span> <span class="o">=</span> <span class="n">output</span>
+
+        <span class="k">return</span> <span class="n">output</span>
+
+    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;It prints a general view of the architecture.&quot;&quot;&quot;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h2 id="simulai.models.Transformer.__init__" class="doc doc-heading">
+          <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">num_heads_encoder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_heads_decoder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">embed_dim_encoder</span><span class="o">=</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">],</span> <span class="n">embed_dim_decoder</span><span class="o">=</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">],</span> <span class="n">encoder_activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">decoder_activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">encoder_mlp_layer_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">decoder_mlp_layer_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">number_of_encoders</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">number_of_decoders</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
+
+<a href="#simulai.models.Transformer.__init__" class="headerlink" title="Permanent link">#</a></h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>A classical encoder-decoder transformer:</p>
+<p>Graphical example:</p>
+<p>Example::</p>
+<pre><code> U -&gt; ( Encoder_1 -&gt; Encoder_2 -&gt; ... -&gt; Encoder_N ) -&gt; u_e
+
+(u_e, U) -&gt; ( Decoder_1 -&gt; Decoder_2 -&gt; ... Decoder_N ) -&gt; V
+</code></pre>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>num_heads_encoder</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The number of heads for the self-attention layer of the encoder. (Default value = 1)</p>
+            </div>
+          </td>
+          <td>
+                <code>1</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>num_heads_decoder</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The number of heads for the self-attention layer of the decoder. (Default value = 1)</p>
+            </div>
+          </td>
+          <td>
+                <code>1</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>embed_dim_encoder</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The dimension of the embedding for the encoder. (Default value = Union[int, Tuple])</p>
+            </div>
+          </td>
+          <td>
+                <code><span title="typing.Union">Union</span>[int, <span title="typing.Tuple">Tuple</span>]</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>embed_dim_decoder</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The dimension of the embedding for the decoder. (Default value = Union[int, Tuple])</p>
+            </div>
+          </td>
+          <td>
+                <code><span title="typing.Union">Union</span>[int, <span title="typing.Tuple">Tuple</span>]</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>encoder_activation</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[str, <span title="torch.nn.Module">Module</span>]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The activation to be used in all the encoder layers. (Default value = 'relu')</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;relu&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>decoder_activation</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[str, <span title="torch.nn.Module">Module</span>]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The activation to be used in all the decoder layers. (Default value = 'relu')</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;relu&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>encoder_mlp_layer_config</code></td>
+          <td>
+                <code>dict</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>A configuration dictionary to instantiate the encoder MLP layer.weights (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>decoder_mlp_layer_config</code></td>
+          <td>
+                <code>dict</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>A configuration dictionary to instantiate the encoder MLP layer.weights (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>number_of_encoders</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The number of encoders to be used. (Default value = 1)</p>
+            </div>
+          </td>
+          <td>
+                <code>1</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>number_of_decoders</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The number of decoders to be used. (Default value = 1)</p>
+            </div>
+          </td>
+          <td>
+                <code>1</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>simulai/models/_pytorch_models/_transformer.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">num_heads_encoder</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">num_heads_decoder</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">embed_dim_encoder</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">],</span>
+    <span class="n">embed_dim_decoder</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">],</span>
+    <span class="n">encoder_activation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;relu&quot;</span><span class="p">,</span>
+    <span class="n">decoder_activation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;relu&quot;</span><span class="p">,</span>
+    <span class="n">encoder_mlp_layer_config</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">decoder_mlp_layer_config</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">number_of_encoders</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">number_of_decoders</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;A classical encoder-decoder transformer:</span>
+
+<span class="sd">    Graphical example:</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">         U -&gt; ( Encoder_1 -&gt; Encoder_2 -&gt; ... -&gt; Encoder_N ) -&gt; u_e</span>
+
+<span class="sd">        (u_e, U) -&gt; ( Decoder_1 -&gt; Decoder_2 -&gt; ... Decoder_N ) -&gt; V</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        num_heads_encoder (int, optional): The number of heads for the self-attention layer of the encoder. (Default value = 1)</span>
+<span class="sd">        num_heads_decoder (int, optional): The number of heads for the self-attention layer of the decoder. (Default value = 1)</span>
+<span class="sd">        embed_dim_encoder (int, optional): The dimension of the embedding for the encoder. (Default value = Union[int, Tuple])</span>
+<span class="sd">        embed_dim_decoder (int, optional): The dimension of the embedding for the decoder. (Default value = Union[int, Tuple])</span>
+<span class="sd">        encoder_activation (Union[str, torch.nn.Module], optional): The activation to be used in all the encoder layers. (Default value = &#39;relu&#39;)</span>
+<span class="sd">        decoder_activation (Union[str, torch.nn.Module], optional): The activation to be used in all the decoder layers. (Default value = &#39;relu&#39;)</span>
+<span class="sd">        encoder_mlp_layer_config (dict, optional): A configuration dictionary to instantiate the encoder MLP layer.weights (Default value = None)</span>
+<span class="sd">        decoder_mlp_layer_config (dict, optional): A configuration dictionary to instantiate the encoder MLP layer.weights (Default value = None)</span>
+<span class="sd">        number_of_encoders (int, optional): The number of encoders to be used. (Default value = 1)</span>
+<span class="sd">        number_of_decoders (int, optional): The number of decoders to be used. (Default value = 1)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">super</span><span class="p">(</span><span class="n">Transformer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">num_heads_encoder</span> <span class="o">=</span> <span class="n">num_heads_encoder</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">num_heads_decoder</span> <span class="o">=</span> <span class="n">num_heads_decoder</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_encoder</span> <span class="o">=</span> <span class="n">embed_dim_encoder</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_decoder</span> <span class="o">=</span> <span class="n">embed_dim_decoder</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">encoder_mlp_layer_dict</span> <span class="o">=</span> <span class="n">encoder_mlp_layer_config</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">decoder_mlp_layer_dict</span> <span class="o">=</span> <span class="n">decoder_mlp_layer_config</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">number_of_encoders</span> <span class="o">=</span> <span class="n">number_of_encoders</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">number_of_decoders</span> <span class="o">=</span> <span class="n">number_of_encoders</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">encoder_activation</span> <span class="o">=</span> <span class="n">encoder_activation</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">decoder_activation</span> <span class="o">=</span> <span class="n">decoder_activation</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">encoder_mlp_layers_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">decoder_mlp_layers_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="c1"># Creating independent copies for the MLP layers which will be used</span>
+    <span class="c1"># by the multiple encoders/decoders.</span>
+    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_encoders</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder_mlp_layers_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">DenseNetwork</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder_mlp_layer_dict</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_decoders</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder_mlp_layers_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">DenseNetwork</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">decoder_mlp_layer_dict</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Defining the encoder architecture</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">EncoderStage</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+        <span class="o">*</span><span class="p">[</span>
+            <span class="n">BasicEncoder</span><span class="p">(</span>
+                <span class="n">num_heads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_heads_encoder</span><span class="p">,</span>
+                <span class="n">activation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder_activation</span><span class="p">,</span>
+                <span class="n">mlp_layer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder_mlp_layers_list</span><span class="p">[</span><span class="n">e</span><span class="p">],</span>
+                <span class="n">embed_dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_encoder</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_encoders</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Defining the decoder architecture</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">DecoderStage</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">BasicDecoder</span><span class="p">(</span>
+                <span class="n">num_heads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_heads_decoder</span><span class="p">,</span>
+                <span class="n">activation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decoder_activation</span><span class="p">,</span>
+                <span class="n">mlp_layer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decoder_mlp_layers_list</span><span class="p">[</span><span class="n">d</span><span class="p">],</span>
+                <span class="n">embed_dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_decoder</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_decoders</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">encoder_e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">EncoderStage</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">+=</span> <span class="n">encoder_e</span><span class="o">.</span><span class="n">weights</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;encoder_</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">encoder_e</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">decoder_d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DecoderStage</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">+=</span> <span class="n">decoder_d</span><span class="o">.</span><span class="n">weights</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;decoder_</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">decoder_d</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h2 id="simulai.models.Transformer.forward" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">forward</span><span class="p">(</span><span class="n">input_data</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+<a href="#simulai.models.Transformer.forward" class="headerlink" title="Permanent link">#</a></h2>
+
+
+  <div class="doc doc-contents ">
+  
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>input_data</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[<span title="torch.Tensor">Tensor</span>, <span title="numpy.ndarray">ndarray</span>]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The input dataset. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="torch.Tensor">Tensor</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>torch.Tensor: The transformer output.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>simulai/models/_pytorch_models/_transformer.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@as_tensor</span>
+<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input_data (Union[torch.Tensor, np.ndarray], optional): The input dataset. (Default value = None)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        torch.Tensor: The transformer output.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">encoder_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">EncoderStage</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+
+    <span class="n">current_input</span> <span class="o">=</span> <span class="n">input_data</span>
+    <span class="k">for</span> <span class="n">decoder</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">DecoderStage</span><span class="p">:</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">decoder</span><span class="p">(</span><span class="n">input_data</span><span class="o">=</span><span class="n">current_input</span><span class="p">,</span> <span class="n">encoder_output</span><span class="o">=</span><span class="n">encoder_output</span><span class="p">)</span>
+        <span class="n">current_input</span> <span class="o">=</span> <span class="n">output</span>
+
+    <span class="k">return</span> <span class="n">output</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h2 id="simulai.models.Transformer.summary" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">summary</span><span class="p">()</span></code>
+
+<a href="#simulai.models.Transformer.summary" class="headerlink" title="Permanent link">#</a></h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>It prints a general view of the architecture.</p>
+
+          <details class="quote">
+            <summary>Source code in <code>simulai/models/_pytorch_models/_transformer.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;It prints a general view of the architecture.&quot;&quot;&quot;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+
+  </div>
+
+  </div>
+
+</div></p>
+    </article>
+</section>
+<!-- endblock -->
+            </main>
+
+            
+                    <!-- block preview -->
+        <div class="row row-cols-md-3 text-center pt-md-3" id="component-preview">
+            <div class="col themed-grid-col">
+                <a rel="prev" href="../../simulai_regression/" class="nav-link">
+                    <i class="fa fa-arrow-left"></i> Previous
+                </a>
+            </div>
+            <div class="col themed-grid-col"></div>
+            <div class="col themed-grid-col">
+                <a rel="next" href="../simulai_models_deeponet/" class="nav-link">
+                    Next <i class="fa fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+<!-- endblock -->
+            
+
+            
+                    <!-- block footer -->
+<footer class="pt-4 my-md-5 pt-md-5 border-top" id="component-footer">
+    <div class="row">
+        <div class="col-12 col-md">
+                <!-- block copyright -->
+
+    <small class="d-block mb-3">
+        Made with
+        <a href="https://github.com/FernandoCelmer/mkdocs-simple-blog" target="_blank" rel="noopener">
+            Simple Blog for MkDocs
+        </a>
+    </small>
+
+<!-- endblock -->
+        </div>
+    </div>
+</footer>
+<!-- endblock -->
+            
+        </div>
+
+            <script>var base_url = '../..';</script>
+            <script src="../../assets/js/jquery-3.3.1.slim.min.js""></script>
+            <script src="../../assets/js/bootstrap.bundle.min.js""></script>
+            <script src="../../assets/js/main.min.js""></script>
+                <script src="../../search/main.js" defer></script>
+
+    </body>
+
+</html>
