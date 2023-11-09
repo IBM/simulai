@@ -36,6 +36,22 @@ class TestTokenizer(TestCase):
         input_dataset = tokenizer.generate_input_tokens(input_data, num_step=num_step, step=step)
         target_dataset = tokenizer.generate_target_tokens(target_data, num_step=num_step)
 
-        print(f"Output shape: {input_dataset.shape}")
+        print(f"Input shape: {input_dataset.shape}")
         print(f"Target shape: {target_dataset.shape}")
 
+    def test_time_example(self):
+
+        n_samples = 10
+        num_step = 5
+        step = 0.1
+
+        input_data = np.arange(0, 10, 1)[:, None]
+        target_data = np.arange(10, 20, 1)[:, None]
+
+        tokenizer = Tokenizer(kind="time_indexer")
+
+        input_dataset = tokenizer.generate_input_tokens(input_data, num_step=num_step, step=step)
+        target_dataset = tokenizer.generate_target_tokens(target_data, num_step=num_step)
+
+        print(input_dataset)
+        print(target_dataset)

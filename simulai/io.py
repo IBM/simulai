@@ -1844,7 +1844,7 @@ class Tokenizer:
         for i in range(num_step):
             src_final[:, i, -1] += step * i
 
-        return src
+        return src_final[:-num_step + 1]
 
     def _make_time_target_sequence(self, 
         src: Union[np.ndarray, torch.Tensor], num_step:int=None) ->  Union[np.ndarray, torch.Tensor]:
@@ -1856,7 +1856,7 @@ class Tokenizer:
         Returns:
             Union[np.ndarray, torch.Tensor]: The tokenized target dataset.
         """
-        moving_window = MovingWindow(history_size=1, skip_size=1, horizon_size=num_step) 
-        _, output = moving_window(input_data=src, output_data=src)
+        moving_window = MovingWindow(history_size=1, skip_size=1, horizon_size=num_step - 1) 
+        input_data, output_data = moving_window(input_data=src, output_data=src)
 
-        return output
+        return np.concatenate([input_data, output_data], axis=1)
