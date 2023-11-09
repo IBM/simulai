@@ -35,6 +35,8 @@
 <nav class="navbar navbar-expand-xl border-bottom">
     <div class="container-fluid">
         
+            <img class="logo" src="../assets/logo_1.png">
+        
 
         
             <span class="normal fs-4 title-color site-name" id="component-site-name" style="text-transform: uppercase;">SimulAI Docs</span>
@@ -56,23 +58,39 @@
             <ul class="navbar-nav">
                         <li class="nav-item">
                             <a class="
-                            nav-link text-gray text-decoration-none" href="..">[Welcome to SimulAI]</a>
+                            nav-link text-gray text-decoration-none" href="..">[Home]</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="
-                            nav-link text-gray text-decoration-none" href="../simulai_io/">[simulai.io]</a>
-                        </li>
-                        <li class="nav-item">
+                        <li class="nav-item dropdown">
                             <a class=" active 
-                            nav-link text-gray text-decoration-none" href="./">[simulai.residuals]</a>
+                            nav-link dropdown-toggle text-decoration-none" href="#" data-bs-toggle="dropdown">[Modules]</a>
+                            <ul class="dropdown-menu">
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../simulai_io/" class="dropdown-item text-decoration-none ">simulai.io</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="./" class="dropdown-item text-decoration-none  active ">simulai.residuals</a>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../simulai_regression/" class="dropdown-item text-decoration-none ">simulai.regression</a>
+    </li>
+<!-- endblock -->
+                            </ul>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item dropdown">
                             <a class="
-                            nav-link text-gray text-decoration-none" href="../simulai_regression/">[simulai.regression]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="
-                            nav-link text-gray text-decoration-none" href="../simulai_models/">[simulai.models]</a>
+                            nav-link dropdown-toggle text-decoration-none" href="#" data-bs-toggle="dropdown">[Subpackages]</a>
+                            <ul class="dropdown-menu">
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../simulai_models/" class="dropdown-item text-decoration-none ">simulai.models</a>
+    </li>
+<!-- endblock -->
+                            </ul>
                         </li>
             </ul>
         </li>
