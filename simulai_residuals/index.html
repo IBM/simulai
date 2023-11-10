@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-                <title>simulai.residuals - SimulAI's Documentation</title>
+                <title>Simulai residuals - SimulAI's Documentation</title>
 
             <meta charset="utf-8">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -68,7 +68,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../simulai_io/" class="dropdown-item text-decoration-none ">simulai.io</a>
+        <a href="../simulai_io/" class="dropdown-item text-decoration-none ">Simulai io</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -80,7 +80,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="./" class="dropdown-item text-decoration-none  active ">simulai.residuals</a>
+        <a href="./" class="dropdown-item text-decoration-none  active ">Simulai residuals</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -92,7 +92,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../simulai_regression/" class="dropdown-item text-decoration-none ">simulai.regression</a>
+        <a href="../simulai_regression/" class="dropdown-item text-decoration-none ">Simulai regression</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -114,7 +114,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../simulai_models/simulai_models_transformer/" class="dropdown-item text-decoration-none ">Transformer</a>
+        <a href="../simulai_models/simulai_models_transformer/" class="dropdown-item text-decoration-none ">Simulai models transformer</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -126,7 +126,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../simulai_models/simulai_models_deeponet/" class="dropdown-item text-decoration-none ">DeepONets</a>
+        <a href="../simulai_models/simulai_models_deeponet/" class="dropdown-item text-decoration-none ">Simulai models deeponet</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -138,7 +138,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../simulai_models/simulai_models_autoencoder/" class="dropdown-item text-decoration-none ">AutoEncoder</a>
+        <a href="../simulai_models/simulai_models_autoencoder/" class="dropdown-item text-decoration-none ">Simulai models autoencoder</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -146,11 +146,11 @@
 <!-- endblock -->
                 <!-- block dropdown-menu -->
     <li>
-        <a class="dropdown-item text-decoration-none" href="#">UNet &raquo;</a>
+        <a class="dropdown-item text-decoration-none" href="#">U-Net &raquo;</a>
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../simulai_models/simulai_models_unet/" class="dropdown-item text-decoration-none ">U-Net</a>
+        <a href="../simulai_models/simulai_models_unet/" class="dropdown-item text-decoration-none ">Simulai models unet</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -241,10 +241,14 @@
     <article>
         <header>
             
-                <h1 class="bold title" id="component-title">simulai.residuals</h1>
+                <h1 class="bold title" id="component-title">Simulai residuals</h1>
             
         </header>
-        <p><h1 id="simulairesiduals">simulai.residuals<a class="headerlink" href="#simulairesiduals" title="Permanent link">#</a></h1>
+        <p><style>
+red { color: red }
+</style>
+
+<h1 id="simulairesiduals"><red>simulai.residuals</red><a class="headerlink" href="#simulairesiduals" title="Permanent link">#</a></h1>
 
 
 <div class="doc doc-object doc-class">
@@ -1423,7 +1427,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            torch.Tensor: Tensor with the gradient of the feature with respect to the given parameter.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; feature = torch.tensor([1, 2, 3], dtype=torch.float32)</span>
 <span class="sd">            &gt;&gt;&gt; param = torch.tensor([2, 3, 4], dtype=torch.float32)</span>
@@ -1449,7 +1453,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            torch.Tensor: Tensor with the Jacobian of the forward function with respect to its inputs.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; inputs = torch.tensor([[1, 2, 3], [2, 3, 4]], dtype=torch.float32)</span>
 <span class="sd">            &gt;&gt;&gt; jac(inputs)</span>
@@ -2134,7 +2138,7 @@
         </tr>
     </tbody>
   </table>
-      <p>Example::</p>
+      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; feature = torch.tensor([1, 2, 3], dtype=torch.float32)
 &gt;&gt;&gt; param = torch.tensor([2, 3, 4], dtype=torch.float32)
 &gt;&gt;&gt; gradient(feature, param)
@@ -2179,7 +2183,7 @@ tensor([1., 1., 1.], grad_fn=&lt;AddBackward0&gt;)
 
 <span class="sd">    Returns:</span>
 <span class="sd">        torch.Tensor: Tensor with the gradient of the feature with respect to the given parameter.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; feature = torch.tensor([1, 2, 3], dtype=torch.float32)</span>
 <span class="sd">        &gt;&gt;&gt; param = torch.tensor([2, 3, 4], dtype=torch.float32)</span>
@@ -2270,7 +2274,7 @@ tensor([1., 1., 1.], grad_fn=&lt;AddBackward0&gt;)
         </tr>
     </tbody>
   </table>
-      <p>Example::</p>
+      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; inputs = torch.tensor([[1, 2, 3], [2, 3, 4]], dtype=torch.float32)
 &gt;&gt;&gt; jac(inputs)
 tensor([[1., 1., 1.],
@@ -2306,7 +2310,7 @@ tensor([[1., 1., 1.],
 
 <span class="sd">    Returns:</span>
 <span class="sd">        torch.Tensor: Tensor with the Jacobian of the forward function with respect to its inputs.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; inputs = torch.tensor([[1, 2, 3], [2, 3, 4]], dtype=torch.float32)</span>
 <span class="sd">        &gt;&gt;&gt; jac(inputs)</span>

@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-                <title>AutoEncoder - SimulAI's Documentation</title>
+                <title>Simulai models autoencoder - SimulAI's Documentation</title>
 
             <meta charset="utf-8">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -68,7 +68,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../../simulai_io/" class="dropdown-item text-decoration-none ">simulai.io</a>
+        <a href="../../simulai_io/" class="dropdown-item text-decoration-none ">Simulai io</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -80,7 +80,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../../simulai_residuals/" class="dropdown-item text-decoration-none ">simulai.residuals</a>
+        <a href="../../simulai_residuals/" class="dropdown-item text-decoration-none ">Simulai residuals</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -92,7 +92,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../../simulai_regression/" class="dropdown-item text-decoration-none ">simulai.regression</a>
+        <a href="../../simulai_regression/" class="dropdown-item text-decoration-none ">Simulai regression</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -114,7 +114,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../simulai_models_transformer/" class="dropdown-item text-decoration-none ">Transformer</a>
+        <a href="../simulai_models_transformer/" class="dropdown-item text-decoration-none ">Simulai models transformer</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -126,7 +126,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../simulai_models_deeponet/" class="dropdown-item text-decoration-none ">DeepONets</a>
+        <a href="../simulai_models_deeponet/" class="dropdown-item text-decoration-none ">Simulai models deeponet</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -138,7 +138,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="./" class="dropdown-item text-decoration-none  active ">AutoEncoder</a>
+        <a href="./" class="dropdown-item text-decoration-none  active ">Simulai models autoencoder</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -146,11 +146,11 @@
 <!-- endblock -->
                 <!-- block dropdown-menu -->
     <li>
-        <a class="dropdown-item text-decoration-none" href="#">UNet &raquo;</a>
+        <a class="dropdown-item text-decoration-none" href="#">U-Net &raquo;</a>
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../simulai_models_unet/" class="dropdown-item text-decoration-none ">U-Net</a>
+        <a href="../simulai_models_unet/" class="dropdown-item text-decoration-none ">Simulai models unet</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -241,11 +241,15 @@
     <article>
         <header>
             
-                <h1 class="bold title" id="component-title">AutoEncoder</h1>
+                <h1 class="bold title" id="component-title">Simulai models autoencoder</h1>
             
         </header>
-        <p><h1 id="autoencoder">AutoEncoder<a class="headerlink" href="#autoencoder" title="Permanent link">#</a></h1>
-<h2 id="autoencodermlp">AutoencoderMLP<a class="headerlink" href="#autoencodermlp" title="Permanent link">#</a></h2>
+        <p><style>
+red { color: red }
+</style>
+
+<h1 id="autoencoder"><red>AutoEncoder</red><a class="headerlink" href="#autoencoder" title="Permanent link">#</a></h1>
+<h2 id="autoencodermlp"><red>AutoencoderMLP</red><a class="headerlink" href="#autoencodermlp" title="Permanent link">#</a></h2>
 
 
 <div class="doc doc-object doc-class">
@@ -1328,7 +1332,7 @@ Z -&gt;    |  | | |  |  -&gt; Z_til
 
   </div>
 
-</div><h2 id="autoencodercnn">AutoencoderCNN<a class="headerlink" href="#autoencodercnn" title="Permanent link">#</a></h2>
+</div><h2 id="autoencodercnn"><red>AutoencoderCNN</red><a class="headerlink" href="#autoencodercnn" title="Permanent link">#</a></h2>
 
 
 <div class="doc doc-object doc-class">
@@ -3373,7 +3377,7 @@ An autoencoder architecture consists of three stages:</p>
 
   </div>
 
-</div><h2 id="autoencoderkoopman">AutoencoderKoopman<a class="headerlink" href="#autoencoderkoopman" title="Permanent link">#</a></h2>
+</div><h2 id="autoencoderkoopman"><red>AutoencoderKoopman</red><a class="headerlink" href="#autoencoderkoopman" title="Permanent link">#</a></h2>
 
 
 <div class="doc doc-object doc-class">
@@ -5667,7 +5671,7 @@ An autoencoder architecture consists of three stages:</p>
 
   </div>
 
-</div><h2 id="autoencodervariational">AutoencoderVariational<a class="headerlink" href="#autoencodervariational" title="Permanent link">#</a></h2>
+</div><h2 id="autoencodervariational"><red>AutoencoderVariational</red><a class="headerlink" href="#autoencodervariational" title="Permanent link">#</a></h2>
 
 
 <div class="doc doc-object doc-class">
@@ -6515,7 +6519,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
 <span class="sd">        Note:</span>
 <span class="sd">            The summary method calls the `summary` method of each of the subnetworks and saves the content of the subnetworks to the overall architecture dictionary. If there is a bottleneck network, it is also summarized and saved to the architecture dictionary.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">            &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -6619,7 +6623,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 <span class="sd">            torch.Tensor: The output of the bottleneck encoder applied to the input data.</span>
 <span class="sd">        Note:</span>
 <span class="sd">            This function is used for projection of the input data into the bottleneck space.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">            &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -6646,7 +6650,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
 <span class="sd">        Returns:</span>
 <span class="sd">            torch.Tensor: The output of the encoder applied to the input data.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">            &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -6669,7 +6673,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 <span class="sd">            torch.Tensor: The output of the decoder applied to the bottleneck decoder&#39;s output.</span>
 <span class="sd">        Note:</span>
 <span class="sd">            This function is used for reconstruction of the input data from the bottleneck space.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">            &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -6699,7 +6703,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
 <span class="sd">        Returns:</span>
 <span class="sd">            torch.Tensor: The output of the decoder applied to the input data.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">            &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -6720,7 +6724,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Union[np.ndarray, torch.Tensor]: The mean of the encoded input data.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">            &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -6744,7 +6748,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Union[np.ndarray, torch.Tensor]: The standard deviation of the encoded input data.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">            &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -6772,7 +6776,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Union[np.ndarray, torch.Tensor]: The covariance matrix (or its inverse) of the encoded input data.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">            &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -6803,7 +6807,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 <span class="sd">            torch.Tensor: A noisy latent representation of the input data.</span>
 <span class="sd">        Note:</span>
 <span class="sd">            This function adds Gaussian noise to the mean and standard deviation of the encoded input data to generate a noisy latent representation.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">            &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -6827,7 +6831,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
 <span class="sd">        Returns:</span>
 <span class="sd">            torch.Tensor: The reconstructed output of the autoencoder.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">            &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -6849,7 +6853,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
 <span class="sd">        Returns:</span>
 <span class="sd">            torch.Tensor: The reconstructed output of the autoencoder.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">            &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -6869,7 +6873,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
 <span class="sd">        Returns:</span>
 <span class="sd">            np.ndarray: The input data projected onto the autoencoder&#39;s latent space.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">            &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -6894,7 +6898,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
 <span class="sd">        Returns:</span>
 <span class="sd">            np.ndarray: The reconstructed data.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; autoencoder = Autoencoder(input_dim=(28, 28, 1))</span>
 <span class="sd">            &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -6917,7 +6921,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
 <span class="sd">        Returns:</span>
 <span class="sd">            np.ndarray: The reconstructed data.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; autoencoder = Autoencoder(input_dim=(28, 28, 1))</span>
 <span class="sd">            &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -7042,7 +7046,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
         </tr>
     </tbody>
   </table>
-      <p>Example::</p>
+      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
 &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)
 &gt;&gt;&gt; covariance = autoencoder.CoVariance(input_data=input_data)
@@ -7097,7 +7101,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Union[np.ndarray, torch.Tensor]: The covariance matrix (or its inverse) of the encoded input data.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">        &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -7204,7 +7208,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
         </tr>
     </tbody>
   </table>
-      <p>Example::</p>
+      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
 &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)
 &gt;&gt;&gt; mu = autoencoder.Mu(input_data=input_data)
@@ -7245,7 +7249,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Union[np.ndarray, torch.Tensor]: The mean of the encoded input data.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">        &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -7346,7 +7350,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
         </tr>
     </tbody>
   </table>
-      <p>Example::</p>
+      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
 &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)
 &gt;&gt;&gt; sigma = autoencoder.Sigma(input_data=input_data)
@@ -7387,7 +7391,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Union[np.ndarray, torch.Tensor]: The standard deviation of the encoded input data.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">        &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -8063,7 +8067,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
         </tr>
     </tbody>
   </table>
-      <p>Example::</p>
+      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; autoencoder = Autoencoder(input_dim=(28, 28, 1))
 &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)
 &gt;&gt;&gt; reconstructed_data = autoencoder.eval(input_data=input_data)
@@ -8099,7 +8103,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
 
 <span class="sd">    Returns:</span>
 <span class="sd">        np.ndarray: The reconstructed data.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; autoencoder = Autoencoder(input_dim=(28, 28, 1))</span>
 <span class="sd">        &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -8189,7 +8193,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
   </table>
       <p>Note:
     This function adds Gaussian noise to the mean and standard deviation of the encoded input data to generate a noisy latent representation.
-Example::</p>
+Example:</p>
 <pre><code>&gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
 &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)
 &gt;&gt;&gt; noisy_latent = autoencoder.latent_gaussian_noisy(input_data=input_data)
@@ -8233,7 +8237,7 @@ Example::</p>
 <span class="sd">        torch.Tensor: A noisy latent representation of the input data.</span>
 <span class="sd">    Note:</span>
 <span class="sd">        This function adds Gaussian noise to the mean and standard deviation of the encoded input data to generate a noisy latent representation.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">        &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -8321,7 +8325,7 @@ Example::</p>
         </tr>
     </tbody>
   </table>
-      <p>Example::</p>
+      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
 &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)
 &gt;&gt;&gt; projected_data = autoencoder.project(input_data=input_data)
@@ -8358,7 +8362,7 @@ Example::</p>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        np.ndarray: The input data projected onto the autoencoder&#39;s latent space.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">        &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -8447,7 +8451,7 @@ Example::</p>
         </tr>
     </tbody>
   </table>
-      <p>Example::</p>
+      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; autoencoder = Autoencoder(input_dim=(28, 28, 1))
 &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)
 &gt;&gt;&gt; reconstructed_data = autoencoder.reconstruct(input_data=input_data)
@@ -8488,7 +8492,7 @@ Example::</p>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        np.ndarray: The reconstructed data.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; autoencoder = Autoencoder(input_dim=(28, 28, 1))</span>
 <span class="sd">        &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -8577,7 +8581,7 @@ Example::</p>
         </tr>
     </tbody>
   </table>
-      <p>Example::</p>
+      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
 &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)
 &gt;&gt;&gt; reconstructed_data = autoencoder.reconstruction_eval(input_data=input_data)
@@ -8615,7 +8619,7 @@ Example::</p>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        torch.Tensor: The reconstructed output of the autoencoder.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">        &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -8701,7 +8705,7 @@ Example::</p>
         </tr>
     </tbody>
   </table>
-      <p>Example::</p>
+      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
 &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)
 &gt;&gt;&gt; reconstructed_data = autoencoder.reconstruction_forward(input_data=input_data)
@@ -8739,7 +8743,7 @@ Example::</p>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        torch.Tensor: The reconstructed output of the autoencoder.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">        &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>
@@ -8905,7 +8909,7 @@ Example::</p>
 <details class="note" open>
   <summary>Note</summary>
   <p>The summary method calls the <code>summary</code> method of each of the subnetworks and saves the content of the subnetworks to the overall architecture dictionary. If there is a bottleneck network, it is also summarized and saved to the architecture dictionary.</p>
-</details>      <p>Example::</p>
+</details>      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
 &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)
 &gt;&gt;&gt; output_data = autoencoder.summary(input_data=input_data)
@@ -9050,7 +9054,7 @@ Example::</p>
 
 <span class="sd">    Note:</span>
 <span class="sd">        The summary method calls the `summary` method of each of the subnetworks and saves the content of the subnetworks to the overall architecture dictionary. If there is a bottleneck network, it is also summarized and saved to the architecture dictionary.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))</span>
 <span class="sd">        &gt;&gt;&gt; input_data = np.random.rand(1, 28, 28, 1)</span>

@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-                <title>simulai.io - SimulAI's Documentation</title>
+                <title>Simulai io - SimulAI's Documentation</title>
 
             <meta charset="utf-8">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -68,7 +68,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="./" class="dropdown-item text-decoration-none  active ">simulai.io</a>
+        <a href="./" class="dropdown-item text-decoration-none  active ">Simulai io</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -80,7 +80,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../simulai_residuals/" class="dropdown-item text-decoration-none ">simulai.residuals</a>
+        <a href="../simulai_residuals/" class="dropdown-item text-decoration-none ">Simulai residuals</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -92,7 +92,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../simulai_regression/" class="dropdown-item text-decoration-none ">simulai.regression</a>
+        <a href="../simulai_regression/" class="dropdown-item text-decoration-none ">Simulai regression</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -114,7 +114,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../simulai_models/simulai_models_transformer/" class="dropdown-item text-decoration-none ">Transformer</a>
+        <a href="../simulai_models/simulai_models_transformer/" class="dropdown-item text-decoration-none ">Simulai models transformer</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -126,7 +126,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../simulai_models/simulai_models_deeponet/" class="dropdown-item text-decoration-none ">DeepONets</a>
+        <a href="../simulai_models/simulai_models_deeponet/" class="dropdown-item text-decoration-none ">Simulai models deeponet</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -138,7 +138,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../simulai_models/simulai_models_autoencoder/" class="dropdown-item text-decoration-none ">AutoEncoder</a>
+        <a href="../simulai_models/simulai_models_autoencoder/" class="dropdown-item text-decoration-none ">Simulai models autoencoder</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -146,11 +146,11 @@
 <!-- endblock -->
                 <!-- block dropdown-menu -->
     <li>
-        <a class="dropdown-item text-decoration-none" href="#">UNet &raquo;</a>
+        <a class="dropdown-item text-decoration-none" href="#">U-Net &raquo;</a>
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../simulai_models/simulai_models_unet/" class="dropdown-item text-decoration-none ">U-Net</a>
+        <a href="../simulai_models/simulai_models_unet/" class="dropdown-item text-decoration-none ">Simulai models unet</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -241,11 +241,15 @@
     <article>
         <header>
             
-                <h1 class="bold title" id="component-title">simulai.io</h1>
+                <h1 class="bold title" id="component-title">Simulai io</h1>
             
         </header>
-        <p><h1 id="simulaiio">simulai.io<a class="headerlink" href="#simulaiio" title="Permanent link">#</a></h1>
-<h2 id="bypasspreparer">ByPassPreparer<a class="headerlink" href="#bypasspreparer" title="Permanent link">#</a></h2>
+        <p><style>
+red { color: red }
+</style>
+
+<h1 id="simulaiio"><red>simulai.io</red><a class="headerlink" href="#simulaiio" title="Permanent link">#</a></h1>
+<h2 id="bypasspreparer"><red>ByPassPreparer</red><a class="headerlink" href="#bypasspreparer" title="Permanent link">#</a></h2>
 
 
 <div class="doc doc-object doc-class">
@@ -378,7 +382,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            numpy.ndarray:</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">            &gt;&gt;&gt; data = np.random.rand(5, 3, 4, 2)</span>
@@ -399,7 +403,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            numpy.ndarray: The output data in the original format</span>
 
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">            &gt;&gt;&gt; data = np.random.rand(5, 3)</span>
@@ -422,7 +426,7 @@
 
 <span class="sd">        Note:</span>
 <span class="sd">            This function is used when the input data is in the form of a structured array and needs to be converted to a regular numpy ndarray.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">            &gt;&gt;&gt; data = np.array([(1, &#39;a&#39;, 0.5), (2, &#39;b&#39;, 0.6)], dtype=[(&#39;a&#39;, int), (&#39;b&#39;, &#39;|S1&#39;), (&#39;c&#39;, float)])</span>
@@ -445,7 +449,7 @@
 
 <span class="sd">        Note:</span>
 <span class="sd">            This function is used when the output data needs to be in the form of a structured array and is currently in the form of a regular numpy ndarray.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">            &gt;&gt;&gt; data = np.array([[1, &#39;a&#39;, 0.5], [2, &#39;b&#39;, 0.6]])</span>
@@ -539,7 +543,7 @@
         </tr>
     </tbody>
   </table>
-      <p>Example::</p>
+      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; data = np.random.rand(5, 3, 4, 2)
 &gt;&gt;&gt; preparer = ByPassPreparer()
@@ -576,7 +580,7 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        numpy.ndarray:</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">        &gt;&gt;&gt; data = np.random.rand(5, 3, 4, 2)</span>
@@ -666,7 +670,7 @@
 <details class="note" open>
   <summary>Note</summary>
   <p>This function is used when the input data is in the form of a structured array and needs to be converted to a regular numpy ndarray.</p>
-</details>      <p>Example::</p>
+</details>      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; data = np.array([(1, 'a', 0.5), (2, 'b', 0.6)], dtype=[('a', int), ('b', '|S1'), ('c', float)])
 &gt;&gt;&gt; preparer = ByPassPreparer()
@@ -709,7 +713,7 @@ array([[1, 'a', 0.5],
 
 <span class="sd">    Note:</span>
 <span class="sd">        This function is used when the input data is in the form of a structured array and needs to be converted to a regular numpy ndarray.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">        &gt;&gt;&gt; data = np.array([(1, &#39;a&#39;, 0.5), (2, &#39;b&#39;, 0.6)], dtype=[(&#39;a&#39;, int), (&#39;b&#39;, &#39;|S1&#39;), (&#39;c&#39;, float)])</span>
@@ -795,7 +799,7 @@ array([[1, 'a', 0.5],
         </tr>
     </tbody>
   </table>
-      <p>Example::</p>
+      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; data = np.random.rand(5, 3)
 &gt;&gt;&gt; preparer = ByPassPreparer()
@@ -834,7 +838,7 @@ array([[1, 'a', 0.5],
 <span class="sd">    Returns:</span>
 <span class="sd">        numpy.ndarray: The output data in the original format</span>
 
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">        &gt;&gt;&gt; data = np.random.rand(5, 3)</span>
@@ -924,7 +928,7 @@ array([[1, 'a', 0.5],
 <details class="note" open>
   <summary>Note</summary>
   <p>This function is used when the output data needs to be in the form of a structured array and is currently in the form of a regular numpy ndarray.</p>
-</details>      <p>Example::</p>
+</details>      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; data = np.array([[1, 'a', 0.5], [2, 'b', 0.6]])
 &gt;&gt;&gt; preparer = ByPassPreparer()
@@ -966,7 +970,7 @@ dtype=[('f0', '&lt;i4'), ('f1', 'S1'), ('f2', '&lt;f8')])
 
 <span class="sd">    Note:</span>
 <span class="sd">        This function is used when the output data needs to be in the form of a structured array and is currently in the form of a regular numpy ndarray.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">        &gt;&gt;&gt; data = np.array([[1, &#39;a&#39;, 0.5], [2, &#39;b&#39;, 0.6]])</span>
@@ -988,7 +992,7 @@ dtype=[('f0', '&lt;i4'), ('f1', 'S1'), ('f2', '&lt;f8')])
 
   </div>
 
-</div><h2 id="reshaper">Reshaper<a class="headerlink" href="#reshaper" title="Permanent link">#</a></h2>
+</div><h2 id="reshaper"><red>Reshaper</red><a class="headerlink" href="#reshaper" title="Permanent link">#</a></h2>
 
 
 <div class="doc doc-object doc-class">
@@ -1223,7 +1227,7 @@ dtype=[('f0', '&lt;i4'), ('f1', 'S1'), ('f2', '&lt;f8')])
 
 <span class="sd">        Args:</span>
 <span class="sd">            data (np.ndarray, optional): The input data to reshape. (Default value = None)</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; reshaper = Reshaper()</span>
 <span class="sd">            &gt;&gt;&gt; reshaper._set_shapes_from_data(np.random.random((10,3,4,5)))</span>
@@ -1250,7 +1254,7 @@ dtype=[('f0', '&lt;i4'), ('f1', 'S1'), ('f2', '&lt;f8')])
 
 <span class="sd">        Note:</span>
 <span class="sd">            This function reshapes the input data to (n0, prod(n1, ..., nm)) shape.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; reshaper = Reshaper()</span>
 <span class="sd">            &gt;&gt;&gt; data = np.random.random((10,3,4,5))</span>
@@ -1277,7 +1281,7 @@ dtype=[('f0', '&lt;i4'), ('f1', 'S1'), ('f2', '&lt;f8')])
 <span class="sd">        Note:</span>
 <span class="sd">            - If `data` is a structured numpy array, it will be passed to `_prepare_input_structured_data` function.</span>
 <span class="sd">            - If `data` is a plain numpy array, it will be passed to `_prepare_input_data` function.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; reshaper = Reshaper()</span>
 <span class="sd">            &gt;&gt;&gt; input_data = np.random.rand(2, 3, 4)</span>
@@ -1307,7 +1311,7 @@ dtype=[('f0', '&lt;i4'), ('f1', 'S1'), ('f2', '&lt;f8')])
 
 <span class="sd">        Note:</span>
 <span class="sd">            The original shape of the data is stored in `collapsible_shapes` attribute.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; reshaper = Reshaper()</span>
 <span class="sd">            &gt;&gt;&gt; input_data = np.random.rand(2, 3, 4)</span>
@@ -1497,7 +1501,7 @@ dtype=[('f0', '&lt;i4'), ('f1', 'S1'), ('f2', '&lt;f8')])
 <li>If <code>data</code> is a structured numpy array, it will be passed to <code>_prepare_input_structured_data</code> function.</li>
 <li>If <code>data</code> is a plain numpy array, it will be passed to <code>_prepare_input_data</code> function.</li>
 </ul>
-</details>      <p>Example::</p>
+</details>      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; reshaper = Reshaper()
 &gt;&gt;&gt; input_data = np.random.rand(2, 3, 4)
 &gt;&gt;&gt; reshaper.prepare_input_data(input_data)
@@ -1552,7 +1556,7 @@ array([[ 0.948...,  0.276...,  0.967...,  0.564...],
 <span class="sd">    Note:</span>
 <span class="sd">        - If `data` is a structured numpy array, it will be passed to `_prepare_input_structured_data` function.</span>
 <span class="sd">        - If `data` is a plain numpy array, it will be passed to `_prepare_input_data` function.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; reshaper = Reshaper()</span>
 <span class="sd">        &gt;&gt;&gt; input_data = np.random.rand(2, 3, 4)</span>
@@ -1895,7 +1899,7 @@ array([[ 0.948...,  0.276...,  0.967...,  0.564...],
 
   </div>
 
-</div><h2 id="scalerreshaper">ScalerReshaper<a class="headerlink" href="#scalerreshaper" title="Permanent link">#</a></h2>
+</div><h2 id="scalerreshaper"><red>ScalerReshaper</red><a class="headerlink" href="#scalerreshaper" title="Permanent link">#</a></h2>
 
 
 <div class="doc doc-object doc-class">
@@ -2119,7 +2123,7 @@ array([[ 0.948...,  0.276...,  0.967...,  0.564...],
 
 <span class="sd">        Note:</span>
 <span class="sd">            If the input data is a structured array, the method &#39;prepare_input_structured_data&#39; will be called instead.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; reshaper = ScalerReshaper(bias=10, scale=2)</span>
 <span class="sd">            &gt;&gt;&gt; reshaper.prepare_input_data(np.array([1, 2, 3]))</span>
@@ -2148,7 +2152,7 @@ array([[ 0.948...,  0.276...,  0.967...,  0.564...],
 
 <span class="sd">        Note:</span>
 <span class="sd">            If the input data is a structured array, the method &#39;prepare_output_structured_data&#39; will be called</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; reshaper = ScalerReshaper(bias=10, scale=2)</span>
 <span class="sd">            &gt;&gt;&gt; reshaper.prepare_output_data(np.array([1, 2, 3]))</span>
@@ -2173,7 +2177,7 @@ array([[ 0.948...,  0.276...,  0.967...,  0.564...],
 
 <span class="sd">        Note:</span>
 <span class="sd">            If the bias and scale attributes are floats, they will be used for all fields.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; reshaper = ScalerReshaper(bias=10, scale=2)</span>
 <span class="sd">            &gt;&gt;&gt; reshaper._get_structured_bias_scale(np.dtype([(&#39;a&#39;, float), (&#39;b&#39;, float)]))</span>
@@ -2204,7 +2208,7 @@ array([[ 0.948...,  0.276...,  0.967...,  0.564...],
 
 <span class="sd">        Note:</span>
 <span class="sd">            The bias and scale parameters are expected to be provided in the form of dictionaries, where keys are field names and values are the corresponding bias and scale values for those fields.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; data = np.array([(1, 2, 3), (4, 5, 6)], dtype=[(&quot;a&quot;, int), (&quot;b&quot;, int), (&quot;c&quot;, int)])</span>
 <span class="sd">            &gt;&gt;&gt; reshaper = ScalerReshaper(bias={&#39;a&#39;: 1, &#39;b&#39;: 2, &#39;c&#39;: 3}, scale={&#39;a&#39;: 2, &#39;b&#39;: 3, &#39;c&#39;: 4})</span>
@@ -2237,7 +2241,7 @@ array([[ 0.948...,  0.276...,  0.967...,  0.564...],
 
 <span class="sd">        Note:</span>
 <span class="sd">            - The bias and scale parameters are expected to be provided in the form of dictionaries, where keys are field names and values are the corresponding bias and scale values for those fields.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; data = np.array([[-0.5, 0.33333333, 0.75      ],</span>
 <span class="sd">            &gt;&gt;&gt;                  [ 1.5, 1.66666667, 2.        ]])</span>
@@ -2479,7 +2483,7 @@ simple reshaping operation F: (n0, n1, ..., nm) -&gt; (n0, prod(n1, ..., nm))</p
 <details class="note" open>
   <summary>Note</summary>
   <p>If the input data is a structured array, the method 'prepare_input_structured_data' will be called instead.</p>
-</details>      <p>Example::</p>
+</details>      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; reshaper = ScalerReshaper(bias=10, scale=2)
 &gt;&gt;&gt; reshaper.prepare_input_data(np.array([1, 2, 3]))
 array([-4.5, -3.5, -2.5])
@@ -2529,7 +2533,7 @@ array([-4.5, -3.5, -2.5])
 
 <span class="sd">    Note:</span>
 <span class="sd">        If the input data is a structured array, the method &#39;prepare_input_structured_data&#39; will be called instead.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; reshaper = ScalerReshaper(bias=10, scale=2)</span>
 <span class="sd">        &gt;&gt;&gt; reshaper.prepare_input_data(np.array([1, 2, 3]))</span>
@@ -2635,7 +2639,7 @@ array([-4.5, -3.5, -2.5])
 <details class="note" open>
   <summary>Note</summary>
   <p>The bias and scale parameters are expected to be provided in the form of dictionaries, where keys are field names and values are the corresponding bias and scale values for those fields.</p>
-</details>      <p>Example::</p>
+</details>      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; data = np.array([(1, 2, 3), (4, 5, 6)], dtype=[("a", int), ("b", int), ("c", int)])
 &gt;&gt;&gt; reshaper = ScalerReshaper(bias={'a': 1, 'b': 2, 'c': 3}, scale={'a': 2, 'b': 3, 'c': 4})
 &gt;&gt;&gt; reshaper.prepare_input_structured_data(data)
@@ -2691,7 +2695,7 @@ array([-4.5, -3.5, -2.5])
 
 <span class="sd">    Note:</span>
 <span class="sd">        The bias and scale parameters are expected to be provided in the form of dictionaries, where keys are field names and values are the corresponding bias and scale values for those fields.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; data = np.array([(1, 2, 3), (4, 5, 6)], dtype=[(&quot;a&quot;, int), (&quot;b&quot;, int), (&quot;c&quot;, int)])</span>
 <span class="sd">        &gt;&gt;&gt; reshaper = ScalerReshaper(bias={&#39;a&#39;: 1, &#39;b&#39;: 2, &#39;c&#39;: 3}, scale={&#39;a&#39;: 2, &#39;b&#39;: 3, &#39;c&#39;: 4})</span>
@@ -2800,7 +2804,7 @@ array([-4.5, -3.5, -2.5])
 <details class="note" open>
   <summary>Note</summary>
   <p>If the input data is a structured array, the method 'prepare_output_structured_data' will be called</p>
-</details>      <p>Example::</p>
+</details>      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; reshaper = ScalerReshaper(bias=10, scale=2)
 &gt;&gt;&gt; reshaper.prepare_output_data(np.array([1, 2, 3]))
 array([12., 14., 16.])
@@ -2850,7 +2854,7 @@ array([12., 14., 16.])
 
 <span class="sd">    Note:</span>
 <span class="sd">        If the input data is a structured array, the method &#39;prepare_output_structured_data&#39; will be called</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; reshaper = ScalerReshaper(bias=10, scale=2)</span>
 <span class="sd">        &gt;&gt;&gt; reshaper.prepare_output_data(np.array([1, 2, 3]))</span>
@@ -2971,7 +2975,7 @@ array([12., 14., 16.])
   <ul>
 <li>The bias and scale parameters are expected to be provided in the form of dictionaries, where keys are field names and values are the corresponding bias and scale values for those fields.</li>
 </ul>
-</details>      <p>Example::</p>
+</details>      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; data = np.array([[-0.5, 0.33333333, 0.75      ],
 &gt;&gt;&gt;                  [ 1.5, 1.66666667, 2.        ]])
 &gt;&gt;&gt; reshaper = ScalerReshaper(bias={'a': 1, 'b': 2, 'c': 3}, scale={'a': 2, 'b': 3, 'c': 4})
@@ -3029,7 +3033,7 @@ rec.array([(0., 2.,  6.), (6., 8., 12.)],
 
 <span class="sd">    Note:</span>
 <span class="sd">        - The bias and scale parameters are expected to be provided in the form of dictionaries, where keys are field names and values are the corresponding bias and scale values for those fields.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; data = np.array([[-0.5, 0.33333333, 0.75      ],</span>
 <span class="sd">        &gt;&gt;&gt;                  [ 1.5, 1.66666667, 2.        ]])</span>
@@ -3059,7 +3063,7 @@ rec.array([(0., 2.,  6.), (6., 8., 12.)],
 
   </div>
 
-</div><h2 id="mapvalid">MapValid<a class="headerlink" href="#mapvalid" title="Permanent link">#</a></h2>
+</div><h2 id="mapvalid"><red>MapValid</red><a class="headerlink" href="#mapvalid" title="Permanent link">#</a></h2>
 
 
 <div class="doc doc-object doc-class">
@@ -3336,7 +3340,7 @@ This class is useful for datasets in which there are invalid data.</p>
 <span class="sd">            mapping operation F: F: data.shape = (n0, n1, ..., nm) -&gt; data&#39;.shape = (n0, n_valids)</span>
 <span class="sd">            n_valids = dim([k in data[0, ...] if k != mask])</span>
 <span class="sd">            - WARNING: the invalid positions are expected to be static in relation to n0.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; data = np.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]])</span>
 <span class="sd">            &gt;&gt;&gt; prepare_input_data(data)</span>
@@ -3378,7 +3382,7 @@ This class is useful for datasets in which there are invalid data.</p>
 <span class="sd">        Note:</span>
 <span class="sd">            - The reshaped data will have shape (n0, n_valids) where n0 is the number of samples and n_valids are the number of valid values in the data.</span>
 <span class="sd">            - If the return_the_same_mask attribute is set to True, the mask used to select the invalid values will be returned. Otherwise, the reshaped data will be filled with NaN.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">            &gt;&gt;&gt; reshaper = MapValid()</span>
@@ -3424,7 +3428,7 @@ This class is useful for datasets in which there are invalid data.</p>
 
 <span class="sd">        Note:</span>
 <span class="sd">            This function is a wrapper function that calls the &#39;prepare_input_data&#39; function internally.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">            &gt;&gt;&gt; data = np.array([(1, 2, 3), (4, 5, 6)], dtype=[(&#39;a&#39;, int), (&#39;b&#39;, int), (&#39;c&#39;, int)])</span>
@@ -3448,7 +3452,7 @@ This class is useful for datasets in which there are invalid data.</p>
 
 <span class="sd">        Note:</span>
 <span class="sd">            This function is a wrapper function that calls the &#39;prepare_output_data&#39; function internally.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">            &gt;&gt;&gt; data = np.array([[1, 2, 3], [4, 5, 6]])</span>
@@ -3718,7 +3722,7 @@ mapping operation F: F: data.shape = (n0, n1, ..., nm) -&gt; data'.shape = (n0, 
 n_valids = dim([k in data[0, ...] if k != mask])</li>
 <li>WARNING: the invalid positions are expected to be static in relation to n0.</li>
 </ul>
-</details>      <p>Example::</p>
+</details>      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; data = np.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]])
 &gt;&gt;&gt; prepare_input_data(data)
 array([[1, 2, 3],
@@ -3784,7 +3788,7 @@ array([[1, 2, 3],
 <span class="sd">        mapping operation F: F: data.shape = (n0, n1, ..., nm) -&gt; data&#39;.shape = (n0, n_valids)</span>
 <span class="sd">        n_valids = dim([k in data[0, ...] if k != mask])</span>
 <span class="sd">        - WARNING: the invalid positions are expected to be static in relation to n0.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; data = np.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]])</span>
 <span class="sd">        &gt;&gt;&gt; prepare_input_data(data)</span>
@@ -3892,7 +3896,7 @@ array([[1, 2, 3],
 <details class="note" open>
   <summary>Note</summary>
   <p>This function is a wrapper function that calls the 'prepare_input_data' function internally.</p>
-</details>      <p>Example::</p>
+</details>      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; data = np.array([(1, 2, 3), (4, 5, 6)], dtype=[('a', int), ('b', int), ('c', int)])
 &gt;&gt;&gt; model = MapValid()
@@ -3937,7 +3941,7 @@ array([[1, 2, 3],
 
 <span class="sd">    Note:</span>
 <span class="sd">        This function is a wrapper function that calls the &#39;prepare_input_data&#39; function internally.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">        &gt;&gt;&gt; data = np.array([(1, 2, 3), (4, 5, 6)], dtype=[(&#39;a&#39;, int), (&#39;b&#39;, int), (&#39;c&#39;, int)])</span>
@@ -4031,7 +4035,7 @@ array([[1, 2, 3],
 <li>The reshaped data will have shape (n0, n_valids) where n0 is the number of samples and n_valids are the number of valid values in the data.</li>
 <li>If the return_the_same_mask attribute is set to True, the mask used to select the invalid values will be returned. Otherwise, the reshaped data will be filled with NaN.</li>
 </ul>
-</details>      <p>Example::</p>
+</details>      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; reshaper = MapValid()
 &gt;&gt;&gt; data = np.array([[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]])
@@ -4099,7 +4103,7 @@ array([[[ 1.,  2.,  3.],
 <span class="sd">    Note:</span>
 <span class="sd">        - The reshaped data will have shape (n0, n_valids) where n0 is the number of samples and n_valids are the number of valid values in the data.</span>
 <span class="sd">        - If the return_the_same_mask attribute is set to True, the mask used to select the invalid values will be returned. Otherwise, the reshaped data will be filled with NaN.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">        &gt;&gt;&gt; reshaper = MapValid()</span>
@@ -4212,7 +4216,7 @@ array([[[ 1.,  2.,  3.],
 <details class="note" open>
   <summary>Note</summary>
   <p>This function is a wrapper function that calls the 'prepare_output_data' function internally.</p>
-</details>      <p>Example::</p>
+</details>      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; data = np.array([[1, 2, 3], [4, 5, 6]])
 &gt;&gt;&gt; model = MapValid()
@@ -4257,7 +4261,7 @@ array([[1, 2, 3],
 
 <span class="sd">    Note:</span>
 <span class="sd">        This function is a wrapper function that calls the &#39;prepare_output_data&#39; function internally.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">        &gt;&gt;&gt; data = np.array([[1, 2, 3], [4, 5, 6]])</span>
@@ -4281,7 +4285,7 @@ array([[1, 2, 3],
 
   </div>
 
-</div><h2 id="sampling">Sampling<a class="headerlink" href="#sampling" title="Permanent link">#</a></h2>
+</div><h2 id="sampling"><red>Sampling </red><a class="headerlink" href="#sampling" title="Permanent link">#</a></h2>
 
 
 <div class="doc doc-object doc-class">
@@ -4495,7 +4499,7 @@ array([[1, 2, 3],
 
 <span class="sd">        Note:</span>
 <span class="sd">            The indices are generated by calling the &#39;prepare_input_data&#39; or &#39;prepare_input_structured_data&#39; functions.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">            &gt;&gt;&gt; data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])</span>
@@ -4524,7 +4528,7 @@ array([[1, 2, 3],
 <span class="sd">            numpy.ndarray: The sampled data.</span>
 <span class="sd">        Note:</span>
 <span class="sd">            The `data_interval` parameter must be a list of two integers, specifying the start and end of the interval.</span>
-<span class="sd">         Example::</span>
+<span class="sd">         Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; data = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])</span>
 <span class="sd">            &gt;&gt;&gt; data_interval = [3, 7]</span>
@@ -4570,7 +4574,7 @@ array([[1, 2, 3],
 <span class="sd">        Note:</span>
 <span class="sd">            - The features dimensions of the input data should be 1 in NumPy structured arrays.</span>
 <span class="sd">            - When using a h5py.Dataset as input, a dump_path must be provided</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; data = h5py.File(&quot;path/to/data.h5&quot;, &#39;r&#39;)[&#39;data&#39;]</span>
 <span class="sd">            &gt;&gt;&gt; data_interval = [0, data.shape[0]]</span>
@@ -4712,7 +4716,7 @@ array([[1, 2, 3],
 <details class="note" open>
   <summary>Note</summary>
   <p>The indices are generated by calling the 'prepare_input_data' or 'prepare_input_structured_data' functions.</p>
-</details>      <p>Example::</p>
+</details>      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 &gt;&gt;&gt; sampler = Sampling(choices_fraction=0.5, shuffling=True)
@@ -4906,7 +4910,7 @@ array([[1, 2, 3],
   </table>
       <p>Note:
     The <code>data_interval</code> parameter must be a list of two integers, specifying the start and end of the interval.
- Example::</p>
+ Example:</p>
 <pre><code>&gt;&gt;&gt; data = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 &gt;&gt;&gt; data_interval = [3, 7]
 &gt;&gt;&gt; input_data = sampler.prepare_input_data(data, data_interval)
@@ -4963,7 +4967,7 @@ array([[1, 2, 3],
 <span class="sd">        numpy.ndarray: The sampled data.</span>
 <span class="sd">    Note:</span>
 <span class="sd">        The `data_interval` parameter must be a list of two integers, specifying the start and end of the interval.</span>
-<span class="sd">     Example::</span>
+<span class="sd">     Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; data = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])</span>
 <span class="sd">        &gt;&gt;&gt; data_interval = [3, 7]</span>
@@ -5111,7 +5115,7 @@ array([[1, 2, 3],
 <li>The features dimensions of the input data should be 1 in NumPy structured arrays.</li>
 <li>When using a h5py.Dataset as input, a dump_path must be provided</li>
 </ul>
-</details>      <p>Example::</p>
+</details>      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; data = h5py.File("path/to/data.h5", 'r')['data']
 &gt;&gt;&gt; data_interval = [0, data.shape[0]]
 &gt;&gt;&gt; batch_size = 32
@@ -5222,7 +5226,7 @@ array([[1, 2, 3],
 <span class="sd">    Note:</span>
 <span class="sd">        - The features dimensions of the input data should be 1 in NumPy structured arrays.</span>
 <span class="sd">        - When using a h5py.Dataset as input, a dump_path must be provided</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; data = h5py.File(&quot;path/to/data.h5&quot;, &#39;r&#39;)[&#39;data&#39;]</span>
 <span class="sd">        &gt;&gt;&gt; data_interval = [0, data.shape[0]]</span>
@@ -5293,7 +5297,7 @@ array([[1, 2, 3],
 
   </div>
 
-</div><h2 id="movingwindow">MovingWindow<a class="headerlink" href="#movingwindow" title="Permanent link">#</a></h2>
+</div><h2 id="movingwindow"><red>MovingWindow</red><a class="headerlink" href="#movingwindow" title="Permanent link">#</a></h2>
 
 
 <div class="doc doc-object doc-class">
@@ -5308,7 +5312,7 @@ array([[1, 2, 3],
 creating the necessary augmented data used for LSTM networks, replicating the training
 windows for each sample in the dataset.</p>
 <p>See a graphical example:</p>
-<p>Example::</p>
+<p>Example:</p>
 <pre><code>batch n
 ---------|---
 history  | horizon
@@ -5319,7 +5323,7 @@ history  | horizon
 ----
 skip
 </code></pre>
-<p>Example::</p>
+<p>Example:</p>
 <pre><code>&gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; data = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 &gt;&gt;&gt; window = MovingWindow(history_size=3, horizon_size=1)
@@ -5515,7 +5519,7 @@ array([[1, 2, 3],
 
 <span class="sd">    See a graphical example:</span>
 
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        batch n</span>
 <span class="sd">        ---------|---</span>
@@ -5527,7 +5531,7 @@ array([[1, 2, 3],
 <span class="sd">        ----</span>
 <span class="sd">        skip</span>
 
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">        &gt;&gt;&gt; data = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])</span>
@@ -5612,7 +5616,7 @@ array([[1, 2, 3],
 
 <span class="sd">        Note:</span>
 <span class="sd">            - This method is used internally by the MovingWindow class</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])</span>
 <span class="sd">            &gt;&gt;&gt; mw.get_last_item(data)</span>
@@ -5636,7 +5640,7 @@ array([[1, 2, 3],
 <span class="sd">        Note:</span>
 <span class="sd">            - It is expected that the input_data and output_data have the same shape</span>
 <span class="sd">            - This method is used internally by the MovingWindow class</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12], [13, 14, 15]])</span>
 <span class="sd">            &gt;&gt;&gt; mw = MovingWindow(history_size=2, horizon_size=2, skip_size=1)</span>
@@ -5786,7 +5790,7 @@ array([[1, 2, 3],
 <li>It is expected that the input_data and output_data have the same shape</li>
 <li>This method is used internally by the MovingWindow class</li>
 </ul>
-</details>      <p>Example::</p>
+</details>      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12], [13, 14, 15]])
 &gt;&gt;&gt; mw = MovingWindow(history_size=2, horizon_size=2, skip_size=1)
 &gt;&gt;&gt; input_data, output_data = mw(data, data)
@@ -5880,7 +5884,7 @@ array([[[ 7,  8,  9],
 <span class="sd">    Note:</span>
 <span class="sd">        - It is expected that the input_data and output_data have the same shape</span>
 <span class="sd">        - This method is used internally by the MovingWindow class</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12], [13, 14, 15]])</span>
 <span class="sd">        &gt;&gt;&gt; mw = MovingWindow(history_size=2, horizon_size=2, skip_size=1)</span>
@@ -6266,7 +6270,7 @@ array([[[ 7,  8,  9],
   <ul>
 <li>This method is used internally by the MovingWindow class</li>
 </ul>
-</details>      <p>Example::</p>
+</details>      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 &gt;&gt;&gt; mw.get_last_item(data)
 array([[7, 8, 9]])
@@ -6303,7 +6307,7 @@ array([[7, 8, 9]])
 
 <span class="sd">    Note:</span>
 <span class="sd">        - This method is used internally by the MovingWindow class</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])</span>
 <span class="sd">        &gt;&gt;&gt; mw.get_last_item(data)</span>
@@ -6422,7 +6426,7 @@ array([[7, 8, 9]])
 
   </div>
 
-</div><h2 id="slidingwindow">SlidingWindow<a class="headerlink" href="#slidingwindow" title="Permanent link">#</a></h2>
+</div><h2 id="slidingwindow"><red>SlidingWindow</red><a class="headerlink" href="#slidingwindow" title="Permanent link">#</a></h2>
 
 
 <div class="doc doc-object doc-class">
@@ -6477,7 +6481,7 @@ The number of samples to skip between each window.</p>
       <p>Note:
     - The difference between SlidingWindow and MovingWindow is that here there is no intersection between two sequential batches.</p>
 <p>See a graphical example:</p>
-<p>Example::</p>
+<p>Example:</p>
 <pre><code>batch n
 ---------|---
 history  | horizon
@@ -6486,7 +6490,7 @@ history  | horizon
                 ---------|---
                     history  | horizon
 </code></pre>
-<p>Example::</p>
+<p>Example:</p>
 <pre><code>&gt;&gt;&gt; window = SlidingWindow(history_size=3, skip_size=1)
 &gt;&gt;&gt; time_series = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 &gt;&gt;&gt; windows = window.apply(time_series)
@@ -6644,7 +6648,7 @@ history  | horizon
 
 <span class="sd">    See a graphical example:</span>
 
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        batch n</span>
 <span class="sd">        ---------|---</span>
@@ -6654,7 +6658,7 @@ history  | horizon
 <span class="sd">                        ---------|---</span>
 <span class="sd">                            history  | horizon</span>
 
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; window = SlidingWindow(history_size=3, skip_size=1)</span>
 <span class="sd">        &gt;&gt;&gt; time_series = [1, 2, 3, 4, 5, 6, 7, 8, 9]</span>
@@ -6689,7 +6693,7 @@ history  | horizon
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List[List[int]]:</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; window = SlidingWindow(history_size=3, skip_size=1)</span>
 <span class="sd">            &gt;&gt;&gt; time_series = [1, 2, 3, 4, 5, 6, 7, 8, 9]</span>
@@ -6720,7 +6724,7 @@ history  | horizon
 <span class="sd">            - history_size and horizon_size should be positive integers</span>
 <span class="sd">            - history_size should be less than the length of input_data</span>
 <span class="sd">            - input_data and output_data should have the same number of rows</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; data = np.random.rand(10,3)</span>
 <span class="sd">            &gt;&gt;&gt; history_size = 3</span>
@@ -6867,7 +6871,7 @@ history  | horizon
 <li>history_size should be less than the length of input_data</li>
 <li>input_data and output_data should have the same number of rows</li>
 </ul>
-</details>      <p>Example::</p>
+</details>      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; data = np.random.rand(10,3)
 &gt;&gt;&gt; history_size = 3
 &gt;&gt;&gt; horizon_size = 2
@@ -6953,7 +6957,7 @@ history  | horizon
 <span class="sd">        - history_size and horizon_size should be positive integers</span>
 <span class="sd">        - history_size should be less than the length of input_data</span>
 <span class="sd">        - input_data and output_data should have the same number of rows</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; data = np.random.rand(10,3)</span>
 <span class="sd">        &gt;&gt;&gt; history_size = 3</span>
@@ -7170,7 +7174,7 @@ history  | horizon
         </tr>
     </tbody>
   </table>
-      <p>Example::</p>
+      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; window = SlidingWindow(history_size=3, skip_size=1)
 &gt;&gt;&gt; time_series = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 &gt;&gt;&gt; windows = window.apply(time_series)
@@ -7209,7 +7213,7 @@ history  | horizon
 
 <span class="sd">    Returns:</span>
 <span class="sd">        List[List[int]]:</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; window = SlidingWindow(history_size=3, skip_size=1)</span>
 <span class="sd">        &gt;&gt;&gt; time_series = [1, 2, 3, 4, 5, 6, 7, 8, 9]</span>
@@ -7235,7 +7239,7 @@ history  | horizon
 
   </div>
 
-</div><h2 id="intersectingbatches">IntersectingBatches<a class="headerlink" href="#intersectingbatches" title="Permanent link">#</a></h2>
+</div><h2 id="intersectingbatches"><red>IntersectingBatches</red><a class="headerlink" href="#intersectingbatches" title="Permanent link">#</a></h2>
 
 
 <div class="doc doc-object doc-class">
@@ -7395,7 +7399,7 @@ history  | horizon
 <span class="sd">            Union[list, np.ndarray]: A list of batches or a single batch if `full` attribute is set to False.</span>
 <span class="sd">        Note:</span>
 <span class="sd">            - If the `full` attribute is set to True, the last batch will be included even if it&#39;s not full.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; input_data = np.array([[1,2,3], [4,5,6], [7,8,9], [10,11,12]])</span>
 <span class="sd">            &gt;&gt;&gt; batches = IntersectingBatches(skip_size=1, batch_size=2)</span>
@@ -7511,7 +7515,7 @@ history  | horizon
   </table>
       <p>Note:
     - If the <code>full</code> attribute is set to True, the last batch will be included even if it's not full.
-Example::</p>
+Example:</p>
 <pre><code>&gt;&gt;&gt; input_data = np.array([[1,2,3], [4,5,6], [7,8,9], [10,11,12]])
 &gt;&gt;&gt; batches = IntersectingBatches(skip_size=1, batch_size=2)
 &gt;&gt;&gt; batches(input_data)
@@ -7574,7 +7578,7 @@ array([[ 7,  8,  9],
 <span class="sd">        Union[list, np.ndarray]: A list of batches or a single batch if `full` attribute is set to False.</span>
 <span class="sd">    Note:</span>
 <span class="sd">        - If the `full` attribute is set to True, the last batch will be included even if it&#39;s not full.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; input_data = np.array([[1,2,3], [4,5,6], [7,8,9], [10,11,12]])</span>
 <span class="sd">        &gt;&gt;&gt; batches = IntersectingBatches(skip_size=1, batch_size=2)</span>
@@ -7860,7 +7864,7 @@ array([[ 7,  8,  9],
 
   </div>
 
-</div><h2 id="batchwiseextrapolation">BatchwiseExtrapolation<a class="headerlink" href="#batchwiseextrapolation" title="Permanent link">#</a></h2>
+</div><h2 id="batchwiseextrapolation"><red>BatchwiseExtrapolation</red><a class="headerlink" href="#batchwiseextrapolation" title="Permanent link">#</a></h2>
 
 
 <div class="doc doc-object doc-class">
@@ -8114,7 +8118,7 @@ MovingWindow to continuously extrapolate a dataset.</p>
 
 <span class="sd">        Note:</span>
 <span class="sd">            The number of series in the initial state must be equal to the number of series in the auxiliary data, if it is provided.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; model = BatchwiseExtrapolation()</span>
 <span class="sd">            #Init state of the time series</span>
@@ -8300,7 +8304,7 @@ MovingWindow to continuously extrapolate a dataset.</p>
 <details class="note" open>
   <summary>Note</summary>
   <p>The number of series in the initial state must be equal to the number of series in the auxiliary data, if it is provided.</p>
-</details>      <p>Example::</p>
+</details>      <p>Example:</p>
 <pre><code>&gt;&gt;&gt; model = BatchwiseExtrapolation()
 #Init state of the time series
 &gt;&gt;&gt; init_state = np.random.random((1,20,3))
@@ -8410,7 +8414,7 @@ MovingWindow to continuously extrapolate a dataset.</p>
 
 <span class="sd">    Note:</span>
 <span class="sd">        The number of series in the initial state must be equal to the number of series in the auxiliary data, if it is provided.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; model = BatchwiseExtrapolation()</span>
 <span class="sd">        #Init state of the time series</span>
@@ -8478,7 +8482,7 @@ MovingWindow to continuously extrapolate a dataset.</p>
 
   </div>
 
-</div><h2 id="batchcopy">BatchCopy<a class="headerlink" href="#batchcopy" title="Permanent link">#</a></h2>
+</div><h2 id="batchcopy"><red>BatchCopy</red><a class="headerlink" href="#batchcopy" title="Permanent link">#</a></h2>
 
 
 <div class="doc doc-object doc-class">
@@ -8749,7 +8753,7 @@ MovingWindow to continuously extrapolate a dataset.</p>
 <span class="sd">        Note:</span>
 <span class="sd">            - Copy data from data_file.h5/data to data_copy.h5/data with a batch size of 1000:</span>
 <span class="sd">            - The input must be an h5py.Dataset.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; data = h5py.File(&quot;data_file.h5&quot;, &quot;r&quot;)</span>
 <span class="sd">            &gt;&gt;&gt; batch_copy = BatchCopy()</span>
@@ -8921,7 +8925,7 @@ MovingWindow to continuously extrapolate a dataset.</p>
 <span class="sd">            h5py.Dataset: The copied data</span>
 <span class="sd">        Note:</span>
 <span class="sd">            - If the data is a list of h5py.Dataset, it will call the `_multiple_copy` function.</span>
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
 <span class="sd">            &gt;&gt;&gt; data = h5py.File(&#39;data.h5&#39;, &#39;r&#39;)</span>
 <span class="sd">            &gt;&gt;&gt; data_interval = [0, 100]</span>
@@ -9091,7 +9095,7 @@ It allows to apply a transformation function to the data.</p>
   </table>
       <p>Note:
     - If the data is a list of h5py.Dataset, it will call the <code>_multiple_copy</code> function.
-Example::</p>
+Example:</p>
 <pre><code>&gt;&gt;&gt; data = h5py.File('data.h5', 'r')
 &gt;&gt;&gt; data_interval = [0, 100]
 &gt;&gt;&gt; batch_size = 1000
@@ -9172,7 +9176,7 @@ Example::</p>
 <span class="sd">        h5py.Dataset: The copied data</span>
 <span class="sd">    Note:</span>
 <span class="sd">        - If the data is a list of h5py.Dataset, it will call the `_multiple_copy` function.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; data = h5py.File(&#39;data.h5&#39;, &#39;r&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; data_interval = [0, 100]</span>
@@ -9211,7 +9215,7 @@ Example::</p>
 
   </div>
 
-</div><h2 id="maketensor">MakeTensor<a class="headerlink" href="#maketensor" title="Permanent link">#</a></h2>
+</div><h2 id="maketensor"><red>MakeTensor</red><a class="headerlink" href="#maketensor" title="Permanent link">#</a></h2>
 
 
 <div class="doc doc-object doc-class">
@@ -9277,7 +9281,7 @@ Example::</p>
 <li>The input_data will be put on the device specified by the device parameter, which defaults to 'cpu'.</li>
 <li>If input_data is None, it will raise an exception.</li>
 </ul>
-</details>      <p>Example::</p>
+</details>      <p>Example:</p>
 <pre><code># Creating a MakeTensor object with input and output names
 
 # Converting numpy array to torch tensor
@@ -9425,7 +9429,7 @@ Example::</p>
 <span class="sd">        - The input_data will be converted to float32 dtype.</span>
 <span class="sd">        - The input_data will be put on the device specified by the device parameter, which defaults to &#39;cpu&#39;.</span>
 <span class="sd">        - If input_data is None, it will raise an exception.</span>
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        # Creating a MakeTensor object with input and output names</span>
 
@@ -9748,7 +9752,7 @@ Example::</p>
 
   </div>
 
-</div><h2 id="gaussiannoise">GaussianNoise<a class="headerlink" href="#gaussiannoise" title="Permanent link">#</a></h2>
+</div><h2 id="gaussiannoise"><red>GaussianNoise</red><a class="headerlink" href="#gaussiannoise" title="Permanent link">#</a></h2>
 
 
 <div class="doc doc-object doc-class">
@@ -9763,7 +9767,7 @@ Example::</p>
   
       <p>GaussianNoise(stddev=0.01, input_data=None)
 A dataset that applies Gaussian noise to input data.</p>
-<p>Example::</p>
+<p>Example:</p>
 <pre><code>&gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; input_data = np.random.rand(100,100)
 &gt;&gt;&gt; dataset = GaussianNoise(stddev=0.05, input_data=input_data)
@@ -9810,7 +9814,7 @@ A dataset that applies Gaussian noise to input data.</p>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;GaussianNoise(stddev=0.01, input_data=None)</span>
 <span class="sd">    A dataset that applies Gaussian noise to input data.</span>
 
-<span class="sd">    Example::</span>
+<span class="sd">    Example:</span>
 
 <span class="sd">        &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">        &gt;&gt;&gt; input_data = np.random.rand(100,100)</span>
@@ -9861,7 +9865,7 @@ A dataset that applies Gaussian noise to input data.</p>
 
   </div>
 
-</div><h2 id="tokenizer">Tokenizer<a class="headerlink" href="#tokenizer" title="Permanent link">#</a></h2>
+</div><h2 id="tokenizer"><red>Tokenizer</red><a class="headerlink" href="#tokenizer" title="Permanent link">#</a></h2>
 
 
 <div class="doc doc-object doc-class">
