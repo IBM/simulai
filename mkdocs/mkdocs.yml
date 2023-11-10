@@ -36,11 +36,24 @@ nav:
   - Modules:
     - IO:
       - simulai_io.md
+    - File:
+      - simulai_file.md
+    - Batching:
+      - simulai_batching.md
+    - Activations:
+      - simulai_activations.md
+    - Parallel:
+      - simulai_parallel.md
+  - Subpackages:
     - Symbolic Manipulation:
       - simulai_residuals.md
     - Regression/Neural Networks:
-      - simulai_regression.md
-  - Subpackages:
+      - Dense Networks:
+        - simulai_regression/simulai_dense.md
+      - OpInf:
+        - simulai_regression/simulai_opinf.md
+    - ROM:
+      - simulai_rom/simulai_rom.md
     - Models:
       - Transformer:
         - simulai_models/simulai_models_transformer.md

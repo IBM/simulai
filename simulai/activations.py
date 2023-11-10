@@ -16,21 +16,17 @@ import torch
 
 
 class Siren(torch.nn.Module):
-    """Sinusoidal Representation Networks (SIREN)
-
-    Parameters
-    ----------
-    omega_0 : float, optional
-        Parameter for the SIREN model.
-    c : float, optional
-        Parameter for the SIREN model.
-
-    """
+    """Sinusoidal Representation Networks (SIREN)"""
 
     name = "Siren"
 
     def __init__(self, omega_0: float = None, c: float = None) -> None:
-        """Initialize SIREN model with given parameters."""
+        """Initialize SIREN model with given parameters.
+
+        Args:
+            omega_0 (float, optional):  (Default value = None)
+            c (float, optional):  (Default value = None)
+        """
 
         super(Siren, self).__init__()
 
@@ -41,34 +37,29 @@ class Siren(torch.nn.Module):
     def share_to_host(self) -> dict:
         """Return the parameters of the SIREN model.
 
-        Returns
-        -------
-        params : dict
-            A dictionary containing the parameters 'omega_0' and 'c'.
 
+        Returns:
+            dict: A dictionary containing the parameters 'omega_0' and 'c'.
+        
         """
         return {"omega_0": self.omega_0, "c": self.c}
 
     def forward(self, input: torch.Tensor) -> torch.Tensor:
         """Perform the forward pass of the SIREN model on the input.
 
-        Parameters
-        ----------
-        input : torch.Tensor
-            The input to the SIREN model.
+        Args:
+            input (torch.Tensor): The input to the SIREN model.
 
-        Returns
-        -------
-        output : torch.Tensor
-            The output of the SIREN model.
-
+        Returns:
+            torch.Tensor: The output of the SIREN model.
+        
         """
         return torch.sin(self.omega_0 * input)
 
 
 class sin(torch.nn.Module):
     """Sine activation function.
-
+    
     This module applies the sine function element-wise to the input.
 
     """
@@ -76,23 +67,21 @@ class sin(torch.nn.Module):
     name = "sin"
 
     def __init__(self) -> None:
-        """Initialize the sine activation function."""
+        """Initialize the sine activation function.
+
+        """
 
         super(sin, self).__init__()
 
     def forward(self, input: torch.Tensor) -> torch.Tensor:
         """Perform the forward pass of the sine activation function on the input.
 
-        Parameters
-        ----------
-        input : torch.Tensor
-            The input to the sine activation function.
+        Args:
+            input (torch.Tensor): The input to the sine activation function.
 
-        Returns
-        -------
-        output : torch.Tensor
-            The output of the sine activation function.
-
+        Returns:
+            torch.Tensor: The output of the sine activation function.
+        
         """
         return torch.sin(input)
 
@@ -111,16 +100,12 @@ class Wavelet(torch.nn.Module):
     def forward(self, input: torch.Tensor) -> torch.Tensor:
         """Perform the forward pass of the Wavelet activation on the input.
 
-        Parameters
-        ----------
-        input : torch.Tensor
-            The input to the sine activation function.
+        Args:
+            input (torch.Tensor): The input to the sine activation function.
 
-        Returns
-        -------
-        output : torch.Tensor
-            The output of the sine activation function.
-
+        Returns:
+            torch.Tensor: The output of the sine activation function.
+        
         """
 
         return self.w1 * torch.sin(input) + self.w2 * torch.cos(input)

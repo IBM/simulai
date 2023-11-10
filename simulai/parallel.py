@@ -30,24 +30,10 @@ except:
 # Pipeline for executing independent MPI jobs
 class PipelineMPI:
 
-    """
-    PipelineMPI class, it orchestrates the instantiation of MPI jobs
+    """PipelineMPI class, it orchestrates the instantiation of MPI jobs
     and distributes the workload among the workers.
 
-    Parameters:
-    -----------
-    exec : callable
-        A callable object (function or class method) which will be executed in
-        parallel.
-    extra_params: dict
-        A dictionary containing arguments to be passed to exec.
-    collect: bool
-        A boolean variable informing if the output of each worker
-        need to be collected and displayed in the screen during the
-        job execution.
-    show_log: bool
-        A boolean variable used to block the display of the execution
-        log.
+    
     """
 
     def __init__(
@@ -74,19 +60,15 @@ class PipelineMPI:
         self.status_dict = dict()
 
     def _check_kwargs_consistency(self, kwargs: dict = None) -> int:
-        """
-        It checks if the kwargs provided for each worker
+        """It checks if the kwargs provided for each worker
         have the same length.
 
-        Parameters:
-        -----------
-        kwargs: dict
-                a dictionary containing the kwargs of all
-                the workers.
+        Args:
+            kwargs (dict, optional): a dictionary containing the kwargs of all (Default value = None)
+
         Returns:
-        --------
-        int
-            Length of the batch sent for each worker.
+            int: Length of the batch sent for each worker.
+        
         """
 
         types = [type(value) for value in kwargs.values()]
@@ -108,30 +90,19 @@ class PipelineMPI:
     def _split_kwargs(
         self, kwargs: dict, rank: int, size: int, total_size: int
     ) -> Tuple[dict, int]:
-        """
-        It allows the workload be executed serially in each worker node
+        """It allows the workload be executed serially in each worker node
 
-        Parameters:
-        -----------
-        kwargs: dict
-                A dictionary containing kwargs,
-                which will be distributed for all the workers.
-        rank: int
-                The index of the rank.
-        size: int
-                The number of available workers.
-        total_size: int
-                The total number of elements to be distributed
-                among the workers.
+        Args:
+            kwargs (dict): A dictionary containing kwargs, which will be distributed for all the workers.
+            rank (int): The index of the rank.
+            size (int): The number of available workers.
+            total_size (int): The total number of elements to be distributed among the workers.
 
         Returns:
-        --------
-        kwargs_batch
-            A dictionary containing the kwargs to be sent for each worker.
-        batch_size
-            The batch size, which corresponds to the number of elements
+            kwargs_batch: A dictionary containing the kwargs to be sent for each worker.
+            batch_size: The batch size, which corresponds to the number of elements
             to be sent for each worker.
-
+        
         """
 
         # Decrement rank and size by 1, because they are usually 0-indexed in Python
@@ -178,17 +149,13 @@ class PipelineMPI:
         return types_list[0]
 
     def _exec_wrapper(self, kwargs: dict, total_size: int) -> None:
-        """
-        A wrapper method around exec to facilitate the
+        """A wrapper method around exec to facilitate the
         instantiation of each worker.
 
-        Parameters:
-        -----------
-        kwargs: dict
-                A dictionary containing kwargs for the worker.
-        total_size: int
-                The total number of elements.
-
+        Args:
+            kwargs (dict): A dictionary containing kwargs for the worker.
+            total_size (int): The total number of elements.
+        
         """
 
         comm = MPI.COMM_WORLD
@@ -247,22 +214,18 @@ class PipelineMPI:
 
     @property
     def success(self) -> bool:
-        """
-        It returns True if the entire process worked without issues.
+        """It returns True if the entire process worked without issues.
+
         """
 
         return all(self.status)
 
     def run(self, kwargs: dict = None) -> None:
-        """
-        It runs the MPI job
+        """It runs the MPI job
 
-        Parameters:
-        -----------
-        kwargs: dict
-                A kwargs dictionary containing chunks of input
-                arguments to be sent for each worker.
-
+        Args:
+            kwargs (dict, optional): A kwargs dictionary containing chunks of input arguments to be sent for each worker. (Default value = None)
+        
         """
 
         comm = MPI.COMM_WORLD

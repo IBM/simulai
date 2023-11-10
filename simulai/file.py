@@ -23,23 +23,18 @@ from simulai.templates import NetworkTemplate
 
 
 def load_pkl(path: str = None) -> Union[object, None]:
-    """
-    Load a pickle file into a Python object.
+    """Load a pickle file into a Python object.
 
-    Parameters:
-    -----------
-    path : str, optional
-        The path to the pickle file.
+    Args:
+        path (str, optional):  (Default value = None)
 
     Returns:
-    --------
-    object or None
-        The loaded object, if possible. None if the file cannot be loaded
+        object or None: 
 
     Raises:
-    -------
-    Exception :
-       if the provided path is not a file or cannot be opened
+        Exception: if the provided path is not a file or cannot be opened
+
+    
     """
 
     import pickle
@@ -68,50 +63,40 @@ def load_pkl(path: str = None) -> Union[object, None]:
 # restore a NetworkTemplate object
 class SPFile:
     def __init__(self, compact: bool = False) -> None:
-        """
-        Class for handling persistence of Pytorch Module-like objects.
-
+        """Class for handling persistence of Pytorch Module-like objects.
+        
         SimulAI Persistency File
         It saves PyTorch Module-like objects in a directory containing the model template and
         its coefficients dictionary
 
-        Parameters:
-        -----------
-        compact : bool, optional
-            Compress the directory to a tar file or not. Default : False
+        Args:
+            compact (bool, optional): Compress the directory to a tar file or not. Default : False
+        
         """
         self.compact = compact
 
     def _leading_size(self, first_line: str = None) -> int:
-        """
-        Returns the number of leading white spaces in the given line
+        """Returns the number of leading white spaces in the given line
 
-        Parameters:
-        -----------
-        first_line : str, optional
-            The line for which to find the number of leading white spaces.
+        Args:
+            first_line (str, optional):  (Default value = None)
 
         Returns:
-        --------
-        int
-            number of leading white spaces.
+            int: number of leading white spaces.
+        
         """
         leading_whitespaces = len(first_line) - len(first_line.lstrip())
         return leading_whitespaces
 
     def _process_code(self, code: str = None) -> str:
-        """
-        Returns the code string with leading white spaces removed from each line
+        """Returns the code string with leading white spaces removed from each line
 
-        Parameters:
-        -----------
-        code : str, optional
-            The code string which to remove the leading whitespaces
+        Args:
+            code (str, optional): The code string which to remove the leading whitespaces (Default value = None)
 
         Returns:
-        --------
-        str
-            The code string with leading white spaces removed.
+            str: The code string with leading white spaces removed.
+        
         """
         code_lines = code.split("\n")
         first_line = code_lines[0]
@@ -130,27 +115,15 @@ class SPFile:
         model: NetworkTemplate = None,
         device: str = None,
     ) -> None:
-        """
-        Writes the model and its instantiating function to a directory.
+        """Writes the model and its instantiating function to a directory.
 
-        Parameters:
-        -----------
-        save_dir : str, optional
-            The absolute directory path to save the model
-        name : str, optional
-            A name for the model.
-        template : callable, optional
-            A function for instantiating the model.
-        args : dict
-            Dictionary containing arguments to be passed to template.
-        model : NetworkTemplate, optional
-            The model to be saved.
-        device : str, optional
-            The device on which the model is located (gpu or cpu).
-
-        Returns:
-        --------
-        None
+        Args:
+            save_dir (str, optional): The absolute directory path to save the model (Default value = None)
+            name (str, optional): A name for the model. (Default value = None)
+            template (callable, optional): A function for instantiating the model. (Default value = None)
+            args (dict, optional): Dictionary containing arguments to be passed to template. (Default value = None)
+            model (NetworkTemplate, optional): The model to be saved. (Default value = None)
+            device (str, optional):  (Default value = None)
         """
         model_dir = os.path.join(save_dir, name)
 
@@ -175,22 +148,16 @@ class SPFile:
     def read(
         self, model_path: str = None, device: str = None, template_name: str = None
     ) -> NetworkTemplate:
-        """
-        Reads a model from the specified file path, imports it as a module, and initializes it as an object of the corresponding class.
+        """Reads a model from the specified file path, imports it as a module, and initializes it as an object of the corresponding class.
 
-        Parameters:
-        -----------
-        model_path : str, optional
-            Complete path to the model.
-        device : str, optional
-            Device to load the model onto.
-        template_name: str, optional
-            Name of the class within the imported module to initialize as an object.
+        Args:
+            model_path (str, optional): Complete path to the model. (Default value = None)
+            device (str, optional): Device to load the model onto. (Default value = None)
+            template_name (str, optional):  (Default value = None)
 
         Returns:
-        --------
-        NetworkTemplate (child of torch.nn.Module)
-            The model restored to memory.
+            NetworkTemplate (child of torch.nn.Module): The model restored to memory.
+        
         """
         name = os.path.basename(model_path)
         save_dir = model_path

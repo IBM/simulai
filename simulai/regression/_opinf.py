@@ -53,17 +53,20 @@ class OpInf:
     ) -> None:
         """Operator Inference (OpInf)
 
-        :param forcing: the kind of forcing to be used, 'linear' or 'nonlinear'
-        :type forcing: str
-        :param bias_rescale: factor for rescaling the linear coefficients (c_hat)
-        :type bias_rescale: float
-        :param solver: solver to be used for solving the global system, e. g. 'lstsq'.
-        :type solver: Union[str, callable]
-        :param parallel: the kind of parallelism to be used (currently, 'mpi' or None)
-        :type parallel: str
-        :param engine: the engine to be used for constructing the global system (currently just 'numpy')
-        :type engine: str
-        :return: nothing
+        Args:
+            forcing (str): the kind of forcing to be used, 'linear' or
+                'nonlinear'
+            bias_rescale (float): factor for rescaling the linear
+                coefficients (c_hat)
+            solver (Union[str, callable]): solver to be used for solving
+                the global system, e. g. 'lstsq'.
+            parallel (str): the kind of parallelism to be used
+                (currently, 'mpi' or None)
+            engine (str): the engine to be used for constructing the
+                global system (currently just 'numpy')
+
+        Returns:
+            nothing
         """
 
         # forcing is chosen among (None, 'linear', 'nonlinear')
@@ -161,8 +164,8 @@ class OpInf:
            in 'lazy' (when data is stored on disk)
            and 'memory' (when data is all allocated in memory)
 
-        :return: the solver classification
-        :rtype:str
+        Returns:
+            str: the solver classification
         """
 
         if self.solver == "pinv":
@@ -174,9 +177,12 @@ class OpInf:
     def set_operators(self, global_matrix: np.ndarray = None) -> None:
         """Setting up each operator using the global system solution
 
-        :param global_matrix: the solution of the global system
-        :type global_matrix: np.ndarray
-        :return: nothing
+        Args:
+            global_matrix (np.ndarray): the solution of the global
+                system
+
+        Returns:
+            nothing
         """
         if self.n_inputs == None and self.n_outputs == None:
             self.n_inputs = self.n_outputs = global_matrix.shape[1]
@@ -200,9 +206,11 @@ class OpInf:
     def set(self, **kwargs):
         """Setting up extra parameters (as regularization terms)
 
-        :param kwargs: dictionary containing extra parameters
-        :type kwargs:dict
-        :return: nothing
+        Args:
+            **kwargs (dict): dictionary containing extra parameters
+
+        Returns:
+            nothing
         """
 
         for key, value in kwargs.items():
@@ -212,8 +220,9 @@ class OpInf:
     def check_fits_in_memory(self) -> str:
         """It checks if the data matrices, D and Res_matrix, can fit on memory
 
-        :return: the method for dealing with the data matrix, 'batch-wise' or 'global'
-        :rtype: str
+        Returns:
+            str: the method for dealing with the data matrix, 'batch-
+            wise' or 'global'
         """
 
         total_size = np.prod(self.D_matrix_dim) + np.prod(self.Res_matrix_dim)
@@ -233,10 +242,11 @@ class OpInf:
     def _is_symmetric(self, matrix: np.ndarray = None) -> bool:
         """It checks if the system matrix is symmetric
 
-        :param matrix: the global system matrix
-        :type matrix: np.ndarray
-        :return: Is the matrix symmetric ? True or False
-        :rtype: bool
+        Args:
+            matrix (np.ndarray): the global system matrix
+
+        Returns:
+            bool: Is the matrix symmetric ? True or False
         """
 
         return np.array_equal(matrix, matrix.T)
@@ -246,12 +256,12 @@ class OpInf:
     ) -> np.ndarray:
         """Kronecker product between two arrays
 
-        :param a: first element of the Kronecker product
-        :type a: np.ndarray
-        :param b: second element of the Kronecker product
-        :type b: np.ndarray
-        :return: the result of the kronecker product
-        :rtype: np.ndarray
+        Args:
+            a (np.ndarray): first element of the Kronecker product
+            b (np.ndarray): second element of the Kronecker product
+
+        Returns:
+            np.ndarray: the result of the kronecker product
         """
 
         assert (
@@ -277,12 +287,12 @@ class OpInf:
     ) -> np.ndarray:
         """Kronecker product between two arrays with self products for a and b
 
-        :param a: first element of the Kronecker product
-        :type a: np.ndarray
-        :param b: second element of the Kronecker product
-        :type b: np.ndarray
-        :return: the result of the kronecker product
-        :rtype: np.ndarray
+        Args:
+            a (np.ndarray): first element of the Kronecker product
+            b (np.ndarray): second element of the Kronecker product
+
+        Returns:
+            np.ndarray: the result of the kronecker product
         """
 
         ab = np.concatenate([a, b], axis=-1)
@@ -294,10 +304,11 @@ class OpInf:
     def _simple_kronecker_product(self, a: np.ndarray = None, **kwargs) -> np.ndarray:
         """Kronecker product with a=b
 
-        :param a: first element of the Kronecker product
-        :type a: np;ndarray
-        :return: the result of the kronecker product
-        :rtype: np.ndarray
+        Args:
+            a (np;ndarray): first element of the Kronecker product
+
+        Returns:
+            np.ndarray: the result of the kronecker product
         """
 
         kron_aa = self._kronecker_product(a=a, b=a)
@@ -315,16 +326,17 @@ class OpInf:
     ) -> (np.ndarray, np.ndarray):
         """Dispatching the batch-wise global data matrix evaluation in a serial way
 
-        :param input_chunks: list of input data chunks
-        :type input_chunks: List[np.ndarray]
-        :param target_chunks: list of target data chunks
-        :type target_chunks: List[np.ndarray]
-        :param D_o: pre-allocated global matrix used for receiving the chunk-wise evaluation
-        :type D_o: np.ndarray
-        :param R_matrix: pre-allocated residual matrix used for receiving the chunk-wise evaluation
-        :type R_matrix: np.ndarray
-        :return: the pair (data_matrix, residual_matrix) evaluated for all the chunks/batches
-        :rtype: (np.ndarray, np.ndarray)
+        Args:
+            input_chunks (List[np.ndarray]): list of input data chunks
+            target_chunks (List[np.ndarray]): list of target data chunks
+            D_o (np.ndarray): pre-allocated global matrix used for
+                receiving the chunk-wise evaluation
+            R_matrix (np.ndarray): pre-allocated residual matrix used
+                for receiving the chunk-wise evaluation
+
+        Returns:
+            (np.ndarray, np.ndarray): the pair (data_matrix,
+            residual_matrix) evaluated for all the chunks/batches
         """
 
         for ii, (i_chunk, t_chunk, f_chunk) in enumerate(
@@ -355,18 +367,19 @@ class OpInf:
     ) -> (np.ndarray, np.ndarray):
         """Dispatching the batch-wise global data matrix evaluation in a parallel way
 
-        :param input_chunks: list of input data chunks
-        :type input_chunks: List[np.ndarray]
-        :param forcing_chunks: list of forcing data chunks
-        :type forcing_chunks: List[np.ndarray]
-        :param target_chunks: list of target data chunks
-        :type target_chunks: List[np.ndarray]
-        :param D_o: pre-allocated global matrix used for receiving the chunk-wise evaluation
-        :type D_o: np.ndarray
-        :param R_matrix: pre-allocated residual matrix used for receiving the chunk-wise evaluation
-        :type R_matrix: np.ndarray
-        :return: the pair (data_matrix, residual_matrix) evaluated for all the chunks/batches
-        :rtype: (np.ndarray, np.ndarray)
+        Args:
+            input_chunks (List[np.ndarray]): list of input data chunks
+            forcing_chunks (List[np.ndarray]): list of forcing data
+                chunks
+            target_chunks (List[np.ndarray]): list of target data chunks
+            D_o (np.ndarray): pre-allocated global matrix used for
+                receiving the chunk-wise evaluation
+            R_matrix (np.ndarray): pre-allocated residual matrix used
+                for receiving the chunk-wise evaluation
+
+        Returns:
+            (np.ndarray, np.ndarray): the pair (data_matrix,
+            residual_matrix) evaluated for all the chunks/batches
         """
 
         # All the datasets list must have the same length in order to allow the compatibility and the partitions
@@ -763,16 +776,13 @@ class OpInf:
     ) -> None:
         """Solving an Operator Inference system from large dataset
 
-        :param input_data: dataset for the input data
-        :type input_data: np.ndarray
-        :param target_data: dataset for the target data
-        :type target_data: np.ndarray
-        :param forcing_data: dataset for the forcing data
-        :type forcing_data: np.ndarray
-        :param batch_size: size of the batch used for creating the global system matrices
-        :type batch_size: int
-        :param Lambda: customized regularization matrix
-        :type Lambda: np.ndarray
+        Args:
+            input_data (np.ndarray): dataset for the input data
+            target_data (np.ndarray): dataset for the target data
+            forcing_data (np.ndarray): dataset for the forcing data
+            batch_size (int): size of the batch used for creating the
+                global system matrices
+            Lambda (np.ndarray): customized regularization matrix
         """
 
         if type(self.solver) == str:
@@ -942,10 +952,11 @@ class OpInf:
     def eval(self, input_data: np.ndarray = None, **kwargs) -> np.ndarray:
         """Evaluating using the trained model
 
-        :param input_data: array containing the input data
-        :type input_data: np.ndarray
-        :return: output evaluation using the trained model
-        :rtype: np.ndarray
+        Args:
+            input_data (np.ndarray): array containing the input data
+
+        Returns:
+            np.ndarray: output evaluation using the trained model
         """
 
         return self.eval_op(input_data=input_data, **kwargs)
@@ -954,11 +965,12 @@ class OpInf:
     def save(self, save_path: str = None, model_name: str = None) -> None:
         """Complete saving
 
-        :param save_path: path to the saving directory
-        :type: str
-        :param model_name: name for the model
-        :type model_name: str
-        :return: nothing
+        Args:
+            save_path (str): path to the saving directory
+            model_name (str): name for the model
+
+        Returns:
+            nothing
         """
 
         path = os.path.join(save_path, model_name + ".pkl")
@@ -972,11 +984,12 @@ class OpInf:
     def lean_save(self, save_path: str = None, model_name: str = None) -> None:
         """Lean saving
 
-        :param save_path: path to the saving directory
-        :type: str
-        :param model_name: name for the model
-        :type model_name: str
-        :return: nothing
+        Args:
+            save_path (str): path to the saving directory
+            model_name (str): name for the model
+
+        Returns:
+            nothing
         """
 
         # Parameters to be removed in a lean version of the model

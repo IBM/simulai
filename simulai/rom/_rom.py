@@ -38,11 +38,11 @@ class ByPassROM(ROM):
 
 class IByPass(ROM):
 
-    """
-    It executes the Incremental Proper Orthogonal Decomposition using the SciKit-learn interface
+    """It executes the Incremental Proper Orthogonal Decomposition using the SciKit-learn interface
     The IncrementalPCA class from SciKit-learn expects a two-dimensional array
     as input, so it is necessary to reshape the input data before processing it.
     This class is intended to be used for Big Data purposes.
+
     """
 
     name = "ibypass"
@@ -53,35 +53,40 @@ class IByPass(ROM):
         self.kind = "batchwise"
 
     def fit(self, data: np.ndarray = None) -> None:
-        """
-        Output shape: (space_dimension, n_modes)
+        """Output shape: (space_dimension, n_modes)
 
-        :param data:
-        :type data: hdf5.File
+        Args:
+            data (np.ndarray, optional):  (Default value = None)
         """
         pass
 
     def project(self, data: np.ndarray = None) -> np.ndarray:
-        """
-        Output shape: (n_timesteps, n_modes)
+        """Output shape: (n_timesteps, n_modes)
+
+        Args:
+            data (np.ndarray, optional):  (Default value = None)
         """
 
         return data
 
     def reconstruct(self, projected_data: np.ndarray = None) -> np.ndarray:
-        """
-        Output shape: (space_dimension, n_timesteps)
+        """Output shape: (space_dimension, n_timesteps)
+
+        Args:
+            projected_data (np.ndarray, optional):  (Default value = None)
         """
 
         return projected_data
 
     def save(self, save_path: str = None, model_name: str = None) -> None:
         """It saves data in a NPZ file
-        :param save_path: path to save the model
-        :type save_path: str
-        :param model_name: name for the saved model
-        :type model_name: str
-        :return: nothing
+
+        Args:
+            save_path (str, optional): path to save the model (Default value = None)
+            model_name (str, optional): name for the saved model (Default value = None)
+
+        Returns:
+            : nothing
         """
 
         np.savez(
@@ -90,11 +95,13 @@ class IByPass(ROM):
 
     def restore(self, save_path: str = None, model_name: str = None) -> None:
         """It saves data in a NPZ file
-        :param save_path: path to save the model
-        :type save_path: str
-        :param model_name: name for the saved model
-        :type model_name: str
-        :return: nothing
+
+        Args:
+            save_path (str, optional): path to save the model (Default value = None)
+            model_name (str, optional): name for the saved model (Default value = None)
+
+        Returns:
+            : nothing
         """
 
         self.modes, self.data_mean = np.load(
@@ -106,7 +113,12 @@ class ParallelSVD(ROM):
     name = "parallel_svd"
 
     def __init__(self, n_components: int = None, chunks: Tuple[int] = None) -> None:
-        """Executing SVD using dask"""
+        """Executing SVD using dask
+
+        Args:
+            n_components (int, optional):  (Default value = None)
+            chunks (Tuple[int], optional):  (Default value = None)
+        """
         super().__init__()
 
         self.n_components = n_components
@@ -147,22 +159,24 @@ class ParallelSVD(ROM):
 
 class POD(ROM):
 
-    """
-    It executes the classical Proper Orthogonal Decomposition using the SciKit-learn interface.
+    """It executes the classical Proper Orthogonal Decomposition using the SciKit-learn interface.
     The PCA class from SciKit-learn expects a two-dimensional array
     as input, so it is necessary to reshape the input data in order to
     ensure that
+
     """
 
     name = "pod"
 
     def __init__(self, config: dict = None, svd_filter: callable = None) -> None:
         """Propor Orthogonal Decomposition
-        :param config: configuration dictionary for the POD parameters
-        :type config: dict
-        :param svd_filter: a filter callable applied to SVD decomposition
-        :type svd_filter: callable
-        :return: nothing
+
+        Args:
+            config (dict, optional): configuration dictionary for the POD parameters (Default value = None)
+            svd_filter (callable, optional): a filter callable applied to SVD decomposition (Default value = None)
+
+        Returns:
+            None: nothing
         """
 
         super().__init__()
@@ -190,9 +204,12 @@ class POD(ROM):
 
     def fit(self, data: np.ndarray = None) -> None:
         """
-        :param data:
-        :type data: np.ndarray
-        :return: nothing
+
+        Args:
+            data (np.ndarray, optional):  (Default value = None)
+
+        Returns:
+            : nothing
         """
 
         if self.mean_component:
@@ -230,10 +247,14 @@ class POD(ROM):
 
     def project(self, data: np.ndarray = None) -> np.ndarray:
         """
-        :param data: array of shape (n_samples, n_features)
-        :type data: np.ndarray
-        :return: array of shape (n_samples, n_modes) containing the projection over the POD basis
-        :rtype: np.ndarray
+
+        Args:
+            data (np.ndarray, optional): array of shape (n_samples, n_features) (Default value = None)
+
+        Returns:
+            np.ndarray: array of shape (n_samples, n_modes) containing
+            np.ndarray: array of shape (n_samples, n_modes) containing
+            the projection over the POD basis
         """
 
         if self.mean_component:
@@ -251,10 +272,13 @@ class POD(ROM):
 
     def reconstruct(self, projected_data: np.ndarray = None) -> np.ndarray:
         """
-        :param projected_data: array of shape (n_samples, n_modes)
-        :type projected_data: np.ndarray
-        :return: array of shape (n_samples, n_features)
-        :rtype: np.ndarray
+
+        Args:
+            projected_data (np.ndarray, optional): array of shape (n_samples,
+        n_modes) (Default value = None)
+
+        Returns:
+            np.ndarray: array of shape (n_samples, n_features)
         """
 
         n_modes_used = projected_data.shape[-1]
@@ -284,11 +308,13 @@ class POD(ROM):
 
     def save(self, save_path: str = None, model_name: str = None) -> None:
         """It saves data in a NPZ file
-        :param save_path: path to save the model
-        :type save_path: str
-        :param model_name: name for the saved model
-        :type model_name: str
-        :return: nothing
+
+        Args:
+            save_path (str, optional): path to save the model (Default value = None)
+            model_name (str, optional): name for the saved model (Default value = None)
+
+        Returns:
+            : nothing
         """
         np.savez(
             os.path.join(save_path, model_name + ".npz"), self.modes, self.data_mean
@@ -296,11 +322,13 @@ class POD(ROM):
 
     def restore(self, save_path: str = None, model_name: str = None) -> None:
         """It saves data in a NPZ file
-        :param save_path: path to save the model
-        :type save_path: str
-        :param model_name: name for the saved model
-        :type model_name: str
-        :return: nothing
+
+        Args:
+            save_path (str, optional): path to save the model (Default value = None)
+            model_name (str, optional): name for the saved model (Default value = None)
+
+        Returns:
+            : nothing
         """
 
         self.modes, self.data_mean = np.load(
@@ -315,6 +343,7 @@ class IPOD(ROM):
     The IncrementalPCA class from SciKit-learn expects a two-dimensional array
     as input, so it is necessary to reshape the input data before processing it.
     This class is intended to be used for Big Data purposes.
+
     """
 
     name = "ipod"
@@ -326,13 +355,14 @@ class IPOD(ROM):
         svd_filter: callable = None,
     ) -> None:
         """
-        :param config: configuration dictionary for the POD parameters
-        :type config: dict
-        :param data_mean: pre-evaluated mean of the dataset
-        :type data_mean: np.ndarray
-        :param svd_filter: a filter callable applied to SVD decomposition
-        :type svd_filter: callable
-        :return: nothing
+
+        Args:
+            config (dict, optional): configuration dictionary for the POD parameters (Default value = None)
+            data_mean (np.ndarray, optional): pre-evaluated mean of the dataset (Default value = None)
+            svd_filter (callable, optional): a filter callable applied to SVD decomposition (Default value = None)
+
+        Returns:
+            None: nothing
         """
 
         super().__init__()
@@ -363,11 +393,10 @@ class IPOD(ROM):
         self.svd_filter = svd_filter
 
     def fit(self, data: np.ndarray = None) -> None:
-        """
-        Output shape: (space_dimension, n_modes)
+        """Output shape: (space_dimension, n_modes)
 
-        :param data:
-        :type data: hdf5.File
+        Args:
+            data (np.ndarray, optional):  (Default value = None)
         """
         if self.data_mean is None:
             if not isinstance(self.data_mean, np.ndarray) and not self.data_size:
@@ -412,10 +441,14 @@ class IPOD(ROM):
 
     def project(self, data: np.ndarray = None) -> np.ndarray:
         """
-        :param data: array of shape (n_samples, n_features)
-        :type data: np.ndarray
-        :return: array of shape (n_samples, n_modes) containing the projection over the POD basis
-        :rtype: np.ndarray
+
+        Args:
+            data (np.ndarray, optional): array of shape (n_samples, n_features) (Default value = None)
+
+        Returns:
+            np.ndarray: array of shape (n_samples, n_modes) containing
+            np.ndarray: array of shape (n_samples, n_modes) containing
+            the projection over the POD basis
         """
 
         if self.mean_component:
@@ -433,10 +466,13 @@ class IPOD(ROM):
 
     def reconstruct(self, projected_data: np.ndarray = None) -> np.ndarray:
         """
-        :param projected_data: array of shape (n_samples, n_modes)
-        :type projected_data: np.ndarray
-        :return: array of shape (n_samples, n_features)
-        :rtype: np.ndarray
+
+        Args:
+            projected_data (np.ndarray, optional): array of shape (n_samples,
+        n_modes) (Default value = None)
+
+        Returns:
+            np.ndarray: array of shape (n_samples, n_features)
         """
 
         n_modes_used = projected_data.shape[-1]
@@ -464,11 +500,13 @@ class IPOD(ROM):
 
     def save(self, save_path: str = None, model_name: str = None) -> None:
         """It saves data in a NPZ file
-        :param save_path: path to save the model
-        :type save_path: str
-        :param model_name: name for the saved model
-        :type model_name: str
-        :return: nothing
+
+        Args:
+            save_path (str, optional): path to save the model (Default value = None)
+            model_name (str, optional): name for the saved model (Default value = None)
+
+        Returns:
+            : nothing
         """
 
         np.savez(
@@ -477,11 +515,13 @@ class IPOD(ROM):
 
     def restore(self, save_path: str = None, model_name: str = None) -> None:
         """It saves data in a NPZ file
-        :param save_path: path to save the model
-        :type save_path: str
-        :param model_name: name for the saved model
-        :type model_name: str
-        :return: nothing
+
+        Args:
+            save_path (str, optional): path to save the model (Default value = None)
+            model_name (str, optional): name for the saved model (Default value = None)
+
+        Returns:
+            : nothing
         """
 
         self.modes, self.data_mean = np.load(
@@ -494,6 +534,7 @@ class HOSVD(ROM):
     """High-Order Singular Value Decomposition
     It executes the High-Order SVD using a multidimensional array as input.
     This class is intended to be used for Big Data purposes.
+
     """
 
     name = "hosvd"
@@ -506,9 +547,15 @@ class HOSVD(ROM):
         limit: str = "1 GiB",
     ) -> None:
         """
-        :param n_components: list with the number of components for each direction
-        :type n_components: List[int]
-        :return: nothing
+
+        Args:
+            n_components (List[int], optional): list with the number of components for each direction (Default value = None)
+            components_names (List[str], optional):  (Default value = None)
+            engine (str, optional):  (Default value = "sklearn")
+            limit (str, optional):  (Default value = "1 GiB")
+
+        Returns:
+            None: nothing
         """
 
         super().__init__()
@@ -565,10 +612,13 @@ class HOSVD(ROM):
         self, data: np.ndarray = None, k: int = None
     ) -> Union[np.ndarray, da.core.Array]:
         """SVD applied to the k-mode flattening
-        :param projected_data: array of shape (n_samples, n_features)
-        :type projected_data: np.ndarray
-        :return: Left eigenvectors matrix U
-        :rtype: np.ndarray
+
+        Args:
+            data (np.ndarray, optional):  (Default value = None)
+            k (int, optional):  (Default value = None)
+
+        Returns:
+            np.ndarray: Left eigenvectors matrix U
         """
 
         self.svd_classes[k].fit(data)
@@ -588,10 +638,13 @@ class HOSVD(ROM):
         self, data: Union[np.ndarray, da.core.Array] = None, k: int = None
     ) -> Union[np.ndarray, da.core.Array]:
         """k-mode flattening
-        :param projected_data: array of shape (n_1, n_2, ..., n_n)
-        :type projected_data: np.ndarray
-        :return: reshaped array of shape (n_1, n_2*n_3*...*n_n)
-        :rtype: np.ndarray
+
+        Args:
+            data (Union[np.ndarray, da.core.Array], optional):  (Default value = None)
+            k (int, optional):  (Default value = None)
+
+        Returns:
+            np.ndarray: reshaped array of shape (n_1, n_2*n_3*...*n_n)
         """
 
         sizelist = copy.deepcopy(self.sizelist)
@@ -612,9 +665,12 @@ class HOSVD(ROM):
 
     def fit(self, data: Union[np.ndarray, da.core.Array] = None) -> None:
         """Executing High-Order SVD
-        :param data: input array of shape (n_1, n_2, ..., n_n)
-        :type data: np.ndarray
-        :return: nothing
+
+        Args:
+            data (Union[np.ndarray, da.core.Array], optional): input array of shape (n_1, n_2, ..., n_n) (Default value = None)
+
+        Returns:
+            : nothing
         """
         import pprint
 
@@ -648,10 +704,12 @@ class HOSVD(ROM):
         self, data: Union[np.ndarray, da.core.Array] = None
     ) -> Union[np.ndarray, da.core.Array]:
         """Projecting using the SVD basis
-        :param data: input array of shape (n_1, n_2, ..., n_n)
-        :type data: np.ndarray
-        :return: reduced array of shape (n_1', n_2', ..., n_n')
-        :rtype: np.ndarray
+
+        Args:
+            data (Union[np.ndarray, da.core.Array], optional): input array of shape (n_1, n_2, ..., n_n) (Default value = None)
+
+        Returns:
+            np.ndarray: reduced array of shape (n_1', n_2', ..., n_n')
         """
 
         assert len(data.shape) == self.n_dims
@@ -668,10 +726,16 @@ class HOSVD(ROM):
         replace_components: dict = None,
     ) -> Union[np.ndarray, da.core.Array]:
         """Reconstruction using the pre-existent basis
-        :param data: reduced array of shape (n_1', n_2', ..., n_n')
-        :type data: np.ndarray
-        :return: reconstructed array of shape (n_1, n_2, n_3,..., n_n)
-        :rtype: np.ndarray
+
+        Args:
+            data (Union[np.ndarray, da.core.Array], optional): reduced array of shape (n_1', n_2', ...,
+        n_n') (Default value = None)
+            replace_components (dict, optional):  (Default value = None)
+
+        Returns:
+            np.ndarray: reconstructed array of shape (n_1, n_2, n_3,...,
+            np.ndarray: reconstructed array of shape (n_1, n_2, n_3,...,
+            n_n)
         """
 
         if replace_components is not None:
@@ -700,11 +764,12 @@ class HOSVD(ROM):
     def save(self, save_path: str = None, model_name: str = None) -> None:
         """Complete saving
 
-        :param save_path: path to the saving directory
-        :type: str
-        :param model_name: name for the model
-        :type model_name: str
-        :return: nothing
+        Args:
+            save_path (str, optional): path to the saving directory (Default value = None)
+            model_name (str, optional): name for the model (Default value = None)
+
+        Returns:
+            : nothing
         """
         blacklist = ["lin"]
         for el in blacklist:
@@ -721,9 +786,10 @@ class HOSVD(ROM):
 class DMD(ROM):
     def __init__(self, config=None):
         """
-        Parameters
-        ----------
-        config
+
+        Args:
+            config:  (Default value = None)
+        
         """
         super().__init__()
         for key, value in config.items():
@@ -773,9 +839,11 @@ class DMD(ROM):
 class GPOD(ROM):
     def __init__(self, pca_type="pod", pca_config=None, config=None):
         """GPOD
-        :param pca_type: the kind of PCA to be used
-        :type pca_type: str
 
+        Args:
+            pca_type (str, optional): the kind of PCA to be used (Default value = "pod")
+            pca_config:  (Default value = None)
+            config:  (Default value = None)
         """
         super().__init__()
 
@@ -880,19 +948,17 @@ class QQM:
         use_mean: bool = False,
     ) -> None:
         """It extends and enriches the POD approach by determining a quadratic basis for its residual
-        :param n_inputs: number of inputs used in the POD approximation
-        :type n_inputs:int
-        :param alpha_0: regularization parameter used in SparSA algorithm
-        :type alpha_0: float
-        :param sparsity_tol: sparsity tolerance used in SpaRSA
-        :type sparsity_tol: float
-        :param lambd: regularization parameter used in SparSA algorithm
-        :type lambd: float
-        :param epsilon: threshold for zeroing columns in SpaRSA
-        :type epsilon: float
-        :param use_mean: use mean for the SpaRSA loss function of not ?
-        :type use_mean: bool
-        :returns: nothing
+
+        Args:
+            n_inputs (int, optional): number of inputs used in the POD approximation (Default value = None)
+            alpha_0 (float, optional): regularization parameter used in SparSA algorithm (Default value = None)
+            sparsity_tol (float, optional): sparsity tolerance used in SpaRSA (Default value = 1e-15)
+            lambd (float, optional): regularization parameter used in SparSA algorithm (Default value = None)
+            epsilon (float, optional): threshold for zeroing columns in SpaRSA (Default value = 1e-10)
+            use_mean (bool, optional): use mean for the SpaRSA loss function of not ? (Default value = False)
+
+        Returns:
+            : nothing
         """
 
         self.alpha_0 = alpha_0
@@ -916,12 +982,13 @@ class QQM:
         self, a: np.ndarray = None, b: np.ndarray = None
     ) -> np.ndarray:
         """It executes a Kronecker dot between two arrays
-        :param a: left array
-        :type a: np.ndarray
-        :param b: right (transposed) array
-        :type b: np.ndarray
-        :returns: the Kronecker output array
-        :rtype: np.ndarray
+
+        Args:
+            a (np.ndarray, optional): left array (Default value = None)
+            b (np.ndarray, optional): right (transposed) array (Default value = None)
+
+        Returns:
+            np.ndarray: the Kronecker output array
         """
 
         assert (
@@ -944,10 +1011,14 @@ class QQM:
     # Each batch in W has n_inputs*(n_inputs + 1)/2 columns
     def W_transform(self, data: np.ndarray = None) -> np.ndarray:
         """W_transform simply applied Kronecker product for data itself
-        :param data: the data to be W-transformed
-        :type: np.ndarray
-        :returns: the Kronecker product between data and data itself
-        :rtype: np.ndarray
+
+        Args:
+            data (np.ndarray, optional): the data to be W-transformed (Default value = None)
+
+        Returns:
+            np.ndarray: the Kronecker product between data and data
+            np.ndarray: the Kronecker product between data and data
+            itself
         """
 
         return self._kronecker_product(a=data, b=data)
@@ -961,13 +1032,15 @@ class QQM:
         """It executes the fitting process using the chosen optimization algorithm, SpaRSA
          or Moore-Penrose pseudoinverse
 
-        :param input_data: in general, the original latent series
-        :type input_data: np.ndarray
-        :param target_data: in general, the residual of the linear approximation
-        :type target_data: np.ndarray
-        :param pinv: use pseudoinverse or not
-        :type pinv: bool
-        :returns: nothing
+        Args:
+            input_data (np.ndarray, optional): in general, the original latent
+        series (Default value = None)
+            target_data (np.ndarray, optional): in general, the residual of the
+        linear approximation (Default value = None)
+            pinv (bool, optional): use pseudoinverse or not (Default value = False)
+
+        Returns:
+            : nothing
         """
 
         if not pinv:
@@ -990,10 +1063,11 @@ class QQM:
         """Executes the W-transformation and collects just the valid modes determined
          by the optimization algorithm
 
-        :param data: the data to be projected
-        :type: np.ndarray
-        :returns: the projection over the selected basis
-        :rtype: np.ndarray
+        Args:
+            data (np.ndarray, optional): the data to be projected (Default value = None)
+
+        Returns:
+            np.ndarray: the projection over the selected basis
         """
 
         return self.W_transform(data=data)[:, self.valid_indices]
@@ -1001,10 +1075,11 @@ class QQM:
     def eval(self, data: np.ndarray = None) -> None:
         """It projects and reconstructs
 
-        :param data: the data to be projected
-        :type: np.ndarray
-        :returns: the approximated data
-        :rtype: np.ndarray
+        Args:
+            data (np.ndarray, optional): the data to be projected (Default value = None)
+
+        Returns:
+            np.ndarray: the approximated data
         """
 
         return self.W_transform(data=data) @ self.V_bar
@@ -1012,11 +1087,12 @@ class QQM:
     def save(self, save_path: str = None, model_name: str = None) -> None:
         """Complete saving
 
-        :param save_path: path to the saving directory
-        :type: str
-        :param model_name: name for the model
-        :type model_name: str
-        :return: nothing
+        Args:
+            save_path (str, optional): path to the saving directory (Default value = None)
+            model_name (str, optional): name for the model (Default value = None)
+
+        Returns:
+            : nothing
         """
 
         blacklist = ["optimizer"]
