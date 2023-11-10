@@ -76,6 +76,60 @@
 <!-- endblock -->
                                     <!-- block dropdown-menu -->
     <li>
+        <a class="dropdown-item text-decoration-none" href="#">File &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_file/" class="dropdown-item text-decoration-none ">Simulai file</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Batching &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_batching/" class="dropdown-item text-decoration-none ">Simulai batching</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Activations &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_activations/" class="dropdown-item text-decoration-none ">Simulai activations</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Parallel &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_parallel/" class="dropdown-item text-decoration-none ">Simulai parallel</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class=" active 
+                            nav-link dropdown-toggle text-decoration-none" href="#" data-bs-toggle="dropdown">[Subpackages]</a>
+                            <ul class="dropdown-menu">
+                                    <!-- block dropdown-menu -->
+    <li>
         <a class="dropdown-item text-decoration-none" href="#">Symbolic Manipulation &raquo;</a>
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
@@ -92,18 +146,43 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../../simulai_regression/" class="dropdown-item text-decoration-none ">Simulai regression</a>
+        <a class="dropdown-item text-decoration-none" href="#">Dense Networks &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_regression/simulai_dense/" class="dropdown-item text-decoration-none ">Simulai dense</a>
     </li>
 <!-- endblock -->
         </ul>
     </li>
 <!-- endblock -->
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class=" active 
-                            nav-link dropdown-toggle text-decoration-none" href="#" data-bs-toggle="dropdown">[Subpackages]</a>
-                            <ul class="dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">OpInf &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_regression/simulai_opinf/" class="dropdown-item text-decoration-none ">Simulai opinf</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">ROM &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_rom/simulai_rom/" class="dropdown-item text-decoration-none ">Simulai rom</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
                                     <!-- block dropdown-menu -->
     <li>
         <a class="dropdown-item text-decoration-none" href="#">Models &raquo;</a>
@@ -620,7 +699,7 @@ Z -&gt;    |  | | |  |  -&gt; Z_til
         <tr>
           <td><code>encoder</code></td>
           <td>
-                <code><a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a></code>
+                <code><a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/simulai_dense/#simulai.regression.DenseNetwork">DenseNetwork</a></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -634,7 +713,7 @@ Z -&gt;    |  | | |  |  -&gt; Z_til
         <tr>
           <td><code>decoder</code></td>
           <td>
-                <code><a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a></code>
+                <code><a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/simulai_dense/#simulai.regression.DenseNetwork">DenseNetwork</a></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -2039,7 +2118,7 @@ An autoencoder architecture consists of three stages:</p>
         <tr>
           <td><code>bottleneck_encoder</code></td>
           <td>
-                <code><a class="autorefs autorefs-internal" title="simulai.regression.Linear" href="../../simulai_regression/#simulai.regression.Linear">Linear</a></code>
+                <code><a class="autorefs autorefs-internal" title="simulai.regression.Linear" href="../../simulai_regression/simulai_dense/#simulai.regression.Linear">Linear</a></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -2053,7 +2132,7 @@ An autoencoder architecture consists of three stages:</p>
         <tr>
           <td><code>bottleneck_decoder</code></td>
           <td>
-                <code><a class="autorefs autorefs-internal" title="simulai.regression.Linear" href="../../simulai_regression/#simulai.regression.Linear">Linear</a></code>
+                <code><a class="autorefs autorefs-internal" title="simulai.regression.Linear" href="../../simulai_regression/simulai_dense/#simulai.regression.Linear">Linear</a></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -4337,7 +4416,7 @@ An autoencoder architecture consists of three stages:</p>
         <tr>
           <td><code>encoder</code></td>
           <td>
-                <code><span title="typing.Union">Union</span>[<span title="simulai.regression.ConvolutionalNetwork">ConvolutionalNetwork</span>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a>]</code>
+                <code><span title="typing.Union">Union</span>[<span title="simulai.regression.ConvolutionalNetwork">ConvolutionalNetwork</span>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/simulai_dense/#simulai.regression.DenseNetwork">DenseNetwork</a>]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -4351,7 +4430,7 @@ An autoencoder architecture consists of three stages:</p>
         <tr>
           <td><code>bottleneck_encoder</code></td>
           <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="simulai.regression.Linear" href="../../simulai_regression/#simulai.regression.Linear">Linear</a>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a>]]</code>
+                <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="simulai.regression.Linear" href="../../simulai_regression/simulai_dense/#simulai.regression.Linear">Linear</a>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/simulai_dense/#simulai.regression.DenseNetwork">DenseNetwork</a>]]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -4365,7 +4444,7 @@ An autoencoder architecture consists of three stages:</p>
         <tr>
           <td><code>bottleneck_decoder</code></td>
           <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="simulai.regression.Linear" href="../../simulai_regression/#simulai.regression.Linear">Linear</a>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a>]]</code>
+                <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="simulai.regression.Linear" href="../../simulai_regression/simulai_dense/#simulai.regression.Linear">Linear</a>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/simulai_dense/#simulai.regression.DenseNetwork">DenseNetwork</a>]]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -4379,7 +4458,7 @@ An autoencoder architecture consists of three stages:</p>
         <tr>
           <td><code>decoder</code></td>
           <td>
-                <code><span title="typing.Union">Union</span>[<span title="simulai.regression.ConvolutionalNetwork">ConvolutionalNetwork</span>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a>]</code>
+                <code><span title="typing.Union">Union</span>[<span title="simulai.regression.ConvolutionalNetwork">ConvolutionalNetwork</span>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/simulai_dense/#simulai.regression.DenseNetwork">DenseNetwork</a>]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -7441,7 +7520,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
         <tr>
           <td><code>encoder</code></td>
           <td>
-                <code><span title="typing.Union">Union</span>[<span title="simulai.regression.ConvolutionalNetwork">ConvolutionalNetwork</span>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a>]</code>
+                <code><span title="typing.Union">Union</span>[<span title="simulai.regression.ConvolutionalNetwork">ConvolutionalNetwork</span>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/simulai_dense/#simulai.regression.DenseNetwork">DenseNetwork</a>]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -7455,7 +7534,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
         <tr>
           <td><code>bottleneck_encoder</code></td>
           <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="simulai.regression.Linear" href="../../simulai_regression/#simulai.regression.Linear">Linear</a>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a>]]</code>
+                <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="simulai.regression.Linear" href="../../simulai_regression/simulai_dense/#simulai.regression.Linear">Linear</a>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/simulai_dense/#simulai.regression.DenseNetwork">DenseNetwork</a>]]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -7469,7 +7548,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
         <tr>
           <td><code>bottleneck_decoder</code></td>
           <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="simulai.regression.Linear" href="../../simulai_regression/#simulai.regression.Linear">Linear</a>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a>]]</code>
+                <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="simulai.regression.Linear" href="../../simulai_regression/simulai_dense/#simulai.regression.Linear">Linear</a>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/simulai_dense/#simulai.regression.DenseNetwork">DenseNetwork</a>]]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -7483,7 +7562,7 @@ Z -&gt; [Conv] -&gt; [Conv] -&gt; ... [Conv] -&gt; |  | | - | |  | -&gt; [Conv.T
         <tr>
           <td><code>decoder</code></td>
           <td>
-                <code><span title="typing.Union">Union</span>[<span title="simulai.regression.ConvolutionalNetwork">ConvolutionalNetwork</span>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/#simulai.regression.DenseNetwork">DenseNetwork</a>]</code>
+                <code><span title="typing.Union">Union</span>[<span title="simulai.regression.ConvolutionalNetwork">ConvolutionalNetwork</span>, <a class="autorefs autorefs-internal" title="simulai.regression.DenseNetwork" href="../../simulai_regression/simulai_dense/#simulai.regression.DenseNetwork">DenseNetwork</a>]</code>
           </td>
           <td>
             <div class="doc-md-description">
