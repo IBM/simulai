@@ -1,4 +1,8 @@
-# Welcome to SimulAI
+<style>
+red { color: red }
+</style>
+
+# <red>Welcome to</red> SIMUL<sup><red>ai</red></sup>
 
 <!-- [![image](https://badge.fury.io/py/simulai-toolkit.svg)](https://badge.fury.io/py/simulai-toolkit) -->
 
@@ -30,11 +34,11 @@ In addition to the methods above, many more techniques for model
 reduction and regularization are included in SimulAI. See
 [documentation](https://ibm.github.io/simulai/).
 
-# Installing
+# <red>Installing</red>
 
-Python version requirements: 3.9 \<= python \<= 3.11
+Python version requirements: `3.8 <= python <= 3.11`
 
-## Using pip
+## <red>Using pip</red>
 
 For installing the most recent stable version from PyPI:
 
@@ -50,12 +54,12 @@ pip uninstall simulai_toolkit
 pip install -U git+https://github.com/IBM/simulai@$(git ls-remote git@github.com:IBM/simulai.git  | head -1 | awk '{print $1;}')#egg=simulai_toolkit
 ```
 
-# Contributing code to SimulAI
+# <red>Contributing code to SimulAI</red>
 
 If you are interested in directly contributing to this project, please
 see [CONTRIBUTING](CONTRIBUTING.rst).
 
-# Using MPI
+# <red>Using MPI</red>
 
 Some methods implemented on SimulAI support multiprocessing with MPI.
 
@@ -66,41 +70,41 @@ OpenMPI. As an example, you can use `conda` to install MPICH as follows:
 conda install -c conda-forge mpich gcc
 ```
 
-## Issues with macOS
+## <red>Issues with macOS</red>
 
 If you have problems installing `gcc` using the command above, we
 recommend you to install it using [Homebrew](https://brew.sh).
 
-# Using Tensorboard
+# <red>Using Tensorboard</red>
 
 [Tensorboard](https://www.tensorflow.org/tensorboard) is supported for
 monitoring neural network training tasks. For a tutorial about how to
 set it see [this
 example](https://github.com/IBM/simulai/blob/main/examples/Dense/miscellaneous/notebooks/lorenz_96_chaotic.ipynb).
 
-# Documentation
+# <red>Documentation</red>
 
 Please, refer to the SimulAI API
 [documentation](https://simulai-toolkit.readthedocs.io) before using the
 toolkit.
 
-# Examples
+# <red>Examples</red>
 
 Additionally, you can refer to examples in the [respective
 folder](examples/).
 
-# License
+# <red>License</red>
 
 This software is licensed under Apache license 2.0. See
 [LICENSE](LICENSE).
 
-## Contributing code to SimulAI
+## <red>Contributing code to SimulAI</red>
 
 If you are interested in directly contributing to this project, please
 see
 [CONTRIBUTING](https://github.com/IBM/simulai/blob/main/CONTRIBUTING.rst).
 
-# How to cite SimulAI in your publications
+# <red>How to cite SimulAI in your publications</red>
 
 If you find SimulAI to be useful, please consider citing it in your
 published work:
@@ -133,7 +137,7 @@ or, via Zenodo:
     }
 ```
 
-# Publications
+# <red>Publications</red>
 
 João Lucas de Sousa Almeida, Pedro Roberto Barbosa Rocha, Allan Moreira
 de Carvalho and Alberto Costa Nogueira Jr. A coupled Variational
@@ -159,7 +163,7 @@ Intelligence, Volume 126, Part B, 2023, 106923, ISSN 0952-1976,
 <https://doi.org/10.1016/j.engappai.2023.106923>.
 (<https://www.sciencedirect.com/science/article/pii/S0952197623011077>)
 
-# References
+# <red>References</red>
 
 Jaeger, H., Haas, H. (2004). \"Harnessing Nonlinearity: Predicting
 Chaotic Systems and Saving Energy in Wireless Communication,\"

@@ -1,28 +1,32 @@
-# simulai.io
+<style>
+red { color: red }
+</style>
 
-## ByPassPreparer
+# <red>simulai.io</red>
+
+## <red>ByPassPreparer</red>
 ::: simulai.io.ByPassPreparer
-## Reshaper
+## <red>Reshaper</red>
 ::: simulai.io.Reshaper
-## ScalerReshaper
+## <red>ScalerReshaper</red>
 ::: simulai.io.ScalerReshaper
-## MapValid
+## <red>MapValid</red>
 ::: simulai.io.MapValid
-## Sampling 
+## <red>Sampling </red>
 ::: simulai.io.Sampling
-## MovingWindow
+## <red>MovingWindow</red>
 ::: simulai.io.MovingWindow
-## SlidingWindow
+## <red>SlidingWindow</red>
 ::: simulai.io.SlidingWindow
-## IntersectingBatches
+## <red>IntersectingBatches</red>
 ::: simulai.io.IntersectingBatches
-## BatchwiseExtrapolation
+## <red>BatchwiseExtrapolation</red>
 ::: simulai.io.BatchwiseExtrapolation
-## BatchCopy
+## <red>BatchCopy</red>
 ::: simulai.io.BatchCopy
-## MakeTensor
+## <red>MakeTensor</red>
 ::: simulai.io.MakeTensor
-## GaussianNoise
+## <red>GaussianNoise</red>
 ::: simulai.io.GaussianNoise
-## Tokenizer
+## <red>Tokenizer</red>
 ::: simulai.io.Tokenizer

@@ -54,7 +54,7 @@ class ByPassPreparer(DataPreparer):
 
         Returns:
             numpy.ndarray:
-        Example::
+        Example:
 
             >>> import numpy as np
             >>> data = np.random.rand(5, 3, 4, 2)
@@ -75,7 +75,7 @@ class ByPassPreparer(DataPreparer):
         Returns:
             numpy.ndarray: The output data in the original format
 
-        Example::
+        Example:
 
             >>> import numpy as np
             >>> data = np.random.rand(5, 3)
@@ -98,7 +98,7 @@ class ByPassPreparer(DataPreparer):
 
         Note:
             This function is used when the input data is in the form of a structured array and needs to be converted to a regular numpy ndarray.
-        Example::
+        Example:
 
             >>> import numpy as np
             >>> data = np.array([(1, 'a', 0.5), (2, 'b', 0.6)], dtype=[('a', int), ('b', '|S1'), ('c', float)])
@@ -121,7 +121,7 @@ class ByPassPreparer(DataPreparer):
 
         Note:
             This function is used when the output data needs to be in the form of a structured array and is currently in the form of a regular numpy ndarray.
-        Example::
+        Example:
 
             >>> import numpy as np
             >>> data = np.array([[1, 'a', 0.5], [2, 'b', 0.6]])
@@ -151,7 +151,7 @@ class Reshaper(DataPreparer):
 
         Args:
             data (np.ndarray, optional): The input data to reshape. (Default value = None)
-        Example::
+        Example:
 
             >>> reshaper = Reshaper()
             >>> reshaper._set_shapes_from_data(np.random.random((10,3,4,5)))
@@ -178,7 +178,7 @@ class Reshaper(DataPreparer):
 
         Note:
             This function reshapes the input data to (n0, prod(n1, ..., nm)) shape.
-        Example::
+        Example:
 
             >>> reshaper = Reshaper()
             >>> data = np.random.random((10,3,4,5))
@@ -205,7 +205,7 @@ class Reshaper(DataPreparer):
         Note:
             - If `data` is a structured numpy array, it will be passed to `_prepare_input_structured_data` function.
             - If `data` is a plain numpy array, it will be passed to `_prepare_input_data` function.
-        Example::
+        Example:
 
             >>> reshaper = Reshaper()
             >>> input_data = np.random.rand(2, 3, 4)
@@ -235,7 +235,7 @@ class Reshaper(DataPreparer):
 
         Note:
             The original shape of the data is stored in `collapsible_shapes` attribute.
-        Example::
+        Example:
 
             >>> reshaper = Reshaper()
             >>> input_data = np.random.rand(2, 3, 4)
@@ -372,7 +372,7 @@ class ScalerReshaper(Reshaper):
 
         Note:
             If the input data is a structured array, the method 'prepare_input_structured_data' will be called instead.
-        Example::
+        Example:
 
             >>> reshaper = ScalerReshaper(bias=10, scale=2)
             >>> reshaper.prepare_input_data(np.array([1, 2, 3]))
@@ -401,7 +401,7 @@ class ScalerReshaper(Reshaper):
 
         Note:
             If the input data is a structured array, the method 'prepare_output_structured_data' will be called
-        Example::
+        Example:
 
             >>> reshaper = ScalerReshaper(bias=10, scale=2)
             >>> reshaper.prepare_output_data(np.array([1, 2, 3]))
@@ -426,7 +426,7 @@ class ScalerReshaper(Reshaper):
 
         Note:
             If the bias and scale attributes are floats, they will be used for all fields.
-        Example::
+        Example:
 
             >>> reshaper = ScalerReshaper(bias=10, scale=2)
             >>> reshaper._get_structured_bias_scale(np.dtype([('a', float), ('b', float)]))
@@ -457,7 +457,7 @@ class ScalerReshaper(Reshaper):
 
         Note:
             The bias and scale parameters are expected to be provided in the form of dictionaries, where keys are field names and values are the corresponding bias and scale values for those fields.
-        Example::
+        Example:
 
             >>> data = np.array([(1, 2, 3), (4, 5, 6)], dtype=[("a", int), ("b", int), ("c", int)])
             >>> reshaper = ScalerReshaper(bias={'a': 1, 'b': 2, 'c': 3}, scale={'a': 2, 'b': 3, 'c': 4})
@@ -490,7 +490,7 @@ class ScalerReshaper(Reshaper):
 
         Note:
             - The bias and scale parameters are expected to be provided in the form of dictionaries, where keys are field names and values are the corresponding bias and scale values for those fields.
-        Example::
+        Example:
 
             >>> data = np.array([[-0.5, 0.33333333, 0.75      ],
             >>>                  [ 1.5, 1.66666667, 2.        ]])
@@ -577,7 +577,7 @@ class MapValid(Reshaper):
             mapping operation F: F: data.shape = (n0, n1, ..., nm) -> data'.shape = (n0, n_valids)
             n_valids = dim([k in data[0, ...] if k != mask])
             - WARNING: the invalid positions are expected to be static in relation to n0.
-        Example::
+        Example:
 
             >>> data = np.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]])
             >>> prepare_input_data(data)
@@ -619,7 +619,7 @@ class MapValid(Reshaper):
         Note:
             - The reshaped data will have shape (n0, n_valids) where n0 is the number of samples and n_valids are the number of valid values in the data.
             - If the return_the_same_mask attribute is set to True, the mask used to select the invalid values will be returned. Otherwise, the reshaped data will be filled with NaN.
-        Example::
+        Example:
 
             >>> import numpy as np
             >>> reshaper = MapValid()
@@ -665,7 +665,7 @@ class MapValid(Reshaper):
 
         Note:
             This function is a wrapper function that calls the 'prepare_input_data' function internally.
-        Example::
+        Example:
 
             >>> import numpy as np
             >>> data = np.array([(1, 2, 3), (4, 5, 6)], dtype=[('a', int), ('b', int), ('c', int)])
@@ -689,7 +689,7 @@ class MapValid(Reshaper):
 
         Note:
             This function is a wrapper function that calls the 'prepare_output_data' function internally.
-        Example::
+        Example:
 
             >>> import numpy as np
             >>> data = np.array([[1, 2, 3], [4, 5, 6]])
@@ -735,7 +735,7 @@ class Sampling(DataPreparer):
 
         Note:
             The indices are generated by calling the 'prepare_input_data' or 'prepare_input_structured_data' functions.
-        Example::
+        Example:
 
             >>> import numpy as np
             >>> data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
@@ -764,7 +764,7 @@ class Sampling(DataPreparer):
             numpy.ndarray: The sampled data.
         Note:
             The `data_interval` parameter must be a list of two integers, specifying the start and end of the interval.
-         Example::
+         Example:
 
             >>> data = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
             >>> data_interval = [3, 7]
@@ -810,7 +810,7 @@ class Sampling(DataPreparer):
         Note:
             - The features dimensions of the input data should be 1 in NumPy structured arrays.
             - When using a h5py.Dataset as input, a dump_path must be provided
-        Example::
+        Example:
 
             >>> data = h5py.File("path/to/data.h5", 'r')['data']
             >>> data_interval = [0, data.shape[0]]
@@ -878,7 +878,7 @@ class MovingWindow:
 
     See a graphical example:
 
-    Example::
+    Example:
 
         batch n
         ---------|---
@@ -890,7 +890,7 @@ class MovingWindow:
         ----
         skip
 
-    Example::
+    Example:
 
         >>> import numpy as np
         >>> data = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
@@ -975,7 +975,7 @@ class MovingWindow:
 
         Note:
             - This method is used internally by the MovingWindow class
-        Example::
+        Example:
 
             >>> data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
             >>> mw.get_last_item(data)
@@ -999,7 +999,7 @@ class MovingWindow:
         Note:
             - It is expected that the input_data and output_data have the same shape
             - This method is used internally by the MovingWindow class
-        Example::
+        Example:
 
             >>> data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12], [13, 14, 15]])
             >>> mw = MovingWindow(history_size=2, horizon_size=2, skip_size=1)
@@ -1062,7 +1062,7 @@ class SlidingWindow:
 
     See a graphical example:
 
-    Example::
+    Example:
 
         batch n
         ---------|---
@@ -1072,7 +1072,7 @@ class SlidingWindow:
                         ---------|---
                             history  | horizon
 
-    Example::
+    Example:
 
         >>> window = SlidingWindow(history_size=3, skip_size=1)
         >>> time_series = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -1107,7 +1107,7 @@ class SlidingWindow:
 
         Returns:
             List[List[int]]:
-        Example::
+        Example:
 
             >>> window = SlidingWindow(history_size=3, skip_size=1)
             >>> time_series = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -1138,7 +1138,7 @@ class SlidingWindow:
             - history_size and horizon_size should be positive integers
             - history_size should be less than the length of input_data
             - input_data and output_data should have the same number of rows
-        Example::
+        Example:
 
             >>> data = np.random.rand(10,3)
             >>> history_size = 3
@@ -1239,7 +1239,7 @@ class IntersectingBatches:
             Union[list, np.ndarray]: A list of batches or a single batch if `full` attribute is set to False.
         Note:
             - If the `full` attribute is set to True, the last batch will be included even if it's not full.
-        Example::
+        Example:
 
             >>> input_data = np.array([[1,2,3], [4,5,6], [7,8,9], [10,11,12]])
             >>> batches = IntersectingBatches(skip_size=1, batch_size=2)
@@ -1343,7 +1343,7 @@ class BatchwiseExtrapolation:
 
         Note:
             The number of series in the initial state must be equal to the number of series in the auxiliary data, if it is provided.
-        Example::
+        Example:
 
             >>> model = BatchwiseExtrapolation()
             #Init state of the time series
@@ -1433,7 +1433,7 @@ class BatchCopy:
         Note:
             - Copy data from data_file.h5/data to data_copy.h5/data with a batch size of 1000:
             - The input must be an h5py.Dataset.
-        Example::
+        Example:
 
             >>> data = h5py.File("data_file.h5", "r")
             >>> batch_copy = BatchCopy()
@@ -1605,7 +1605,7 @@ class BatchCopy:
             h5py.Dataset: The copied data
         Note:
             - If the data is a list of h5py.Dataset, it will call the `_multiple_copy` function.
-        Example::
+        Example:
 
             >>> data = h5py.File('data.h5', 'r')
             >>> data_interval = [0, 100]
@@ -1647,7 +1647,7 @@ class MakeTensor:
         - The input_data will be converted to float32 dtype.
         - The input_data will be put on the device specified by the device parameter, which defaults to 'cpu'.
         - If input_data is None, it will raise an exception.
-    Example::
+    Example:
 
         # Creating a MakeTensor object with input and output names
 
@@ -1758,7 +1758,7 @@ class GaussianNoise(Dataset):
     r"""GaussianNoise(stddev=0.01, input_data=None)
     A dataset that applies Gaussian noise to input data.
 
-    Example::
+    Example:
 
         >>> import numpy as np
         >>> input_data = np.random.rand(100,100)

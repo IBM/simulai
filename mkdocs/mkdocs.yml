@@ -48,5 +48,5 @@ nav:
         - simulai_models/simulai_models_deeponet.md
       - AutoEncoder:
         - simulai_models/simulai_models_autoencoder.md
-      - UNet:
+      - U-Net:
         - simulai_models/simulai_models_unet.md

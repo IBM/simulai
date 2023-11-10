@@ -1,18 +1,22 @@
-# simulai.regression
+<style>
+red { color: red }
+</style>
 
-## Dense
+# <red>simulai.regression</red>
 
-### Linear
+## <red>Dense</red>
+
+### <red>Linear</red>
 ::: simulai.regression.Linear
-### SLFNN
+### <red>SLFNN</red>
 ::: simulai.regression.SLFNN
-### ShallowNetwork
+### <red>ShallowNetwork</red>
 ::: simulai.regression.ShallowNetwork
-### DenseNetwork
+### <red>DenseNetwork</red>
 ::: simulai.regression.DenseNetwork
-### ResDenseNetwork
+### <red>ResDenseNetwork</red>
 ::: simulai.regression.ResDenseNetwork
-### ConvexDenseNetwork
+### <red>ConvexDenseNetwork</red>
 ::: simulai.regression.ConvexDenseNetwork
 
 

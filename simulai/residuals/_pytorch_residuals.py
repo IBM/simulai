@@ -579,7 +579,7 @@ class SymbolicOperator(torch.nn.Module):
 
         Returns:
             torch.Tensor: Tensor with the gradient of the feature with respect to the given parameter.
-        Example::
+        Example:
 
             >>> feature = torch.tensor([1, 2, 3], dtype=torch.float32)
             >>> param = torch.tensor([2, 3, 4], dtype=torch.float32)
@@ -605,7 +605,7 @@ class SymbolicOperator(torch.nn.Module):
 
         Returns:
             torch.Tensor: Tensor with the Jacobian of the forward function with respect to its inputs.
-        Example::
+        Example:
 
             >>> inputs = torch.tensor([[1, 2, 3], [2, 3, 4]], dtype=torch.float32)
             >>> jac(inputs)
@@ -628,7 +628,7 @@ def diff(feature: torch.Tensor, param: torch.Tensor) -> torch.Tensor:
 
     Returns:
         torch.Tensor: Tensor with the gradient of the feature with respect to the given parameter.
-    Example::
+    Example:
 
         >>> feature = torch.tensor([1, 2, 3], dtype=torch.float32)
         >>> param = torch.tensor([2, 3, 4], dtype=torch.float32)

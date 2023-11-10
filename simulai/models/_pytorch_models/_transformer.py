@@ -182,7 +182,7 @@ class Transformer(NetworkTemplate):
 
         Graphical example:
 
-        Example::
+        Example:
 
              U -> ( Encoder_1 -> Encoder_2 -> ... -> Encoder_N ) -> u_e
 

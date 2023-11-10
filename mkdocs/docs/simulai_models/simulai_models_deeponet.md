@@ -1,10 +1,14 @@
-# DeepONets
+<style>
+red { color: red }
+</style>
 
-## DeepONet
+# <red>DeepONets</red>
+
+## <red>DeepONet</red>
 ::: simulai.models.DeepONet
-## ResDeepONet
+## <red>ResDeepONet</red>
 ::: simulai.models.ResDeepONet
-## ImprovedDeepONet
+## <red>ImprovedDeepONet</red>
 ::: simulai.models.ImprovedDeepONet
-## FlexibleDeepONet
+## <red>FlexibleDeepONet</red>
 ::: simulai.models.FlexibleDeepONet

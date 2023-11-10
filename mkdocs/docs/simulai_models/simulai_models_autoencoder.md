@@ -1,11 +1,15 @@
-# AutoEncoder
+<style>
+red { color: red }
+</style>
 
-## AutoencoderMLP
+# <red>AutoEncoder</red>
+
+## <red>AutoencoderMLP</red>
 ::: simulai.models.AutoencoderMLP
-## AutoencoderCNN
+## <red>AutoencoderCNN</red>
 ::: simulai.models.AutoencoderCNN
-## AutoencoderKoopman
+## <red>AutoencoderKoopman</red>
 ::: simulai.models.AutoencoderKoopman
-## AutoencoderVariational
+## <red>AutoencoderVariational</red>
 ::: simulai.models.AutoencoderVariational
 

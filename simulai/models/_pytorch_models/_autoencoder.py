@@ -1129,7 +1129,7 @@ class AutoencoderVariational(NetworkTemplate):
 
         Note:
             The summary method calls the `summary` method of each of the subnetworks and saves the content of the subnetworks to the overall architecture dictionary. If there is a bottleneck network, it is also summarized and saved to the architecture dictionary.
-        Example::
+        Example:
 
             >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
             >>> input_data = np.random.rand(1, 28, 28, 1)
@@ -1233,7 +1233,7 @@ class AutoencoderVariational(NetworkTemplate):
             torch.Tensor: The output of the bottleneck encoder applied to the input data.
         Note:
             This function is used for projection of the input data into the bottleneck space.
-        Example::
+        Example:
 
             >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
             >>> input_data = np.random.rand(1, 28, 28, 1)
@@ -1260,7 +1260,7 @@ class AutoencoderVariational(NetworkTemplate):
 
         Returns:
             torch.Tensor: The output of the encoder applied to the input data.
-        Example::
+        Example:
 
             >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
             >>> input_data = np.random.rand(1, 28, 28, 1)
@@ -1283,7 +1283,7 @@ class AutoencoderVariational(NetworkTemplate):
             torch.Tensor: The output of the decoder applied to the bottleneck decoder's output.
         Note:
             This function is used for reconstruction of the input data from the bottleneck space.
-        Example::
+        Example:
 
             >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
             >>> input_data = np.random.rand(1, 28, 28, 1)
@@ -1313,7 +1313,7 @@ class AutoencoderVariational(NetworkTemplate):
 
         Returns:
             torch.Tensor: The output of the decoder applied to the input data.
-        Example::
+        Example:
 
             >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
             >>> input_data = np.random.rand(1, 28, 28, 1)
@@ -1334,7 +1334,7 @@ class AutoencoderVariational(NetworkTemplate):
 
         Returns:
             Union[np.ndarray, torch.Tensor]: The mean of the encoded input data.
-        Example::
+        Example:
 
             >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
             >>> input_data = np.random.rand(1, 28, 28, 1)
@@ -1358,7 +1358,7 @@ class AutoencoderVariational(NetworkTemplate):
 
         Returns:
             Union[np.ndarray, torch.Tensor]: The standard deviation of the encoded input data.
-        Example::
+        Example:
 
             >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
             >>> input_data = np.random.rand(1, 28, 28, 1)
@@ -1386,7 +1386,7 @@ class AutoencoderVariational(NetworkTemplate):
 
         Returns:
             Union[np.ndarray, torch.Tensor]: The covariance matrix (or its inverse) of the encoded input data.
-        Example::
+        Example:
 
             >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
             >>> input_data = np.random.rand(1, 28, 28, 1)
@@ -1417,7 +1417,7 @@ class AutoencoderVariational(NetworkTemplate):
             torch.Tensor: A noisy latent representation of the input data.
         Note:
             This function adds Gaussian noise to the mean and standard deviation of the encoded input data to generate a noisy latent representation.
-        Example::
+        Example:
 
             >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
             >>> input_data = np.random.rand(1, 28, 28, 1)
@@ -1441,7 +1441,7 @@ class AutoencoderVariational(NetworkTemplate):
 
         Returns:
             torch.Tensor: The reconstructed output of the autoencoder.
-        Example::
+        Example:
 
             >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
             >>> input_data = np.random.rand(1, 28, 28, 1)
@@ -1463,7 +1463,7 @@ class AutoencoderVariational(NetworkTemplate):
 
         Returns:
             torch.Tensor: The reconstructed output of the autoencoder.
-        Example::
+        Example:
 
             >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
             >>> input_data = np.random.rand(1, 28, 28, 1)
@@ -1483,7 +1483,7 @@ class AutoencoderVariational(NetworkTemplate):
 
         Returns:
             np.ndarray: The input data projected onto the autoencoder's latent space.
-        Example::
+        Example:
 
             >>> autoencoder = AutoencoderVariational(input_dim=(28, 28, 1))
             >>> input_data = np.random.rand(1, 28, 28, 1)
@@ -1508,7 +1508,7 @@ class AutoencoderVariational(NetworkTemplate):
 
         Returns:
             np.ndarray: The reconstructed data.
-        Example::
+        Example:
 
             >>> autoencoder = Autoencoder(input_dim=(28, 28, 1))
             >>> input_data = np.random.rand(1, 28, 28, 1)
@@ -1531,7 +1531,7 @@ class AutoencoderVariational(NetworkTemplate):
 
         Returns:
             np.ndarray: The reconstructed data.
-        Example::
+        Example:
 
             >>> autoencoder = Autoencoder(input_dim=(28, 28, 1))
             >>> input_data = np.random.rand(1, 28, 28, 1)
