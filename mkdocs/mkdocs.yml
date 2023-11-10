@@ -1,10 +1,26 @@
-site_name: SimulAI Docs
+site_name: SimulAI's Documentation
+repo_name: IBM/simulai
+repo_url: https://github.com/IBM/simulai
 
 theme:
-  name: "material"
+  name: simple-blog
   features:
       - search.highlight
       - search.suggest
+  theme_style: light
+  site_name_style: normal
+  title_style: bold
+  colors:
+    text: black
+    title: red
+    primary: black
+    background: white
+  components:
+    site_name: true
+    title: true
+    menu: true
+    preview: true
+    footer: true
 
 markdown_extensions:
   - toc:
@@ -16,8 +32,21 @@ plugins:
   - mkdocstrings 
 
 nav:
-  - index.md
-  - simulai_io.md
-  - simulai_residuals.md
-  - simulai_regression.md
-  - simulai_models.md
+  - Home: index.md
+  - Modules:
+    - IO:
+      - simulai_io.md
+    - Symbolic Manipulation:
+      - simulai_residuals.md
+    - Regression/Neural Networks:
+      - simulai_regression.md
+  - Subpackages:
+    - Models:
+      - Transformer:
+        - simulai_models/simulai_models_transformer.md
+      - DeepONet:
+        - simulai_models/simulai_models_deeponet.md
+      - AutoEncoder:
+        - simulai_models/simulai_models_autoencoder.md
+      - UNet:
+        - simulai_models/simulai_models_unet.md

@@ -1,8 +1,8 @@
 # Welcome to SimulAI
 
-[![image](https://badge.fury.io/py/simulai-toolkit.svg)](https://badge.fury.io/py/simulai-toolkit)
+<!-- [![image](https://badge.fury.io/py/simulai-toolkit.svg)](https://badge.fury.io/py/simulai-toolkit) -->
 
-[![Documentation Status](https://readthedocs.org/projects/simulai-toolkit/badge/?version=latest)](https://simulai-toolkit.readthedocs.io/en/latest/?badge=latest)
+<!-- [![Documentation Status](https://readthedocs.org/projects/simulai-toolkit/badge/?version=latest)](https://simulai-toolkit.readthedocs.io/en/latest/?badge=latest) -->
 
 <!--[![image](../assets/coverage.svg)](tests/)-->
 

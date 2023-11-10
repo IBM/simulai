@@ -24,4 +24,5 @@
 ::: simulai.io.MakeTensor
 ## GaussianNoise
 ::: simulai.io.GaussianNoise
-
+## Tokenizer
+::: simulai.io.Tokenizer
