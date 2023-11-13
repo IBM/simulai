@@ -1,0 +1,2252 @@
+<!doctype html>
+<html>
+    <head>
+                <title>Built-in Optimizers - SimulAI's Documentation</title>
+
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+            
+            
+            
+
+            
+                <link  rel="icon" type="image/x-icon" href="../../assets/img/favicon.ico">
+            
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+                        <script>hljs.initHighlightingOnLoad();</script>
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono:400,700">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+            <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+            <link rel="stylesheet" href="../../assets/css/main.min.css">
+                <link href="../../assets/_mkdocstrings.css" rel="stylesheet">
+                <script src="../../search/main.js"></script>
+
+            
+                
+            
+    </head>
+
+    <body>
+        <div class="container py-3">
+            <header>
+                    <!-- block header -->
+<nav class="navbar navbar-expand-xl border-bottom">
+    <div class="container-fluid">
+        
+
+        
+            <span class="normal fs-4 title-color site-name" id="component-site-name" style="text-transform: uppercase;">SimulAI's Documentation</span>
+        
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsMenu"
+            aria-controls="navbarsMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse flex-column ml-auto" id="navbarsMenu">
+            <ul class="navbar-nav">
+
+                <!-- block menu -->
+                <li class="nav-item">
+                    <!-- block menu -->
+    
+        <li class="nav-item" id="component-menu">
+            <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="
+                            nav-link text-gray text-decoration-none" href="../..">[Home]</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="
+                            nav-link dropdown-toggle text-decoration-none" href="#" data-bs-toggle="dropdown">[Modules]</a>
+                            <ul class="dropdown-menu">
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">IO &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_io/" class="dropdown-item text-decoration-none ">Simulai io</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">File &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_file/" class="dropdown-item text-decoration-none ">Simulai file</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Batching &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_batching/" class="dropdown-item text-decoration-none ">Simulai batching</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Activations &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_activations/" class="dropdown-item text-decoration-none ">Simulai activations</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Parallel &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_parallel/" class="dropdown-item text-decoration-none ">Simulai parallel</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class=" active 
+                            nav-link dropdown-toggle text-decoration-none" href="#" data-bs-toggle="dropdown">[Subpackages]</a>
+                            <ul class="dropdown-menu">
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Symbolic Manipulation &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_residuals/" class="dropdown-item text-decoration-none ">Simulai residuals</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Regression/Neural Networks &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Dense Networks &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_regression/simulai_dense/" class="dropdown-item text-decoration-none ">Simulai dense</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">OpInf &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_regression/simulai_opinf/" class="dropdown-item text-decoration-none ">Simulai opinf</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">ROM &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_rom/simulai_rom/" class="dropdown-item text-decoration-none ">Simulai rom</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Models &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Transformer &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_models/simulai_models_transformer/" class="dropdown-item text-decoration-none ">Simulai models transformer</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">DeepONet &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_models/simulai_models_deeponet/" class="dropdown-item text-decoration-none ">Simulai models deeponet</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">AutoEncoder &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_models/simulai_models_autoencoder/" class="dropdown-item text-decoration-none ">Simulai models autoencoder</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">U-Net &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_models/simulai_models_unet/" class="dropdown-item text-decoration-none ">Simulai models unet</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Optimization &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Optimization Interfaces &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../simulai_optimizer/" class="dropdown-item text-decoration-none ">Optimization Interfaces</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Built-in Optimizers &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="./" class="dropdown-item text-decoration-none  active ">Built-in Optimizers</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Loss Functions &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../simulai_losses/" class="dropdown-item text-decoration-none ">Loss Functions</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                            </ul>
+                        </li>
+            </ul>
+        </li>
+<!-- endblock -->
+                </li>
+                <!-- endblock -->
+
+                <!-- block search -->
+                <li class="nav-item">
+                    <a class="collapsed" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                        <div class="md-search-icon">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                        </div>
+                    </a>
+                </li>
+                <!--  endblock -->
+
+                <!-- block source -->
+                <li class="nav-item">
+                    
+                        
+                            <!-- block source -->
+<div class="md-source source-detail">
+  <div class="md-source-repo-icon">
+    <i class="fa fa-github-alt" aria-hidden="true"></i>
+  </div>
+
+  <div class="md-source-repo-url">
+    <a href="https://github.com/IBM/simulai" class="md-source">
+      IBM/simulai
+    </a>
+
+    <ul class="md-source-repo-text">
+      <li>
+        <i class="fa fa-tag" aria-hidden="true"></i>
+        <img alt="GitHub tag (latest by date)"
+          src="https://img.shields.io/github/v/tag/IBM/simulai?color=white&label=%20&style=flat-square">
+      </li>
+
+      <li>
+        <i class="fa fa-star" aria-hidden="true"></i>
+        <img alt="GitHub Repo stars"
+          src="https://img.shields.io/github/stars/IBM/simulai?color=white&label=%20&style=flat-square">
+      </li>
+
+      <li>
+        <i class="fa fa-code-fork" aria-hidden="true"></i>
+        <img alt="GitHub forks"
+          src="https://img.shields.io/github/forks/IBM/simulai?color=white&label=%20&style=flat-square">
+      </li>
+    </ul>
+  </div>
+
+</div>
+<!--  endblock -->
+                        
+                    
+                </li>
+                <!--  endblock -->
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--  endblock -->
+            </header>
+
+            <main><!-- block search -->
+<div class="collapse" id="collapseExample">
+    <div role="search" class="search-box">
+        <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+            <input type="text" name="q" class="search-query"
+            placeholder="Search docs" title="Type search term here" />
+        </form>
+    </div>
+</div>
+<!-- endblock -->
+                    <!-- block content -->
+<section class="container post">
+    <article>
+        <header>
+            
+                <h1 class="bold title" id="component-title">Built-in Optimizers</h1>
+            
+        </header>
+        <p><h1 id="built-in-optimizers">Built-in Optimizers<a class="headerlink" href="#built-in-optimizers" title="Permanent link">#</a></h1>
+<h2 id="sparsa">SpaRSA<a class="headerlink" href="#sparsa" title="Permanent link">#</a></h2>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<a id="simulai.optimization.SpaRSA"></a>
+  <div class="doc doc-contents first">
+
+
+            <details class="quote">
+              <summary>Source code in <code>simulai/optimization/_builtin.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SpaRSA</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">lambd</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">alpha_0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span>
+        <span class="n">sparsity_tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-15</span><span class="p">,</span>
+        <span class="n">use_mean</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">transform</span><span class="p">:</span> <span class="nb">callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sparse Regression Algorithm</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            lambd (float): Quadratic regularization penalty.</span>
+<span class="sd">            alpha_0 (float): Update step lenght.</span>
+<span class="sd">            epsilon (float): Error tolerance.</span>
+<span class="sd">            sparsity_tol (float): Sparsity tolerance. </span>
+<span class="sd">            use_mean (bool): Use mean for evaluating loss or not.</span>
+<span class="sd">            transform (callable): A transformation to be applied to the data.  </span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lambd</span> <span class="o">=</span> <span class="n">lambd</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha_0</span> <span class="o">=</span> <span class="n">alpha_0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sparsity_tol</span> <span class="o">=</span> <span class="n">sparsity_tol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">transform</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transform</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bypass</span>
+
+        <span class="k">if</span> <span class="n">use_mean</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_step</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lr_reduction</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lr_increase</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_data</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_bypass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">data</span>
+
+    <span class="k">def</span> <span class="nf">_F_lambda</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">V_bar</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="n">residual</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_WV_bar</span><span class="p">(</span><span class="n">W</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">,</span> <span class="n">V_bar</span><span class="o">=</span><span class="n">V_bar</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_data</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="o">**</span> <span class="mi">2</span>
+        <span class="p">)</span>
+
+        <span class="n">regularization</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lambd</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">V_bar</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">residual</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">lambd</span> <span class="o">*</span> <span class="n">regularization</span>
+
+    <span class="k">def</span> <span class="nf">R_alpha</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">W</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">V_bar</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">target_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">V_bar</span> <span class="o">-</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">W</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_WV_bar</span><span class="p">(</span><span class="n">W</span><span class="o">=</span><span class="n">W</span><span class="p">,</span> <span class="n">V_bar</span><span class="o">=</span><span class="n">V_bar</span><span class="p">)</span> <span class="o">-</span> <span class="n">target_data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_WV_bar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">W</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">V_bar</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">W</span> <span class="o">@</span> <span class="n">V_bar</span>
+
+    <span class="k">def</span> <span class="nf">_no_null_V_plus</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">R_alpha</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">lambd</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">R_alpha</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="o">*</span> <span class="n">R_alpha</span>
+
+    <span class="k">def</span> <span class="nf">V_plus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R_alpha</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># Zeroing lines according to the regularization criteria</span>
+        <span class="k">def</span> <span class="nf">_row_function</span><span class="p">(</span><span class="n">vector</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">norm</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lambd</span> <span class="o">*</span> <span class="n">alpha</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">vector</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_null_V_plus</span><span class="p">(</span><span class="n">R_alpha</span><span class="o">=</span><span class="n">vector</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+
+        <span class="n">rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">_row_function</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">R_alpha</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">rows</span>
+
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">target_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_data (np.ndarray): Input data for training the model.</span>
+<span class="sd">            target_data (np.ndarray): Target data for training the model. </span>
+
+<span class="sd">        Returns:</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">input_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_data</span> <span class="o">=</span> <span class="n">target_data</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="n">target_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_data</span><span class="o">.</span><span class="n">size</span>
+
+        <span class="n">V_0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">)</span>
+
+        <span class="n">V_k</span> <span class="o">=</span> <span class="n">V_0</span>
+        <span class="n">F_lambda_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+        <span class="n">alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_0</span>
+        <span class="n">stopping_criterion</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">stopping_criterion</span><span class="p">:</span>
+            <span class="n">V_bar</span> <span class="o">=</span> <span class="n">V_k</span>
+            <span class="n">R_alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R_alpha</span><span class="p">(</span>
+                <span class="n">W</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">,</span> <span class="n">V_bar</span><span class="o">=</span><span class="n">V_bar</span><span class="p">,</span> <span class="n">target_data</span><span class="o">=</span><span class="n">target_data</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span>
+            <span class="p">)</span>
+            <span class="n">V_plus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">V_plus</span><span class="p">(</span><span class="n">R_alpha</span><span class="o">=</span><span class="n">R_alpha</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+
+            <span class="n">F_lambda_V_plus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_F_lambda</span><span class="p">(</span><span class="n">V_bar</span><span class="o">=</span><span class="n">V_plus</span><span class="p">)</span>
+            <span class="n">F_lambda_V_bar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_F_lambda</span><span class="p">(</span><span class="n">V_bar</span><span class="o">=</span><span class="n">V_bar</span><span class="p">)</span>
+
+            <span class="k">while</span> <span class="n">F_lambda_V_plus</span> <span class="o">&gt;=</span> <span class="n">F_lambda_V_bar</span><span class="p">:</span>
+                <span class="n">residual</span> <span class="o">=</span> <span class="n">F_lambda_V_plus</span> <span class="o">-</span> <span class="n">F_lambda_V_bar</span>
+
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="p">(</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">alpha: </span><span class="si">{}</span><span class="s2">, discrepancy: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">residual</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+                <span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">lr_reduction</span>
+                <span class="n">R_alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R_alpha</span><span class="p">(</span>
+                    <span class="n">W</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">,</span> <span class="n">V_bar</span><span class="o">=</span><span class="n">V_bar</span><span class="p">,</span> <span class="n">target_data</span><span class="o">=</span><span class="n">target_data</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span>
+                <span class="p">)</span>
+                <span class="n">V_plus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">V_plus</span><span class="p">(</span><span class="n">R_alpha</span><span class="o">=</span><span class="n">R_alpha</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+
+                <span class="n">F_lambda_V_plus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_F_lambda</span><span class="p">(</span><span class="n">V_bar</span><span class="o">=</span><span class="n">V_plus</span><span class="p">)</span>
+
+            <span class="n">F_lambda</span> <span class="o">=</span> <span class="n">F_lambda_V_bar</span>
+            <span class="n">F_lambda_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">F_lambda</span><span class="p">)</span>
+
+            <span class="n">V_k</span> <span class="o">=</span> <span class="n">V_plus</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lr_increase</span> <span class="o">*</span> <span class="n">alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_0</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_step</span><span class="p">:</span>
+                <span class="n">F_lambda_ref</span> <span class="o">=</span> <span class="n">F_lambda_list</span><span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_step</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">F_lambda</span> <span class="o">-</span> <span class="n">F_lambda_ref</span><span class="p">)</span> <span class="o">/</span> <span class="n">F_lambda_ref</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span><span class="p">:</span>
+                    <span class="n">stopping_criterion</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">((</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">residual loss: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">F_lambda</span><span class="p">)))</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+            <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">V_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">V_k</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">sparsity_tol</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">V_k</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">V_k</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h2 id="simulai.optimization.SpaRSA.__init__" class="doc doc-heading">
+          <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">lambd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha_0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="n">sparsity_tol</span><span class="o">=</span><span class="mf">1e-15</span><span class="p">,</span> <span class="n">use_mean</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+<a href="#simulai.optimization.SpaRSA.__init__" class="headerlink" title="Permanent link">#</a></h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Sparse Regression Algorithm</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>lambd</code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Quadratic regularization penalty.</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>alpha_0</code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Update step lenght.</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>epsilon</code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Error tolerance.</p>
+            </div>
+          </td>
+          <td>
+                <code>1e-10</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>sparsity_tol</code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Sparsity tolerance. </p>
+            </div>
+          </td>
+          <td>
+                <code>1e-15</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>use_mean</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Use mean for evaluating loss or not.</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>transform</code></td>
+          <td>
+                <code>callable</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>A transformation to be applied to the data.</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>simulai/optimization/_builtin.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">lambd</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">alpha_0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span>
+    <span class="n">sparsity_tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-15</span><span class="p">,</span>
+    <span class="n">use_mean</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">transform</span><span class="p">:</span> <span class="nb">callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sparse Regression Algorithm</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        lambd (float): Quadratic regularization penalty.</span>
+<span class="sd">        alpha_0 (float): Update step lenght.</span>
+<span class="sd">        epsilon (float): Error tolerance.</span>
+<span class="sd">        sparsity_tol (float): Sparsity tolerance. </span>
+<span class="sd">        use_mean (bool): Use mean for evaluating loss or not.</span>
+<span class="sd">        transform (callable): A transformation to be applied to the data.  </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">lambd</span> <span class="o">=</span> <span class="n">lambd</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">alpha_0</span> <span class="o">=</span> <span class="n">alpha_0</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">sparsity_tol</span> <span class="o">=</span> <span class="n">sparsity_tol</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">transform</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transform</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bypass</span>
+
+    <span class="k">if</span> <span class="n">use_mean</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">ref_step</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">lr_reduction</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">lr_increase</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">target_data</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h2 id="simulai.optimization.SpaRSA.fit" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">fit</span><span class="p">(</span><span class="n">input_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_data</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+<a href="#simulai.optimization.SpaRSA.fit" class="headerlink" title="Permanent link">#</a></h2>
+
+
+  <div class="doc doc-contents ">
+  
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>input_data</code></td>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Input data for training the model.</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>target_data</code></td>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Target data for training the model. </p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+      <p>Returns:</p>
+
+          <details class="quote">
+            <summary>Source code in <code>simulai/optimization/_builtin.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">target_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input_data (np.ndarray): Input data for training the model.</span>
+<span class="sd">        target_data (np.ndarray): Target data for training the model. </span>
+
+<span class="sd">    Returns:</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">input_data</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">target_data</span> <span class="o">=</span> <span class="n">target_data</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="n">target_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_data</span><span class="o">.</span><span class="n">size</span>
+
+    <span class="n">V_0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">)</span>
+
+    <span class="n">V_k</span> <span class="o">=</span> <span class="n">V_0</span>
+    <span class="n">F_lambda_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="n">alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_0</span>
+    <span class="n">stopping_criterion</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">stopping_criterion</span><span class="p">:</span>
+        <span class="n">V_bar</span> <span class="o">=</span> <span class="n">V_k</span>
+        <span class="n">R_alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R_alpha</span><span class="p">(</span>
+            <span class="n">W</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">,</span> <span class="n">V_bar</span><span class="o">=</span><span class="n">V_bar</span><span class="p">,</span> <span class="n">target_data</span><span class="o">=</span><span class="n">target_data</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span>
+        <span class="p">)</span>
+        <span class="n">V_plus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">V_plus</span><span class="p">(</span><span class="n">R_alpha</span><span class="o">=</span><span class="n">R_alpha</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+
+        <span class="n">F_lambda_V_plus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_F_lambda</span><span class="p">(</span><span class="n">V_bar</span><span class="o">=</span><span class="n">V_plus</span><span class="p">)</span>
+        <span class="n">F_lambda_V_bar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_F_lambda</span><span class="p">(</span><span class="n">V_bar</span><span class="o">=</span><span class="n">V_bar</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="n">F_lambda_V_plus</span> <span class="o">&gt;=</span> <span class="n">F_lambda_V_bar</span><span class="p">:</span>
+            <span class="n">residual</span> <span class="o">=</span> <span class="n">F_lambda_V_plus</span> <span class="o">-</span> <span class="n">F_lambda_V_bar</span>
+
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="p">(</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">alpha: </span><span class="si">{}</span><span class="s2">, discrepancy: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">residual</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+            <span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">lr_reduction</span>
+            <span class="n">R_alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R_alpha</span><span class="p">(</span>
+                <span class="n">W</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">,</span> <span class="n">V_bar</span><span class="o">=</span><span class="n">V_bar</span><span class="p">,</span> <span class="n">target_data</span><span class="o">=</span><span class="n">target_data</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span>
+            <span class="p">)</span>
+            <span class="n">V_plus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">V_plus</span><span class="p">(</span><span class="n">R_alpha</span><span class="o">=</span><span class="n">R_alpha</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+
+            <span class="n">F_lambda_V_plus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_F_lambda</span><span class="p">(</span><span class="n">V_bar</span><span class="o">=</span><span class="n">V_plus</span><span class="p">)</span>
+
+        <span class="n">F_lambda</span> <span class="o">=</span> <span class="n">F_lambda_V_bar</span>
+        <span class="n">F_lambda_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">F_lambda</span><span class="p">)</span>
+
+        <span class="n">V_k</span> <span class="o">=</span> <span class="n">V_plus</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lr_increase</span> <span class="o">*</span> <span class="n">alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_step</span><span class="p">:</span>
+            <span class="n">F_lambda_ref</span> <span class="o">=</span> <span class="n">F_lambda_list</span><span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_step</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">F_lambda</span> <span class="o">-</span> <span class="n">F_lambda_ref</span><span class="p">)</span> <span class="o">/</span> <span class="n">F_lambda_ref</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span><span class="p">:</span>
+                <span class="n">stopping_criterion</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">((</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">residual loss: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">F_lambda</span><span class="p">)))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+        <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">V_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">V_k</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">sparsity_tol</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">V_k</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">V_k</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+
+  </div>
+
+  </div>
+
+</div><h2 id="bbi">BBI<a class="headerlink" href="#bbi" title="Permanent link">#</a></h2>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<a id="simulai.optimization.BBI"></a>
+  <div class="doc doc-contents first">
+          <p class="doc doc-class-bases">
+            Bases: <code><span title="torch.optim.optimizer.Optimizer">Optimizer</span></code></p>
+
+
+            <details class="quote">
+              <summary>Source code in <code>simulai/optimization/_builtin_pytorch.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BBI</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">lr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
+        <span class="n">eps1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span>
+        <span class="n">eps2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-40</span><span class="p">,</span>
+        <span class="n">v0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">threshold0</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3000</span><span class="p">,</span>
+        <span class="n">deltaEn</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">consEn</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">n_fixed_bounces</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">         </span><span class="sd">&quot;&quot;&quot;Optimizer based on the BBI model of inflation.</span>
+
+<span class="sd">         Args:</span>
+<span class="sd">             params (iterable): iterable of parameters to optimize or dicts defining parameter groups</span>
+<span class="sd">             lr (float): learning rate</span>
+<span class="sd">             v0 (float): expected minimum of the potential (Delta V in the paper)</span>
+<span class="sd">             threshold0 (int): threshold for fixed bounces (T0 in the paper)</span>
+<span class="sd">             threshold1 (int): threshold for progress-dependent bounces (T1 in the paper)</span>
+<span class="sd">             deltaEn (float): extra initial energy (delta E in the paper)</span>
+<span class="sd">             consEn (bool): if True enforces energy conservation at every step</span>
+<span class="sd">             n_fixed_bounces (int): number of bounces every T0 iterations (Nb in the paper)</span>
+<span class="sd">         &quot;&quot;&quot;</span>
+
+         <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">,</span>
+            <span class="n">eps1</span><span class="o">=</span><span class="n">eps1</span><span class="p">,</span>
+            <span class="n">eps2</span><span class="o">=</span><span class="n">eps2</span><span class="p">,</span>
+            <span class="n">v0</span><span class="o">=</span><span class="n">v0</span><span class="p">,</span>
+            <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span>
+            <span class="n">threshold0</span><span class="o">=</span><span class="n">threshold0</span><span class="p">,</span>
+            <span class="n">deltaEn</span><span class="o">=</span><span class="n">deltaEn</span><span class="p">,</span>
+            <span class="n">consEn</span><span class="o">=</span><span class="n">consEn</span><span class="p">,</span>
+            <span class="n">n_fixed_bounces</span><span class="o">=</span><span class="n">n_fixed_bounces</span><span class="p">,</span>
+         <span class="p">)</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">energy</span> <span class="o">=</span> <span class="kc">None</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">min_loss</span> <span class="o">=</span> <span class="kc">None</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">=</span> <span class="mi">0</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">deltaEn</span> <span class="o">=</span> <span class="n">deltaEn</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">n_fixed_bounces</span> <span class="o">=</span> <span class="n">n_fixed_bounces</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">consEn</span> <span class="o">=</span> <span class="n">consEn</span>
+
+         <span class="nb">super</span><span class="p">(</span><span class="n">BBI</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">defaults</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BBI</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__setstate__</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">closure</span><span class="p">:</span> <span class="nb">callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            closure (callable): A function which enclosures the loss</span>
+<span class="sd">                evaluation. </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: The evaluation for the loss function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">closure</span><span class="p">()</span>  <span class="c1"># .item()</span>
+
+        <span class="c1"># initialization</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># define a random numbers generator, in order not to use the ambient seed and have random bounces even with the same ambient seed</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">generator</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Generator</span><span class="p">(</span>
+                <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">param_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">device</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">seed</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># Initial energy</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">initV</span> <span class="o">=</span> <span class="n">loss</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;v0&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_energy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initV</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">deltaEn</span>
+
+            <span class="c1"># Some counters</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">counter0</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fixed_bounces_performed</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">min_loss</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_groups</span><span class="p">:</span>
+            <span class="n">V</span> <span class="o">=</span> <span class="n">loss</span> <span class="o">-</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;v0&quot;</span><span class="p">]</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;lr&quot;</span><span class="p">]</span>
+            <span class="n">eps1</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;eps1&quot;</span><span class="p">]</span>
+            <span class="n">eps2</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;eps2&quot;</span><span class="p">]</span>
+            <span class="n">threshold0</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;threshold0&quot;</span><span class="p">]</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">V</span> <span class="o">&gt;</span> <span class="n">eps2</span><span class="p">:</span>
+                <span class="n">EoverV</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_energy</span> <span class="o">/</span> <span class="n">V</span>
+                <span class="n">VoverE</span> <span class="o">=</span> <span class="n">V</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_energy</span>
+
+                <span class="c1"># Now I check if loss and pi^2 are consistent with the initial value of the energy</span>
+
+                <span class="n">ps2_pre</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+                    <span class="mf">0.0</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">param_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">device</span>
+                <span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]:</span>
+                    <span class="n">param_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+                    <span class="n">d_p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">data</span>
+                    <span class="c1"># Initialize in the direction of the gradient, with magnitude related to deltaE</span>
+                    <span class="k">if</span> <span class="s2">&quot;momentum_buffer&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">param_state</span><span class="p">:</span>
+                        <span class="n">buf</span> <span class="o">=</span> <span class="n">param_state</span><span class="p">[</span><span class="s2">&quot;momentum_buffer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span>
+                            <span class="n">d_p</span> <span class="o">/</span> <span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">d_p</span><span class="p">)</span>
+                        <span class="p">)</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+                                <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">init_energy</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">initV</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">initV</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">buf</span> <span class="o">=</span> <span class="n">param_state</span><span class="p">[</span><span class="s2">&quot;momentum_buffer&quot;</span><span class="p">]</span>
+
+                    <span class="c1"># compute the current pi^2 . Pre means that this is the value before the iteration step</span>
+                    <span class="n">ps2_pre</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">buf</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">buf</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">consEn</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="c1"># Compare this \pi^2 with what it should have been if the energy was correct</span>
+                    <span class="n">ps2_correct</span> <span class="o">=</span> <span class="n">V</span> <span class="o">*</span> <span class="p">((</span><span class="n">EoverV</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span>
+
+                    <span class="c1"># Compute the rescaling factor, only if real</span>
+                    <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ps2_pre</span> <span class="o">-</span> <span class="n">ps2_correct</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">eps1</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">rescaling_pi</span> <span class="o">=</span> <span class="mf">1.0</span>
+                    <span class="k">elif</span> <span class="n">ps2_correct</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">rescaling_pi</span> <span class="o">=</span> <span class="mf">1.0</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">rescaling_pi</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(((</span><span class="n">ps2_correct</span> <span class="o">/</span> <span class="p">(</span><span class="n">ps2_pre</span><span class="p">))))</span>
+
+                <span class="c1"># Perform the optimization step</span>
+                <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">!=</span> <span class="n">threshold</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">counter0</span> <span class="o">!=</span> <span class="n">threshold0</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">grad</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="n">d_p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">data</span>
+                        <span class="n">param_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+
+                        <span class="k">if</span> <span class="s2">&quot;momentum_buffer&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">param_state</span><span class="p">:</span>
+                            <span class="n">buf</span> <span class="o">=</span> <span class="n">param_state</span><span class="p">[</span><span class="s2">&quot;momentum_buffer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span>
+                                <span class="n">p</span><span class="o">.</span><span class="n">data</span>
+                            <span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">buf</span> <span class="o">=</span> <span class="n">param_state</span><span class="p">[</span><span class="s2">&quot;momentum_buffer&quot;</span><span class="p">]</span>
+
+                        <span class="c1"># Here the rescaling of momenta to enforce conservation of energy</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">consEn</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                            <span class="n">buf</span><span class="o">.</span><span class="n">mul_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rescaling_pi</span><span class="p">)</span>
+
+                        <span class="n">buf</span><span class="o">.</span><span class="n">add_</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="n">VoverE</span> <span class="o">+</span> <span class="n">EoverV</span><span class="p">)</span> <span class="o">*</span> <span class="n">d_p</span><span class="p">)</span>
+                        <span class="n">p</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">add_</span><span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="n">VoverE</span> <span class="o">*</span> <span class="n">buf</span><span class="p">)</span>
+
+                    <span class="c1"># Updates counters</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">counter0</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                    <span class="c1"># Checks progress</span>
+                    <span class="k">if</span> <span class="n">V</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_loss</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">min_loss</span> <span class="o">=</span> <span class="n">V</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="c1"># Bounces</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># First we iterate once to compute pi^2, we randomly regenerate the directions, and we compute the new norm squared</span>
+
+                    <span class="n">ps20</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+                        <span class="mf">0.0</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">param_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">device</span>
+                    <span class="p">)</span>
+                    <span class="n">ps2new</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+                        <span class="mf">0.0</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">param_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">device</span>
+                    <span class="p">)</span>
+
+                    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]:</span>
+                        <span class="n">param_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+
+                        <span class="n">buf</span> <span class="o">=</span> <span class="n">param_state</span><span class="p">[</span><span class="s2">&quot;momentum_buffer&quot;</span><span class="p">]</span>
+                        <span class="n">ps20</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">buf</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">buf</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                        <span class="n">new_buf</span> <span class="o">=</span> <span class="n">param_state</span><span class="p">[</span><span class="s2">&quot;momentum_buffer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span>
+                                <span class="n">buf</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">device</span><span class="o">=</span><span class="n">buf</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">generator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">generator</span>
+                            <span class="p">)</span>
+                            <span class="o">-</span> <span class="mf">0.5</span>
+                        <span class="p">)</span>
+                        <span class="n">ps2new</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">new_buf</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">new_buf</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+                    <span class="c1"># Then rescale them</span>
+                    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]:</span>
+                        <span class="n">param_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+                        <span class="n">buf</span> <span class="o">=</span> <span class="n">param_state</span><span class="p">[</span><span class="s2">&quot;momentum_buffer&quot;</span><span class="p">]</span>
+                        <span class="n">buf</span><span class="o">.</span><span class="n">mul_</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ps20</span> <span class="o">/</span> <span class="n">ps2new</span><span class="p">))</span>
+
+                    <span class="c1"># Update counters</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">counter0</span> <span class="o">==</span> <span class="n">threshold0</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">fixed_bounces_performed</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_bounces_performed</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_fixed_bounces</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">counter0</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">counter0</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">loss</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h2 id="simulai.optimization.BBI.__init__" class="doc doc-heading">
+          <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">eps1</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="n">eps2</span><span class="o">=</span><span class="mf">1e-40</span><span class="p">,</span> <span class="n">v0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">threshold0</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span> <span class="n">deltaEn</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">consEn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_fixed_bounces</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
+
+<a href="#simulai.optimization.BBI.__init__" class="headerlink" title="Permanent link">#</a></h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Optimizer based on the BBI model of inflation.</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>params</code></td>
+          <td>
+                <code>iterable</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>iterable of parameters to optimize or dicts defining parameter groups</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>lr</code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>learning rate</p>
+            </div>
+          </td>
+          <td>
+                <code>0.001</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>v0</code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>expected minimum of the potential (Delta V in the paper)</p>
+            </div>
+          </td>
+          <td>
+                <code>0</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>threshold0</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>threshold for fixed bounces (T0 in the paper)</p>
+            </div>
+          </td>
+          <td>
+                <code>1000</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>threshold1</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>threshold for progress-dependent bounces (T1 in the paper)</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>deltaEn</code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>extra initial energy (delta E in the paper)</p>
+            </div>
+          </td>
+          <td>
+                <code>0.0</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>consEn</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>if True enforces energy conservation at every step</p>
+            </div>
+          </td>
+          <td>
+                <code>True</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>n_fixed_bounces</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>number of bounces every T0 iterations (Nb in the paper)</p>
+            </div>
+          </td>
+          <td>
+                <code>1</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>simulai/optimization/_builtin_pytorch.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">lr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
+    <span class="n">eps1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span>
+    <span class="n">eps2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-40</span><span class="p">,</span>
+    <span class="n">v0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">threshold0</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="n">threshold</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3000</span><span class="p">,</span>
+    <span class="n">deltaEn</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">consEn</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">n_fixed_bounces</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">     </span><span class="sd">&quot;&quot;&quot;Optimizer based on the BBI model of inflation.</span>
+
+<span class="sd">     Args:</span>
+<span class="sd">         params (iterable): iterable of parameters to optimize or dicts defining parameter groups</span>
+<span class="sd">         lr (float): learning rate</span>
+<span class="sd">         v0 (float): expected minimum of the potential (Delta V in the paper)</span>
+<span class="sd">         threshold0 (int): threshold for fixed bounces (T0 in the paper)</span>
+<span class="sd">         threshold1 (int): threshold for progress-dependent bounces (T1 in the paper)</span>
+<span class="sd">         deltaEn (float): extra initial energy (delta E in the paper)</span>
+<span class="sd">         consEn (bool): if True enforces energy conservation at every step</span>
+<span class="sd">         n_fixed_bounces (int): number of bounces every T0 iterations (Nb in the paper)</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+
+     <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">,</span>
+        <span class="n">eps1</span><span class="o">=</span><span class="n">eps1</span><span class="p">,</span>
+        <span class="n">eps2</span><span class="o">=</span><span class="n">eps2</span><span class="p">,</span>
+        <span class="n">v0</span><span class="o">=</span><span class="n">v0</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span>
+        <span class="n">threshold0</span><span class="o">=</span><span class="n">threshold0</span><span class="p">,</span>
+        <span class="n">deltaEn</span><span class="o">=</span><span class="n">deltaEn</span><span class="p">,</span>
+        <span class="n">consEn</span><span class="o">=</span><span class="n">consEn</span><span class="p">,</span>
+        <span class="n">n_fixed_bounces</span><span class="o">=</span><span class="n">n_fixed_bounces</span><span class="p">,</span>
+     <span class="p">)</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">energy</span> <span class="o">=</span> <span class="kc">None</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">min_loss</span> <span class="o">=</span> <span class="kc">None</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">=</span> <span class="mi">0</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">deltaEn</span> <span class="o">=</span> <span class="n">deltaEn</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">n_fixed_bounces</span> <span class="o">=</span> <span class="n">n_fixed_bounces</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">consEn</span> <span class="o">=</span> <span class="n">consEn</span>
+
+     <span class="nb">super</span><span class="p">(</span><span class="n">BBI</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">defaults</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h2 id="simulai.optimization.BBI.step" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">step</span><span class="p">(</span><span class="n">closure</span><span class="p">)</span></code>
+
+<a href="#simulai.optimization.BBI.step" class="headerlink" title="Permanent link">#</a></h2>
+
+
+  <div class="doc doc-contents ">
+  
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>closure</code></td>
+          <td>
+                <code>callable</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>A function which enclosures the loss
+evaluation. </p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+      <p>Returns:
+    torch.Tensor: The evaluation for the loss function.</p>
+
+          <details class="quote">
+            <summary>Source code in <code>simulai/optimization/_builtin_pytorch.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">closure</span><span class="p">:</span> <span class="nb">callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        closure (callable): A function which enclosures the loss</span>
+<span class="sd">            evaluation. </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        torch.Tensor: The evaluation for the loss function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">closure</span><span class="p">()</span>  <span class="c1"># .item()</span>
+
+    <span class="c1"># initialization</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># define a random numbers generator, in order not to use the ambient seed and have random bounces even with the same ambient seed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generator</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Generator</span><span class="p">(</span>
+            <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">param_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">device</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">seed</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Initial energy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initV</span> <span class="o">=</span> <span class="n">loss</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;v0&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_energy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initV</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">deltaEn</span>
+
+        <span class="c1"># Some counters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">counter0</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fixed_bounces_performed</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_loss</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_groups</span><span class="p">:</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="n">loss</span> <span class="o">-</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;v0&quot;</span><span class="p">]</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;lr&quot;</span><span class="p">]</span>
+        <span class="n">eps1</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;eps1&quot;</span><span class="p">]</span>
+        <span class="n">eps2</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;eps2&quot;</span><span class="p">]</span>
+        <span class="n">threshold0</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;threshold0&quot;</span><span class="p">]</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">V</span> <span class="o">&gt;</span> <span class="n">eps2</span><span class="p">:</span>
+            <span class="n">EoverV</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_energy</span> <span class="o">/</span> <span class="n">V</span>
+            <span class="n">VoverE</span> <span class="o">=</span> <span class="n">V</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_energy</span>
+
+            <span class="c1"># Now I check if loss and pi^2 are consistent with the initial value of the energy</span>
+
+            <span class="n">ps2_pre</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+                <span class="mf">0.0</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">param_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">device</span>
+            <span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]:</span>
+                <span class="n">param_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+                <span class="n">d_p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">data</span>
+                <span class="c1"># Initialize in the direction of the gradient, with magnitude related to deltaE</span>
+                <span class="k">if</span> <span class="s2">&quot;momentum_buffer&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">param_state</span><span class="p">:</span>
+                    <span class="n">buf</span> <span class="o">=</span> <span class="n">param_state</span><span class="p">[</span><span class="s2">&quot;momentum_buffer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span>
+                        <span class="n">d_p</span> <span class="o">/</span> <span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">d_p</span><span class="p">)</span>
+                    <span class="p">)</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                        <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+                            <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">init_energy</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">initV</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">initV</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">buf</span> <span class="o">=</span> <span class="n">param_state</span><span class="p">[</span><span class="s2">&quot;momentum_buffer&quot;</span><span class="p">]</span>
+
+                <span class="c1"># compute the current pi^2 . Pre means that this is the value before the iteration step</span>
+                <span class="n">ps2_pre</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">buf</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">buf</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">consEn</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="c1"># Compare this \pi^2 with what it should have been if the energy was correct</span>
+                <span class="n">ps2_correct</span> <span class="o">=</span> <span class="n">V</span> <span class="o">*</span> <span class="p">((</span><span class="n">EoverV</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span>
+
+                <span class="c1"># Compute the rescaling factor, only if real</span>
+                <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ps2_pre</span> <span class="o">-</span> <span class="n">ps2_correct</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">eps1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">rescaling_pi</span> <span class="o">=</span> <span class="mf">1.0</span>
+                <span class="k">elif</span> <span class="n">ps2_correct</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">rescaling_pi</span> <span class="o">=</span> <span class="mf">1.0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">rescaling_pi</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(((</span><span class="n">ps2_correct</span> <span class="o">/</span> <span class="p">(</span><span class="n">ps2_pre</span><span class="p">))))</span>
+
+            <span class="c1"># Perform the optimization step</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">!=</span> <span class="n">threshold</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">counter0</span> <span class="o">!=</span> <span class="n">threshold0</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">grad</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="n">d_p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">data</span>
+                    <span class="n">param_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+
+                    <span class="k">if</span> <span class="s2">&quot;momentum_buffer&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">param_state</span><span class="p">:</span>
+                        <span class="n">buf</span> <span class="o">=</span> <span class="n">param_state</span><span class="p">[</span><span class="s2">&quot;momentum_buffer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span>
+                            <span class="n">p</span><span class="o">.</span><span class="n">data</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">buf</span> <span class="o">=</span> <span class="n">param_state</span><span class="p">[</span><span class="s2">&quot;momentum_buffer&quot;</span><span class="p">]</span>
+
+                    <span class="c1"># Here the rescaling of momenta to enforce conservation of energy</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">consEn</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="n">buf</span><span class="o">.</span><span class="n">mul_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rescaling_pi</span><span class="p">)</span>
+
+                    <span class="n">buf</span><span class="o">.</span><span class="n">add_</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="n">VoverE</span> <span class="o">+</span> <span class="n">EoverV</span><span class="p">)</span> <span class="o">*</span> <span class="n">d_p</span><span class="p">)</span>
+                    <span class="n">p</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">add_</span><span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="n">VoverE</span> <span class="o">*</span> <span class="n">buf</span><span class="p">)</span>
+
+                <span class="c1"># Updates counters</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">counter0</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="c1"># Checks progress</span>
+                <span class="k">if</span> <span class="n">V</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_loss</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">min_loss</span> <span class="o">=</span> <span class="n">V</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># Bounces</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># First we iterate once to compute pi^2, we randomly regenerate the directions, and we compute the new norm squared</span>
+
+                <span class="n">ps20</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+                    <span class="mf">0.0</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">param_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">device</span>
+                <span class="p">)</span>
+                <span class="n">ps2new</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+                    <span class="mf">0.0</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">param_groups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;params&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">device</span>
+                <span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]:</span>
+                    <span class="n">param_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+
+                    <span class="n">buf</span> <span class="o">=</span> <span class="n">param_state</span><span class="p">[</span><span class="s2">&quot;momentum_buffer&quot;</span><span class="p">]</span>
+                    <span class="n">ps20</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">buf</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">buf</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                    <span class="n">new_buf</span> <span class="o">=</span> <span class="n">param_state</span><span class="p">[</span><span class="s2">&quot;momentum_buffer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span>
+                            <span class="n">buf</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">device</span><span class="o">=</span><span class="n">buf</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">generator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">generator</span>
+                        <span class="p">)</span>
+                        <span class="o">-</span> <span class="mf">0.5</span>
+                    <span class="p">)</span>
+                    <span class="n">ps2new</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">new_buf</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">new_buf</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+                <span class="c1"># Then rescale them</span>
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]:</span>
+                    <span class="n">param_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+                    <span class="n">buf</span> <span class="o">=</span> <span class="n">param_state</span><span class="p">[</span><span class="s2">&quot;momentum_buffer&quot;</span><span class="p">]</span>
+                    <span class="n">buf</span><span class="o">.</span><span class="n">mul_</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ps20</span> <span class="o">/</span> <span class="n">ps2new</span><span class="p">))</span>
+
+                <span class="c1"># Update counters</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">counter0</span> <span class="o">==</span> <span class="n">threshold0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fixed_bounces_performed</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_bounces_performed</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_fixed_bounces</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">counter0</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">counter0</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">loss</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+
+  </div>
+
+  </div>
+
+</div></p>
+    </article>
+</section>
+<!-- endblock -->
+            </main>
+
+            
+                    <!-- block preview -->
+        <div class="row row-cols-md-3 text-center pt-md-3" id="component-preview">
+            <div class="col themed-grid-col">
+                <a rel="prev" href="../simulai_optimizer/" class="nav-link">
+                    <i class="fa fa-arrow-left"></i> Previous
+                </a>
+            </div>
+            <div class="col themed-grid-col"></div>
+            <div class="col themed-grid-col">
+                <a rel="next" href="../simulai_losses/" class="nav-link">
+                    Next <i class="fa fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+<!-- endblock -->
+            
+
+            
+                    <!-- block footer -->
+<footer class="pt-4 my-md-5 pt-md-5 border-top" id="component-footer">
+    <div class="row">
+        <div class="col-12 col-md">
+                <!-- block copyright -->
+
+    <small class="d-block mb-3">
+        Made with
+        <a href="https://github.com/FernandoCelmer/mkdocs-simple-blog" target="_blank" rel="noopener">
+            Simple Blog for MkDocs
+        </a>
+    </small>
+
+<!-- endblock -->
+        </div>
+    </div>
+</footer>
+<!-- endblock -->
+            
+        </div>
+
+            <script>var base_url = '../..';</script>
+            <script src="../../assets/js/jquery-3.3.1.slim.min.js""></script>
+            <script src="../../assets/js/bootstrap.bundle.min.js""></script>
+            <script src="../../assets/js/main.min.js""></script>
+                <script src="../../search/main.js" defer></script>
+
+    </body>
+
+</html>
