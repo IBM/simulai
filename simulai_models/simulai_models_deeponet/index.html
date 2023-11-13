@@ -248,7 +248,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../../simulai_optimization/simulai_optimizer/" class="dropdown-item text-decoration-none ">Optimization Interfaces</a>
+        <a href="../../simulai_optimization/simulai_optimizer/" class="dropdown-item text-decoration-none ">Simulai optimizer</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -260,7 +260,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../../simulai_optimization/simulai_builtin_optimizers/" class="dropdown-item text-decoration-none ">Built-in Optimizers</a>
+        <a href="../../simulai_optimization/simulai_builtin_optimizers/" class="dropdown-item text-decoration-none ">Simulai builtin optimizers</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -272,7 +272,7 @@
         <ul class="submenu dropdown-menu">
                 <!-- block dropdown-menu -->
     <li>
-        <a href="../../simulai_optimization/simulai_losses/" class="dropdown-item text-decoration-none ">Loss Functions</a>
+        <a href="../../simulai_optimization/simulai_losses/" class="dropdown-item text-decoration-none ">Simulai losses</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -2280,8 +2280,7 @@ of the Universal Approximation Theorem.</p>
 <span class="normal">584</span>
 <span class="normal">585</span>
 <span class="normal">586</span>
-<span class="normal">587</span>
-<span class="normal">588</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ResDeepONet</span><span class="p">(</span><span class="n">DeepONet</span><span class="p">):</span>
+<span class="normal">587</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ResDeepONet</span><span class="p">(</span><span class="n">DeepONet</span><span class="p">):</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;resdeeponet&quot;</span>
     <span class="n">engine</span> <span class="o">=</span> <span class="s2">&quot;torch&quot;</span>
 
@@ -2312,8 +2311,7 @@ of the Universal Approximation Theorem.</p>
 <span class="sd">            rescale_factors (np.ndarray, optional): Values used for rescaling the network outputs for a given order of magnitude. (Default value = None)</span>
 <span class="sd">            residual (bool, optional): Consider the DeepONet as a residual layer (sum the output to the branch input) or not. (Default value = True)</span>
 <span class="sd">            multiply_by_trunk (bool, optional): Multiply the output by the trunk input or not. NOTE: if the option &#39;residual&#39;</span>
-<span class="sd">        is activated it is performed after the multiplication:</span>
-<span class="sd">        `output*trunk_input + branch_input` (Default value = False)</span>
+<span class="sd">                is activated it is performed after the multiplication `output*trunk_input + branch_input` (Default value = False)</span>
 <span class="sd">            model_id (str, optional): Name for the model (Default value = None)</span>
 <span class="sd">            use_bias (bool, optional):  (Default value = False)</span>
 
@@ -2561,7 +2559,36 @@ of the Universal Approximation Theorem.</p>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>Multiply the output by the trunk input or not. NOTE: if the option 'residual'</p>
+              <p>Multiply the output by the trunk input or not. NOTE: if the option 'residual'
+is activated it is performed after the multiplication <code>output*trunk_input + branch_input</code> (Default value = False)</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>model_id</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Name for the model (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>use_bias</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = False)</p>
             </div>
           </td>
           <td>
@@ -2570,10 +2597,6 @@ of the Universal Approximation Theorem.</p>
         </tr>
     </tbody>
   </table>
-      <p>is activated it is performed after the multiplication:
-<code>output*trunk_input + branch_input</code> (Default value = False)
-    model_id (str, optional): Name for the model (Default value = None)
-    use_bias (bool, optional):  (Default value = False)</p>
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_deeponet.py</code></summary>
@@ -2637,8 +2660,7 @@ of the Universal Approximation Theorem.</p>
 <span class="normal">520</span>
 <span class="normal">521</span>
 <span class="normal">522</span>
-<span class="normal">523</span>
-<span class="normal">524</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">523</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">trunk_network</span><span class="p">:</span> <span class="n">NetworkTemplate</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">branch_network</span><span class="p">:</span> <span class="n">NetworkTemplate</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -2665,8 +2687,7 @@ of the Universal Approximation Theorem.</p>
 <span class="sd">        rescale_factors (np.ndarray, optional): Values used for rescaling the network outputs for a given order of magnitude. (Default value = None)</span>
 <span class="sd">        residual (bool, optional): Consider the DeepONet as a residual layer (sum the output to the branch input) or not. (Default value = True)</span>
 <span class="sd">        multiply_by_trunk (bool, optional): Multiply the output by the trunk input or not. NOTE: if the option &#39;residual&#39;</span>
-<span class="sd">    is activated it is performed after the multiplication:</span>
-<span class="sd">    `output*trunk_input + branch_input` (Default value = False)</span>
+<span class="sd">            is activated it is performed after the multiplication `output*trunk_input + branch_input` (Default value = False)</span>
 <span class="sd">        model_id (str, optional): Name for the model (Default value = None)</span>
 <span class="sd">        use_bias (bool, optional):  (Default value = False)</span>
 
@@ -2727,7 +2748,8 @@ of the Universal Approximation Theorem.</p>
 
             <details class="quote">
               <summary>Source code in <code>simulai/models/_pytorch_models/_deeponet.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">591</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">590</span>
+<span class="normal">591</span>
 <span class="normal">592</span>
 <span class="normal">593</span>
 <span class="normal">594</span>
@@ -2881,8 +2903,7 @@ of the Universal Approximation Theorem.</p>
 <span class="normal">742</span>
 <span class="normal">743</span>
 <span class="normal">744</span>
-<span class="normal">745</span>
-<span class="normal">746</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ImprovedDeepONet</span><span class="p">(</span><span class="n">ResDeepONet</span><span class="p">):</span>
+<span class="normal">745</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ImprovedDeepONet</span><span class="p">(</span><span class="n">ResDeepONet</span><span class="p">):</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;improveddeeponet&quot;</span>
     <span class="n">engine</span> <span class="o">=</span> <span class="s2">&quot;torch&quot;</span>
 
@@ -2911,9 +2932,9 @@ of the Universal Approximation Theorem.</p>
 <span class="sd">            branch_network (ConvexDenseNetwork, optional): Subnetwork for processing the forcing/conditioning inputs. (Default value = None)</span>
 <span class="sd">            decoder_network (NetworkTemplate, optional): Subnetwork for converting the embedding to the output (optional). (Default value = None)</span>
 <span class="sd">            encoder_trunk (NetworkTemplate, optional): Shallow subnework used to map the trunk input to an auxiliary embedding</span>
-<span class="sd">        employed in combination with the hidden spaces. (Default value = None)</span>
+<span class="sd">                employed in combination with the hidden spaces. (Default value = None)</span>
 <span class="sd">            encoder_branch (NetworkTemplate, optional): Shallow subnework used to map the branch input to an auxiliary embedding</span>
-<span class="sd">        employed in combination with the hidden spaces. (Default value = None)</span>
+<span class="sd">                employed in combination with the hidden spaces. (Default value = None)</span>
 <span class="sd">            var_dim (int, optional): Number of output variables. (Default value = 1)</span>
 <span class="sd">            devices (Union[str, list], optional): Devices in which the model will be executed. (Default value = &quot;cpu&quot;)</span>
 <span class="sd">            product_type (str, optional): Type of product to execute in the embedding space. (Default value = None)</span>
@@ -3133,30 +3154,148 @@ between the trunk and branch pipelines during the training process, thus allowin
           </td>
           <td>
             <div class="doc-md-description">
-              <p>Shallow subnework used to map the trunk input to an auxiliary embedding</p>
+              <p>Shallow subnework used to map the trunk input to an auxiliary embedding
+employed in combination with the hidden spaces. (Default value = None)</p>
             </div>
           </td>
           <td>
                 <code>None</code>
           </td>
         </tr>
+        <tr>
+          <td><code>encoder_branch</code></td>
+          <td>
+                <code><span title="simulai.templates.NetworkTemplate">NetworkTemplate</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Shallow subnework used to map the branch input to an auxiliary embedding
+employed in combination with the hidden spaces. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>var_dim</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Number of output variables. (Default value = 1)</p>
+            </div>
+          </td>
+          <td>
+                <code>1</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>devices</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[str, list]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Devices in which the model will be executed. (Default value = "cpu")</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;cpu&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>product_type</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Type of product to execute in the embedding space. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>rescale_factors</code></td>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Values used for rescaling the network outputs for a given order of magnitude. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>residual</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = False)</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>multiply_by_trunk</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = False)</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>model_id</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Name for the model (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>use_bias</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = False)</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
     </tbody>
   </table>
-      <p>employed in combination with the hidden spaces. (Default value = None)
-    encoder_branch (NetworkTemplate, optional): Shallow subnework used to map the branch input to an auxiliary embedding
-employed in combination with the hidden spaces. (Default value = None)
-    var_dim (int, optional): Number of output variables. (Default value = 1)
-    devices (Union[str, list], optional): Devices in which the model will be executed. (Default value = "cpu")
-    product_type (str, optional): Type of product to execute in the embedding space. (Default value = None)
-    rescale_factors (np.ndarray, optional): Values used for rescaling the network outputs for a given order of magnitude. (Default value = None)
-    residual (bool, optional):  (Default value = False)
-    multiply_by_trunk (bool, optional):  (Default value = False)
-    model_id (str, optional): Name for the model (Default value = None)
-    use_bias (bool, optional):  (Default value = False)</p>
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_deeponet.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">595</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">594</span>
+<span class="normal">595</span>
 <span class="normal">596</span>
 <span class="normal">597</span>
 <span class="normal">598</span>
@@ -3226,8 +3365,7 @@ employed in combination with the hidden spaces. (Default value = None)
 <span class="normal">662</span>
 <span class="normal">663</span>
 <span class="normal">664</span>
-<span class="normal">665</span>
-<span class="normal">666</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">665</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">trunk_network</span><span class="p">:</span> <span class="n">ConvexDenseNetwork</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">branch_network</span><span class="p">:</span> <span class="n">ConvexDenseNetwork</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -3252,9 +3390,9 @@ employed in combination with the hidden spaces. (Default value = None)
 <span class="sd">        branch_network (ConvexDenseNetwork, optional): Subnetwork for processing the forcing/conditioning inputs. (Default value = None)</span>
 <span class="sd">        decoder_network (NetworkTemplate, optional): Subnetwork for converting the embedding to the output (optional). (Default value = None)</span>
 <span class="sd">        encoder_trunk (NetworkTemplate, optional): Shallow subnework used to map the trunk input to an auxiliary embedding</span>
-<span class="sd">    employed in combination with the hidden spaces. (Default value = None)</span>
+<span class="sd">            employed in combination with the hidden spaces. (Default value = None)</span>
 <span class="sd">        encoder_branch (NetworkTemplate, optional): Shallow subnework used to map the branch input to an auxiliary embedding</span>
-<span class="sd">    employed in combination with the hidden spaces. (Default value = None)</span>
+<span class="sd">            employed in combination with the hidden spaces. (Default value = None)</span>
 <span class="sd">        var_dim (int, optional): Number of output variables. (Default value = 1)</span>
 <span class="sd">        devices (Union[str, list], optional): Devices in which the model will be executed. (Default value = &quot;cpu&quot;)</span>
 <span class="sd">        product_type (str, optional): Type of product to execute in the embedding space. (Default value = None)</span>
@@ -3405,7 +3543,8 @@ employed in combination with the hidden spaces. (Default value = None)
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_deeponet.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">702</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">701</span>
+<span class="normal">702</span>
 <span class="normal">703</span>
 <span class="normal">704</span>
 <span class="normal">705</span>
@@ -3438,8 +3577,7 @@ employed in combination with the hidden spaces. (Default value = None)
 <span class="normal">732</span>
 <span class="normal">733</span>
 <span class="normal">734</span>
-<span class="normal">735</span>
-<span class="normal">736</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@guarantee_device</span>
+<span class="normal">735</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@guarantee_device</span>
 <span class="k">def</span> <span class="nf">eval_subnetwork</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -3501,7 +3639,8 @@ employed in combination with the hidden spaces. (Default value = None)
 
             <details class="quote">
               <summary>Source code in <code>simulai/models/_pytorch_models/_deeponet.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">749</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">748</span>
+<span class="normal">749</span>
 <span class="normal">750</span>
 <span class="normal">751</span>
 <span class="normal">752</span>
@@ -3658,8 +3797,7 @@ employed in combination with the hidden spaces. (Default value = None)
 <span class="normal">903</span>
 <span class="normal">904</span>
 <span class="normal">905</span>
-<span class="normal">906</span>
-<span class="normal">907</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">FlexibleDeepONet</span><span class="p">(</span><span class="n">ResDeepONet</span><span class="p">):</span>
+<span class="normal">906</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">FlexibleDeepONet</span><span class="p">(</span><span class="n">ResDeepONet</span><span class="p">):</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;flexibledeeponet&quot;</span>
     <span class="n">engine</span> <span class="o">=</span> <span class="s2">&quot;torch&quot;</span>
 
@@ -3688,7 +3826,7 @@ employed in combination with the hidden spaces. (Default value = None)
 <span class="sd">            branch_network (NetworkTemplate, optional): Subnetwork for processing the forcing/conditioning inputs. (Default value = None)</span>
 <span class="sd">            decoder_network (NetworkTemplate, optional): Subnetwork for converting the embedding to the output (optional). (Default value = None)</span>
 <span class="sd">            pre_network (NetworkTemplate, optional): Subnework used to predict rescaling parameters for the trunk input</span>
-<span class="sd">        accordingly the branch input. (Default value = None)</span>
+<span class="sd">                accordingly the branch input. (Default value = None)</span>
 <span class="sd">            var_dim (int, optional): Number of output variables. (Default value = 1)</span>
 <span class="sd">            devices (Union[str, list], optional): Devices in which the model will be executed. (Default value = &quot;cpu&quot;)</span>
 <span class="sd">            product_type (str, optional): Type of product to execute in the embedding space. (Default value = None)</span>
@@ -3914,28 +4052,133 @@ It is an attempt of reducing the training bias related to the different
           </td>
           <td>
             <div class="doc-md-description">
-              <p>Subnework used to predict rescaling parameters for the trunk input</p>
+              <p>Subnework used to predict rescaling parameters for the trunk input
+accordingly the branch input. (Default value = None)</p>
             </div>
           </td>
           <td>
                 <code>None</code>
           </td>
         </tr>
+        <tr>
+          <td><code>var_dim</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Number of output variables. (Default value = 1)</p>
+            </div>
+          </td>
+          <td>
+                <code>1</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>devices</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[str, list]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Devices in which the model will be executed. (Default value = "cpu")</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;cpu&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>product_type</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Type of product to execute in the embedding space. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>rescale_factors</code></td>
+          <td>
+                <code><span title="numpy.ndarray">ndarray</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Values used for rescaling the network outputs for a given order of magnitude. (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>residual</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = False)</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>multiply_by_trunk</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = False)</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>model_id</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Name for the model (Default value = None)</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>use_bias</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>(Default value = False)</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
     </tbody>
   </table>
-      <p>accordingly the branch input. (Default value = None)
-    var_dim (int, optional): Number of output variables. (Default value = 1)
-    devices (Union[str, list], optional): Devices in which the model will be executed. (Default value = "cpu")
-    product_type (str, optional): Type of product to execute in the embedding space. (Default value = None)
-    rescale_factors (np.ndarray, optional): Values used for rescaling the network outputs for a given order of magnitude. (Default value = None)
-    residual (bool, optional):  (Default value = False)
-    multiply_by_trunk (bool, optional):  (Default value = False)
-    model_id (str, optional): Name for the model (Default value = None)
-    use_bias (bool, optional):  (Default value = False)</p>
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_deeponet.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">753</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">752</span>
+<span class="normal">753</span>
 <span class="normal">754</span>
 <span class="normal">755</span>
 <span class="normal">756</span>
@@ -4002,8 +4245,7 @@ It is an attempt of reducing the training bias related to the different
 <span class="normal">817</span>
 <span class="normal">818</span>
 <span class="normal">819</span>
-<span class="normal">820</span>
-<span class="normal">821</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">820</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">trunk_network</span><span class="p">:</span> <span class="n">NetworkTemplate</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">branch_network</span><span class="p">:</span> <span class="n">NetworkTemplate</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -4028,7 +4270,7 @@ It is an attempt of reducing the training bias related to the different
 <span class="sd">        branch_network (NetworkTemplate, optional): Subnetwork for processing the forcing/conditioning inputs. (Default value = None)</span>
 <span class="sd">        decoder_network (NetworkTemplate, optional): Subnetwork for converting the embedding to the output (optional). (Default value = None)</span>
 <span class="sd">        pre_network (NetworkTemplate, optional): Subnework used to predict rescaling parameters for the trunk input</span>
-<span class="sd">    accordingly the branch input. (Default value = None)</span>
+<span class="sd">            accordingly the branch input. (Default value = None)</span>
 <span class="sd">        var_dim (int, optional): Number of output variables. (Default value = 1)</span>
 <span class="sd">        devices (Union[str, list], optional): Devices in which the model will be executed. (Default value = &quot;cpu&quot;)</span>
 <span class="sd">        product_type (str, optional): Type of product to execute in the embedding space. (Default value = None)</span>
@@ -4178,7 +4420,8 @@ It is an attempt of reducing the training bias related to the different
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_deeponet.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">870</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">869</span>
+<span class="normal">870</span>
 <span class="normal">871</span>
 <span class="normal">872</span>
 <span class="normal">873</span>
@@ -4206,8 +4449,7 @@ It is an attempt of reducing the training bias related to the different
 <span class="normal">895</span>
 <span class="normal">896</span>
 <span class="normal">897</span>
-<span class="normal">898</span>
-<span class="normal">899</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@guarantee_device</span>
+<span class="normal">898</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@guarantee_device</span>
 <span class="k">def</span> <span class="nf">eval_subnetwork</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
