@@ -64,5 +64,9 @@ nav:
       - U-Net:
         - simulai_models/simulai_models_unet.md
     - Optimization:
+      - Optimization Interfaces:
         - simulai_optimization/simulai_optimizer.md
-
+      - Built-in Optimizers:
+        - simulai_optimization/simulai_builtin_optimizers.md
+      - Loss Functions:
+        - simulai_optimization/simulai_losses.md
