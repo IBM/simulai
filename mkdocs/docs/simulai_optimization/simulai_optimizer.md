@@ -1,7 +1,11 @@
-# Optimization Interfaces
+<style>
+red { color: red }
+</style>
 
-## Optimizer
+# <red>Optimization Interfaces</red>
+
+## <red>Optimizer</red>
 ::: simulai.optimization.Optimizer
 
-## ScipyInterface
+## <red>ScipyInterface</red>
 ::: simulai.optimization.ScipyInterface

@@ -1,10 +1,14 @@
-# Loss Functions
+<style>
+red { color: red }
+</style>
 
-## RMSELoss
+# <red>Loss Functions</red>
+
+## <red>RMSELoss</red>
 ::: simulai.optimization.RMSELoss
-## WRMSELoss
+## <red>WRMSELoss</red>
 ::: simulai.optimization.WRMSELoss
-## PIRMSELoss
+## <red>PIRMSELoss</red>
 ::: simulai.optimization.PIRMSELoss
 
 

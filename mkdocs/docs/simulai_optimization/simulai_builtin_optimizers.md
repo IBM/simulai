@@ -1,6 +1,10 @@
-# Built-in Optimizers
+<style>
+red { color: red }
+</style>
 
-## SpaRSA
+# <red>Built-in Optimizers</red>
+
+## <red>SpaRSA</red>
 ::: simulai.optimization.SpaRSA
-## BBI
+## <red>BBI</red>
 ::: simulai.optimization.BBI
