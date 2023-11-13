@@ -63,3 +63,6 @@ nav:
         - simulai_models/simulai_models_autoencoder.md
       - U-Net:
         - simulai_models/simulai_models_unet.md
+    - Optimization:
+        - simulai_optimization/simulai_optimizer.md
+

@@ -155,6 +155,22 @@ class Optimizer:
         early_stopping_params: dict = None,
         checkpoint_params: dict = None,
     ) -> None:
+        """
+
+        Args:
+            optimizer (str): A name for a PyTorch optimizer.
+            early_stopping (bool): Early-stopping will be used or not. 
+            summary_writer (bool): Write a Tensorboard run file or not.
+            shuffle (bool): Shuffle the dataset or not. 
+            lr_decay_scheduler_params (dict): The parameters used for defining 
+                a learning rate decay scheme.
+            params (dict): Extra parameters which provide information for task-specific
+                problems (as Physics-Informed neural networks).
+            early_stopping_params (dict): Parameters required by the early-stopping scheme.
+            checkpoint_params (dict): Parameters for configuring the checkpointing scheme.
+
+        """
+
         if "n_samples" in list(params.keys()):
             self.n_samples = params.pop("n_samples")
         else:
@@ -634,6 +650,25 @@ class Optimizer:
         distributed: bool = False,
         use_jit: bool = False,
     ) -> None:
+        """
+
+        Args:
+            op (NetworkTemplate): The model which will be trained
+            input_data (Union[dict, torch.Tensor, np.ndarray, callable]): The (or collection of) dataset(s) used as 
+                input for the model. 
+            target_data (Union[torch.Tensor, np.ndarray, callable]): The target data for the problem.
+            validation_data (Tuple[Union[torch.Tensor, np.ndarray, callable]]): The validation data used for the problem
+                (if required).
+            n_epochs (int): Number of epochs for the optimization process. 
+            loss (str): A string for referring some loss function defined on simulai/optimization/_losses.py.ndarray
+            params (dict): Extra parameters required for task-specific problems (as Physics-informed neural networks).
+            batch_size (int): The size of the batch used in each optimization epoch
+            device (str): The device in which the optimization will run, 'cpu' or 'gpu'.
+            distributed (bool): Use distributed (multi-node) training or not. 
+            use_jit (bool): Use PyTorch JIT (Just in time compilation) or not.
+
+        """
+        
         # Verifying if the params dictionary contains Physics-informed
         # attributes
         extra_parameters = None
@@ -860,6 +895,21 @@ class ScipyInterface:
         device: str = "cpu",
         jac: str = None,
     ) -> None:
+        """An interface for using SciPy-defined optimization algorithms.
+
+        Args:
+            fun (NetworkTemplate): A model (neural network) to be trained.
+            optimizer (str): A name for an optimizar available on SciPy.
+            optimizer_config (dict): A configuration dictionary for the chosen optimizer.
+            loss (callable): A loss function implemented in the form of a Python function or class.
+            loss_config (dict): A configuration dictionary for the loss function.
+            device (str): The device in which the optimization will be executed ('cpu' or 'gpu').
+            jac (str): If necessary, define a method for evaluating the Jacobian available on SciPy.
+
+        Raises:
+            Exception: If a not recognized device is defined as 'device'.
+
+        """
         # Configuring the device to be used during the fitting process
         device_label = device
         if device == "gpu":
@@ -925,6 +975,16 @@ class ScipyInterface:
     def _stack_and_convert_parameters(
         self, parameters: List[Union[torch.Tensor, np.ndarray]]
     ) -> np.ndarray:
+        """
+        It produces a stack of all the model parameters.
+        
+        Args:
+            parameters (List[Union[torch.Tensor, np.ndarray]]): A list containing all the 
+                model parameters in their original shapes.
+        Returns:
+           np.ndarray: A stack (single vertical array) of all the model parameters. 
+
+        """
         return np.hstack(
             [
                 param.detach().numpy().astype(np.float64).flatten()
@@ -933,6 +993,12 @@ class ScipyInterface:
         )
 
     def _update_and_set_parameters(self, parameters: np.ndarray) -> None:
+        """
+        It updates the parameters with the new values estimated by the optimizer.
+        Args:
+            parameters (np.ndarray): The stack of all the model parameters.
+
+        """
         operators = [
             torch.from_numpy(
                 parameters[slice(*interval)].reshape(shape).astype(self.default_dtype)
@@ -946,12 +1012,34 @@ class ScipyInterface:
             parameter.data.copy_(operators[opi])
 
     def _exec_kwargs_forward(self, input_data: dict = None):
+
+        """It executes the forward pass for the model when it receives more than one input.
+        Args:
+            input_data dict: Data to be passed to the model. 
+
+        """
+
         return self.fun.forward(**input_data)
 
     def _exec_forward(self, input_data: Union[np.ndarray, torch.Tensor] = None):
+
+        """It executes the forward pass for the model.
+        Args:
+            input_data (Union[np.ndarray, torch.Tensor]): Data to be passed to the model. 
+
+        """
+
         return self.fun.forward(input_data=input_data)
 
     def _fun_num(self, parameters: np.ndarray) -> Tuple[float]:
+        """
+
+        Args:
+            parameters (np.ndarray): The stacked parameters defined for the model. 
+        Returns:
+            Tuple[float]: The loss(es) defined for the optimization process.              
+        """
+
         self._update_and_set_parameters(parameters)
 
         closure = self.loss(self.input_data, self.target_data, **self.loss_config)
@@ -960,6 +1048,15 @@ class ScipyInterface:
         return loss.detach().cpu().numpy().astype(np.float64)
 
     def _fun(self, parameters: np.ndarray) -> Tuple[float, np.ndarray]:
+        """
+        Args:
+            parameters (np.ndarray): The stack of all the trainable parameters for the model.
+
+        Returns:
+            Tuple[float, np.ndarray]: A tuple containing the value for the loss function and 
+            the array of gradients for the model parameters. 
+        """
+
         # Setting the new values for the model parameters
         self._update_and_set_parameters(parameters)
 
@@ -984,6 +1081,14 @@ class ScipyInterface:
         input_data: Union[dict, torch.Tensor, np.ndarray] = None,
         target_data: Union[torch.Tensor, np.ndarray] = None,
     ) -> None:
+        """
+
+        Args:
+            input_data (Union[dict, torch.Tensor, np.ndarray]): The (or collection of) dataset(s) used as 
+                input for the model. 
+            target_data (Union[torch.Tensor, np.ndarray]): The target data used for training the model. 
+
+        """
         parameters_0 = self._stack_and_convert_parameters(self.state_0)
 
         print(
