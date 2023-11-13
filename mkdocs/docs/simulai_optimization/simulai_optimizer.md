@@ -1,4 +1,4 @@
-# Optimizer
+# Optimization Interfaces
 
 ## Optimizer
 ::: simulai.optimization.Optimizer
