@@ -487,8 +487,7 @@ class ResDeepONet(DeepONet):
             rescale_factors (np.ndarray, optional): Values used for rescaling the network outputs for a given order of magnitude. (Default value = None)
             residual (bool, optional): Consider the DeepONet as a residual layer (sum the output to the branch input) or not. (Default value = True)
             multiply_by_trunk (bool, optional): Multiply the output by the trunk input or not. NOTE: if the option 'residual'
-        is activated it is performed after the multiplication:
-        `output*trunk_input + branch_input` (Default value = False)
+                is activated it is performed after the multiplication `output*trunk_input + branch_input` (Default value = False)
             model_id (str, optional): Name for the model (Default value = None)
             use_bias (bool, optional):  (Default value = False)
 
@@ -617,9 +616,9 @@ class ImprovedDeepONet(ResDeepONet):
             branch_network (ConvexDenseNetwork, optional): Subnetwork for processing the forcing/conditioning inputs. (Default value = None)
             decoder_network (NetworkTemplate, optional): Subnetwork for converting the embedding to the output (optional). (Default value = None)
             encoder_trunk (NetworkTemplate, optional): Shallow subnework used to map the trunk input to an auxiliary embedding
-        employed in combination with the hidden spaces. (Default value = None)
+                employed in combination with the hidden spaces. (Default value = None)
             encoder_branch (NetworkTemplate, optional): Shallow subnework used to map the branch input to an auxiliary embedding
-        employed in combination with the hidden spaces. (Default value = None)
+                employed in combination with the hidden spaces. (Default value = None)
             var_dim (int, optional): Number of output variables. (Default value = 1)
             devices (Union[str, list], optional): Devices in which the model will be executed. (Default value = "cpu")
             product_type (str, optional): Type of product to execute in the embedding space. (Default value = None)
@@ -775,7 +774,7 @@ class FlexibleDeepONet(ResDeepONet):
             branch_network (NetworkTemplate, optional): Subnetwork for processing the forcing/conditioning inputs. (Default value = None)
             decoder_network (NetworkTemplate, optional): Subnetwork for converting the embedding to the output (optional). (Default value = None)
             pre_network (NetworkTemplate, optional): Subnework used to predict rescaling parameters for the trunk input
-        accordingly the branch input. (Default value = None)
+                accordingly the branch input. (Default value = None)
             var_dim (int, optional): Number of output variables. (Default value = 1)
             devices (Union[str, list], optional): Devices in which the model will be executed. (Default value = "cpu")
             product_type (str, optional): Type of product to execute in the embedding space. (Default value = None)
