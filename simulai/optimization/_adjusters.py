@@ -10,6 +10,15 @@ class WeightsEstimator:
         pass
 
     def _clip_grad(self, grad: torch.Tensor = None, size: int = None) -> torch.Tensor:
+        """Filtering gradients.
+        Args:
+            grad (torch.Tensor): Tensor containing the gradients of all the parameters.
+            size (int): Number of parameters.
+
+        Returns:
+            torch.Tensor: The clipped gradients. 
+
+        """
         if not isinstance(grad, torch.Tensor):
             return torch.zeros(size).detach()
         else:
@@ -18,6 +27,16 @@ class WeightsEstimator:
     def _grad(
         self, loss: torch.tensor = None, operator: NetworkTemplate = None
     ) -> torch.Tensor:
+        """It evaluates the gradients of loss function w.r.t. all the model parameters.
+
+        Args:
+            loss (torch.tensor): The current state of the loss function.
+            operator (NetworkTemplate): The model being trained. 
+
+        Returns:
+            torch.Tensor: The gradients evaluated for all the parameters. 
+
+        """
         if loss.requires_grad:
             loss.backward(retain_graph=True)
 
@@ -43,6 +62,10 @@ class WeightsEstimator:
 
 class GeometricMean:
     def __init__(self):
+        """Simple and naive approach for balancing the loss terms in which
+           they are rescaled to have the same order of magnitude of the geometric 
+           mean between all the terms.
+        """
         pass
 
     def __call__(
@@ -52,6 +75,15 @@ class GeometricMean:
         loss_history=Dict[str, float],
         **kwargs,
     ) -> None:
+        """
+
+        Args:
+            residual (List[torch.Tensor]): List containing all the equation-based
+                loss terms.
+            loss_evaluator (Callable): A Python class or function for evaluating 
+                the loss function.
+
+        """
         n_res = len(residual)
         residual_norms = [loss_evaluator(res).detach() for res in residual]
         exps = [torch.log(res) for res in residual_norms]
@@ -65,6 +97,11 @@ class GeometricMean:
 
 class ShiftToMax:
     def __init__(self):
+        """Simple and naive approach for balancing the loss terms in which
+           they are rescaled to have the same order of magnitude of the maximum value
+           of all the terms.
+        """
+
         pass
 
     def __call__(
@@ -74,6 +111,15 @@ class ShiftToMax:
         loss_history=Dict[str, float],
         **kwargs,
     ) -> None:
+        """
+
+        Args:
+            residual (List[torch.Tensor]): List containing all the equation-based
+                loss terms.
+            loss_evaluator (Callable): A Python class or function for evaluating 
+                the loss function.
+        """
+
         n_res = len(residual)
         residual_norms = [loss_evaluator(res).detach() for res in residual]
         exps = [torch.log(res) for res in residual_norms]
@@ -99,6 +145,17 @@ class AnnealingWeights(WeightsEstimator):
         bound_weight: float = 1.0,
         extra_data_weight: float = 1.0,
     ) -> None:
+        """Learning rate Annealing technique used 
+            for scaling equation-based loss terms (see https://arxiv.org/abs/2001.04536)
+
+        Args:
+            alpha (float): 1 - update step.
+            init_weight (float): Initial value for the initial condition weight.
+            bound_weight (float): Initial value for the boundary condition weight.
+            extra_data_weight (float): Initial value for the weight related to 
+                data-drive loss terms.
+
+        """
         super().__init__()
 
         self.alpha = alpha
@@ -119,7 +176,19 @@ class AnnealingWeights(WeightsEstimator):
 
     def __call__(
         self, residual: torch.tensor = None, operator: NetworkTemplate = None, **kwargs
-    ) -> torch.tensor:
+    ) -> List[torch.tensor]:
+
+        """
+
+        Args:
+            residual (torch.tensor): Tensor containing the equation residual.
+            operator (NetworkTemplate): Model being trained. 
+
+        Returns:
+            List[torch.tensor]: A list containing the updated loss weights.
+
+        """
+
         pde = residual[0]
         init = residual[1]
         bound = residual[2]
@@ -153,6 +222,16 @@ class InverseDirichletWeights(WeightsEstimator):
     def __init__(
         self, alpha: float = None, initial_weights: List[float] = None
     ) -> None:
+
+        """Inverse Dirichlet technique used 
+            for scaling equation-based loss terms (see https://iopscience.iop.org/article/10.1088/2632-2153/ac3712/pdf)
+
+        Args:
+            alpha (float): 1 - update step.
+            initial_weights (List[float]): List containing the initial states of all the loss
+                function terms. 
+        """
+
         super().__init__()
 
         self.alpha = alpha
@@ -180,7 +259,18 @@ class InverseDirichletWeights(WeightsEstimator):
         loss_history: Dict[str, float] = None,
         operator: Callable = None,
         **kwargs,
-    ) -> None:
+    ) -> List[torch.Tensor]:
+        """
+
+        Args:
+            residual (List[torch.Tensor]): List of equation-based loss terms.
+            loss_evaluator (Callable): Python function or class which evaluates the 
+                loss function.
+            operator (Callable): Model being trained.
+        Returns:
+            List[torch.Tensor]: List of loss updated loss terms.
+        """
+
         residual_grads = list()
 
         for res in residual:

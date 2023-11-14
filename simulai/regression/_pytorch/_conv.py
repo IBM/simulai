@@ -47,8 +47,8 @@ class ConvolutionalNetwork(ConvNetworkTemplate):
 
     def __init__(
         self,
-        layers: list = None,
-        activations: list = None,
+        layers: List[dict] = None,
+        activations: List[str] = None,
         pre_layer: Optional[torch.nn.Module] = None,
         case: str = "2d",
         last_activation: str = "identity",
@@ -56,6 +56,20 @@ class ConvolutionalNetwork(ConvNetworkTemplate):
         flatten: bool = False,
         name: str = None,
     ) -> None:
+        """ Basic Convolutional network.
+
+        Args:
+            layers (List[dict]): List of layer configuration dictionaries.
+            activations (list): List of activation functions for the network layers.
+            pre_layer (Optional[torch.nn.Module]): A pre-processing layer used before
+                the convolutional network itself.
+            case (str): The dimensionality case, '1d', '2d' or '3d'.
+            last_activation (str): The activation for the last layer.
+            transpose (bool): Use transposed convolutions or not. 
+            flatten (bool): Flatten the output (remove unitary layers) or not. 
+            name (str): A name for the network model.
+
+        """
         super(ConvolutionalNetwork, self).__init__(name=name, flatten=flatten)
 
         self.args = ["in_channels", "out_channels", "kernel_size"]
@@ -114,6 +128,15 @@ class ConvolutionalNetwork(ConvNetworkTemplate):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
+        """ Convolutional network forward method.
+
+        Args:
+            input_data (Union[torch.Tensor, np.ndarray]): The input datasets.
+
+        Returns:
+            torch.Tensor: The forward evaluation.
+
+        """
         return self.flattener(input_data=self.pipeline(input_data))
 
 
@@ -128,6 +151,20 @@ class ResConvolutionalNetwork(ConvNetworkTemplate):
         transpose: bool = False,
         name: str = None,
     ) -> None:
+        """Residual version of the Convolutional network.
+
+
+        Args:
+            stages (List[list]): List containing the configuration for each 
+                stage (seen as a subnetwork).
+            activations (List[list]): Activations for all the layers.
+            case (str): The dimensionality case, '1d', '2d' or '3d'.
+            last_activation (str): The activation for the last layer.
+            transpose (bool): Use transposed convolutions or not. 
+            flatten (bool): Flatten the output (remove unitary layers) or not. 
+            name (str): A name for the network model.
+
+        """
         super(ResConvolutionalNetwork, self).__init__(name=name)
 
         self.args = ["in_channels", "out_channels", "kernel_size"]
@@ -193,6 +230,16 @@ class ResConvolutionalNetwork(ConvNetworkTemplate):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
+        """ Convolutional network forward method.
+
+        Args:
+            input_data (Union[torch.Tensor, np.ndarray]): The input datasets.
+
+        Returns:
+            torch.Tensor: The forward evaluation.
+
+        """
+
         input_tensor_ = input_data
 
         for block in self.blocks:

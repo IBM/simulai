@@ -44,6 +44,8 @@ nav:
       - simulai_activations.md
     - Parallel:
       - simulai_parallel.md
+    - Templates:
+      - simulai_templates/simulai_pytorch_templates.md
   - Subpackages:
     - Symbolic Manipulation:
       - simulai_residuals.md
@@ -70,3 +72,5 @@ nav:
         - simulai_optimization/simulai_builtin_optimizers.md
       - Loss Functions:
         - simulai_optimization/simulai_losses.md
+      - Adjusters:
+        - simulai_optimization/simulai_adjusters.md

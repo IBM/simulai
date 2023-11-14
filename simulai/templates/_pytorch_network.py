@@ -27,6 +27,14 @@ from simulai import ARRAY_DTYPE
 # Template for a generic neural network
 class NetworkTemplate(torch.nn.Module):
     def __init__(self, name: str = None, devices: str = None) -> None:
+        """Template for a generic neural network
+
+        Args:
+            name (str): Name for the neural network model.
+            devices (str): Kind of device in which the model will run, 
+                'cpu' or 'gpu'.
+
+        """
         super(NetworkTemplate, self).__init__()
 
         # Default choice for the model name
@@ -55,14 +63,29 @@ class NetworkTemplate(torch.nn.Module):
 
     @property
     def weights_l2(self) -> torch.Tensor:
+        """It evaluates the global L^2 norm of all the model coefficients. 
+        Returns:
+            torch.Tensor: A tensor containing the value of this norm.
+            
+        """
         return sum([torch.norm(weight, p=2) for weight in self.weights])
 
     @property
     def weights_l1(self) -> torch.Tensor:
+        """It evaluates the global L^1 norm of all the model coefficients. 
+        Returns:
+            torch.Tensor: A tensor containing the value of this norm.
+            
+        """
+
         return sum([torch.norm(weight, p=1) for weight in self.weights])
 
     @property
-    def n_parameters(self):
+    def n_parameters(self) -> int:
+        """It evaluates the total number of parameters for the model.eval 
+        Returns:
+            int: The total number of parameters for the model.
+        """
         try:
             return int(
                 sum([np.prod(tuple(param.shape)) for param in self.parameters()])
@@ -270,18 +293,39 @@ class NetworkTemplate(torch.nn.Module):
 
     # It returns all the model parameters in a single array.
     def get_parameters(self) -> np.ndarray:
+        """Returns all the model coefficients stacked into a single array.
+
+        Returns:
+            np.ndarray: A single-column array containing all the model parameters.
+
+        """
+
         layers = self._numpy_layers()
 
         return np.hstack([item.flatten() for item in sum(layers, [])])
 
     # It returns all the gradients of the model parameters in a single array.
     def get_gradients(self) -> np.ndarray:
+        """Returns all the model gradients (w.r.t the loss function) stacked into a single array.
+
+        Returns:
+            np.ndarray: A single-column array containing all the model gradients for the parameters.
+
+        """
+
         grads = self._numpy_grad_layers()
 
         return np.hstack([item.flatten() for item in sum(grads, [])])
 
     # Setting up values for the model parameters.
-    def set_parameters(self, parameters=None) -> None:
+    def set_parameters(self, parameters:List[torch.Tensor]=None) -> None:
+        """It overwrite the current parameters values with new ones.
+
+        Args:
+            parameters (List[torch.Tensor]): List of new values to overwrite the
+                current parameters. 
+
+        """
         for ll, layer in enumerate(self.layers_map):
             self.layers[ll].weight = Parameter(
                 data=torch.from_numpy(
@@ -299,12 +343,25 @@ class NetworkTemplate(torch.nn.Module):
 
     # Detaching parameters from the backpropagation pipeline
     def detach_parameters(self) -> None:
+        """Remove the parameters for the PyTorch graph,
+            it means that they will not be trainable. 
+        """
         for param in self.parameters():
             param.requires_grad = False
             param.data.copy_(param.data.detach())
 
     # Making evaluations using the network
     def eval(self, input_data: Union[np.ndarray, torch.Tensor] = None) -> np.ndarray:
+        """It used the model to perform evaluations.
+
+        Args:
+            input_data (Union[np.ndarray, torch.Tensor]): The input data used for the 
+                model evaluation.
+
+        Returns:
+            np.ndarray: The result of that evaluation. 
+
+        """
         output_tensor = self.forward(input_data=input_data)
 
         # Guaranteeing the dataset location as CPU
@@ -314,6 +371,12 @@ class NetworkTemplate(torch.nn.Module):
 
     # It prints a summary of the network architecture.
     def summary(self, display: bool = True, **kwargs) -> None:
+        """It prints a basic summary of the model architecure.
+
+        Args:
+            display (bool): Display that summary or not.
+
+        """
         import pprint
 
         if display:
@@ -444,6 +507,13 @@ def channels_dim(method):
 
 class ConvNetworkTemplate(NetworkTemplate):
     def __init__(self, name: str = None, flatten: bool = None) -> None:
+        """A basic template for convolutional neural networks.
+
+        Args:
+            name (str): A name for the neural network model. 
+            flatten (bool): Flatten the output or not. 
+
+        """
         super(ConvNetworkTemplate, self).__init__()
 
         self.name = name
@@ -639,6 +709,18 @@ class ConvNetworkTemplate(NetworkTemplate):
         device: str = "cpu",
         display: bool = True,
     ) -> None:
+        """
+
+        Args:
+            input_data (Union[torch.Tensor, np.ndarray]): An input data used for 
+                helping to construct the model summary.
+            input_shape (list): When input_data is not provided, a shape for it
+                can be used instead.
+            device (str): The kind of device in which the model will be executed,
+                'cpu' or 'gpu'.
+            display (bool): Display this summary or not.
+
+        """
         import pprint
         from collections import OrderedDict
 
