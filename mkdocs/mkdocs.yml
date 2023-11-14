@@ -32,7 +32,8 @@ plugins:
   - mkdocstrings 
 
 nav:
-  - Home: index.md
+  - Home:
+    - index.md
   - Blog:
     - blog.md
   - Modules:

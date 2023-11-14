@@ -95,4 +95,4 @@ run_examples.txt
 
 # MKDocs
 mkdocs/site/**/*
-mkdocs/blog*
+mkdocs/docs/blog.md
