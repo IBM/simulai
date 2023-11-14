@@ -54,9 +54,27 @@
     
         <li class="nav-item" id="component-menu">
             <ul class="navbar-nav">
-                        <li class="nav-item">
+                        <li class="nav-item dropdown">
                             <a class="
-                            nav-link text-gray text-decoration-none" href="..">[Home]</a>
+                            nav-link dropdown-toggle text-decoration-none" href="#" data-bs-toggle="dropdown">[Home]</a>
+                            <ul class="dropdown-menu">
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href=".." class="dropdown-item text-decoration-none ">Index</a>
+    </li>
+<!-- endblock -->
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="
+                            nav-link dropdown-toggle text-decoration-none" href="#" data-bs-toggle="dropdown">[Blog]</a>
+                            <ul class="dropdown-menu">
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../blog/" class="dropdown-item text-decoration-none ">0.99.27</a>
+    </li>
+<!-- endblock -->
+                            </ul>
                         </li>
                         <li class="nav-item dropdown">
                             <a class=" active 
@@ -117,6 +135,18 @@
                 <!-- block dropdown-menu -->
     <li>
         <a href="../simulai_parallel/" class="dropdown-item text-decoration-none ">Simulai parallel</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Templates &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../simulai_templates/simulai_pytorch_templates/" class="dropdown-item text-decoration-none ">Simulai pytorch templates</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -273,6 +303,18 @@
                 <!-- block dropdown-menu -->
     <li>
         <a href="../simulai_optimization/simulai_losses/" class="dropdown-item text-decoration-none ">Simulai losses</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Adjusters &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../simulai_optimization/simulai_adjusters/" class="dropdown-item text-decoration-none ">Simulai adjusters</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -10318,7 +10360,7 @@ A dataset that applies Gaussian noise to input data.</p>
                     <!-- block preview -->
         <div class="row row-cols-md-3 text-center pt-md-3" id="component-preview">
             <div class="col themed-grid-col">
-                <a rel="prev" href=".." class="nav-link">
+                <a rel="prev" href="../blog/" class="nav-link">
                     <i class="fa fa-arrow-left"></i> Previous
                 </a>
             </div>

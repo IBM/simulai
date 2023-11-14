@@ -54,9 +54,27 @@
     
         <li class="nav-item" id="component-menu">
             <ul class="navbar-nav">
-                        <li class="nav-item">
+                        <li class="nav-item dropdown">
                             <a class="
-                            nav-link text-gray text-decoration-none" href="../..">[Home]</a>
+                            nav-link dropdown-toggle text-decoration-none" href="#" data-bs-toggle="dropdown">[Home]</a>
+                            <ul class="dropdown-menu">
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../.." class="dropdown-item text-decoration-none ">Index</a>
+    </li>
+<!-- endblock -->
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="
+                            nav-link dropdown-toggle text-decoration-none" href="#" data-bs-toggle="dropdown">[Blog]</a>
+                            <ul class="dropdown-menu">
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a href="../../blog/" class="dropdown-item text-decoration-none ">0.99.27</a>
+    </li>
+<!-- endblock -->
+                            </ul>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="
@@ -117,6 +135,18 @@
                 <!-- block dropdown-menu -->
     <li>
         <a href="../../simulai_parallel/" class="dropdown-item text-decoration-none ">Simulai parallel</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
+                                    <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Templates &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_templates/simulai_pytorch_templates/" class="dropdown-item text-decoration-none ">Simulai pytorch templates</a>
     </li>
 <!-- endblock -->
         </ul>
@@ -278,6 +308,18 @@
         </ul>
     </li>
 <!-- endblock -->
+                <!-- block dropdown-menu -->
+    <li>
+        <a class="dropdown-item text-decoration-none" href="#">Adjusters &raquo;</a>
+        <ul class="submenu dropdown-menu">
+                <!-- block dropdown-menu -->
+    <li>
+        <a href="../../simulai_optimization/simulai_adjusters/" class="dropdown-item text-decoration-none ">Simulai adjusters</a>
+    </li>
+<!-- endblock -->
+        </ul>
+    </li>
+<!-- endblock -->
         </ul>
     </li>
 <!-- endblock -->
@@ -380,7 +422,7 @@ red { color: red }
 <a id="simulai.models.UNet"></a>
   <div class="doc doc-contents first">
           <p class="doc doc-class-bases">
-            Bases: <code><span title="simulai.templates.NetworkTemplate">NetworkTemplate</span></code></p>
+            Bases: <code><a class="autorefs autorefs-internal" title="simulai.templates.NetworkTemplate" href="../../simulai_templates/simulai_pytorch_templates/#simulai.templates.NetworkTemplate">NetworkTemplate</a></code></p>
 
 
             <details class="quote">
