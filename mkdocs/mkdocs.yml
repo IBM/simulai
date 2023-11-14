@@ -33,6 +33,8 @@ plugins:
 
 nav:
   - Home: index.md
+  - Blog:
+    - blog.md
   - Modules:
     - IO:
       - simulai_io.md
