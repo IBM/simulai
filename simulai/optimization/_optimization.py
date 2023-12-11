@@ -334,8 +334,10 @@ class Optimizer:
     def _get_lr_decay(self) -> Union[callable, None]:
         if self.lr_decay_scheduler_params is not None:
             name = self.lr_decay_scheduler_params.pop("name")
-            self.decay_frequency = self.lr_decay_scheduler_params.pop("decay_frequency")
-
+            try:
+                self.decay_frequency = self.lr_decay_scheduler_params.pop("decay_frequency")
+            except:
+                pass
             lr_class = getattr(torch.optim.lr_scheduler, name)
 
             return lr_class
