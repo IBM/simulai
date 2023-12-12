@@ -429,7 +429,26 @@ class Optimizer:
     def _get_ondisk_data(
         self, dataset: callable = None, indices: np.ndarray = None
     ) -> torch.Tensor:
-        return dataset(indices=indices)
+        indices = np.sort(indices)
+
+        ondisk_formats = {np.ndarray: self._convert_ondisk_data_array,
+                         dict: self._convert_ondisk_data_dict}
+
+        data = dataset(indices=indices)
+
+        return ondisk_formats.get(type(data))(data=data)
+
+    def _convert_ondisk_data_array(
+        self, data: np.ndarray=None,
+    ) -> torch.Tensor:
+
+        return torch.from_numpy(data.astype(ARRAY_DTYPE))
+
+    def _convert_ondisk_data_dict(
+        self, data: np.ndarray=None,
+    ) -> torch.Tensor:
+
+        return {key: torch.from_numpy((value).astype(ARRAY_DTYPE)) for  key, value in data.items()}
 
     # Preparing the batches (converting format and moving to the correct device)
     # in a single batch optimization loop
@@ -455,6 +474,24 @@ class Optimizer:
                 key: self.get_data(dataset=item, indices=batch_indices).to(device)
                 for key, item in input_data.items()
             }
+
+        # When the 'input data' it is just a pointer for a lazzy dataset
+        elif callable(input_data):
+
+            data = self.get_data(
+                    dataset=input_data, indices=batch_indices
+                )
+            if type(input_data) == torch.Tensor:
+
+                input_data_dict = {
+                    self.input_data_name: self.get_data(
+                        dataset=input_data, indices=batch_indices
+                    )
+                }
+            else:
+               
+                input_data_dict = data
+
         else:
             input_data_dict = {
                 self.input_data_name: self.get_data(
