@@ -475,23 +475,25 @@ class Optimizer:
                 for key, item in input_data.items()
             }
 
-        # When the 'input data' it is just a pointer for a lazzy dataset
+        # When the 'input data' is just a pointer for a lazzy dataset
         elif callable(input_data):
 
             data = self.get_data(
                     dataset=input_data, indices=batch_indices
                 )
-            if type(input_data) == torch.Tensor:
+            if type(data) == torch.Tensor:
 
                 input_data_dict = {
-                    self.input_data_name: self.get_data(
-                        dataset=input_data, indices=batch_indices
-                    )
+                    self.input_data_name: data.to(device)
                 }
-            else:
-               
-                input_data_dict = data
 
+            else:
+                input_data_dict = {
+                    key: item.to(device)
+                    for key, item in data.items()
+                }
+      
+        # The rest of the possible cases
         else:
             input_data_dict = {
                 self.input_data_name: self.get_data(
