@@ -628,10 +628,16 @@ class Optimizer:
             for ibatch in batches:
                 self.optimizer_instance.zero_grad()
 
+                # Selecting a batch from the permutation to perform a
+                # single optimization step
                 indices = samples_permutation[ibatch]
+
+                # The input batch usually requires more pre-processing and 
+                # specifications
                 input_batch = self._batchwise_make_input_data(
                     input_data, device=device, batch_indices=indices
                 )
+
                 target_batch = self.get_data(dataset=target_data, indices=indices)
 
                 if target_batch is not None:
@@ -645,18 +651,24 @@ class Optimizer:
                     **params,
                 )
 
+                # A single optimization step
                 self.optimizer_instance.step(loss_function)
 
+                # Writing the training information to a Tensorboard file 
+                # (if it is required)
                 self.summary_writer(
                     loss_states=loss_instance.loss_states, epoch=b_epoch
                 )
 
+                # Checkpoint the model 
                 self.checkpoint_handler(
                     model=op, epoch=b_epoch, **self.checkpoint_params
                 )
 
+                # Updating the learning rate
                 self.lr_decay_handler(epoch=b_epoch)
 
+                # Early-stopping when necessary
                 stop_criterion = self.stop_handler(val_loss_function=val_loss_function)
 
                 b_epoch += 1
