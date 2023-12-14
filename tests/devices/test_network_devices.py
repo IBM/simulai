@@ -112,6 +112,7 @@ class TestDenseNetwork(TestCase):
                         params=params,
                         batch_size=1_00,
                         device=DEVICE,
+                        use_jit=True,
                     )
 
                     # First evaluation
