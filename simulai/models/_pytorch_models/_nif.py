@@ -39,8 +39,7 @@ class NIF(NetworkTemplate):
         rescale_factors: np.ndarray = None,
         model_id: str = None,
     ) -> None:
-        """Classical Deep Operator Network (DeepONet), a deep learning version
-        of the Universal Approximation Theorem.
+        """Neural Implicit Flow.
 
         Args:
             trunk_network (NetworkTemplate, optional): Subnetwork for processing the coordinates inputs. (Default value = None)
@@ -52,18 +51,17 @@ class NIF(NetworkTemplate):
 
         """
 
-        super(DeepONet, self).__init__(devices=devices)
+        super(NIF, self).__init__(devices=devices)
 
         # Determining the kind of device to be used for allocating the
         # subnetworks used in the DeepONet model
         self.device = self._set_device(devices=devices)
-        self.use_bias = use_bias
 
-        self.trunk_network = self.to_wrap(entity=trunk_network, device=self.device)
-        self.branch_network = self.to_wrap(entity=branch_network, device=self.device)
+        self.shape_network = self.to_wrap(entity=shape_network, device=self.device)
+        self.parameter_network = self.to_wrap(entity=parameter_network, device=self.device)
 
-        self.add_module("trunk_network", self.trunk_network)
-        self.add_module("branch_network", self.branch_network)
+        self.add_module("shape_network", self.shape_network)
+        self.add_module("parameter_network", self.parameter_network)
 
         if decoder_network is not None:
             self.decoder_network = self.to_wrap(
@@ -90,26 +88,26 @@ class NIF(NetworkTemplate):
             self.rescale_factors = None
 
         # Checking up whether the output of each subnetwork are in correct shape
-        assert self._latent_dimension_is_correct(self.trunk_network.output_size), (
+        assert self._latent_dimension_is_correct(self.shape_network.output_size), (
             "The trunk network must have"
             " one-dimensional output , "
             "but received"
-            f"{self.trunk_network.output_size}"
+            f"{self.shape_network.output_size}"
         )
 
-        assert self._latent_dimension_is_correct(self.branch_network.output_size), (
+        assert self._latent_dimension_is_correct(self.parameter_network.output_size), (
             "The branch network must have"
             " one-dimensional output,"
             " but received"
-            f"{self.branch_network.output_size}"
+            f"{self.parameter_network.output_size}"
         )
 
         # If bias is being used, check whether the network outputs are compatible.
         if self.use_bias:
             print("Bias is being used.")
             self._bias_compatibility_is_correct(
-                dim_trunk=self.trunk_network.output_size,
-                dim_branch=self.branch_network.output_size,
+                dim_shape=self.shape_network.output_size,
+                dim_parameter=self.parameter_network.output_size,
             )
             self.bias_wrapper = self._wrapper_bias_active
         else:
@@ -127,34 +125,9 @@ class NIF(NetworkTemplate):
         else:
             self.rescale_wrapper = self._wrapper_rescale_inactive
 
-        # Checking the compatibility of the subnetworks outputs for each kind of product being employed.
-        if self.product_type != "dense":
-            output_branch = self.branch_network.output_size
-            output_trunk = self.trunk_network.output_size
-
-            # It checks if the inner product operation can be performed.
-            if not self.use_bias:
-                assert output_branch == output_trunk, (
-                    f"The output dimensions for the sub-networks"
-                    f" trunk and branch must be equal but are"
-                    f" {output_branch}"
-                    f" and {output_trunk}"
-                )
-            else:
-                print("Bias compatibility was already verified.")
-        else:
-            output_branch = self.branch_network.output_size
-
-            assert not output_branch % self.var_dim, (
-                f"The number of branch latent outputs must"
-                f" be divisible by the number of variables,"
-                f" but received {output_branch}"
-                f" and {self.var_dim}"
-            )
-
         self.subnetworks = [
             net
-            for net in [self.trunk_network, self.branch_network, self.decoder_network]
+            for net in [self.shape_network, self.parameter_network, self.decoder_network]
             if net is not None
         ]
 
@@ -173,7 +146,7 @@ class NIF(NetworkTemplate):
         # Selecting the correct forward approach to be used
         self._forward = self._forward_selector_()
 
-        self.subnetworks_names = ["trunk", "branch"]
+        self.subnetworks_names = ["shape", "parameter"]
 
     def _latent_dimension_is_correct(self, dim: Union[int, tuple]) -> bool:
         """It checks if the latent dimension is consistent.
@@ -193,15 +166,6 @@ class NIF(NetworkTemplate):
                 return True
             else:
                 return False
-
-    def _bias_compatibility_is_correct(
-        self, dim_trunk: Union[int, tuple], dim_branch: Union[int, tuple]
-    ) -> bool:
-        assert dim_branch == dim_trunk + self.var_dim, (
-            "When using bias, the dimension"
-            + "of the branch output should be"
-            + "trunk output + var_dim."
-        )
 
     def _forward_dense(
         self, output_trunk: torch.Tensor = None, output_branch: torch.Tensor = None
