@@ -6,6 +6,7 @@ from ._autoencoder import (
     MultiScaleAutoencoder,
 )
 from ._deeponet import DeepONet, FlexibleDeepONet, ImprovedDeepONet, ResDeepONet
+from ._nif import NIF
 from ._transformer import Transformer
 from ._unet import UNet
 from ._miscellaneous import (

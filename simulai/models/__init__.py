@@ -24,6 +24,7 @@ if engine == "pytorch":
         DeepONet,
         FlexibleDeepONet,
         ImprovedDeepONet,
+        NIF, 
         ImprovedDenseNetwork,
         Transformer,
         UNet,

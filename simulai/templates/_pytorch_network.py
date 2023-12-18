@@ -317,6 +317,12 @@ class NetworkTemplate(torch.nn.Module):
 
         return np.hstack([item.flatten() for item in sum(grads, [])])
 
+    def _set_parameter_from_array(self, data):
+        return torch.from_numpy(data.astype(ARRAY_DTYPE))
+
+    def _set_parameter_from_tensor(self, data):
+        return data
+
     # Setting up values for the model parameters.
     def set_parameters(self, parameters:List[torch.Tensor]=None) -> None:
         """It overwrite the current parameters values with new ones.
@@ -326,17 +332,23 @@ class NetworkTemplate(torch.nn.Module):
                 current parameters. 
 
         """
+        # Determining the kind of data structure to be converted from
+        struct_converter = { 
+                            np.ndarray : self._set_parameter_from_array,
+                            torch.Tensor : self._set_parameter_from_tensor
+                            }.get(type(parameters))
+
         for ll, layer in enumerate(self.layers_map):
             self.layers[ll].weight = Parameter(
-                data=torch.from_numpy(
-                    parameters[self.stitch_idx[layer[0]]].astype(ARRAY_DTYPE)
+                data=struct_converter(
+                    parameters[self.stitch_idx[layer[0]]]
                 ),
                 requires_grad=True,
             )
 
             self.layers[ll].bias = Parameter(
-                data=torch.from_numpy(
-                    parameters[self.stitch_idx[layer[1]]].astype(ARRAY_DTYPE)
+                data=struct_converter(
+                    parameters[self.stitch_idx[layer[1]]]
                 ),
                 requires_grad=True,
             )

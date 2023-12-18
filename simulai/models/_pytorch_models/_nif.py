@@ -17,12 +17,24 @@ from typing import Union
 import numpy as np
 import torch
 
-from simulai.regression import ConvexDenseNetwork
+from simulai import ARRAY_DTYPE
+from simulai.regression import ConvexDenseNetwork, Linear
 from simulai.templates import NetworkTemplate, guarantee_device
 
-#####################
-#### DeepONet family
-#####################
+class WorkflowModule(torch.nn.Module):
+
+    def __init__(self, network: NetworkTemplate=None) -> None:
+
+        super(WorkflowModule, self).__init__()
+
+        self.network = network
+
+    def forward(self, parameters: torch.Tensor=None, 
+                                input_tensor: torch.Tensor=None):
+         
+         self.network.set_parameters(parameters=parameters)
+         print(input_tensor.shape)
+         return self.network(input_tensor)
 
 
 class NIF(NetworkTemplate):
@@ -42,8 +54,8 @@ class NIF(NetworkTemplate):
         """Neural Implicit Flow.
 
         Args:
-            trunk_network (NetworkTemplate, optional): Subnetwork for processing the coordinates inputs. (Default value = None)
-            branch_network (NetworkTemplate, optional): Subnetwork for processing the forcing/conditioning inputs. (Default value = None)
+            shape_network (NetworkTemplate, optional): Subnetwork for processing the coordinates inputs. (Default value = None)
+            parameter_network (NetworkTemplate, optional): Subnetwork for processing the forcing/conditioning inputs. (Default value = None)
             decoder_network (NetworkTemplate, optional): Subnetworks for converting the embedding to the output (optional). (Default value = None)
             devices (Union[str, list], optional):  Devices in which the model will be executed. (Default value = "cpu")
             rescale_factors (np.ndarray, optional): Values used for rescaling the network outputs for a given order of magnitude. (Default value = None)
@@ -60,6 +72,23 @@ class NIF(NetworkTemplate):
         self.shape_network = self.to_wrap(entity=shape_network, device=self.device)
         self.parameter_network = self.to_wrap(entity=parameter_network, device=self.device)
 
+        # The number of coefficients to be estimated 
+        # by the parameter network
+        self.n_shape_parameters = self.shape_network.n_parameters
+        self.n_inputs_shape = self.shape_network.input_size 
+        self.n_outputs_shape = self.shape_network.output_size
+        self.n_inputs_parameter = self.parameter_network.input_size
+        self.n_outputs_parameter = self.parameter_network.output_size
+
+        # Latent projection. It is, as default choice, a linear
+        # operation
+        self.latent_projection = Linear(input_size=self.n_outputs_parameter,
+                                        output_size=self.n_shape_parameters)
+
+        # The parameter network is not trainable, the coefficients are
+        # estimated from the parameter network
+        self.shape_network.detach_parameters()
+
         self.add_module("shape_network", self.shape_network)
         self.add_module("parameter_network", self.parameter_network)
 
@@ -71,9 +100,7 @@ class NIF(NetworkTemplate):
         else:
             self.decoder_network = decoder_network
 
-        self.product_type = product_type
         self.model_id = model_id
-        self.var_dim = var_dim
 
         # Rescaling factors for the output
         if rescale_factors is not None:
@@ -86,32 +113,6 @@ class NIF(NetworkTemplate):
             )
         else:
             self.rescale_factors = None
-
-        # Checking up whether the output of each subnetwork are in correct shape
-        assert self._latent_dimension_is_correct(self.shape_network.output_size), (
-            "The trunk network must have"
-            " one-dimensional output , "
-            "but received"
-            f"{self.shape_network.output_size}"
-        )
-
-        assert self._latent_dimension_is_correct(self.parameter_network.output_size), (
-            "The branch network must have"
-            " one-dimensional output,"
-            " but received"
-            f"{self.parameter_network.output_size}"
-        )
-
-        # If bias is being used, check whether the network outputs are compatible.
-        if self.use_bias:
-            print("Bias is being used.")
-            self._bias_compatibility_is_correct(
-                dim_shape=self.shape_network.output_size,
-                dim_parameter=self.parameter_network.output_size,
-            )
-            self.bias_wrapper = self._wrapper_bias_active
-        else:
-            self.bias_wrapper = self._wrapper_bias_inactive
 
         # Using a decoder on top of the model or not
         if self.decoder_network is not None:
@@ -131,11 +132,10 @@ class NIF(NetworkTemplate):
             if net is not None
         ]
 
-        self.input_trunk = None
-        self.input_branch = None
+        self.input_shape = None
+        self.input_parameter = None
 
         self.output = None
-        self.var_map = dict()
 
         # TODO Checking up if the input of the decoder network has the correct dimension
         if self.decoder_network is not None:
@@ -144,168 +144,45 @@ class NIF(NetworkTemplate):
             pass
 
         # Selecting the correct forward approach to be used
-        self._forward = self._forward_selector_()
 
         self.subnetworks_names = ["shape", "parameter"]
 
-    def _latent_dimension_is_correct(self, dim: Union[int, tuple]) -> bool:
-        """It checks if the latent dimension is consistent.
+        # Tracing the shape net workflow using TorchScript
+        sample_parameters_tensor = torch.from_numpy(np.random.rand(self.n_shape_parameters).astype(ARRAY_DTYPE))
+        sample_input_tensor = torch.from_numpy(np.random.rand(1_00, self.n_inputs_shape).astype(ARRAY_DTYPE))
 
-        Args:
-            dim (Union[int, tuple]): Latent_space_dimension.
+        workflow_instance = WorkflowModule(network=self.shape_network)
 
-        Returns:
-            bool: The confirmation about the dimensionality correctness.
+        self.traced_shape_workflow = torch.jit.trace(workflow_instance.forward, 
+                                                                  (
+                                                                   sample_parameters_tensor,
+                                                                   sample_input_tensor)
+                                                     )
 
-        """
+        self.vmapped_forward = torch.vmap(self._forward)
 
-        if type(dim) == int:
-            return True
-        elif type(dim) == tuple:
-            if len(tuple) == 1:
-                return True
-            else:
-                return False
-
-    def _forward_dense(
-        self, output_trunk: torch.Tensor = None, output_branch: torch.Tensor = None
+    def _forward(
+        self, input_shape: torch.Tensor = None, output_parameter: torch.Tensor = None
     ) -> torch.Tensor:
-        """Forward method used when the embeddings are multiplied using a matrix-like product, it means, the trunk
-        network outputs serve as "interpolation basis" for the branch outputs.
+        """ 
 
         Args:
-            output_trunk (torch.Tensor, optional): The embedding generated by the trunk network. (Default value = None)
-            output_branch (torch.Tensor, optional): The embedding generated by the branch network. (Default value = None)
+            output_shape (torch.Tensor, optional): The embedding generated by the trunk network. (Default value = None)
+            output_parameter (torch.Tensor, optional): The embedding generated by the branch network. (Default value = None)
 
         Returns:
             torch.Tensor: The product between the two embeddings.
 
         """
-
-        latent_dim = int(output_branch.shape[-1] / self.var_dim)
-        output_branch_reshaped = torch.reshape(
-            output_branch, (-1, self.var_dim, latent_dim)
-        )
-
-        output = torch.matmul(output_branch_reshaped, output_trunk[..., None])
-        output = torch.squeeze(output)
+        estimated_parameters = self.latent_projection(output_parameter)
+        
+        output = self.traced_shape_workflow(estimated_parameters, input_shape)
 
         return output
-
-    def _forward_pointwise(
-        self, output_trunk: torch.Tensor = None, output_branch: torch.Tensor = None
-    ) -> torch.Tensor:
-        """Forward method used when the embeddings are multiplied using a simple point-wise product, after that a
-        reshaping is applied in order to produce multiple outputs.
-
-        Args:
-            output_trunk (torch.Tensor, optional): The embedding generated by the trunk network. (Default value = None)
-            output_branch (torch.Tensor, optional): The embedding generated by the branch network. (Default value = None)
-
-        Returns:
-            torch.Tensor: The product between the two embeddings.
-
-        """
-
-        latent_dim = int(output_trunk.shape[-1] / self.var_dim)
-        output_trunk_reshaped = torch.reshape(
-            output_trunk, (-1, latent_dim, self.var_dim)
-        )
-        output_branch_reshaped = torch.reshape(
-            output_branch, (-1, latent_dim, self.var_dim)
-        )
-        output = torch.sum(
-            output_trunk_reshaped * output_branch_reshaped, dim=-2, keepdim=False
-        )
-
-        return output
-
-    def _forward_vanilla(
-        self, output_trunk: torch.Tensor = None, output_branch: torch.Tensor = None
-    ) -> torch.Tensor:
-        """Forward method used when the embeddings are multiplied using a simple point-wise product.
-
-        Args:
-            output_trunk (torch.Tensor, optional): The embedding generated by the trunk network. (Default value = None)
-            output_branch (torch.Tensor, optional): The embedding generated by the branch network. (Default value = None)
-
-        Returns:
-            torch.Tensor: The product between the two embeddings.
-
-        """
-
-        output = torch.sum(output_trunk * output_branch, dim=-1, keepdim=True)
-
-        return output
-
-    def _forward_selector_(self) -> callable:
-        """It selects the forward method to be used.
-
-
-        Returns:
-            callable : The callable corresponding to the required forward method.
-
-        """
-
-        if self.var_dim > 1:
-            # It operates as a typical dense layer
-            if self.product_type == "dense":
-                return self._forward_dense
-            # It executes an inner product by parts between the outputs
-            # of the subnetworks branch and trunk
-            else:
-                return self._forward_pointwise
-        else:
-            return self._forward_vanilla
-
-    @property
-    def _var_map(self) -> dict:
-        # It checks all the data arrays in self.var_map have the same
-        # batches dimension
-        batches_dimensions = set([value.shape[0] for value in self.var_map.values()])
-
-        assert (
-            len(batches_dimensions) == 1
-        ), "This dataset is not proper to apply shuffling"
-
-        dim = list(batches_dimensions)[0]
-
-        indices = np.arange(dim)
-
-        np.random.shuffle(indices)
-
-        var_map_shuffled = {key: value[indices] for key, value in self.var_map.items()}
-
-        return var_map_shuffled
 
     @property
     def weights(self) -> list:
         return sum([net.weights for net in self.subnetworks], [])
-
-    # Now, a sequence of wrappers
-    def _wrapper_bias_inactive(
-        self,
-        output_trunk: Union[np.ndarray, torch.Tensor] = None,
-        output_branch: Union[np.ndarray, torch.Tensor] = None,
-    ) -> torch.Tensor:
-        output = self._forward(output_trunk=output_trunk, output_branch=output_branch)
-
-        return output
-
-    def _wrapper_bias_active(
-        self,
-        output_trunk: Union[np.ndarray, torch.Tensor] = None,
-        output_branch: Union[np.ndarray, torch.Tensor] = None,
-    ) -> torch.Tensor:
-        output_branch_ = output_branch[:, : -self.var_dim]
-        bias = output_branch[:, -self.var_dim :]
-
-        output = (
-            self._forward(output_trunk=output_trunk, output_branch=output_branch_)
-            + bias
-        )
-
-        return output
 
     def _wrapper_decoder_active(
         self,
@@ -333,14 +210,14 @@ class NIF(NetworkTemplate):
 
     def forward(
         self,
-        input_trunk: Union[np.ndarray, torch.Tensor] = None,
-        input_branch: Union[np.ndarray, torch.Tensor] = None,
+        input_shape: Union[np.ndarray, torch.Tensor] = None,
+        input_parameter: Union[np.ndarray, torch.Tensor] = None,
     ) -> torch.Tensor:
         """Wrapper forward method.
 
         Args:
-            input_trunk (Union[np.ndarray, torch.Tensor], optional):  (Default value = None)
-            input_branch (Union[np.ndarray, torch.Tensor], optional):  (Default value = None)
+            input_shape (Union[np.ndarray, torch.Tensor], optional):  (Default value = None)
+            input_parameter (Union[np.ndarray, torch.Tensor], optional):  (Default value = None)
 
         Returns:
             torch.Tensor: The result of all the hidden operations in the network.
@@ -348,41 +225,36 @@ class NIF(NetworkTemplate):
         """
 
         # Forward method execution
-        output_trunk = self.to_wrap(
-            entity=self.trunk_network.forward(input_trunk), device=self.device
+        output_parameter = self.to_wrap(
+            entity=self.parameter_network.forward(input_parameter), device=self.device
         )
 
-        output_branch = self.to_wrap(
-            entity=self.branch_network.forward(input_branch), device=self.device
-        )
+        output = self.vmapped_forward(input_shape=input_shape, output_parameter=output_parameter)
 
         # Wrappers are applied to execute user-defined operations.
         # When those operations are not selected, these wrappers simply
         # bypass the inputs.
-        output = self.bias_wrapper(
-            output_trunk=output_trunk, output_branch=output_branch
-        )
 
         return self.rescale_wrapper(input_data=self.decoder_wrapper(input_data=output))
 
     @guarantee_device
     def eval(
         self,
-        trunk_data: Union[np.ndarray, torch.Tensor] = None,
-        branch_data: Union[np.ndarray, torch.Tensor] = None,
+        shape_data: Union[np.ndarray, torch.Tensor] = None,
+        parameter_data: Union[np.ndarray, torch.Tensor] = None,
     ) -> np.ndarray:
         """It uses the network to make evaluations.
 
         Args:
-            trunk_data (Union[np.ndarray, torch.Tensor], optional):  (Default value = None)
-            branch_data (Union[np.ndarray, torch.Tensor], optional):  (Default value = None)
+            shape_data (Union[np.ndarray, torch.Tensor], optional):  (Default value = None)
+            parameter_data (Union[np.ndarray, torch.Tensor], optional):  (Default value = None)
 
         Returns:
             np.ndarray: The result of all the hidden operations in the network.
 
         """
 
-        output_tensor = self.forward(input_trunk=trunk_data, input_branch=branch_data)
+        output_tensor = self.forward(input_shape=shape_data, input_parameter=parameter_data)
 
         return output_tensor.cpu().detach().numpy()
 
@@ -411,9 +283,9 @@ class NIF(NetworkTemplate):
 
     def summary(self) -> None:
         print("Trunk Network:")
-        self.trunk_network.summary()
+        self.shape_network.summary()
         print("Branch Network:")
-        self.branch_network.summary()
+        self.parameter_network.summary()
 
 
 
