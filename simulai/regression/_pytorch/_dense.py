@@ -248,7 +248,7 @@ class DenseNetwork(NetworkTemplate):
         n_layers = len(self.layers)
 
         self.shapes = [item.shape for item in list(sum(array_layers, []))]
-
+        self.shapes_layers = [[item[0].shape, item[1].shape] for item in array_layers]
         self.stitch_idx = self._make_stitch_idx()
 
         self.layers_map = [[ll, ll + 1] for ll in range(0, 2 * n_layers, 2)]
