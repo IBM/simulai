@@ -30,8 +30,7 @@ class WorkflowModule(torch.nn.Module):
         self.network = network
 
     def forward(self, parameters: torch.Tensor=None, 
-                                input_tensor: torch.Tensor=None):
-         
+                      input_tensor: torch.Tensor=None):
          self.network.set_parameters(parameters=parameters)
 
          return self.network(input_tensor)
@@ -175,8 +174,11 @@ class NIF(NetworkTemplate):
             torch.Tensor: The product between the two embeddings.
 
         """
+        # The latent space outputted by the parameter network is projected onto another
+        # high-dimensional space (with dimensionality equivalent to the parameters space)
         estimated_parameters = self.latent_projection(output_parameter)
 
+        # The shape network is set up using those estimated coefficients
         output = self.traced_shape_workflow(estimated_parameters, input_shape)
 
         return output
