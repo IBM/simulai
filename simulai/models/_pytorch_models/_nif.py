@@ -285,10 +285,5 @@ class NIF(NetworkTemplate):
         return network_to_be_used.forward(input_data).cpu().detach().numpy()
 
     def summary(self) -> None:
-        print("Trunk Network:")
-        self.shape_network.summary()
-        print("Branch Network:")
-        self.parameter_network.summary()
-
-
+        print(self)
 
