@@ -33,7 +33,7 @@ class WorkflowModule(torch.nn.Module):
                                 input_tensor: torch.Tensor=None):
          
          self.network.set_parameters(parameters=parameters)
-         print(input_tensor.shape)
+
          return self.network(input_tensor)
 
 
@@ -91,6 +91,7 @@ class NIF(NetworkTemplate):
 
         self.add_module("shape_network", self.shape_network)
         self.add_module("parameter_network", self.parameter_network)
+        self.add_module("latent_projection", self.latent_projection)
 
         if decoder_network is not None:
             self.decoder_network = self.to_wrap(
@@ -175,7 +176,7 @@ class NIF(NetworkTemplate):
 
         """
         estimated_parameters = self.latent_projection(output_parameter)
-        
+
         output = self.traced_shape_workflow(estimated_parameters, input_shape)
 
         return output
@@ -229,7 +230,7 @@ class NIF(NetworkTemplate):
             entity=self.parameter_network.forward(input_parameter), device=self.device
         )
 
-        output = self.vmapped_forward(input_shape=input_shape, output_parameter=output_parameter)
+        output = self.vmapped_forward(input_shape, output_parameter)
 
         # Wrappers are applied to execute user-defined operations.
         # When those operations are not selected, these wrappers simply

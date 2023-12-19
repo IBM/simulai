@@ -95,12 +95,11 @@ class TestNIF(TestCase):
             data_shape = torch.rand(1_000, 1)
             data_parameters = torch.rand(1_000, 4)
 
-            output = net.forward(input_shape=data_shape, input_parameter=data_parameter)
-
+            output = net.forward(input_shape=data_shape, input_parameter=data_parameters)
             assert output.shape[1] == 2, "The network output is not like expected."
 
-            output = net.eval_subnetwork(name="parameter", input_data=data_parameter)
-            assert output.shape[1] == 100, "The network output is not like expected."
+            output = net.eval_subnetwork(name="parameter", input_data=data_parameters)
+            assert output.shape[1] == 50, "The network output is not like expected."
             assert isinstance(output, np.ndarray)
 
     def test_nif_train(self):

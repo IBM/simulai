@@ -332,23 +332,25 @@ class NetworkTemplate(torch.nn.Module):
                 current parameters. 
 
         """
+        
         # Determining the kind of data structure to be converted from
         struct_converter = { 
                             np.ndarray : self._set_parameter_from_array,
                             torch.Tensor : self._set_parameter_from_tensor
-                            }.get(type(parameters))
+                           }.get(type(parameters))
 
         for ll, layer in enumerate(self.layers_map):
+
             self.layers[ll].weight = Parameter(
                 data=struct_converter(
-                    parameters[self.stitch_idx[layer[0]]]
+                    parameters[self.stitch_idx[layer[0]].flatten()].reshape(self.shapes_layers[ll][0])
                 ),
                 requires_grad=True,
             )
 
             self.layers[ll].bias = Parameter(
                 data=struct_converter(
-                    parameters[self.stitch_idx[layer[1]]]
+                    parameters[self.stitch_idx[layer[1]].flatten()].reshape(self.shapes_layers[ll][1])
                 ),
                 requires_grad=True,
             )
