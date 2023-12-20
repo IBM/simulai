@@ -324,7 +324,7 @@ class NetworkTemplate(torch.nn.Module):
         return data
 
     # Setting up values for the model parameters.
-    def set_parameters(self, parameters:List[torch.Tensor]=None) -> None:
+    def set_parameters(self, parameters:Union[torch.Tensor, np.ndarray]=None, requires_grad=True) -> None:
         """It overwrite the current parameters values with new ones.
 
         Args:
@@ -332,7 +332,7 @@ class NetworkTemplate(torch.nn.Module):
                 current parameters. 
 
         """
-        
+
         # Determining the kind of data structure to be converted from
         struct_converter = { 
                             np.ndarray : self._set_parameter_from_array,
@@ -345,14 +345,14 @@ class NetworkTemplate(torch.nn.Module):
                 data=struct_converter(
                     parameters[self.stitch_idx[layer[0]].flatten()].reshape(self.shapes_layers[ll][0])
                 ),
-                requires_grad=True,
+                requires_grad=requires_grad,
             )
 
             self.layers[ll].bias = Parameter(
                 data=struct_converter(
                     parameters[self.stitch_idx[layer[1]].flatten()].reshape(self.shapes_layers[ll][1])
                 ),
-                requires_grad=True,
+                requires_grad=requires_grad,
             )
 
     # Detaching parameters from the backpropagation pipeline
