@@ -84,7 +84,7 @@ class NIF(NetworkTemplate):
         self.latent_projection = Linear(input_size=self.n_outputs_parameter,
                                         output_size=self.n_shape_parameters)
 
-        # The parameter network is not trainable, the coefficients are
+        # The shape network is not trainable, the coefficients are
         # estimated from the parameter network
         self.shape_network.detach_parameters()
 
