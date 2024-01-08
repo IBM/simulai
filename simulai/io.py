@@ -1820,7 +1820,7 @@ class Tokenizer:
         return self.target_tokenizer(target_data, **kwargs)
 
     def _make_time_input_sequence(self,
-        src: Union[np.ndarray, torch.Tensor], num_step:int=None, step:float=None
+        src: Union[np.ndarray, torch.Tensor], num_step:int=None, step:float=None, remove_final=True, 
     ) -> Union[np.ndarray, torch.Tensor]:
         """Simple tokenization based on repeating samples
            and time-indexing them.
@@ -1843,8 +1843,11 @@ class Tokenizer:
 
         for i in range(num_step):
             src_final[:, i, -1] += step * i
-
-        return src_final[:-num_step + 1]
+        
+        if remove_final:
+            return src_final[:-num_step + 1]
+        else:
+            return src_final
 
     def _make_time_target_sequence(self, 
         src: Union[np.ndarray, torch.Tensor], num_step:int=None) ->  Union[np.ndarray, torch.Tensor]:
