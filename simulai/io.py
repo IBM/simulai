@@ -1804,6 +1804,11 @@ class Tokenizer:
         if self.kind == "time_indexer":
             self.input_tokenizer = self._make_time_input_sequence
             self.target_tokenizer = self._make_time_target_sequence
+            
+        elif self.kind == "time_deeponet_indexer":
+            self.input_tokenizer = self._make_time_deeponet_input_sequence
+            self.target_tokenizer = self._make_time_deeponet_target_sequence
+
         else:
             raise Exception(f"The tokenization option {self.kind} is not available.")
 
@@ -1863,3 +1868,41 @@ class Tokenizer:
         input_data, output_data = moving_window(input_data=src, output_data=src)
 
         return np.concatenate([input_data, output_data], axis=1)
+
+    def _make_time_deeponet_input_sequence(self,
+        src: Union[np.ndarray, torch.Tensor], num_step:int=None, step:float=None, remove_final=True, 
+    ) -> Union[np.ndarray, torch.Tensor]:
+        """Simple tokenization based on repeating samples
+           and time-indexing them adapted for DeepONet architectures.
+        Args:
+            src (Union[np.ndarray, torch.Tensor]): The dataset to be tokenized.
+            num_step (int): number of timesteps for each batch. (Default value: None)
+            step (float): Size of the timestep. (Default value: None)
+        Returns:
+            Union[np.ndarray, torch.Tensor]: The tokenized input dataset.
+        """
+        
+        output = self._make_time_input_sequence(src, num_step, step)
+
+        output = np.concatenate(output, axis=0)
+
+        # Outputs for branch and trunk networks
+        return (output[:, :-1], output[:, -1:])
+
+    def _make_time_deeponet_target_sequence(self, 
+        src: Union[np.ndarray, torch.Tensor], num_step:int=None) ->  Union[np.ndarray, torch.Tensor]:
+        """Simple tokenization based on repeating samples
+           and time-indexing them adapted for DeepONet architectures.
+        Args:
+            src (Union[np.ndarray, torch.Tensor]): The dataset to be tokenized.
+            num_step (int): number of timesteps for each batch. (Default value: None)
+        Returns:
+            Union[np.ndarray, torch.Tensor]: The tokenized target dataset.
+        """
+
+        output = self._make_time_target_sequence(src, num_step)
+
+        output = np.concatenate(output, axis=0)
+
+        return output
+
