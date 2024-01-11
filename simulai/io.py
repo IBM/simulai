@@ -1882,7 +1882,7 @@ class Tokenizer:
             Union[np.ndarray, torch.Tensor]: The tokenized input dataset.
         """
         
-        output = self._make_time_input_sequence(src, num_step, step)
+        output = self._make_time_input_sequence(src, num_step, step, remove_final=remove_final)
 
         output = np.concatenate(output, axis=0)
 
