@@ -322,8 +322,8 @@ class WRMSELoss(LossBasics):
             torch.Tensor: the loss function value for a given state
         """
 
-        output_split = torch.split(output_tilde, self.split_dim, dim=axis)
         target_split = torch.split(target_data_tensor, self.split_dim, dim=axis)
+        output_split = torch.split(output_tilde, self.split_dim, dim=axis)[:len(target_split)]
 
         data_losses = [
             weights[i]
