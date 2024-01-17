@@ -722,7 +722,7 @@ class PIRMSELoss(LossBasics):
         return torch.Tensor([0.0]).to(self.device)
 
     def _no_extra_data(
-        self, input_data: torch.Tensor = None, target_data: torch.Tensor = None
+        self, input_data: torch.Tensor = None, target_data: torch.Tensor = None, weights: list=None,
     ) -> torch.Tensor:
         return torch.Tensor([0.0]).to(self.device)
 
