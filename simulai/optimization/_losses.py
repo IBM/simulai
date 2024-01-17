@@ -961,7 +961,7 @@ class PIRMSELoss(LossBasics):
             extra_data = self.extra_data(
                 input_data=extra_input_data,
                 target_data=extra_target_data,
-                weights=extra_target_data,
+                weights=weights_extra_data,
             )
 
             # L² and L¹ regularization term
