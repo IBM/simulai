@@ -670,14 +670,16 @@ class PIRMSELoss(LossBasics):
         return [sum(residual_loss)]
 
     def _extra_data(
-        self, input_data: torch.Tensor = None, target_data: torch.Tensor = None
+        self, input_data: torch.Tensor = None, target_data: torch.Tensor = None, weights :list = None, 
     ) -> torch.Tensor:
         # Evaluating data for the initial condition
         output_tilde = self.operator(input_data=input_data)
 
         # Evaluating loss approximation for extra data
         data_loss = self._data_loss(
-            output_tilde=output_tilde, target_data_tensor=target_data
+            output_tilde=output_tilde,
+            target_data_tensor=target_data, 
+            weights=weights,
         )
 
         return data_loss
@@ -957,7 +959,9 @@ class PIRMSELoss(LossBasics):
 
             # Evaluating extra data loss, when appliable
             extra_data = self.extra_data(
-                input_data=extra_input_data, target_data=extra_target_data
+                input_data=extra_input_data,
+                target_data=extra_target_data,
+                weights=extra_target_data,
             )
 
             # L² and L¹ regularization term
