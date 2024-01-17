@@ -559,8 +559,8 @@ class PIRMSELoss(LossBasics):
             torch.Tensor: the loss function value
         """
 
-        output_split = torch.split(output_tilde, self.split_dim, dim=-1)
         target_split = torch.split(target_data_tensor, self.split_dim, dim=-1)
+        output_split = torch.split(output_tilde, self.split_dim, dim=-1)[:len(target_split)]
 
         data_losses = [
             self.loss_evaluator_data((out_split, tgt_split))
@@ -777,6 +777,7 @@ class PIRMSELoss(LossBasics):
         lambda_2: float = 0.0,
         weights=None,
         weights_residual=None,
+        weights_extra_data=None,
         device: str = "cpu",
         split_losses: bool = False,
         causality_preserving: Callable = None,
