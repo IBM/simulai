@@ -71,7 +71,7 @@
                             <ul class="dropdown-menu">
                                     <!-- block dropdown-menu -->
     <li>
-        <a href="../../blog/" class="dropdown-item text-decoration-none ">0.99.27</a>
+        <a href="../../blog/" class="dropdown-item text-decoration-none ">Blog</a>
     </li>
 <!-- endblock -->
                             </ul>
@@ -559,13 +559,28 @@ red { color: red }
 <span class="normal">296</span>
 <span class="normal">297</span>
 <span class="normal">298</span>
-<span class="normal">299</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Transformer</span><span class="p">(</span><span class="n">NetworkTemplate</span><span class="p">):</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Transformer</span><span class="p">(</span><span class="n">NetworkTemplate</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">num_heads_encoder</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">num_heads_decoder</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">embed_dim_encoder</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">],</span>
-        <span class="n">embed_dim_decoder</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">],</span>
+        <span class="n">embed_dim_encoder</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">embed_dim_decoder</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">output_dim</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">encoder_activation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;relu&quot;</span><span class="p">,</span>
         <span class="n">decoder_activation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;relu&quot;</span><span class="p">,</span>
         <span class="n">encoder_mlp_layer_config</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -577,7 +592,7 @@ red { color: red }
 
 <span class="sd">        Graphical example:</span>
 
-<span class="sd">        Example:</span>
+<span class="sd">        Example::</span>
 
 <span class="sd">             U -&gt; ( Encoder_1 -&gt; Encoder_2 -&gt; ... -&gt; Encoder_N ) -&gt; u_e</span>
 
@@ -588,6 +603,7 @@ red { color: red }
 <span class="sd">            num_heads_decoder (int, optional): The number of heads for the self-attention layer of the decoder. (Default value = 1)</span>
 <span class="sd">            embed_dim_encoder (int, optional): The dimension of the embedding for the encoder. (Default value = Union[int, Tuple])</span>
 <span class="sd">            embed_dim_decoder (int, optional): The dimension of the embedding for the decoder. (Default value = Union[int, Tuple])</span>
+<span class="sd">            output_dim (int, optional): The dimension of the final output. (Default value = Union[int, Tuple])</span>
 <span class="sd">            encoder_activation (Union[str, torch.nn.Module], optional): The activation to be used in all the encoder layers. (Default value = &#39;relu&#39;)</span>
 <span class="sd">            decoder_activation (Union[str, torch.nn.Module], optional): The activation to be used in all the decoder layers. (Default value = &#39;relu&#39;)</span>
 <span class="sd">            encoder_mlp_layer_config (dict, optional): A configuration dictionary to instantiate the encoder MLP layer.weights (Default value = None)</span>
@@ -604,6 +620,11 @@ red { color: red }
 
         <span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_encoder</span> <span class="o">=</span> <span class="n">embed_dim_encoder</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_decoder</span> <span class="o">=</span> <span class="n">embed_dim_decoder</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">output_dim</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_dim</span> <span class="o">=</span> <span class="n">embed_dim_decoder</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_dim</span> <span class="o">=</span> <span class="n">output_dim</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">encoder_mlp_layer_dict</span> <span class="o">=</span> <span class="n">encoder_mlp_layer_config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">decoder_mlp_layer_dict</span> <span class="o">=</span> <span class="n">decoder_mlp_layer_config</span>
@@ -665,6 +686,10 @@ red { color: red }
             <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">+=</span> <span class="n">decoder_d</span><span class="o">.</span><span class="n">weights</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;decoder_</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">decoder_d</span><span class="p">)</span>
 
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">final_layer</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_decoder</span><span class="p">,</span> <span class="n">output_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;final_linear_layer&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">final_layer</span><span class="p">)</span>
+
     <span class="nd">@as_tensor</span>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -686,7 +711,10 @@ red { color: red }
             <span class="n">output</span> <span class="o">=</span> <span class="n">decoder</span><span class="p">(</span><span class="n">input_data</span><span class="o">=</span><span class="n">current_input</span><span class="p">,</span> <span class="n">encoder_output</span><span class="o">=</span><span class="n">encoder_output</span><span class="p">)</span>
             <span class="n">current_input</span> <span class="o">=</span> <span class="n">output</span>
 
-        <span class="k">return</span> <span class="n">output</span>
+        <span class="c1"># Final linear operation</span>
+        <span class="n">final_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">final_layer</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">final_output</span>
 
     <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;It prints a general view of the architecture.&quot;&quot;&quot;</span>
@@ -714,7 +742,7 @@ red { color: red }
 
 
 <h2 id="simulai.models.Transformer.__init__" class="doc doc-heading">
-          <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">num_heads_encoder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_heads_decoder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">embed_dim_encoder</span><span class="o">=</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">],</span> <span class="n">embed_dim_decoder</span><span class="o">=</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">],</span> <span class="n">encoder_activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">decoder_activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">encoder_mlp_layer_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">decoder_mlp_layer_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">number_of_encoders</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">number_of_decoders</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">num_heads_encoder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_heads_decoder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">embed_dim_encoder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">embed_dim_decoder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">encoder_activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">decoder_activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">encoder_mlp_layer_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">decoder_mlp_layer_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">number_of_encoders</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">number_of_decoders</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
 
 <a href="#simulai.models.Transformer.__init__" class="headerlink" title="Permanent link">#</a></h2>
 
@@ -723,7 +751,7 @@ red { color: red }
   
       <p>A classical encoder-decoder transformer:</p>
 <p>Graphical example:</p>
-<p>Example:</p>
+<p>Example::</p>
 <pre><code> U -&gt; ( Encoder_1 -&gt; Encoder_2 -&gt; ... -&gt; Encoder_N ) -&gt; u_e
 
 (u_e, U) -&gt; ( Decoder_1 -&gt; Decoder_2 -&gt; ... Decoder_N ) -&gt; V
@@ -781,7 +809,7 @@ red { color: red }
             </div>
           </td>
           <td>
-                <code><span title="typing.Union">Union</span>[int, <span title="typing.Tuple">Tuple</span>]</code>
+                <code>None</code>
           </td>
         </tr>
         <tr>
@@ -795,7 +823,21 @@ red { color: red }
             </div>
           </td>
           <td>
-                <code><span title="typing.Union">Union</span>[int, <span title="typing.Tuple">Tuple</span>]</code>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>output_dim</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The dimension of the final output. (Default value = Union[int, Tuple])</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
           </td>
         </tr>
         <tr>
@@ -990,12 +1032,24 @@ red { color: red }
 <span class="normal">268</span>
 <span class="normal">269</span>
 <span class="normal">270</span>
-<span class="normal">271</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">num_heads_encoder</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">num_heads_decoder</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="n">embed_dim_encoder</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">],</span>
-    <span class="n">embed_dim_decoder</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">],</span>
+    <span class="n">embed_dim_encoder</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">embed_dim_decoder</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">output_dim</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">encoder_activation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;relu&quot;</span><span class="p">,</span>
     <span class="n">decoder_activation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;relu&quot;</span><span class="p">,</span>
     <span class="n">encoder_mlp_layer_config</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1007,7 +1061,7 @@ red { color: red }
 
 <span class="sd">    Graphical example:</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Example::</span>
 
 <span class="sd">         U -&gt; ( Encoder_1 -&gt; Encoder_2 -&gt; ... -&gt; Encoder_N ) -&gt; u_e</span>
 
@@ -1018,6 +1072,7 @@ red { color: red }
 <span class="sd">        num_heads_decoder (int, optional): The number of heads for the self-attention layer of the decoder. (Default value = 1)</span>
 <span class="sd">        embed_dim_encoder (int, optional): The dimension of the embedding for the encoder. (Default value = Union[int, Tuple])</span>
 <span class="sd">        embed_dim_decoder (int, optional): The dimension of the embedding for the decoder. (Default value = Union[int, Tuple])</span>
+<span class="sd">        output_dim (int, optional): The dimension of the final output. (Default value = Union[int, Tuple])</span>
 <span class="sd">        encoder_activation (Union[str, torch.nn.Module], optional): The activation to be used in all the encoder layers. (Default value = &#39;relu&#39;)</span>
 <span class="sd">        decoder_activation (Union[str, torch.nn.Module], optional): The activation to be used in all the decoder layers. (Default value = &#39;relu&#39;)</span>
 <span class="sd">        encoder_mlp_layer_config (dict, optional): A configuration dictionary to instantiate the encoder MLP layer.weights (Default value = None)</span>
@@ -1034,6 +1089,11 @@ red { color: red }
 
     <span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_encoder</span> <span class="o">=</span> <span class="n">embed_dim_encoder</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_decoder</span> <span class="o">=</span> <span class="n">embed_dim_decoder</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">output_dim</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dim</span> <span class="o">=</span> <span class="n">embed_dim_decoder</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dim</span> <span class="o">=</span> <span class="n">output_dim</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">encoder_mlp_layer_dict</span> <span class="o">=</span> <span class="n">encoder_mlp_layer_config</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">decoder_mlp_layer_dict</span> <span class="o">=</span> <span class="n">decoder_mlp_layer_config</span>
@@ -1094,6 +1154,10 @@ red { color: red }
     <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">decoder_d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DecoderStage</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">+=</span> <span class="n">decoder_d</span><span class="o">.</span><span class="n">weights</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;decoder_</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">decoder_d</span><span class="p">)</span>
+
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">final_layer</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_decoder</span><span class="p">,</span> <span class="n">output_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dim</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;final_linear_layer&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">final_layer</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -1171,18 +1235,7 @@ red { color: red }
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_transformer.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">273</span>
-<span class="normal">274</span>
-<span class="normal">275</span>
-<span class="normal">276</span>
-<span class="normal">277</span>
-<span class="normal">278</span>
-<span class="normal">279</span>
-<span class="normal">280</span>
-<span class="normal">281</span>
-<span class="normal">282</span>
-<span class="normal">283</span>
-<span class="normal">284</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">284</span>
 <span class="normal">285</span>
 <span class="normal">286</span>
 <span class="normal">287</span>
@@ -1192,7 +1245,21 @@ red { color: red }
 <span class="normal">291</span>
 <span class="normal">292</span>
 <span class="normal">293</span>
-<span class="normal">294</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@as_tensor</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@as_tensor</span>
 <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
@@ -1213,7 +1280,10 @@ red { color: red }
         <span class="n">output</span> <span class="o">=</span> <span class="n">decoder</span><span class="p">(</span><span class="n">input_data</span><span class="o">=</span><span class="n">current_input</span><span class="p">,</span> <span class="n">encoder_output</span><span class="o">=</span><span class="n">encoder_output</span><span class="p">)</span>
         <span class="n">current_input</span> <span class="o">=</span> <span class="n">output</span>
 
-    <span class="k">return</span> <span class="n">output</span>
+    <span class="c1"># Final linear operation</span>
+    <span class="n">final_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">final_layer</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">final_output</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -1238,10 +1308,10 @@ red { color: red }
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_transformer.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">296</span>
-<span class="normal">297</span>
-<span class="normal">298</span>
-<span class="normal">299</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;It prints a general view of the architecture.&quot;&quot;&quot;</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>

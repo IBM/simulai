@@ -71,7 +71,7 @@
                             <ul class="dropdown-menu">
                                     <!-- block dropdown-menu -->
     <li>
-        <a href="../../blog/" class="dropdown-item text-decoration-none ">0.99.27</a>
+        <a href="../../blog/" class="dropdown-item text-decoration-none ">Blog</a>
     </li>
 <!-- endblock -->
                             </ul>
@@ -1864,7 +1864,7 @@ red { color: red }
         <span class="n">n_layers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">shapes</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">array_layers</span><span class="p">,</span> <span class="p">[]))]</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">shapes_layers</span> <span class="o">=</span> <span class="p">[[</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">array_layers</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stitch_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_stitch_idx</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">layers_map</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ll</span><span class="p">,</span> <span class="n">ll</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">ll</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n_layers</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
@@ -2315,7 +2315,7 @@ red { color: red }
     <span class="n">n_layers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">)</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">shapes</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">array_layers</span><span class="p">,</span> <span class="p">[]))]</span>
-
+    <span class="bp">self</span><span class="o">.</span><span class="n">shapes_layers</span> <span class="o">=</span> <span class="p">[[</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">array_layers</span><span class="p">]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">stitch_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_stitch_idx</span><span class="p">()</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">layers_map</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ll</span><span class="p">,</span> <span class="n">ll</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">ll</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n_layers</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
