@@ -172,7 +172,7 @@ class NetworkTemplate(torch.nn.Module):
             activation_op = self._get_operation(operation=activation)
 
             return (
-                (n_layers - 1) * [activation_op]
+                [self._get_operation(operation=activation) for i in range(n_layers - 1)]
                 + [self._get_operation(operation=self.default_last_activation)],
                 (n_layers - 1) * [activation] + [self.default_last_activation],
             )
@@ -211,7 +211,6 @@ class NetworkTemplate(torch.nn.Module):
                 activations_list.append(activation_op)
             
             return activations_list, activation
-
 
         else:
             raise Exception(
