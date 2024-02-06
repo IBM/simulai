@@ -178,6 +178,7 @@ class Transformer(NetworkTemplate):
         decoder_mlp_layer_config: dict = None,
         number_of_encoders: int = 1,
         number_of_decoders: int = 1,
+        devices: Union[str, list] = "cpu",
     ) -> None:
         r"""A classical encoder-decoder transformer:
 
@@ -228,6 +229,9 @@ class Transformer(NetworkTemplate):
 
         self.encoder_mlp_layers_list = list()
         self.decoder_mlp_layers_list = list()
+
+        #Determining the kind of device in which the modelwill be executed
+        self.device = self._set_device(devices=devices)
 
         # Creating independent copies for the MLP layers which will be used
         # by the multiple encoders/decoders.
@@ -280,6 +284,11 @@ class Transformer(NetworkTemplate):
 
         self.final_layer = Linear(input_size=self.embed_dim_decoder, output_size=self.output_dim)
         self.add_module("final_linear_layer", self.final_layer)
+
+        #  Sending everything to the proper device
+        self.EncoderStage = self.EncoderStage.to(self.device)
+        self.DecoderStage = self.DecoderStage.to(self.device)
+        self.final_layer = self.final_layer.to(self.device)
 
     @as_tensor
     def forward(
