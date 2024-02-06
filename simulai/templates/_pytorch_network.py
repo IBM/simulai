@@ -187,7 +187,7 @@ class NetworkTemplate(torch.nn.Module):
                 )
 
                 activations_list.append(activation_op)
-
+            
             return activations_list, activation
 
         elif isinstance(activation, torch.nn.Module):
@@ -197,10 +197,26 @@ class NetworkTemplate(torch.nn.Module):
                 (n_layers - 1) * [activation.name] + [self.default_last_activation],
             )
 
+        elif isinstance(activation, list) and all(
+            [isinstance(el, torch.nn.Module) for el in activation]
+        ):
+            activations_list = list()
+            for activation_name in activation:
+                activation_op = self._get_operation(
+                    operation=activation_name, is_activation=True
+                )
+
+                activation_op.setup(device=self.device_type)
+
+                activations_list.append(activation_op)
+            
+            return activations_list, activation
+
+
         else:
             raise Exception(
-                "The activation argument must be str"
-                f"or list(str), not {type(activation)}"
+                "The activation format,"
+                f"{type(activation)} is not supported."
             )
 
     # Instantiating all the linear layers.
