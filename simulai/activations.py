@@ -102,13 +102,13 @@ class Wavelet(TrainableActivation):
         super(Wavelet, self).__init__()
 
         self.device = device
-        self.w1 = torch.nn.Parameter(torch.ones(1), requires_grad=True).to(self.device)
-        self.w2 = torch.nn.Parameter(torch.ones(1), requires_grad=True).to(self.device)
+        self.w1 = torch.nn.Parameter(torch.ones(1).to(self.device), requires_grad=True)
+        self.w2 = torch.nn.Parameter(torch.ones(1).to(self.device), requires_grad=True)
 
     def setup(self, device:str=None) -> None:
 
-        self.w1 = torch.nn.Parameter(torch.ones(1), requires_grad=True).to(device)
-        self.w2 = torch.nn.Parameter(torch.ones(1), requires_grad=True).to(device)
+        self.w1 = torch.nn.Parameter(torch.ones(1).to(self.device), requires_grad=True)
+        self.w2 = torch.nn.Parameter(torch.ones(1).to(self.device), requires_grad=True)
 
     def forward(self, input: torch.Tensor) -> torch.Tensor:
         """Perform the forward pass of the Wavelet activation on the input.
