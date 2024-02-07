@@ -169,10 +169,25 @@ class NetworkTemplate(torch.nn.Module):
         # It instantiates an operation x^l = \sigma(y^l), in which y^l
         # is the output of the previous linear operation.
         if isinstance(activation, str):
+            # Testing to instantiate an example of activation function.
             activation_op = self._get_operation(operation=activation)
 
+            if isinstance(activation_op, simulact.TrainableActivation):
+
+                activations_list = [self._get_operation(operation=activation,
+                                                        is_activation=True)
+                                    for i in range(n_layers - 1)]
+
+                for aa, act in enumerate(activations_list):
+                    act.setup(device=self.device_type)
+                    activations_list[aa] = act
+
+            else:
+                activations_list = [self._get_operation(operation=activation)
+                                    for i in range(n_layers - 1)]
+
             return (
-                [self._get_operation(operation=activation) for i in range(n_layers - 1)]
+                activations_list
                 + [self._get_operation(operation=self.default_last_activation)],
                 (n_layers - 1) * [activation] + [self.default_last_activation],
             )

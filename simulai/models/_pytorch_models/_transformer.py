@@ -8,13 +8,14 @@ from simulai.regression import DenseNetwork, Linear
 
 
 class BaseTemplate(NetworkTemplate):
-    def __init__(self):
+    def __init__(self, device:str="cpu"):
         """Template used for sharing fundamental methods with the
         children transformer-like encoders and decoders.
 
         """
 
         super(BaseTemplate, self).__init__()
+        self.device = device 
 
     def _activation_getter(
         self, activation: Union[str, torch.nn.Module]
@@ -33,7 +34,9 @@ class BaseTemplate(NetworkTemplate):
         if isinstance(activation, torch.nn.Module):
             return encoder_activation
         elif isinstance(activation, str):
-            return self._get_operation(operation=activation, is_activation=True)
+            act = self._get_operation(operation=activation, is_activation=True)
+            act.setup(device=self.device)
+            return act
         else:
             raise Exception(f"The activation {activation} is not supported.")
 
@@ -45,6 +48,7 @@ class BasicEncoder(BaseTemplate):
         activation: Union[str, torch.nn.Module] = "relu",
         mlp_layer: torch.nn.Module = None,
         embed_dim: Union[int, Tuple] = None,
+        device:str="cpu",
     ) -> None:
         """Generic transformer encoder.
 
@@ -56,7 +60,7 @@ class BasicEncoder(BaseTemplate):
 
         """
 
-        super(BasicEncoder, self).__init__()
+        super(BasicEncoder, self).__init__(device=device)
 
         self.num_heads = num_heads
 
@@ -107,6 +111,7 @@ class BasicDecoder(BaseTemplate):
         activation: Union[str, torch.nn.Module] = "relu",
         mlp_layer: torch.nn.Module = None,
         embed_dim: Union[int, Tuple] = None,
+        device:str="cpu",
     ):
         """Generic transformer decoder.
 
@@ -253,6 +258,7 @@ class Transformer(NetworkTemplate):
                     activation=self.encoder_activation,
                     mlp_layer=self.encoder_mlp_layers_list[e],
                     embed_dim=self.embed_dim_encoder,
+                    device=self.device,
                 )
                 for e in range(self.number_of_encoders)
             ]
@@ -266,6 +272,7 @@ class Transformer(NetworkTemplate):
                     activation=self.decoder_activation,
                     mlp_layer=self.decoder_mlp_layers_list[d],
                     embed_dim=self.embed_dim_decoder,
+                    device=self.device,
                 )
                 for d in range(self.number_of_decoders)
             ]
