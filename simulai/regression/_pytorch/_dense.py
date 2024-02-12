@@ -200,7 +200,7 @@ class DenseNetwork(NetworkTemplate):
 
         """
 
-        super(DenseNetwork, self).__init__()
+        super(DenseNetwork, self).__init__(**kwargs)
 
         assert layers_units, "Please, set a list of units for each layer"
 

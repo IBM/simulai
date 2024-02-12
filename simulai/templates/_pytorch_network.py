@@ -55,8 +55,9 @@ class NetworkTemplate(torch.nn.Module):
 
         self.shapes_dict = None
         self.device_type = devices
+        self.device = self._set_device(devices=devices)
 
-        if self.device_type:
+        if self.device_type != "cpu":
             self.to_wrap = self._to_explicit_device
         else:
             self.to_wrap = self._to_bypass
@@ -148,7 +149,7 @@ class NetworkTemplate(torch.nn.Module):
                         if torch.nn.Module in res_.__mro__:
                             res = res_
                             print(f"Module {operation} found in {engine}.")
-                            return res()
+                            return res(**kwargs)
                         else:
                             print(f"Module {operation} not found in {engine}.")
                     else:
@@ -175,7 +176,7 @@ class NetworkTemplate(torch.nn.Module):
             if isinstance(activation_op, simulact.TrainableActivation):
 
                 activations_list = [self._get_operation(operation=activation,
-                                                        is_activation=True, device=self.device_type)
+                                                        is_activation=True, device=self.device)
                                     for i in range(n_layers - 1)]
 
             else:
