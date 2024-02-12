@@ -427,12 +427,7 @@ red { color: red }
 
             <details class="quote">
               <summary>Source code in <code>simulai/models/_pytorch_models/_transformer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
-<span class="normal">172</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">172</span>
 <span class="normal">173</span>
 <span class="normal">174</span>
 <span class="normal">175</span>
@@ -573,7 +568,23 @@ red { color: red }
 <span class="normal">310</span>
 <span class="normal">311</span>
 <span class="normal">312</span>
-<span class="normal">313</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Transformer</span><span class="p">(</span><span class="n">NetworkTemplate</span><span class="p">):</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Transformer</span><span class="p">(</span><span class="n">NetworkTemplate</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">num_heads_encoder</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -587,6 +598,7 @@ red { color: red }
         <span class="n">decoder_mlp_layer_config</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">number_of_encoders</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">number_of_decoders</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;cpu&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;A classical encoder-decoder transformer:</span>
 
@@ -638,6 +650,9 @@ red { color: red }
         <span class="bp">self</span><span class="o">.</span><span class="n">encoder_mlp_layers_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">decoder_mlp_layers_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
+        <span class="c1">#Determining the kind of device in which the modelwill be executed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_device</span><span class="p">(</span><span class="n">devices</span><span class="o">=</span><span class="n">devices</span><span class="p">)</span>
+
         <span class="c1"># Creating independent copies for the MLP layers which will be used</span>
         <span class="c1"># by the multiple encoders/decoders.</span>
         <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_encoders</span><span class="p">):</span>
@@ -658,6 +673,7 @@ red { color: red }
                     <span class="n">activation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder_activation</span><span class="p">,</span>
                     <span class="n">mlp_layer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder_mlp_layers_list</span><span class="p">[</span><span class="n">e</span><span class="p">],</span>
                     <span class="n">embed_dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_encoder</span><span class="p">,</span>
+                    <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_encoders</span><span class="p">)</span>
             <span class="p">]</span>
@@ -671,6 +687,7 @@ red { color: red }
                     <span class="n">activation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decoder_activation</span><span class="p">,</span>
                     <span class="n">mlp_layer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decoder_mlp_layers_list</span><span class="p">[</span><span class="n">d</span><span class="p">],</span>
                     <span class="n">embed_dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_decoder</span><span class="p">,</span>
+                    <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_decoders</span><span class="p">)</span>
             <span class="p">]</span>
@@ -689,6 +706,11 @@ red { color: red }
 
         <span class="bp">self</span><span class="o">.</span><span class="n">final_layer</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_decoder</span><span class="p">,</span> <span class="n">output_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dim</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;final_linear_layer&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">final_layer</span><span class="p">)</span>
+
+        <span class="c1">#  Sending everything to the proper device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">EncoderStage</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">EncoderStage</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DecoderStage</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DecoderStage</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">final_layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">final_layer</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
     <span class="nd">@as_tensor</span>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
@@ -742,7 +764,7 @@ red { color: red }
 
 
 <h2 id="simulai.models.Transformer.__init__" class="doc doc-heading">
-          <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">num_heads_encoder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_heads_decoder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">embed_dim_encoder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">embed_dim_decoder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">encoder_activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">decoder_activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">encoder_mlp_layer_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">decoder_mlp_layer_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">number_of_encoders</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">number_of_decoders</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">num_heads_encoder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_heads_decoder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">embed_dim_encoder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">embed_dim_decoder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">encoder_activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">decoder_activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">encoder_mlp_layer_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">decoder_mlp_layer_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">number_of_encoders</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">number_of_decoders</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">devices</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span></code>
 
 <a href="#simulai.models.Transformer.__init__" class="headerlink" title="Permanent link">#</a></h2>
 
@@ -929,12 +951,7 @@ red { color: red }
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_transformer.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
-<span class="normal">172</span>
-<span class="normal">173</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">173</span>
 <span class="normal">174</span>
 <span class="normal">175</span>
 <span class="normal">176</span>
@@ -1043,7 +1060,23 @@ red { color: red }
 <span class="normal">279</span>
 <span class="normal">280</span>
 <span class="normal">281</span>
-<span class="normal">282</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">num_heads_encoder</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">num_heads_decoder</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -1056,6 +1089,7 @@ red { color: red }
     <span class="n">decoder_mlp_layer_config</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">number_of_encoders</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">number_of_decoders</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">devices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;cpu&quot;</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;A classical encoder-decoder transformer:</span>
 
@@ -1107,6 +1141,9 @@ red { color: red }
     <span class="bp">self</span><span class="o">.</span><span class="n">encoder_mlp_layers_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">decoder_mlp_layers_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
+    <span class="c1">#Determining the kind of device in which the modelwill be executed</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_device</span><span class="p">(</span><span class="n">devices</span><span class="o">=</span><span class="n">devices</span><span class="p">)</span>
+
     <span class="c1"># Creating independent copies for the MLP layers which will be used</span>
     <span class="c1"># by the multiple encoders/decoders.</span>
     <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_encoders</span><span class="p">):</span>
@@ -1127,6 +1164,7 @@ red { color: red }
                 <span class="n">activation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder_activation</span><span class="p">,</span>
                 <span class="n">mlp_layer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder_mlp_layers_list</span><span class="p">[</span><span class="n">e</span><span class="p">],</span>
                 <span class="n">embed_dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_encoder</span><span class="p">,</span>
+                <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_encoders</span><span class="p">)</span>
         <span class="p">]</span>
@@ -1140,6 +1178,7 @@ red { color: red }
                 <span class="n">activation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decoder_activation</span><span class="p">,</span>
                 <span class="n">mlp_layer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decoder_mlp_layers_list</span><span class="p">[</span><span class="n">d</span><span class="p">],</span>
                 <span class="n">embed_dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_decoder</span><span class="p">,</span>
+                <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_decoders</span><span class="p">)</span>
         <span class="p">]</span>
@@ -1158,6 +1197,11 @@ red { color: red }
 
     <span class="bp">self</span><span class="o">.</span><span class="n">final_layer</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embed_dim_decoder</span><span class="p">,</span> <span class="n">output_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dim</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s2">&quot;final_linear_layer&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">final_layer</span><span class="p">)</span>
+
+    <span class="c1">#  Sending everything to the proper device</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">EncoderStage</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">EncoderStage</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">DecoderStage</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DecoderStage</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">final_layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">final_layer</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -1235,23 +1279,7 @@ red { color: red }
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_transformer.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">284</span>
-<span class="normal">285</span>
-<span class="normal">286</span>
-<span class="normal">287</span>
-<span class="normal">288</span>
-<span class="normal">289</span>
-<span class="normal">290</span>
-<span class="normal">291</span>
-<span class="normal">292</span>
-<span class="normal">293</span>
-<span class="normal">294</span>
-<span class="normal">295</span>
-<span class="normal">296</span>
-<span class="normal">297</span>
-<span class="normal">298</span>
-<span class="normal">299</span>
-<span class="normal">300</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">300</span>
 <span class="normal">301</span>
 <span class="normal">302</span>
 <span class="normal">303</span>
@@ -1259,7 +1287,23 @@ red { color: red }
 <span class="normal">305</span>
 <span class="normal">306</span>
 <span class="normal">307</span>
-<span class="normal">308</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@as_tensor</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@as_tensor</span>
 <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
@@ -1308,10 +1352,10 @@ red { color: red }
 
           <details class="quote">
             <summary>Source code in <code>simulai/models/_pytorch_models/_transformer.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">310</span>
-<span class="normal">311</span>
-<span class="normal">312</span>
-<span class="normal">313</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;It prints a general view of the architecture.&quot;&quot;&quot;</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
