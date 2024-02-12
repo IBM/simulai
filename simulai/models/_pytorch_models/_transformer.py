@@ -3,7 +3,7 @@ import numpy as np
 import torch
 from typing import Union, Tuple
 
-from simulai.templates import NetworkTemplate, as_tensor
+from simulai.templates import NetworkTemplate, as_tensor, guarantee_device
 from simulai.regression import DenseNetwork, Linear
 
 
