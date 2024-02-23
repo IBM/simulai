@@ -1804,7 +1804,10 @@ class Tokenizer:
         if self.kind == "time_indexer":
             self.input_tokenizer = self._make_time_input_sequence
             self.target_tokenizer = self._make_time_target_sequence
-            
+       
+        elif self.kind == "spatiotemporal_indexer":
+            self.input_tokenizer = self._make_spatiotemporal_sequence
+
         elif self.kind == "time_deeponet_indexer":
             self.input_tokenizer = self._make_time_deeponet_input_sequence
             self.target_tokenizer = self._make_time_deeponet_target_sequence
@@ -1853,6 +1856,26 @@ class Tokenizer:
             return src_final[:-num_step + 1]
         else:
             return src_final
+
+    def _make_spatiotemporal_sequence(self,
+        src: Union[np.ndarray, torch.Tensor], num_step:int=None, step:float=None, **kwargs, 
+    ) -> Union[np.ndarray, torch.Tensor]:
+        """Simple tokenization based on repeating samples
+           and time-indexing them.
+        Args:
+            src (Union[np.ndarray, torch.Tensor]): The dataset to be tokenized.
+            num_step (int): number of timesteps for each batch. (Default value: None)
+            step (float): Size of the timestep. (Default value: None)
+        Returns:
+            Union[np.ndarray, torch.Tensor]: The tokenized input dataset.
+        """
+        dim = num_step
+        src = np.repeat(np.expand_dims(src, axis=1), dim, axis=1)  # (N, L, 2)
+        for i in range(num_step):
+            src[:,i,-1] += step*i
+        
+        return src
+
 
     def _make_time_target_sequence(self, 
         src: Union[np.ndarray, torch.Tensor], num_step:int=None) ->  Union[np.ndarray, torch.Tensor]:
