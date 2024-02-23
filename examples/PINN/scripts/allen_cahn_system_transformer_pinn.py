@@ -69,7 +69,8 @@ grid = np.mgrid[t_0 + dt : t_L + dt : dt, x_0:x_L:dx]
 data = np.hstack([grid[1].flatten()[:, None], grid[0].flatten()[:, None]])
 
 data_init = np.linspace(*x_interval, X_DIM)
-u_init = (data_init**2) * np.cos(np.pi * data_init)[:, None]
+u_init = ((data_init**2) * np.cos(np.pi * data_init))[:, None]
+print(u_init.shape)
 
 # Boundary grids
 data_boundary_x0 = np.hstack(
@@ -140,7 +141,7 @@ def model_transformer():
 
     num_heads = 2
     embed_dim = 2
-    embed_dim_out = 64
+    embed_dim_out = 1
     hidden_dim = 2
     number_of_encoders = 2
     number_of_decoders = 2
