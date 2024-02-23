@@ -108,6 +108,10 @@ lr = 1e-3  # Initial learning rate for the ADAM algorithm
 # Preparing datasets
 tokenizer = Tokenizer(kind="spatiotemporal_indexer") 
 input_data = tokenizer.generate_input_tokens(input_data=data, num_step=num_step, step=step)
+data_boundary_x0 = tokenizer.generate_input_tokens(input_data=data_boundary_x0, num_step=num_step, step=step)
+data_boundary_xL = tokenizer.generate_input_tokens(input_data=data_boundary_xL, num_step=num_step, step=step)
+data_boundary_t0 = tokenizer.generate_input_tokens(input_data=data_boundary_t0, num_step=num_step, step=step)
+u_init = np.repeat(np.expand_dims(u_init, axis=1), num_step, axis=1)  
 
 def model():
     from simulai.regression import DenseNetwork
@@ -228,7 +232,7 @@ params = {
 
 optimizer.fit(
     op=net,
-    input_data=data,
+    input_data=input_data,
     n_epochs=n_epochs,
     loss="pirmse",
     params=params,
