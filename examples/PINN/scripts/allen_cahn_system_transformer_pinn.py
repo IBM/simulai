@@ -142,7 +142,7 @@ def model_transformer():
     num_heads = 2
     embed_dim = 2
     embed_dim_out = 1
-    hidden_dim = 2
+    hidden_dim = 8
     number_of_encoders = 2
     number_of_decoders = 2
     output_dim = embed_dim_out
@@ -157,6 +157,7 @@ def model_transformer():
         "input_size": embed_dim,
         "output_size": embed_dim,
         "name": "mlp_layer",
+        "devices":"gpu",
     }
 
     decoder_mlp_config = {
@@ -165,6 +166,7 @@ def model_transformer():
         "input_size": embed_dim,
         "output_size": embed_dim,
         "name": "mlp_layer",
+        "devices":"gpu",
     }
 
 
@@ -181,6 +183,7 @@ def model_transformer():
         decoder_mlp_layer_config=decoder_mlp_config,
         number_of_encoders=number_of_encoders,
         number_of_decoders=number_of_decoders,
+        devices="gpu",
     )
 
     transformer.summary()
@@ -191,6 +194,8 @@ def model_transformer():
 optimizer_config = {"lr": lr}
 
 net = model_transformer()
+
+print(f"Number of coefficients: {net.n_parameters}")
 
 residual = SymbolicOperator(
     expressions=[f],
