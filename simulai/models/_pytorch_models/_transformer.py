@@ -5,7 +5,7 @@ from typing import Union, Tuple
 
 from simulai.templates import NetworkTemplate, as_tensor, guarantee_device
 from simulai.regression import DenseNetwork, Linear
-
+from simulai.activations import TrainableActivation
 
 class BaseTemplate(NetworkTemplate):
     def __init__(self, device:str="cpu"):
@@ -35,7 +35,10 @@ class BaseTemplate(NetworkTemplate):
             return encoder_activation
         elif isinstance(activation, str):
             act = self._get_operation(operation=activation, is_activation=True)
-            act.setup(device=self.device)
+
+            if isinstance(act, TrainableActivation):
+                act.setup(device=self.device)
+
             return act
         else:
             raise Exception(f"The activation {activation} is not supported.")
