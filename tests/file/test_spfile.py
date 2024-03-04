@@ -139,3 +139,28 @@ class TestSPFile(TestCase):
 
         except Exception:
             raise Exception(f"It was not possible to save/restore the model {model}.")
+
+    def test_model_with_compression(self):
+        channels = 4
+        input_dim = (None, 1, 32, 32)
+        output_dim = (None, 32, 1, 1)
+
+        model = model_2d(channels=channels, input_dim=input_dim, output_dim=output_dim)
+
+        args = {"channels": channels, "input_dim": input_dim, "output_dim": output_dim}
+
+        try:
+            filemng = SPFile(compact=True)
+            filemng.write(
+                save_dir="/tmp/",
+                name=f"{id(model)}",
+                model=model,
+                template=model_2d,
+                args=args,
+            )
+
+            filemng = SPFile(compact=True)
+            filemng.read(model_path=f"/tmp/{id(model)}.mtgz")
+
+        except Exception:
+            raise Exception(f"It was not possible to save/restore the model {model}.")

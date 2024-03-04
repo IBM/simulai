@@ -15,8 +15,11 @@
 import importlib
 import inspect
 import pickle
+import tarfile
+import shutil
 import os
 import sys
+import glob
 from typing import Union
 
 from simulai.templates import NetworkTemplate
@@ -74,6 +77,26 @@ class SPFile:
         
         """
         self.compact = compact
+        self.extension = ".mtgz"
+
+    def _compression_tgz(self, model_path:str=None) -> None:
+
+        full_name = model_path
+        files = glob.glob(os.path.join(full_name, "*"))
+        print(os.path.basename(full_name))
+        with tarfile.open(full_name + self.extension, "w:gz") as filetar:
+           for ff in files:
+               filetar.add(ff, arcname=os.path.basename(full_name))
+
+        shutil.rmtree(full_name)
+
+    def _uncompression_tgz(self, model_path:str=None) -> str:
+
+        uper_dir = os.path.dirname(model_path)
+        with tarfile.open(model_path, "r") as tarf:
+            tarf.extractall(path=uper_dir)
+       
+        return model_path.replace(self.extension, "")
 
     def _leading_size(self, first_line: str = None) -> int:
         """Returns the number of leading white spaces in the given line
@@ -145,6 +168,10 @@ class SPFile:
         # Saving the model coefficients
         model.save(save_dir=model_dir, name=name, device=device)
 
+        # tar.gzipping the model when required
+        if self.compact:
+            self._compression_tgz(model_path=model_dir)
+
     def read(
         self, model_path: str = None, device: str = None, template_name: str = None
     ) -> NetworkTemplate:
@@ -159,6 +186,15 @@ class SPFile:
             NetworkTemplate (child of torch.nn.Module): The model restored to memory.
         
         """
+        # Uncompressing the model directory when necessary
+        if os.path.isdir(model_path):
+            pass
+        else:
+            if tarfile.is_tarfile(model_path):
+                model_path = self._uncompression_tgz(model_path=model_path)
+            else:
+                print("The file cannot be opened, it seems don't be a tar.gz format.")
+
         name = os.path.basename(model_path)
         save_dir = model_path
 
