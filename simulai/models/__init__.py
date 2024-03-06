@@ -15,26 +15,12 @@
 from simulai import engine
 
 if engine == "pytorch":
-    from ._pytorch_models import (
-        AutoencoderCNN,
-        AutoencoderKoopman,
-        AutoencoderMLP,
-        AutoencoderVariational,
-        MultiScaleAutoencoder,
-        DeepONet,
-        FlexibleDeepONet,
-        ImprovedDeepONet,
-        NIF, 
-        ImprovedDenseNetwork,
-        Transformer,
-        UNet,
-        MetaModel,
-        ModelMaker,
-        MultiNetwork,
-        MoEPool,
-        SplitPool,
-        ResDeepONet,
-    )
+    from ._pytorch_models import (NIF, AutoencoderCNN, AutoencoderKoopman,
+                                  AutoencoderMLP, AutoencoderVariational,
+                                  DeepONet, FlexibleDeepONet, ImprovedDeepONet,
+                                  ImprovedDenseNetwork, MetaModel, ModelMaker,
+                                  MoEPool, MultiNetwork, MultiScaleAutoencoder,
+                                  ResDeepONet, SplitPool, Transformer, UNet)
 elif engine == "numpy":
     pass
 else:

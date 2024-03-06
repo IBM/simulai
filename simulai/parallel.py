@@ -33,7 +33,7 @@ class PipelineMPI:
     """PipelineMPI class, it orchestrates the instantiation of MPI jobs
     and distributes the workload among the workers.
 
-    
+
     """
 
     def __init__(
@@ -68,7 +68,7 @@ class PipelineMPI:
 
         Returns:
             int: Length of the batch sent for each worker.
-        
+
         """
 
         types = [type(value) for value in kwargs.values()]
@@ -102,7 +102,7 @@ class PipelineMPI:
             kwargs_batch: A dictionary containing the kwargs to be sent for each worker.
             batch_size: The batch size, which corresponds to the number of elements
             to be sent for each worker.
-        
+
         """
 
         # Decrement rank and size by 1, because they are usually 0-indexed in Python
@@ -155,7 +155,7 @@ class PipelineMPI:
         Args:
             kwargs (dict): A dictionary containing kwargs for the worker.
             total_size (int): The total number of elements.
-        
+
         """
 
         comm = MPI.COMM_WORLD
@@ -214,9 +214,7 @@ class PipelineMPI:
 
     @property
     def success(self) -> bool:
-        """It returns True if the entire process worked without issues.
-
-        """
+        """It returns True if the entire process worked without issues."""
 
         return all(self.status)
 
@@ -225,7 +223,7 @@ class PipelineMPI:
 
         Args:
             kwargs (dict, optional): A kwargs dictionary containing chunks of input arguments to be sent for each worker. (Default value = None)
-        
+
         """
 
         comm = MPI.COMM_WORLD

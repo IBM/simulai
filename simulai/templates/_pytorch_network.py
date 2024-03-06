@@ -31,7 +31,7 @@ class NetworkTemplate(torch.nn.Module):
 
         Args:
             name (str): Name for the neural network model.
-            devices (str): Kind of device in which the model will run, 
+            devices (str): Kind of device in which the model will run,
                 'cpu' or 'gpu'.
 
         """
@@ -64,26 +64,26 @@ class NetworkTemplate(torch.nn.Module):
 
     @property
     def weights_l2(self) -> torch.Tensor:
-        """It evaluates the global L^2 norm of all the model coefficients. 
+        """It evaluates the global L^2 norm of all the model coefficients.
         Returns:
             torch.Tensor: A tensor containing the value of this norm.
-            
+
         """
         return sum([torch.norm(weight, p=2) for weight in self.weights])
 
     @property
     def weights_l1(self) -> torch.Tensor:
-        """It evaluates the global L^1 norm of all the model coefficients. 
+        """It evaluates the global L^1 norm of all the model coefficients.
         Returns:
             torch.Tensor: A tensor containing the value of this norm.
-            
+
         """
 
         return sum([torch.norm(weight, p=1) for weight in self.weights])
 
     @property
     def n_parameters(self) -> int:
-        """It evaluates the total number of parameters for the model.eval 
+        """It evaluates the total number of parameters for the model.eval
         Returns:
             int: The total number of parameters for the model.
         """
@@ -127,7 +127,10 @@ class NetworkTemplate(torch.nn.Module):
 
     # Getting up activation if it exists
     def _get_operation(
-        self, operation: str = None, is_activation: bool = True, **kwargs, 
+        self,
+        operation: str = None,
+        is_activation: bool = True,
+        **kwargs,
     ) -> callable:
         mod_items = dir(self.engine)
         mod_items_lower = [item.lower() for item in mod_items]
@@ -174,14 +177,18 @@ class NetworkTemplate(torch.nn.Module):
             activation_op = self._get_operation(operation=activation)
 
             if isinstance(activation_op, simulact.TrainableActivation):
-
-                activations_list = [self._get_operation(operation=activation,
-                                                        is_activation=True, device=self.device)
-                                    for i in range(n_layers - 1)]
+                activations_list = [
+                    self._get_operation(
+                        operation=activation, is_activation=True, device=self.device
+                    )
+                    for i in range(n_layers - 1)
+                ]
 
             else:
-                activations_list = [self._get_operation(operation=activation)
-                                    for i in range(n_layers - 1)]
+                activations_list = [
+                    self._get_operation(operation=activation)
+                    for i in range(n_layers - 1)
+                ]
 
             return (
                 activations_list
@@ -199,7 +206,7 @@ class NetworkTemplate(torch.nn.Module):
                 )
 
                 activations_list.append(activation_op)
-            
+
             return activations_list, activation
 
         elif isinstance(activation, torch.nn.Module):
@@ -221,13 +228,12 @@ class NetworkTemplate(torch.nn.Module):
                 activation_op.setup(device=self.device_type)
 
                 activations_list.append(activation_op)
-            
+
             return activations_list, activation
 
         else:
             raise Exception(
-                "The activation format,"
-                f"{type(activation)} is not supported."
+                "The activation format," f"{type(activation)} is not supported."
             )
 
     # Instantiating all the linear layers.
@@ -351,33 +357,38 @@ class NetworkTemplate(torch.nn.Module):
         return data
 
     # Setting up values for the model parameters.
-    def set_parameters(self, parameters:Union[torch.Tensor, np.ndarray]=None, requires_grad=True) -> None:
+    def set_parameters(
+        self, parameters: Union[torch.Tensor, np.ndarray] = None, requires_grad=True
+    ) -> None:
         """It overwrite the current parameters values with new ones.
 
         Args:
             parameters (List[torch.Tensor]): List of new values to overwrite the
-                current parameters. 
+                current parameters.
 
         """
 
         # Determining the kind of data structure to be converted from
-        struct_converter = { 
-                            np.ndarray : self._set_parameter_from_array,
-                            torch.Tensor : self._set_parameter_from_tensor
-                           }.get(type(parameters))
+        struct_converter = {
+            np.ndarray: self._set_parameter_from_array,
+            torch.Tensor: self._set_parameter_from_tensor,
+        }.get(type(parameters))
 
         for ll, layer in enumerate(self.layers_map):
-
             self.layers[ll].weight = Parameter(
                 data=struct_converter(
-                    parameters[self.stitch_idx[layer[0]].flatten()].reshape(self.shapes_layers[ll][0])
+                    parameters[self.stitch_idx[layer[0]].flatten()].reshape(
+                        self.shapes_layers[ll][0]
+                    )
                 ),
                 requires_grad=requires_grad,
             )
 
             self.layers[ll].bias = Parameter(
                 data=struct_converter(
-                    parameters[self.stitch_idx[layer[1]].flatten()].reshape(self.shapes_layers[ll][1])
+                    parameters[self.stitch_idx[layer[1]].flatten()].reshape(
+                        self.shapes_layers[ll][1]
+                    )
                 ),
                 requires_grad=requires_grad,
             )
@@ -385,7 +396,7 @@ class NetworkTemplate(torch.nn.Module):
     # Detaching parameters from the backpropagation pipeline
     def detach_parameters(self) -> None:
         """Remove the parameters for the PyTorch graph,
-            it means that they will not be trainable. 
+        it means that they will not be trainable.
         """
         for param in self.parameters():
             param.requires_grad = False
@@ -396,11 +407,11 @@ class NetworkTemplate(torch.nn.Module):
         """It used the model to perform evaluations.
 
         Args:
-            input_data (Union[np.ndarray, torch.Tensor]): The input data used for the 
+            input_data (Union[np.ndarray, torch.Tensor]): The input data used for the
                 model evaluation.
 
         Returns:
-            np.ndarray: The result of that evaluation. 
+            np.ndarray: The result of that evaluation.
 
         """
         output_tensor = self.forward(input_data=input_data)
@@ -551,8 +562,8 @@ class ConvNetworkTemplate(NetworkTemplate):
         """A basic template for convolutional neural networks.
 
         Args:
-            name (str): A name for the neural network model. 
-            flatten (bool): Flatten the output or not. 
+            name (str): A name for the neural network model.
+            flatten (bool): Flatten the output or not.
 
         """
         super(ConvNetworkTemplate, self).__init__()
@@ -753,7 +764,7 @@ class ConvNetworkTemplate(NetworkTemplate):
         """
 
         Args:
-            input_data (Union[torch.Tensor, np.ndarray]): An input data used for 
+            input_data (Union[torch.Tensor, np.ndarray]): An input data used for
                 helping to construct the model summary.
             input_shape (list): When input_data is not provided, a shape for it
                 can be used instead.

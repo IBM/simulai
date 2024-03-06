@@ -14,12 +14,14 @@
 
 import torch
 
-class TrainableActivation(torch.nn.Module):
 
+class TrainableActivation(torch.nn.Module):
     def __init__(self):
         super(TrainableActivation, self).__init__()
-    def setup(self, device:str=None):
+
+    def setup(self, device: str = None):
         pass
+
 
 class Siren(torch.nn.Module):
     """Sinusoidal Representation Networks (SIREN)"""
@@ -46,7 +48,7 @@ class Siren(torch.nn.Module):
 
         Returns:
             dict: A dictionary containing the parameters 'omega_0' and 'c'.
-        
+
         """
         return {"omega_0": self.omega_0, "c": self.c}
 
@@ -58,14 +60,14 @@ class Siren(torch.nn.Module):
 
         Returns:
             torch.Tensor: The output of the SIREN model.
-        
+
         """
         return torch.sin(self.omega_0 * input)
 
 
 class sin(torch.nn.Module):
     """Sine activation function.
-    
+
     This module applies the sine function element-wise to the input.
 
     """
@@ -73,9 +75,7 @@ class sin(torch.nn.Module):
     name = "sin"
 
     def __init__(self) -> None:
-        """Initialize the sine activation function.
-
-        """
+        """Initialize the sine activation function."""
 
         super(sin, self).__init__()
 
@@ -87,7 +87,7 @@ class sin(torch.nn.Module):
 
         Returns:
             torch.Tensor: The output of the sine activation function.
-        
+
         """
         return torch.sin(input)
 
@@ -97,16 +97,14 @@ class Wavelet(TrainableActivation):
 
     name = "wavelet"
 
-    def __init__(self, device:str="cpu") -> None:
-
+    def __init__(self, device: str = "cpu") -> None:
         super(Wavelet, self).__init__()
 
         self.device = device
         self.w1 = torch.nn.Parameter(torch.ones(1).to(self.device), requires_grad=True)
         self.w2 = torch.nn.Parameter(torch.ones(1).to(self.device), requires_grad=True)
 
-    def setup(self, device:str=None) -> None:
-
+    def setup(self, device: str = None) -> None:
         self.w1 = torch.nn.Parameter(torch.ones(1).to(self.device), requires_grad=True)
         self.w2 = torch.nn.Parameter(torch.ones(1).to(self.device), requires_grad=True)
 
@@ -118,7 +116,7 @@ class Wavelet(TrainableActivation):
 
         Returns:
             torch.Tensor: The output of the sine activation function.
-        
+
         """
 
         return self.w1 * torch.sin(input) + self.w2 * torch.cos(input)

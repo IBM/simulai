@@ -23,21 +23,22 @@ Simple Bioreactor with Monod Model
 """
 
 """    Import Python Libraries    """
+import random
 from argparse import ArgumentParser
 from typing import List
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import random
 import torch
 
 torch.set_default_dtype(torch.float64)
 
 from simulai import ARRAY_DTYPE
+from simulai.file import SPFile
 from simulai.optimization import Optimizer, PIRMSELoss, ScipyInterface
 from simulai.residuals import SymbolicOperator
 from simulai.templates import NetworkTemplate, guarantee_device
-from simulai.file import SPFile
 
 """    Variables    """
 # Bioreactor
@@ -148,8 +149,8 @@ if train == "yes":
     activations_funct = "tanh"
 
     def model():
-        from simulai.regression import SLFNN, ConvexDenseNetwork
         from simulai.models import ImprovedDenseNetwork
+        from simulai.regression import SLFNN, ConvexDenseNetwork
 
         # Configuration for the fully-connected network
         config = {
@@ -217,10 +218,11 @@ if train == "yes":
 
         torch.set_default_dtype(torch.float64)
 
-        from simulai.templates import NetworkTemplate, guarantee_device
         import numpy as np
+
         from simulai.models import ImprovedDenseNetwork
         from simulai.regression import SLFNN, ConvexDenseNetwork
+        from simulai.templates import NetworkTemplate, guarantee_device
 
         depth = 3
         width = 50
@@ -229,8 +231,8 @@ if train == "yes":
 
         # Model used for initialization
         def sub_model():
-            from simulai.regression import SLFNN, ConvexDenseNetwork
             from simulai.models import ImprovedDenseNetwork
+            from simulai.regression import SLFNN, ConvexDenseNetwork
 
             # Configuration for the fully-connected network
             config = {

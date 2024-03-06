@@ -12,20 +12,15 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-from typing import Optional, Tuple, Union, List
+from typing import List, Optional, Tuple, Union
 
 import numpy as np
 import torch
 
 from simulai import ARRAY_DTYPE
 from simulai.regression import ConvolutionalNetwork, DenseNetwork, Linear
-from simulai.templates import (
-    NetworkTemplate,
-    as_tensor,
-    autoencoder_auto,
-    cnn_autoencoder_auto,
-    mlp_autoencoder_auto,
-)
+from simulai.templates import (NetworkTemplate, as_tensor, autoencoder_auto,
+                               cnn_autoencoder_auto, mlp_autoencoder_auto)
 
 
 ########################################

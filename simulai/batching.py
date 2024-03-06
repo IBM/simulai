@@ -40,7 +40,7 @@ class BatchwiseSampler:
             input_normalizer (callable, optional): Function to be applied on the input variables (Default value = None)
             target_normalizer (callable, optional): Function to be applied on the target variables (Default value = None)
             channels_first (bool, optional): Whether the data should be in channels_first format or not. If not provided, will be set to None. (Default value = None)
-        
+
         """
 
         # This import avoids circular importing
@@ -85,8 +85,8 @@ class BatchwiseSampler:
             data_interval (list, optional): List of 2 integers representing the starting and ending indexes of the interval in which the values will be evaluated. (Default value = None)
 
         Returns:
-            A tuple of minimum and maximum value of the target variables.: 
-        
+            A tuple of minimum and maximum value of the target variables.:
+
         """
         min_list = []
         max_list = []
@@ -107,8 +107,8 @@ class BatchwiseSampler:
          if 'channels_first' is True.
 
         Returns:
-            A list of integers representing the shape of the input variables.: 
-        
+            A list of integers representing the shape of the input variables.:
+
         """
         if self.channels_first:
             shape_ = self.dataset[self.input_variables[0]].shape
@@ -127,8 +127,8 @@ class BatchwiseSampler:
             data (np.ndarray, optional): The data to be bypassed. (Default value = None)
 
         Returns:
-            Same data: 
-        
+            Same data:
+
         """
         return data
 
@@ -139,8 +139,8 @@ class BatchwiseSampler:
             data (np.ndarray, optional): The target data to be normalized. (Default value = None)
 
         Returns:
-            Normalized target data.: 
-        
+            Normalized target data.:
+
         """
         return self.target_normalizer(data=data)
 
@@ -151,8 +151,8 @@ class BatchwiseSampler:
             data (np.ndarray, optional): The input data to be normalized. (Default value = None)
 
         Returns:
-            Normalized input data.: 
-        
+            Normalized input data.:
+
         """
         return self.input_normalizer(data=data)
 
@@ -161,7 +161,7 @@ class BatchwiseSampler:
 
         Args:
             variables_list (list, optional):  (Default value = None)
-        
+
         """
         batch = np.stack(variables_list, axis=-1)
 
@@ -179,8 +179,8 @@ class BatchwiseSampler:
             variables_list (list, optional): The list of variables to be stacked. (Default value = None)
 
         Returns:
-            A torch tensor of stacked variables.: 
-        
+            A torch tensor of stacked variables.:
+
         """
         batch = np.stack(variables_list, dim=-1)
 
@@ -193,8 +193,8 @@ class BatchwiseSampler:
             indices (np.ndarray, optional): The indices of samples for which the input data should be retrieved (Default value = None)
 
         Returns:
-            A torch tensor of input data: 
-        
+            A torch tensor of input data:
+
         """
         indices = np.sort(indices)
 
@@ -211,8 +211,8 @@ class BatchwiseSampler:
             indices (np.ndarray, optional): The indices of samples for which the target data should be retrieved (Default value = None)
 
         Returns:
-            A torch tensor of target data: 
-        
+            A torch tensor of target data:
+
         """
 
         indices = np.sort(indices)
@@ -238,8 +238,8 @@ def batchdomain_constructor(
         batch_indices (list, optional): A list of indices to be divided into batches. (Default value = None)
 
     Returns:
-        A list of lists containing the indices of the input data in the form of batches.: 
-    
+        A list of lists containing the indices of the input data in the form of batches.:
+
     """
 
     if data_interval is not None:
@@ -300,8 +300,8 @@ def indices_batchdomain_constructor(
         batch_size (int, optional): The desired size of the batches. (Default value = None)
 
     Returns:
-        A list of lists containing the indices of the input data in the form of batches.: 
-    
+        A list of lists containing the indices of the input data in the form of batches.:
+
     """
     interval_size = indices.shape[0]
 

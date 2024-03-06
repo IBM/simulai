@@ -1,21 +1,23 @@
 import copy
+from typing import Tuple, Union
+
 import numpy as np
 import torch
-from typing import Union, Tuple
 
-from simulai.templates import NetworkTemplate, as_tensor, guarantee_device
-from simulai.regression import DenseNetwork, Linear
 from simulai.activations import TrainableActivation
+from simulai.regression import DenseNetwork, Linear
+from simulai.templates import NetworkTemplate, as_tensor, guarantee_device
+
 
 class BaseTemplate(NetworkTemplate):
-    def __init__(self, device:str="cpu"):
+    def __init__(self, device: str = "cpu"):
         """Template used for sharing fundamental methods with the
         children transformer-like encoders and decoders.
 
         """
 
         super(BaseTemplate, self).__init__()
-        self.device = device 
+        self.device = device
 
     def _activation_getter(
         self, activation: Union[str, torch.nn.Module]
@@ -51,7 +53,7 @@ class BasicEncoder(BaseTemplate):
         activation: Union[str, torch.nn.Module] = "relu",
         mlp_layer: torch.nn.Module = None,
         embed_dim: Union[int, Tuple] = None,
-        device:str="cpu",
+        device: str = "cpu",
     ) -> None:
         """Generic transformer encoder.
 
@@ -114,7 +116,7 @@ class BasicDecoder(BaseTemplate):
         activation: Union[str, torch.nn.Module] = "relu",
         mlp_layer: torch.nn.Module = None,
         embed_dim: Union[int, Tuple] = None,
-        device:str="cpu",
+        device: str = "cpu",
     ):
         """Generic transformer decoder.
 
@@ -238,7 +240,7 @@ class Transformer(NetworkTemplate):
         self.encoder_mlp_layers_list = list()
         self.decoder_mlp_layers_list = list()
 
-        #Determining the kind of device in which the modelwill be executed
+        # Determining the kind of device in which the modelwill be executed
         self.device = self._set_device(devices=devices)
 
         # Creating independent copies for the MLP layers which will be used
@@ -291,8 +293,9 @@ class Transformer(NetworkTemplate):
             self.weights += decoder_d.weights
             self.add_module(f"decoder_{d}", decoder_d)
 
-
-        self.final_layer = Linear(input_size=self.embed_dim_decoder, output_size=self.output_dim)
+        self.final_layer = Linear(
+            input_size=self.embed_dim_decoder, output_size=self.output_dim
+        )
         self.add_module("final_linear_layer", self.final_layer)
 
         #  Sending everything to the proper device

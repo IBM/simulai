@@ -19,7 +19,6 @@ from torch.optim.optimizer import Optimizer  # , required
 
 
 class BBI(Optimizer):
-
     def __init__(
         self,
         params: dict = None,
@@ -33,20 +32,20 @@ class BBI(Optimizer):
         consEn: bool = True,
         n_fixed_bounces: int = 1,
     ) -> None:
-         """Optimizer based on the BBI model of inflation.
- 
-         Args:
-             params (iterable): iterable of parameters to optimize or dicts defining parameter groups
-             lr (float): learning rate
-             v0 (float): expected minimum of the potential (Delta V in the paper)
-             threshold0 (int): threshold for fixed bounces (T0 in the paper)
-             threshold1 (int): threshold for progress-dependent bounces (T1 in the paper)
-             deltaEn (float): extra initial energy (delta E in the paper)
-             consEn (bool): if True enforces energy conservation at every step
-             n_fixed_bounces (int): number of bounces every T0 iterations (Nb in the paper)
-         """
+        """Optimizer based on the BBI model of inflation.
 
-         defaults = dict(
+        Args:
+            params (iterable): iterable of parameters to optimize or dicts defining parameter groups
+            lr (float): learning rate
+            v0 (float): expected minimum of the potential (Delta V in the paper)
+            threshold0 (int): threshold for fixed bounces (T0 in the paper)
+            threshold1 (int): threshold for progress-dependent bounces (T1 in the paper)
+            deltaEn (float): extra initial energy (delta E in the paper)
+            consEn (bool): if True enforces energy conservation at every step
+            n_fixed_bounces (int): number of bounces every T0 iterations (Nb in the paper)
+        """
+
+        defaults = dict(
             lr=lr,
             eps1=eps1,
             eps2=eps2,
@@ -56,26 +55,25 @@ class BBI(Optimizer):
             deltaEn=deltaEn,
             consEn=consEn,
             n_fixed_bounces=n_fixed_bounces,
-         )
-         self.energy = None
-         self.min_loss = None
-         self.iteration = 0
-         self.deltaEn = deltaEn
-         self.n_fixed_bounces = n_fixed_bounces
-         self.consEn = consEn
+        )
+        self.energy = None
+        self.min_loss = None
+        self.iteration = 0
+        self.deltaEn = deltaEn
+        self.n_fixed_bounces = n_fixed_bounces
+        self.consEn = consEn
 
-         super(BBI, self).__init__(params, defaults)
+        super(BBI, self).__init__(params, defaults)
 
     def __setstate__(self, state):
         super(BBI, self).__setstate__(state)
 
     def step(self, closure: callable) -> torch.Tensor:
-
         """
 
         Args:
             closure (callable): A function which enclosures the loss
-                evaluation. 
+                evaluation.
         Returns:
             torch.Tensor: The evaluation for the loss function.
         """

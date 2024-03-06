@@ -23,16 +23,17 @@
 
 
 import os
+
 import matplotlib.pyplot as plt
 import numpy as np
-
-
-# In[3]:
-
 
 from simulai.file import SPFile
 from simulai.optimization import Optimizer
 from simulai.residuals import SymbolicOperator
+
+# In[3]:
+
+
 
 
 # #### Basic configuration
@@ -280,7 +281,6 @@ saver.write(
 
 
 from scipy.integrate import odeint
-
 
 # #### Pendulum numerical solver
 

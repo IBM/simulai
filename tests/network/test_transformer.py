@@ -16,6 +16,7 @@ import os
 from unittest import TestCase
 
 import numpy as np
+
 from tests.config import configure_dtype
 
 torch = configure_dtype()
@@ -24,8 +25,8 @@ from utils import configure_device
 
 from simulai import ARRAY_DTYPE
 from simulai.file import SPFile
-from simulai.optimization import Optimizer
 from simulai.models import Transformer
+from simulai.optimization import Optimizer
 from simulai.regression import DenseNetwork
 
 DEVICE = configure_device()
@@ -81,7 +82,6 @@ class TestTransformer(TestCase):
 
         print(estimated_output_data.shape)
 
-
     def test_instantiate_inputs_dif_outputs(self):
         num_heads = 4
         embed_dim = 128
@@ -110,7 +110,6 @@ class TestTransformer(TestCase):
             "output_size": embed_dim,
             "name": "mlp_layer",
         }
-
 
         # Instantiating and training the surrogate model
         transformer = Transformer(

@@ -789,7 +789,7 @@ class DMD(ROM):
 
         Args:
             config:  (Default value = None)
-        
+
         """
         super().__init__()
         for key, value in config.items():

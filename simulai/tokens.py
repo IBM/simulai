@@ -12,8 +12,9 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import sympy
 from typing import Union
+
+import sympy
 import torch
 
 # Token used for representing the operator differentiation

@@ -14,14 +14,14 @@
 
 import random
 from unittest import TestCase
+
 import numpy as np
 
 from simulai.io import Tokenizer
 
+
 class TestTokenizer(TestCase):
-
     def test_time_indexer(self):
-
         n_samples = 100
         n_series_input = 3
         n_series_output = 2
@@ -33,14 +33,17 @@ class TestTokenizer(TestCase):
 
         tokenizer = Tokenizer(kind="time_indexer")
 
-        input_dataset = tokenizer.generate_input_tokens(input_data, num_step=num_step, step=step)
-        target_dataset = tokenizer.generate_target_tokens(target_data, num_step=num_step)
+        input_dataset = tokenizer.generate_input_tokens(
+            input_data, num_step=num_step, step=step
+        )
+        target_dataset = tokenizer.generate_target_tokens(
+            target_data, num_step=num_step
+        )
 
         print(f"Input shape: {input_dataset.shape}")
         print(f"Target shape: {target_dataset.shape}")
 
     def test_time_example(self):
-
         n_samples = 10
         num_step = 5
         step = 0.1
@@ -50,15 +53,23 @@ class TestTokenizer(TestCase):
 
         tokenizer = Tokenizer(kind="time_indexer")
 
-        input_dataset = tokenizer.generate_input_tokens(input_data, num_step=num_step, step=step)
-        target_dataset = tokenizer.generate_target_tokens(target_data, num_step=num_step)
+        input_dataset = tokenizer.generate_input_tokens(
+            input_data, num_step=num_step, step=step
+        )
+        target_dataset = tokenizer.generate_target_tokens(
+            target_data, num_step=num_step
+        )
 
-        assert input_dataset.shape[1:] == (num_step, 2), "The input dataset has not the proper shape"
-        assert target_dataset.shape[1:] == (num_step, 1), "The target dataset has not the proper shape"
-
+        assert input_dataset.shape[1:] == (
+            num_step,
+            2,
+        ), "The input dataset has not the proper shape"
+        assert target_dataset.shape[1:] == (
+            num_step,
+            1,
+        ), "The target dataset has not the proper shape"
 
     def test_time_deeponet_example(self):
-
         n_samples = 10
         num_step = 5
         step = 0.1
@@ -68,10 +79,19 @@ class TestTokenizer(TestCase):
 
         tokenizer = Tokenizer(kind="time_deeponet_indexer")
 
-        input_branch_dataset, input_trunk_dataset = tokenizer.generate_input_tokens(input_data, num_step=num_step, step=step)
-        target_dataset = tokenizer.generate_target_tokens(target_data, num_step=num_step)
+        input_branch_dataset, input_trunk_dataset = tokenizer.generate_input_tokens(
+            input_data, num_step=num_step, step=step
+        )
+        target_dataset = tokenizer.generate_target_tokens(
+            target_data, num_step=num_step
+        )
 
-        assert input_branch_dataset.shape[1:] == (1,), "The input branch dataset has not the proper shape"
-        assert input_trunk_dataset.shape[1:] == (1,), "The input trunk dataset has not the proper shape"
-        assert target_dataset.shape[1:] == (1,), "The target dataset has not the proper shape"
-
+        assert input_branch_dataset.shape[1:] == (
+            1,
+        ), "The input branch dataset has not the proper shape"
+        assert input_trunk_dataset.shape[1:] == (
+            1,
+        ), "The input trunk dataset has not the proper shape"
+        assert target_dataset.shape[1:] == (
+            1,
+        ), "The target dataset has not the proper shape"
