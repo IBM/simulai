@@ -16,11 +16,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from simulai.file import SPFile
+from simulai.io import Tokenizer
+from simulai.models import Transformer
 from simulai.optimization import Optimizer
 from simulai.regression import DenseNetwork, ModalRBFNetwork
-from simulai.models import Transformer
 from simulai.residuals import SymbolicOperator
-from simulai.io import Tokenizer
 
 # Our PDE
 # Allen-cahn equation
@@ -34,8 +34,8 @@ input_labels = ["x", "t"]
 output_labels = ["u"]
 
 # Some fixed values
-X_DIM = 50 #256
-T_DIM = 20 #100
+X_DIM = 50  # 256
+T_DIM = 20  # 100
 
 L = 1
 x_0 = -1
@@ -45,9 +45,9 @@ T = 1
 n_epochs = 5_000
 DEVICE = "gpu"
 num_step = 10
-#"""
-step = T/T_DIM
-#"""
+# """
+step = T / T_DIM
+# """
 
 # Generating the training grid
 
@@ -95,24 +95,33 @@ data_boundary_t0 = np.hstack(
 )
 
 # Visualizing the training mesh
-#plt.scatter(*np.split(data, 2, axis=1))
-#plt.scatter(*np.split(data_boundary_x0, 2, axis=1))
-#plt.scatter(*np.split(data_boundary_xL, 2, axis=1))
-#plt.scatter(*np.split(data_boundary_t0, 2, axis=1))
+# plt.scatter(*np.split(data, 2, axis=1))
+# plt.scatter(*np.split(data_boundary_x0, 2, axis=1))
+# plt.scatter(*np.split(data_boundary_xL, 2, axis=1))
+# plt.scatter(*np.split(data_boundary_t0, 2, axis=1))
 
-#plt.show()
-#plt.close()
+# plt.show()
+# plt.close()
 
 n_epochs = 50_000  # Maximum number of iterations for ADAM
 lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
 # Preparing datasets
-tokenizer = Tokenizer(kind="spatiotemporal_indexer") 
-input_data = tokenizer.generate_input_tokens(input_data=data, num_step=num_step, step=step)
-data_boundary_x0 = tokenizer.generate_input_tokens(input_data=data_boundary_x0, num_step=num_step, step=step)
-data_boundary_xL = tokenizer.generate_input_tokens(input_data=data_boundary_xL, num_step=num_step, step=step)
-data_boundary_t0 = tokenizer.generate_input_tokens(input_data=data_boundary_t0, num_step=num_step, step=step)
-u_init = np.repeat(np.expand_dims(u_init, axis=1), num_step, axis=1)  
+tokenizer = Tokenizer(kind="spatiotemporal_indexer")
+input_data = tokenizer.generate_input_tokens(
+    input_data=data, num_step=num_step, step=step
+)
+data_boundary_x0 = tokenizer.generate_input_tokens(
+    input_data=data_boundary_x0, num_step=num_step, step=step
+)
+data_boundary_xL = tokenizer.generate_input_tokens(
+    input_data=data_boundary_xL, num_step=num_step, step=step
+)
+data_boundary_t0 = tokenizer.generate_input_tokens(
+    input_data=data_boundary_t0, num_step=num_step, step=step
+)
+u_init = np.repeat(np.expand_dims(u_init, axis=1), num_step, axis=1)
+
 
 def model():
     from simulai.regression import DenseNetwork
@@ -137,8 +146,8 @@ def model():
 
     return net
 
-def model_transformer():
 
+def model_transformer():
     num_heads = 2
     embed_dim = 2
     embed_dim_out = 1
@@ -157,7 +166,7 @@ def model_transformer():
         "input_size": embed_dim,
         "output_size": embed_dim,
         "name": "mlp_layer",
-        "devices":"gpu",
+        "devices": "gpu",
     }
 
     decoder_mlp_config = {
@@ -166,9 +175,8 @@ def model_transformer():
         "input_size": embed_dim,
         "output_size": embed_dim,
         "name": "mlp_layer",
-        "devices":"gpu",
+        "devices": "gpu",
     }
-
 
     # Instantiating and training the surrogate model
     transformer = Transformer(
@@ -270,5 +278,3 @@ gf = ax.pcolormesh(X_f, T_f, U_f, cmap="jet")
 fig.colorbar(gf)
 
 plt.savefig("allen_cahn.png")
-
-

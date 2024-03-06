@@ -159,10 +159,10 @@ class Optimizer:
 
         Args:
             optimizer (str): A name for a PyTorch optimizer.
-            early_stopping (bool): Early-stopping will be used or not. 
+            early_stopping (bool): Early-stopping will be used or not.
             summary_writer (bool): Write a Tensorboard run file or not.
-            shuffle (bool): Shuffle the dataset or not. 
-            lr_decay_scheduler_params (dict): The parameters used for defining 
+            shuffle (bool): Shuffle the dataset or not.
+            lr_decay_scheduler_params (dict): The parameters used for defining
                 a learning rate decay scheme.
             params (dict): Extra parameters which provide information for task-specific
                 problems (as Physics-Informed neural networks).
@@ -335,7 +335,9 @@ class Optimizer:
         if self.lr_decay_scheduler_params is not None:
             name = self.lr_decay_scheduler_params.pop("name")
             try:
-                self.decay_frequency = self.lr_decay_scheduler_params.pop("decay_frequency")
+                self.decay_frequency = self.lr_decay_scheduler_params.pop(
+                    "decay_frequency"
+                )
             except:
                 pass
             lr_class = getattr(torch.optim.lr_scheduler, name)
@@ -431,24 +433,29 @@ class Optimizer:
     ) -> torch.Tensor:
         indices = np.sort(indices)
 
-        ondisk_formats = {np.ndarray: self._convert_ondisk_data_array,
-                         dict: self._convert_ondisk_data_dict}
+        ondisk_formats = {
+            np.ndarray: self._convert_ondisk_data_array,
+            dict: self._convert_ondisk_data_dict,
+        }
 
         data = dataset(indices=indices)
 
         return ondisk_formats.get(type(data))(data=data)
 
     def _convert_ondisk_data_array(
-        self, data: np.ndarray=None,
+        self,
+        data: np.ndarray = None,
     ) -> torch.Tensor:
-
         return torch.from_numpy(data.astype(ARRAY_DTYPE))
 
     def _convert_ondisk_data_dict(
-        self, data: np.ndarray=None,
+        self,
+        data: np.ndarray = None,
     ) -> torch.Tensor:
-
-        return {key: torch.from_numpy((value).astype(ARRAY_DTYPE)) for  key, value in data.items()}
+        return {
+            key: torch.from_numpy((value).astype(ARRAY_DTYPE))
+            for key, value in data.items()
+        }
 
     # Preparing the batches (converting format and moving to the correct device)
     # in a single batch optimization loop
@@ -477,22 +484,13 @@ class Optimizer:
 
         # When the 'input data' is just a pointer for a lazzy dataset
         elif callable(input_data):
-
-            data = self.get_data(
-                    dataset=input_data, indices=batch_indices
-                )
+            data = self.get_data(dataset=input_data, indices=batch_indices)
             if type(data) == torch.Tensor:
-
-                input_data_dict = {
-                    self.input_data_name: data.to(device)
-                }
+                input_data_dict = {self.input_data_name: data.to(device)}
 
             else:
-                input_data_dict = {
-                    key: item.to(device)
-                    for key, item in data.items()
-                }
-      
+                input_data_dict = {key: item.to(device) for key, item in data.items()}
+
         # The rest of the possible cases
         else:
             input_data_dict = {
@@ -632,7 +630,7 @@ class Optimizer:
                 # single optimization step
                 indices = samples_permutation[ibatch]
 
-                # The input batch usually requires more pre-processing and 
+                # The input batch usually requires more pre-processing and
                 # specifications
                 input_batch = self._batchwise_make_input_data(
                     input_data, device=device, batch_indices=indices
@@ -654,13 +652,13 @@ class Optimizer:
                 # A single optimization step
                 self.optimizer_instance.step(loss_function)
 
-                # Writing the training information to a Tensorboard file 
+                # Writing the training information to a Tensorboard file
                 # (if it is required)
                 self.summary_writer(
                     loss_states=loss_instance.loss_states, epoch=b_epoch
                 )
 
-                # Checkpoint the model 
+                # Checkpoint the model
                 self.checkpoint_handler(
                     model=op, epoch=b_epoch, **self.checkpoint_params
                 )
@@ -707,21 +705,21 @@ class Optimizer:
 
         Args:
             op (NetworkTemplate): The model which will be trained
-            input_data (Union[dict, torch.Tensor, np.ndarray, callable]): The (or collection of) dataset(s) used as 
-                input for the model. 
+            input_data (Union[dict, torch.Tensor, np.ndarray, callable]): The (or collection of) dataset(s) used as
+                input for the model.
             target_data (Union[torch.Tensor, np.ndarray, callable]): The target data for the problem.
             validation_data (Tuple[Union[torch.Tensor, np.ndarray, callable]]): The validation data used for the problem
                 (if required).
-            n_epochs (int): Number of epochs for the optimization process. 
+            n_epochs (int): Number of epochs for the optimization process.
             loss (str): A string for referring some loss function defined on simulai/optimization/_losses.py.ndarray
             params (dict): Extra parameters required for task-specific problems (as Physics-informed neural networks).
             batch_size (int): The size of the batch used in each optimization epoch
             device (str): The device in which the optimization will run, 'cpu' or 'gpu'.
-            distributed (bool): Use distributed (multi-node) training or not. 
+            distributed (bool): Use distributed (multi-node) training or not.
             use_jit (bool): Use PyTorch JIT (Just in time compilation) or not.
 
         """
-        
+
         # Verifying if the params dictionary contains Physics-informed
         # attributes
         extra_parameters = None
@@ -1030,12 +1028,12 @@ class ScipyInterface:
     ) -> np.ndarray:
         """
         It produces a stack of all the model parameters.
-        
+
         Args:
-            parameters (List[Union[torch.Tensor, np.ndarray]]): A list containing all the 
+            parameters (List[Union[torch.Tensor, np.ndarray]]): A list containing all the
                 model parameters in their original shapes.
         Returns:
-           np.ndarray: A stack (single vertical array) of all the model parameters. 
+           np.ndarray: A stack (single vertical array) of all the model parameters.
 
         """
         return np.hstack(
@@ -1065,20 +1063,18 @@ class ScipyInterface:
             parameter.data.copy_(operators[opi])
 
     def _exec_kwargs_forward(self, input_data: dict = None):
-
         """It executes the forward pass for the model when it receives more than one input.
         Args:
-            input_data dict: Data to be passed to the model. 
+            input_data dict: Data to be passed to the model.
 
         """
 
         return self.fun.forward(**input_data)
 
     def _exec_forward(self, input_data: Union[np.ndarray, torch.Tensor] = None):
-
         """It executes the forward pass for the model.
         Args:
-            input_data (Union[np.ndarray, torch.Tensor]): Data to be passed to the model. 
+            input_data (Union[np.ndarray, torch.Tensor]): Data to be passed to the model.
 
         """
 
@@ -1088,9 +1084,9 @@ class ScipyInterface:
         """
 
         Args:
-            parameters (np.ndarray): The stacked parameters defined for the model. 
+            parameters (np.ndarray): The stacked parameters defined for the model.
         Returns:
-            Tuple[float]: The loss(es) defined for the optimization process.              
+            Tuple[float]: The loss(es) defined for the optimization process.
         """
 
         self._update_and_set_parameters(parameters)
@@ -1106,8 +1102,8 @@ class ScipyInterface:
             parameters (np.ndarray): The stack of all the trainable parameters for the model.
 
         Returns:
-            Tuple[float, np.ndarray]: A tuple containing the value for the loss function and 
-            the array of gradients for the model parameters. 
+            Tuple[float, np.ndarray]: A tuple containing the value for the loss function and
+            the array of gradients for the model parameters.
         """
 
         # Setting the new values for the model parameters
@@ -1137,9 +1133,9 @@ class ScipyInterface:
         """
 
         Args:
-            input_data (Union[dict, torch.Tensor, np.ndarray]): The (or collection of) dataset(s) used as 
-                input for the model. 
-            target_data (Union[torch.Tensor, np.ndarray]): The target data used for training the model. 
+            input_data (Union[dict, torch.Tensor, np.ndarray]): The (or collection of) dataset(s) used as
+                input for the model.
+            target_data (Union[torch.Tensor, np.ndarray]): The target data used for training the model.
 
         """
         parameters_0 = self._stack_and_convert_parameters(self.state_0)

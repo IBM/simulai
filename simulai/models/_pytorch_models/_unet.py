@@ -1,10 +1,11 @@
 import copy
+from typing import Dict, List, Optional, Tuple, Union
+
 import numpy as np
 import torch
-from typing import Union, List, Tuple, Optional, Dict
 
+from simulai.regression import SLFNN, ConvolutionalNetwork, DenseNetwork
 from simulai.templates import NetworkTemplate, as_tensor, channels_dim
-from simulai.regression import DenseNetwork, SLFNN, ConvolutionalNetwork
 
 
 # A CNN UNet encoder or decodeder is no more than a curved CNN

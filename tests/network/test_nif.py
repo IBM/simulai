@@ -12,9 +12,11 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
+from typing import Optional, Union
 from unittest import TestCase
-from typing import Union, Optional
+
 import numpy as np
+
 from tests.config import configure_dtype
 
 torch = configure_dtype()
@@ -28,8 +30,8 @@ def model(
     n_outputs: int = 2,
     device: Optional[str] = "cpu",
 ):
-    from simulai.regression import DenseNetwork
     from simulai.models import NIF
+    from simulai.regression import DenseNetwork
 
     n_inputs = 4
     n_outputs = n_outputs
@@ -73,6 +75,7 @@ def model(
 
     return net
 
+
 class TestNIF(TestCase):
     def setUp(self) -> None:
         pass
@@ -95,7 +98,9 @@ class TestNIF(TestCase):
             data_shape = torch.rand(1_000, 1)
             data_parameters = torch.rand(1_000, 4)
 
-            output = net.forward(input_shape=data_shape, input_parameter=data_parameters)
+            output = net.forward(
+                input_shape=data_shape, input_parameter=data_parameters
+            )
             assert output.shape[1] == 2, "The network output is not like expected."
 
             output = net.eval_subnetwork(name="parameter", input_data=data_parameters)
@@ -134,5 +139,3 @@ class TestNIF(TestCase):
         output = net.forward(input_shape=data_shape, input_parameter=data_parameter)
 
         assert output.shape[1] == 1, "The network output is not like expected."
-
-

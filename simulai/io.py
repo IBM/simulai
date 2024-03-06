@@ -24,7 +24,8 @@ from torch import Tensor
 
 from simulai import ARRAY_DTYPE
 from simulai.abstract import DataPreparer, Dataset
-from simulai.batching import batchdomain_constructor, indices_batchdomain_constructor
+from simulai.batching import (batchdomain_constructor,
+                              indices_batchdomain_constructor)
 from simulai.metrics import MemorySizeEval
 
 """
@@ -1789,6 +1790,7 @@ class GaussianNoise(Dataset):
     def __call__(self):
         return (1 + self.stddev * torch.randn(*self.data_shape)) * self.input_data
 
+
 class Tokenizer:
 
     """Wrapper for multiple tokenization approaches"""
@@ -1804,7 +1806,7 @@ class Tokenizer:
         if self.kind == "time_indexer":
             self.input_tokenizer = self._make_time_input_sequence
             self.target_tokenizer = self._make_time_target_sequence
-       
+
         elif self.kind == "spatiotemporal_indexer":
             self.input_tokenizer = self._make_spatiotemporal_sequence
 
@@ -1815,20 +1817,26 @@ class Tokenizer:
         else:
             raise Exception(f"The tokenization option {self.kind} is not available.")
 
-    def generate_input_tokens(self, input_data: Union[np.ndarray, torch.Tensor], **kwargs) -> torch.Tensor:
-
+    def generate_input_tokens(
+        self, input_data: Union[np.ndarray, torch.Tensor], **kwargs
+    ) -> torch.Tensor:
         """Generating the input sequence of tokens."""
 
         return self.input_tokenizer(input_data, **kwargs)
-    
-    def generate_target_tokens(self, target_data: Union[np.ndarray, torch.Tensor], **kwargs) -> torch.Tensor: 
 
+    def generate_target_tokens(
+        self, target_data: Union[np.ndarray, torch.Tensor], **kwargs
+    ) -> torch.Tensor:
         """Generating the target sequence of tokens."""
 
         return self.target_tokenizer(target_data, **kwargs)
 
-    def _make_time_input_sequence(self,
-        src: Union[np.ndarray, torch.Tensor], num_step:int=None, step:float=None, remove_final=True, 
+    def _make_time_input_sequence(
+        self,
+        src: Union[np.ndarray, torch.Tensor],
+        num_step: int = None,
+        step: float = None,
+        remove_final=True,
     ) -> Union[np.ndarray, torch.Tensor]:
         """Simple tokenization based on repeating samples
            and time-indexing them.
@@ -1851,14 +1859,18 @@ class Tokenizer:
 
         for i in range(num_step):
             src_final[:, i, -1] += step * i
-        
+
         if remove_final:
-            return src_final[:-num_step + 1]
+            return src_final[: -num_step + 1]
         else:
             return src_final
 
-    def _make_spatiotemporal_sequence(self,
-        src: Union[np.ndarray, torch.Tensor], num_step:int=None, step:float=None, **kwargs, 
+    def _make_spatiotemporal_sequence(
+        self,
+        src: Union[np.ndarray, torch.Tensor],
+        num_step: int = None,
+        step: float = None,
+        **kwargs,
     ) -> Union[np.ndarray, torch.Tensor]:
         """Simple tokenization based on repeating samples
            and time-indexing them.
@@ -1872,13 +1884,13 @@ class Tokenizer:
         dim = num_step
         src = np.repeat(np.expand_dims(src, axis=1), dim, axis=1)  # (N, L, 2)
         for i in range(num_step):
-            src[:,i,-1] += step*i
-        
+            src[:, i, -1] += step * i
+
         return src
 
-
-    def _make_time_target_sequence(self, 
-        src: Union[np.ndarray, torch.Tensor], num_step:int=None) ->  Union[np.ndarray, torch.Tensor]:
+    def _make_time_target_sequence(
+        self, src: Union[np.ndarray, torch.Tensor], num_step: int = None
+    ) -> Union[np.ndarray, torch.Tensor]:
         """Simple tokenization based on repeating samples
            and time-indexing them.
         Args:
@@ -1887,13 +1899,19 @@ class Tokenizer:
         Returns:
             Union[np.ndarray, torch.Tensor]: The tokenized target dataset.
         """
-        moving_window = MovingWindow(history_size=1, skip_size=1, horizon_size=num_step - 1) 
+        moving_window = MovingWindow(
+            history_size=1, skip_size=1, horizon_size=num_step - 1
+        )
         input_data, output_data = moving_window(input_data=src, output_data=src)
 
         return np.concatenate([input_data, output_data], axis=1)
 
-    def _make_time_deeponet_input_sequence(self,
-        src: Union[np.ndarray, torch.Tensor], num_step:int=None, step:float=None, remove_final=True, 
+    def _make_time_deeponet_input_sequence(
+        self,
+        src: Union[np.ndarray, torch.Tensor],
+        num_step: int = None,
+        step: float = None,
+        remove_final=True,
     ) -> Union[np.ndarray, torch.Tensor]:
         """Simple tokenization based on repeating samples
            and time-indexing them adapted for DeepONet architectures.
@@ -1904,16 +1922,19 @@ class Tokenizer:
         Returns:
             Union[np.ndarray, torch.Tensor]: The tokenized input dataset.
         """
-        
-        output = self._make_time_input_sequence(src, num_step, step, remove_final=remove_final)
+
+        output = self._make_time_input_sequence(
+            src, num_step, step, remove_final=remove_final
+        )
 
         output = np.concatenate(output, axis=0)
 
         # Outputs for branch and trunk networks
         return (output[:, :-1], output[:, -1:])
 
-    def _make_time_deeponet_target_sequence(self, 
-        src: Union[np.ndarray, torch.Tensor], num_step:int=None) ->  Union[np.ndarray, torch.Tensor]:
+    def _make_time_deeponet_target_sequence(
+        self, src: Union[np.ndarray, torch.Tensor], num_step: int = None
+    ) -> Union[np.ndarray, torch.Tensor]:
         """Simple tokenization based on repeating samples
            and time-indexing them adapted for DeepONet architectures.
         Args:
@@ -1928,4 +1949,3 @@ class Tokenizer:
         output = np.concatenate(output, axis=0)
 
         return output
-

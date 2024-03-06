@@ -1,4 +1,5 @@
-from typing import List, Dict, Callable
+from typing import Callable, Dict, List
+
 import numpy as np
 import torch
 
@@ -16,7 +17,7 @@ class WeightsEstimator:
             size (int): Number of parameters.
 
         Returns:
-            torch.Tensor: The clipped gradients. 
+            torch.Tensor: The clipped gradients.
 
         """
         if not isinstance(grad, torch.Tensor):
@@ -31,10 +32,10 @@ class WeightsEstimator:
 
         Args:
             loss (torch.tensor): The current state of the loss function.
-            operator (NetworkTemplate): The model being trained. 
+            operator (NetworkTemplate): The model being trained.
 
         Returns:
-            torch.Tensor: The gradients evaluated for all the parameters. 
+            torch.Tensor: The gradients evaluated for all the parameters.
 
         """
         if loss.requires_grad:
@@ -63,8 +64,8 @@ class WeightsEstimator:
 class GeometricMean:
     def __init__(self):
         """Simple and naive approach for balancing the loss terms in which
-           they are rescaled to have the same order of magnitude of the geometric 
-           mean between all the terms.
+        they are rescaled to have the same order of magnitude of the geometric
+        mean between all the terms.
         """
         pass
 
@@ -80,7 +81,7 @@ class GeometricMean:
         Args:
             residual (List[torch.Tensor]): List containing all the equation-based
                 loss terms.
-            loss_evaluator (Callable): A Python class or function for evaluating 
+            loss_evaluator (Callable): A Python class or function for evaluating
                 the loss function.
 
         """
@@ -98,8 +99,8 @@ class GeometricMean:
 class ShiftToMax:
     def __init__(self):
         """Simple and naive approach for balancing the loss terms in which
-           they are rescaled to have the same order of magnitude of the maximum value
-           of all the terms.
+        they are rescaled to have the same order of magnitude of the maximum value
+        of all the terms.
         """
 
         pass
@@ -116,7 +117,7 @@ class ShiftToMax:
         Args:
             residual (List[torch.Tensor]): List containing all the equation-based
                 loss terms.
-            loss_evaluator (Callable): A Python class or function for evaluating 
+            loss_evaluator (Callable): A Python class or function for evaluating
                 the loss function.
         """
 
@@ -145,14 +146,14 @@ class AnnealingWeights(WeightsEstimator):
         bound_weight: float = 1.0,
         extra_data_weight: float = 1.0,
     ) -> None:
-        """Learning rate Annealing technique used 
+        """Learning rate Annealing technique used
             for scaling equation-based loss terms (see https://arxiv.org/abs/2001.04536)
 
         Args:
             alpha (float): 1 - update step.
             init_weight (float): Initial value for the initial condition weight.
             bound_weight (float): Initial value for the boundary condition weight.
-            extra_data_weight (float): Initial value for the weight related to 
+            extra_data_weight (float): Initial value for the weight related to
                 data-drive loss terms.
 
         """
@@ -177,12 +178,11 @@ class AnnealingWeights(WeightsEstimator):
     def __call__(
         self, residual: torch.tensor = None, operator: NetworkTemplate = None, **kwargs
     ) -> List[torch.tensor]:
-
         """
 
         Args:
             residual (torch.tensor): Tensor containing the equation residual.
-            operator (NetworkTemplate): Model being trained. 
+            operator (NetworkTemplate): Model being trained.
 
         Returns:
             List[torch.tensor]: A list containing the updated loss weights.
@@ -222,14 +222,13 @@ class InverseDirichletWeights(WeightsEstimator):
     def __init__(
         self, alpha: float = None, initial_weights: List[float] = None
     ) -> None:
-
-        """Inverse Dirichlet technique used 
+        """Inverse Dirichlet technique used
             for scaling equation-based loss terms (see https://iopscience.iop.org/article/10.1088/2632-2153/ac3712/pdf)
 
         Args:
             alpha (float): 1 - update step.
             initial_weights (List[float]): List containing the initial states of all the loss
-                function terms. 
+                function terms.
         """
 
         super().__init__()
@@ -264,7 +263,7 @@ class InverseDirichletWeights(WeightsEstimator):
 
         Args:
             residual (List[torch.Tensor]): List of equation-based loss terms.
-            loss_evaluator (Callable): Python function or class which evaluates the 
+            loss_evaluator (Callable): Python function or class which evaluates the
                 loss function.
             operator (Callable): Model being trained.
         Returns:

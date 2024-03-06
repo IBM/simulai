@@ -38,9 +38,9 @@ The problem can be solved over a duration of time that is inversely proportional
 
 """    Import Python Libraries    """
 
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 from scipy.integrate import solve_ivp
 
 """    Global Variables    """

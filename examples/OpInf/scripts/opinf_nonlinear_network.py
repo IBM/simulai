@@ -25,12 +25,8 @@ os.environ["engine"] = "pytorch"
 from examples.utils.lorenz_solver import lorenz_solver
 from simulai.math.integration import LSODA, ClassWrapper
 from simulai.optimization import Optimizer, ScipyInterface
-from simulai.regression import (
-    AutoEncoderKoopman,
-    DenseNetwork,
-    KoopmanNetwork,
-    OpInfNetwork,
-)
+from simulai.regression import (AutoEncoderKoopman, DenseNetwork,
+                                KoopmanNetwork, OpInfNetwork)
 
 
 class LorenzJacobian:

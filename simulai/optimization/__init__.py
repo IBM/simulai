@@ -19,9 +19,9 @@ assert engine is not None, "The variable engine was not defined."
 from ._builtin import SpaRSA
 
 if engine == "pytorch":
+    from ._adjusters import *
     from ._builtin_pytorch import BBI
     from ._losses import *
-    from ._adjusters import *
     from ._optimization import Optimizer, ScipyInterface
 elif engine == "numpy":
     pass

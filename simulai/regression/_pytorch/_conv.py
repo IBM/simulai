@@ -13,7 +13,7 @@
 #     limitations under the License.
 
 import importlib
-from typing import List, Union, Optional
+from typing import List, Optional, Union
 
 import numpy as np
 import torch
@@ -56,7 +56,7 @@ class ConvolutionalNetwork(ConvNetworkTemplate):
         flatten: bool = False,
         name: str = None,
     ) -> None:
-        """ Basic Convolutional network.
+        """Basic Convolutional network.
 
         Args:
             layers (List[dict]): List of layer configuration dictionaries.
@@ -65,8 +65,8 @@ class ConvolutionalNetwork(ConvNetworkTemplate):
                 the convolutional network itself.
             case (str): The dimensionality case, '1d', '2d' or '3d'.
             last_activation (str): The activation for the last layer.
-            transpose (bool): Use transposed convolutions or not. 
-            flatten (bool): Flatten the output (remove unitary layers) or not. 
+            transpose (bool): Use transposed convolutions or not.
+            flatten (bool): Flatten the output (remove unitary layers) or not.
             name (str): A name for the network model.
 
         """
@@ -128,7 +128,7 @@ class ConvolutionalNetwork(ConvNetworkTemplate):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
-        """ Convolutional network forward method.
+        """Convolutional network forward method.
 
         Args:
             input_data (Union[torch.Tensor, np.ndarray]): The input datasets.
@@ -155,13 +155,13 @@ class ResConvolutionalNetwork(ConvNetworkTemplate):
 
 
         Args:
-            stages (List[list]): List containing the configuration for each 
+            stages (List[list]): List containing the configuration for each
                 stage (seen as a subnetwork).
             activations (List[list]): Activations for all the layers.
             case (str): The dimensionality case, '1d', '2d' or '3d'.
             last_activation (str): The activation for the last layer.
-            transpose (bool): Use transposed convolutions or not. 
-            flatten (bool): Flatten the output (remove unitary layers) or not. 
+            transpose (bool): Use transposed convolutions or not.
+            flatten (bool): Flatten the output (remove unitary layers) or not.
             name (str): A name for the network model.
 
         """
@@ -230,7 +230,7 @@ class ResConvolutionalNetwork(ConvNetworkTemplate):
     def forward(
         self, input_data: Union[torch.Tensor, np.ndarray] = None
     ) -> torch.Tensor:
-        """ Convolutional network forward method.
+        """Convolutional network forward method.
 
         Args:
             input_data (Union[torch.Tensor, np.ndarray]): The input datasets.

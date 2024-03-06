@@ -17,8 +17,8 @@ import warnings
 from typing import Optional, Tuple, Union
 
 import numpy as np
-import torch
 import scipy.sparse as sparse
+import torch
 
 from simulai.abstract import Regression
 

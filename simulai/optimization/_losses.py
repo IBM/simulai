@@ -13,8 +13,8 @@
 #     limitations under the License.
 
 import sys
-from typing import Callable, List, Tuple, Union
 from time import sleep
+from typing import Callable, List, Tuple, Union
 
 import numpy as np
 import torch
@@ -23,8 +23,8 @@ import torch.nn.functional as F
 from simulai import ARRAY_DTYPE
 from simulai.io import IntersectingBatches
 from simulai.models import AutoencoderKoopman, AutoencoderVariational, DeepONet
-from simulai.residuals import SymbolicOperator
 from simulai.optimization._adjusters import AnnealingWeights
+from simulai.residuals import SymbolicOperator
 
 
 class LossBasics:
@@ -323,7 +323,9 @@ class WRMSELoss(LossBasics):
         """
 
         target_split = torch.split(target_data_tensor, self.split_dim, dim=axis)
-        output_split = torch.split(output_tilde, self.split_dim, dim=axis)[:len(target_split)]
+        output_split = torch.split(output_tilde, self.split_dim, dim=axis)[
+            : len(target_split)
+        ]
 
         data_losses = [
             weights[i]
@@ -560,7 +562,9 @@ class PIRMSELoss(LossBasics):
         """
 
         target_split = torch.split(target_data_tensor, self.split_dim, dim=-1)
-        output_split = torch.split(output_tilde, self.split_dim, dim=-1)[:len(target_split)]
+        output_split = torch.split(output_tilde, self.split_dim, dim=-1)[
+            : len(target_split)
+        ]
 
         data_losses = [
             self.loss_evaluator_data((out_split, tgt_split))
@@ -670,7 +674,10 @@ class PIRMSELoss(LossBasics):
         return [sum(residual_loss)]
 
     def _extra_data(
-        self, input_data: torch.Tensor = None, target_data: torch.Tensor = None, weights :list = None, 
+        self,
+        input_data: torch.Tensor = None,
+        target_data: torch.Tensor = None,
+        weights: list = None,
     ) -> torch.Tensor:
         # Evaluating data for the initial condition
         output_tilde = self.operator(input_data=input_data)
@@ -678,7 +685,7 @@ class PIRMSELoss(LossBasics):
         # Evaluating loss approximation for extra data
         data_loss = self._data_loss(
             output_tilde=output_tilde,
-            target_data_tensor=target_data, 
+            target_data_tensor=target_data,
             weights=weights,
         )
 
@@ -706,23 +713,22 @@ class PIRMSELoss(LossBasics):
     def _no_boundary_penalisation(
         self, boundary_input: dict = None, residual: object = None
     ) -> List[torch.Tensor]:
-        """It is used for cases in which no boundary condition is applied
-
-        """
+        """It is used for cases in which no boundary condition is applied"""
 
         return [torch.Tensor([0.0]).to(self.device) for k in boundary_input.keys()]
 
     def _no_boundary(
         self, boundary_input: dict = None, residual: object = None
     ) -> List[torch.Tensor]:
-        """It is used for cases where there are not boundaries
-
-        """
+        """It is used for cases where there are not boundaries"""
 
         return torch.Tensor([0.0]).to(self.device)
 
     def _no_extra_data(
-        self, input_data: torch.Tensor = None, target_data: torch.Tensor = None, weights: list=None,
+        self,
+        input_data: torch.Tensor = None,
+        target_data: torch.Tensor = None,
+        weights: list = None,
     ) -> torch.Tensor:
         return torch.Tensor([0.0]).to(self.device)
 

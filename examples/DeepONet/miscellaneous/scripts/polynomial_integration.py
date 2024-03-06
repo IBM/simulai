@@ -1,9 +1,9 @@
 import numpy as np
 import torch
 
+from simulai.optimization import Optimizer
 from simulai.residuals import SymbolicOperator
 from simulai.tokens import Dot, Gp
-from simulai.optimization import Optimizer
 
 
 def model():

@@ -23,11 +23,8 @@ from matplotlib.colors import Normalize
 from simulai.io import BatchCopy, MapValid
 from simulai.metrics import L2Norm, MemorySizeEval
 from simulai.models import ModelPool
-from simulai.normalization import (
-    BatchNormalization,
-    UnitaryNormalization,
-    UnitarySymmetricalNormalization,
-)
+from simulai.normalization import (BatchNormalization, UnitaryNormalization,
+                                   UnitarySymmetricalNormalization)
 from simulai.rom import IPOD
 from simulai.simulation import Pipeline
 

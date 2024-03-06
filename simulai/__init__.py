@@ -19,6 +19,7 @@
 # Author: Joao Lucas S. Almeida <joao.lucas.sousa.almeida@ibm.com>
 
 import os
+
 import numpy as np
 import torch
 

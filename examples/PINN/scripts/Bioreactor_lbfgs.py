@@ -27,6 +27,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import torch
+
 from simulai.optimization import Optimizer
 from simulai.residuals import SymbolicOperator
 
@@ -110,8 +111,8 @@ activations_funct = "tanh"
 
 
 def model():
-    from simulai.regression import SLFNN, ConvexDenseNetwork
     from simulai.models import ImprovedDenseNetwork
+    from simulai.regression import SLFNN, ConvexDenseNetwork
 
     scale_factors = np.array([1, 1, 1, 1])
 
@@ -220,8 +221,7 @@ for i in range(0, Evaluation_Steps, 1):
         device="gpu",
     )
 
-    from simulai.optimization import ScipyInterface
-    from simulai.optimization import PIRMSELoss
+    from simulai.optimization import PIRMSELoss, ScipyInterface
 
     loss_instance = PIRMSELoss(operator=net)
 

@@ -14,8 +14,8 @@
 
 import importlib
 import inspect
-import pickle
 import os
+import pickle
 import sys
 from typing import Union
 
@@ -29,12 +29,12 @@ def load_pkl(path: str = None) -> Union[object, None]:
         path (str, optional):  (Default value = None)
 
     Returns:
-        object or None: 
+        object or None:
 
     Raises:
         Exception: if the provided path is not a file or cannot be opened
 
-    
+
     """
 
     import pickle
@@ -64,14 +64,14 @@ def load_pkl(path: str = None) -> Union[object, None]:
 class SPFile:
     def __init__(self, compact: bool = False) -> None:
         """Class for handling persistence of Pytorch Module-like objects.
-        
+
         SimulAI Persistency File
         It saves PyTorch Module-like objects in a directory containing the model template and
         its coefficients dictionary
 
         Args:
             compact (bool, optional): Compress the directory to a tar file or not. Default : False
-        
+
         """
         self.compact = compact
 
@@ -83,7 +83,7 @@ class SPFile:
 
         Returns:
             int: number of leading white spaces.
-        
+
         """
         leading_whitespaces = len(first_line) - len(first_line.lstrip())
         return leading_whitespaces
@@ -96,7 +96,7 @@ class SPFile:
 
         Returns:
             str: The code string with leading white spaces removed.
-        
+
         """
         code_lines = code.split("\n")
         first_line = code_lines[0]
@@ -157,7 +157,7 @@ class SPFile:
 
         Returns:
             NetworkTemplate (child of torch.nn.Module): The model restored to memory.
-        
+
         """
         name = os.path.basename(model_path)
         save_dir = model_path

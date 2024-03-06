@@ -16,6 +16,7 @@ import sys
 
 import numpy as np
 
+
 # Sparse Regression Algorithm
 class SpaRSA:
     def __init__(
@@ -33,9 +34,9 @@ class SpaRSA:
             lambd (float): Quadratic regularization penalty.
             alpha_0 (float): Update step lenght.
             epsilon (float): Error tolerance.
-            sparsity_tol (float): Sparsity tolerance. 
+            sparsity_tol (float): Sparsity tolerance.
             use_mean (bool): Use mean for evaluating loss or not.
-            transform (callable): A transformation to be applied to the data.  
+            transform (callable): A transformation to be applied to the data.
 
         """
 
@@ -115,10 +116,10 @@ class SpaRSA:
 
         Args:
             input_data (np.ndarray): Input data for training the model.
-            target_data (np.ndarray): Target data for training the model. 
+            target_data (np.ndarray): Target data for training the model.
 
         Returns:
-            
+
 
         """
         self.W = self.transform(data=input_data)

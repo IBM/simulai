@@ -12,9 +12,11 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-from unittest import TestCase
 from typing import Optional
+from unittest import TestCase
+
 import numpy as np
+
 from tests.config import configure_dtype
 
 torch = configure_dtype()
