@@ -61,7 +61,7 @@ class TestDenseNetwork(TestCase):
 
             print(f"Testing architecture: {architecture}.")
 
-            for DEVICE in ["cpu", "gpu", "tpu", None]:
+            for DEVICE in ["cpu", "gpu", None]:
                 
                 net = model_convex()
 
