@@ -17,7 +17,7 @@ SimulAI
 
 An extensible Python package with data-driven pipelines for physics-informed machine learning.
 
-.. image:: assets/simulai_diagram.svg
+.. image:: assets/simulai_diagram_2.svg
 
 The SimulAI toolkit provides easy access to state-of-the-art models and algorithms for physics-informed machine learning. Currently, it includes the following methods described in the literature:
 
