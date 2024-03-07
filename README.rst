@@ -17,6 +17,11 @@ SimulAI
 
 An extensible Python package with data-driven pipelines for physics-informed machine learning.
 
+**Call for contributions:** 
+If you have developed and/or published new architectures using PyTorch and intend to make them opensource, 
+consider include them as part of SimulAI, which works as an unified repository for scientific machine learning models, continuously tested and maintained. 
+SimulAI was already packaged under a friendly license (Apache) and it can be used to more easily share state of the art models whithin the scientific community. 
+
 .. image:: assets/simulai_diagram_2.svg
 
 The SimulAI toolkit provides easy access to state-of-the-art models and algorithms for physics-informed machine learning. Currently, it includes the following methods described in the literature:
