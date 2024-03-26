@@ -37,7 +37,7 @@ class TestMapValid(TestCase):
 
         n_samples = size[0]
 
-        n_tot = np.product(size[1:])
+        n_tot = np.prod(size[1:])
 
         n_valid = int(valid_percent * n_tot)
 
