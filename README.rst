@@ -1,5 +1,7 @@
 SimulAI
 =======
+**NOTICE**: This package is being maintained and bug-fixed. New features will be added, but with no planned timeline. 
+Contributions from external developers via pull requests are welcome though. 
 ..
     image:: https://zenodo.org/badge/561364034.svg
     :target: https://zenodo.org/badge/latestdoi/561364034
