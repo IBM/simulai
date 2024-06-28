@@ -800,7 +800,7 @@ class DMD(ROM):
         self.A_tilde = None
         self.initial_state = None
 
-    """The method fit from DMD receives an array with shape (nt, np.product(*dims))
+    """The method fit from DMD receives an array with shape (nt, np.prod(*dims))
        and constructs a model for estimating the state nt+1
     """
 

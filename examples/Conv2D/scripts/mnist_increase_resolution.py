@@ -65,8 +65,8 @@ grid_x, grid_y = np.mgrid[0:1:28j, 0:1:28j]
 grid_x_new, grid_y_new = np.mgrid[0:1:56j, 0:1:56j]
 
 points = np.hstack([grid_x.flatten()[:, None], grid_y.flatten()[:, None]])
-values_train = x_train.reshape(-1, np.product(dims[:]))
-values_test = x_test.reshape(-1, np.product(dims[:]))
+values_train = x_train.reshape(-1, np.prod(dims[:]))
+values_test = x_test.reshape(-1, np.prod(dims[:]))
 
 if not os.path.isfile(path_new):
     interpolated_train_list = list()
