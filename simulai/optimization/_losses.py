@@ -524,7 +524,8 @@ class PIRMSELoss(LossBasics):
                 key: torch.from_numpy(item.astype(ARRAY_DTYPE)).to(device)
                 for key, item in input_data.items()
             }
-
+        elif type(input_data) == list:
+            return torch.from_numpy(np.stack([i.astype(ARRAY_DTYPE) for i in input_data]).to_numpy(device))
         else:
             return torch.from_numpy(input_data.astype(ARRAY_DTYPE)).to(device)
 
