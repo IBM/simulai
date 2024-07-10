@@ -14,6 +14,8 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+import torch
+from argparse import ArgumentParser
 
 from simulai.file import SPFile
 from simulai.io import Tokenizer
@@ -24,6 +26,14 @@ from simulai.residuals import SymbolicOperator
 
 # Our PDE
 # Allen-cahn equation
+
+parser = ArgumentParser(description="Reading input parameters")
+parser.add_argument(
+    "--train", type=str, help="Training new model or restoring from disk", default=None
+)
+args = parser.parse_args()
+
+train = args.train
 
 f = "D(u, t) - mu*D(D(u, x), x) + alpha*(u**3) + beta*u"
 
@@ -148,6 +158,14 @@ def model():
 
 
 def model_transformer():
+
+    import numpy as np
+
+    from simulai.models import Transformer
+    from simulai.optimization import Optimizer
+    from simulai.regression import DenseNetwork, ModalRBFNetwork
+    from simulai.residuals import SymbolicOperator
+
     num_heads = 2
     embed_dim = 2
     embed_dim_out = 1
@@ -198,67 +216,72 @@ def model_transformer():
 
     return transformer
 
+if train:
+    optimizer_config = {"lr": lr}
 
-optimizer_config = {"lr": lr}
+    net = model_transformer()
 
-net = model_transformer()
+    print(f"Number of coefficients: {net.n_parameters}")
 
-print(f"Number of coefficients: {net.n_parameters}")
+    residual = SymbolicOperator(
+        expressions=[f],
+        input_vars=input_labels,
+        auxiliary_expressions={"periodic_u": g_u, "periodic_du": g_ux},
+        constants={"mu": 1e-4, "alpha": 5, "beta": -5},
+        output_vars=output_labels,
+        function=net,
+        engine="torch",
+        device="gpu",
+    )
 
-residual = SymbolicOperator(
-    expressions=[f],
-    input_vars=input_labels,
-    auxiliary_expressions={"periodic_u": g_u, "periodic_du": g_ux},
-    constants={"mu": 1e-4, "alpha": 5, "beta": -5},
-    output_vars=output_labels,
-    function=net,
-    engine="torch",
-    device="gpu",
-)
+    # It prints a summary of the network features
+    net.summary()
 
-# It prints a summary of the network features
-net.summary()
+    optimizer = Optimizer(
+        "adam",
+        params=optimizer_config,
+        lr_decay_scheduler_params={
+            "name": "ExponentialLR",
+            "gamma": 0.9,
+            "decay_frequency": 5_000,
+        },
+        shuffle=False,
+        summary_writer=True,
+    )
 
-optimizer = Optimizer(
-    "adam",
-    params=optimizer_config,
-    lr_decay_scheduler_params={
-        "name": "ExponentialLR",
-        "gamma": 0.9,
-        "decay_frequency": 5_000,
-    },
-    shuffle=False,
-    summary_writer=True,
-)
+    params = {
+        "residual": residual,
+        "initial_input": data_boundary_t0,
+        "initial_state": u_init,
+        "boundary_input": {
+            "periodic_u": [data_boundary_xL, data_boundary_x0],
+            "periodic_du": [data_boundary_xL, data_boundary_x0],
+        },
+        "boundary_penalties": [1, 1],
+        "weights_residual": [1],
+        "initial_penalty": 100,
+    }
 
-params = {
-    "residual": residual,
-    "initial_input": data_boundary_t0,
-    "initial_state": u_init,
-    "boundary_input": {
-        "periodic_u": [data_boundary_xL, data_boundary_x0],
-        "periodic_du": [data_boundary_xL, data_boundary_x0],
-    },
-    "boundary_penalties": [1, 1],
-    "weights_residual": [1],
-    "initial_penalty": 100,
-}
+    optimizer.fit(
+        op=net,
+        input_data=input_data,
+        n_epochs=n_epochs,
+        loss="pirmse",
+        params=params,
+        device="gpu",
+    )
 
-optimizer.fit(
-    op=net,
-    input_data=input_data,
-    n_epochs=n_epochs,
-    loss="pirmse",
-    params=params,
-    device="gpu",
-)
+    saver = SPFile(compact=False)
+    saver.write(save_dir="./", name="allen_cahn_net", model=net, template=model_transformer)
 
-saver = SPFile(compact=False)
-saver.write(save_dir="/tmp", name="allen_cahn_net", model=net, template=model)
+else:
+
+    saver = SPFile(compact=False)
+    net = saver.read(model_path="allen_cahn_net", device="cpu")
 
 # Evaluation and post-processing
-X_DIM_F = 5 * X_DIM
-T_DIM_F = 5 * T_DIM
+X_DIM_F = 2 * X_DIM
+T_DIM_F = 2 * T_DIM
 
 x_f = np.linspace(*x_interval, X_DIM_F)
 t_f = np.linspace(*t_interval, T_DIM_F)
@@ -268,7 +291,7 @@ T_f, X_f = np.meshgrid(t_f, x_f, indexing="ij")
 data_f = np.hstack([X_f.flatten()[:, None], T_f.flatten()[:, None]])
 
 # Evaluation in training dataset
-approximated_data = net.cpu().eval(input_data=data_f)
+approximated_data = net.eval(input_data=torch.from_numpy(data_f.astype("float32")).to("cuda:0"))
 
 U_f = approximated_data.reshape(T_DIM_F, X_DIM_F)
 
