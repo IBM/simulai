@@ -36,7 +36,7 @@ class TestPointwise(TestCase):
         assert isinstance(evaluation, np.ndarray)
 
         data = np.random.rand(100, 10)
-        data[10, 1] = np.NaN
+        data[10, 1] = np.nan
         data[50, 2] = np.inf
 
         data_ref = np.random.rand(100, 10)

@@ -1235,7 +1235,7 @@ class CumulativeNorm:
             / np.cumsum(np.square(reference_data), axis=0)
         )
 
-        return np.where(cumulative_norm == np.NaN, 0, cumulative_norm)
+        return np.where(cumulative_norm == np.nan, 0, cumulative_norm)
 
 
 # Cumulative error norm for time-series
@@ -1272,7 +1272,7 @@ class PointwiseError:
         pointwise_relative_error = (data - reference_data) / reference_data
 
         filter_nan = np.where(
-            pointwise_relative_error == np.NaN, 0, pointwise_relative_error
+            pointwise_relative_error == np.nan, 0, pointwise_relative_error
         )
         filter_nan_inf = np.where(filter_nan == np.inf, 0, filter_nan)
 
