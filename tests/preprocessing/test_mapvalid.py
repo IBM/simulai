@@ -96,7 +96,7 @@ class TestMapValid(TestCase):
         Ny = 250
         Nz = 20
 
-        masks = [np.inf, np.NaN, np.nan, 1e16, 0, -9999999]
+        masks = [np.inf, np.nan, 1e16, 0, -9999999]
 
         for mask in masks:
             print(f"Testing using the mask: {mask}")
