@@ -42,8 +42,8 @@ class TestAllencahnPINN(TestCase):
         output_labels = ["u"]
 
         # Some fixed values
-        X_DIM = 25
-        T_DIM = 10
+        X_DIM = 100
+        T_DIM = 100
 
         L = 1
         x_0 = -1
@@ -91,7 +91,7 @@ class TestAllencahnPINN(TestCase):
             ]
         )
 
-        n_epochs = 5  # Maximum number of iterations for ADAM
+        n_epochs = 2  # Maximum number of iterations for ADAM
         lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
         def model():
@@ -184,8 +184,8 @@ class TestAllencahnPINN(TestCase):
         output_labels = ["u", "v"]
 
         # Some fixed values
-        X_DIM = 25
-        T_DIM = 10
+        X_DIM = 100
+        T_DIM = 100
 
         L = 1
         x_0 = -1
@@ -233,7 +233,7 @@ class TestAllencahnPINN(TestCase):
             ]
         )
 
-        n_epochs = 5  # Maximum number of iterations for ADAM
+        n_epochs = 2  # Maximum number of iterations for ADAM
         lr = 1e-3  # Initial learning rate for the ADAM algorithm
 
         def model():
