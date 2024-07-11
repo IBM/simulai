@@ -71,7 +71,7 @@ class TestMapValid(TestCase):
         Ny = 250
         Nz = 20
 
-        masks = [np.inf, np.NaN, np.nan, 1e16, 0, -9999999]
+        masks = [np.inf, np.nan, 1e16, 0, -9999999]
 
         config = {"replace_mask_with_large_number": False}
 
