@@ -59,8 +59,10 @@ For installing from the latest commit sent to GitHub (just for testing and devel
 
 .. code-block:: shell
 
-     pip uninstall simulai_toolkit
-     pip install -U git+https://github.com/IBM/simulai@$(git ls-remote git@github.com:IBM/simulai.git  | head -1 | awk '{print $1;}')#egg=simulai_toolkit
+     pip uninstall simulai-toolkit
+     pip install -U git+https://github.com/IBM/simulai#egg=simulai-toolkit
+..
+     pip install -U git+https://github.com/IBM/simulai@$(git ls-remote git@github.com:IBM/simulai.git  | head -1 | awk '{print $1;}')#egg=simulai-toolkit
 
 Contributing code to SimulAI
 ============================
