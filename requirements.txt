@@ -2,7 +2,7 @@ numpy<=2.0
 numba
 scipy
 sympy
-torch<=2.3.0
+torch<=2.4.0
 scikit-learn
 psutil
 h5py
