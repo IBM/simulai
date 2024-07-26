@@ -72,7 +72,7 @@ class SymbolicOperator(torch.nn.Module):
         self.processing = processing
         self.periodic_bc_protected_key = "periodic"
 
-        self.protected_funcs = ["cos", "sin", "sqrt", "exp"]
+        self.protected_funcs = ["cos", "sin", "sqrt", "exp", "tanh"]
         self.protected_operators = ["L", "Div", "Identity", "Kronecker"]
 
         self.protected_funcs_subs = self._construct_protected_functions()
