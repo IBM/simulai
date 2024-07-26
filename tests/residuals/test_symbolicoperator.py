@@ -171,7 +171,7 @@ class TestSymbolicOperator(TestCase):
         assert all([isinstance(item, torch.Tensor) for item in residual(input_data)])
 
     def test_symbolic_operator_ode(self):
-        for token in ["sin", "cos", "sqrt"]:
+        for token in ["sin", "cos", "sqrt", "tanh"]:
             f = f"D(u, t) - alpha*{token}(u)"
 
             input_labels = ["t"]
