@@ -72,7 +72,7 @@ class SymbolicOperator(torch.nn.Module):
         self.processing = processing
         self.periodic_bc_protected_key = "periodic"
 
-        self.protected_funcs = ["cos", "sin", "sqrt", "exp", "tanh"]
+        self.protected_funcs = ["cos", "sin", "sqrt", "exp", "tanh", "cosh", "sech", "sinh"]
         self.protected_operators = ["L", "Div", "Identity", "Kronecker"]
 
         self.protected_funcs_subs = self._construct_protected_functions()
@@ -186,9 +186,18 @@ class SymbolicOperator(torch.nn.Module):
         Returns:
             dict: A dictionary of function names and their corresponding function objects.
         """
-        protected_funcs = {
-            func: getattr(self.engine, func) for func in self.protected_funcs
-        }
+        protected_funcs = dict()
+
+        for func in self.protected_funcs:
+            try:
+                func_op = getattr(self.engine, func)
+            except:
+                try:
+                    func_op = getattr(self, func)
+                except:
+                    raise Exception(f"Operator {func} is not defined.")
+
+            protected_funcs[func] = func_op
 
         return protected_funcs
 
@@ -617,6 +626,25 @@ class SymbolicOperator(torch.nn.Module):
             return self.forward(input_data=inputs)
 
         return jacobian(inner, inputs)
+
+    def sech(self, x):
+
+        cosh = getattr(self.engine, "cosh")
+
+        return 1/cosh(x)
+
+    def csch(self, x):
+
+        sinh = getattr(self.engine, "sinh")
+
+        return 1/sinh(x)
+
+    def coth(self, x):
+
+        cosh = getattr(self.engine, "cosh")
+        sinh = getattr(self.engine, "sinh")
+
+        return cosh(x)/sinh(x)
 
 
 def diff(feature: torch.Tensor, param: torch.Tensor) -> torch.Tensor:
