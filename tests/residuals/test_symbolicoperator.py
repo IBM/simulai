@@ -98,7 +98,7 @@ def model_operator():
         branch_network=branch_net,
         var_dim=n_outputs,
         rescale_factors=np.array([1]),
-        devices="gpu",
+        devices="cpu",
         model_id="flame_net",
     )
 
@@ -171,7 +171,7 @@ class TestSymbolicOperator(TestCase):
         assert all([isinstance(item, torch.Tensor) for item in residual(input_data)])
 
     def test_symbolic_operator_ode(self):
-        for token in ["sin", "cos", "sqrt", "tanh"]:
+        for token in ["sin", "cos", "sqrt", "tanh", "cosh", "sech", "coth", "sinh"]:
             f = f"D(u, t) - alpha*{token}(u)"
 
             input_labels = ["t"]
