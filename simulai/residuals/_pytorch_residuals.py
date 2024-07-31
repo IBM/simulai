@@ -52,6 +52,7 @@ class SymbolicOperator(torch.nn.Module):
         device: str = "cpu",
         engine: str = "torch",
         auxiliary_expressions: list = None,
+        special_expressions: list = None,
     ) -> None:
         if engine == "torch":
             super(SymbolicOperator, self).__init__()
@@ -129,6 +130,7 @@ class SymbolicOperator(torch.nn.Module):
 
         self.f_expressions = list()
         self.g_expressions = dict()
+        self.h_expressions = list()
 
         self.feed_vars = None
 
@@ -164,6 +166,7 @@ class SymbolicOperator(torch.nn.Module):
 
             self.f_expressions.append(f_expr)
 
+        # auxiliary expressions (usually boundary conditions)
         if self.auxiliary_expressions is not None:
             for key, expr in self.auxiliary_expressions.items():
                 if not callable(expr):
@@ -172,6 +175,16 @@ class SymbolicOperator(torch.nn.Module):
                     g_expr = expr
 
                 self.g_expressions[key] = g_expr
+
+        # special expressions (usually employed for certain kinds of loss functions)
+        if self.special_expressions is not None:
+            for key, expr in self.special_expressions.items():
+                if not callable(expr):
+                    h_expr = sympy.lambdify(self.all_vars, expr, subs)
+                else:
+                    h_expr = expr
+
+                self.h_expressions.append(h_expr)
 
         # Method for executing the expressions evaluation
         if self.processing == "serial":
