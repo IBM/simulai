@@ -73,7 +73,16 @@ class SymbolicOperator(torch.nn.Module):
         self.processing = processing
         self.periodic_bc_protected_key = "periodic"
 
-        self.protected_funcs = ["cos", "sin", "sqrt", "exp", "tanh", "cosh", "sech", "sinh"]
+        self.protected_funcs = [
+            "cos",
+            "sin",
+            "sqrt",
+            "exp",
+            "tanh",
+            "cosh",
+            "sech",
+            "sinh",
+        ]
         self.protected_operators = ["L", "Div", "Identity", "Kronecker"]
 
         self.protected_funcs_subs = self._construct_protected_functions()
@@ -185,16 +194,19 @@ class SymbolicOperator(torch.nn.Module):
                     h_expr = expr
 
                 self.h_expressions.append(h_expr)
-        
-            self.process_special_expression = self._factory_process_expression_serial(expressions=self.h_expressions)
+
+            self.process_special_expression = self._factory_process_expression_serial(
+                expressions=self.h_expressions
+            )
 
         # Method for executing the expressions evaluation
         if self.processing == "serial":
-            self.process_expression = self._factory_process_expression_serial(expressions=self.f_expressions)
+            self.process_expression = self._factory_process_expression_serial(
+                expressions=self.f_expressions
+            )
         else:
             raise Exception(f"Processing case {self.processing} not supported.")
 
-        
     def _construct_protected_functions(self):
         """This function creates a dictionary of protected functions from the engine object attribute.
 
@@ -379,8 +391,8 @@ class SymbolicOperator(torch.nn.Module):
 
         """
         return self.function.forward(**input_data)
-    
-    def _factory_process_expression_serial(self, expressions:list=None):
+
+    def _factory_process_expression_serial(self, expressions: list = None):
         def _process_expression_serial(feed_vars: dict = None) -> List[torch.Tensor]:
             """Process the expression list serially using the given feed variables.
 
@@ -395,7 +407,7 @@ class SymbolicOperator(torch.nn.Module):
 
         return _process_expression_serial
 
-    def _factory_process_expression_individual(self, expressions:list=None):
+    def _factory_process_expression_individual(self, expressions: list = None):
         def _process_expression_individual(
             index: int = None, feed_vars: dict = None
         ) -> torch.Tensor:
@@ -653,20 +665,20 @@ class SymbolicOperator(torch.nn.Module):
 
         cosh = getattr(self.engine, "cosh")
 
-        return 1/cosh(x)
+        return 1 / cosh(x)
 
     def csch(self, x):
 
         sinh = getattr(self.engine, "sinh")
 
-        return 1/sinh(x)
+        return 1 / sinh(x)
 
     def coth(self, x):
 
         cosh = getattr(self.engine, "cosh")
         sinh = getattr(self.engine, "sinh")
 
-        return cosh(x)/sinh(x)
+        return cosh(x) / sinh(x)
 
 
 def diff(feature: torch.Tensor, param: torch.Tensor) -> torch.Tensor:
