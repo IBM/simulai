@@ -83,7 +83,7 @@ class SymbolicOperator(torch.nn.Module):
             "sech",
             "sinh",
         ]
-        self.protected_operators = ["L", "Div", "Identity", "Kronecker"]
+        self.protected_operators = ["L", "Div", "Grad", "Identity", "Kronecker"]
 
         self.protected_funcs_subs = self._construct_protected_functions()
         self.protected_operators_subs = self._construct_implict_operators()
@@ -186,8 +186,8 @@ class SymbolicOperator(torch.nn.Module):
                 self.g_expressions[key] = g_expr
 
         # special expressions (usually employed for certain kinds of loss functions)
-        if self.special_expressions is not None:
-            for key, expr in self.special_expressions.items():
+        if special_expressions is not None:
+            for expr in self.special_expressions:
                 if not callable(expr):
                     h_expr = sympy.lambdify(self.all_vars, expr, subs)
                 else:
