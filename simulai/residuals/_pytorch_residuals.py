@@ -207,6 +207,16 @@ class SymbolicOperator(torch.nn.Module):
         else:
             raise Exception(f"Processing case {self.processing} not supported.")
 
+    def _subs_expr(self, expr=None, constants=None):
+
+        if isinstance(expr, list):
+            for j, e in enumerate(expr):
+                expr[j] = e.subs(constants)
+        else:
+            expr = expr.subs(constants)
+
+        return expr 
+
     def _construct_protected_functions(self):
         """This function creates a dictionary of protected functions from the engine object attribute.
 
@@ -331,9 +341,10 @@ class SymbolicOperator(torch.nn.Module):
                 )
 
                 if self.constants is not None:
-                    expr_ = expr_.subs(self.constants)
+                    expr_ = self._subs_expr(expr=expr_, constants=self.constants)
                 if self.trainable_parameters is not None:
-                    expr_ = expr_.subs(self.trainable_parameters)
+                    expr_ = self._subs_expr(expr=expr_, constants=self.trainable_parameters)
+
             except ValueError:
                 if self.constants is not None:
                     _expr = expr
