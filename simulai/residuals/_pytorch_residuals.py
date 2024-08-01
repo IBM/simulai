@@ -185,13 +185,16 @@ class SymbolicOperator(torch.nn.Module):
                     h_expr = expr
 
                 self.h_expressions.append(h_expr)
+        
+            self.process_special_expression = self._factory_process_expression_serial(expressions=self.h_expressions)
 
         # Method for executing the expressions evaluation
         if self.processing == "serial":
-            self.process_expression = self._process_expression_serial
+            self.process_expression = self._factory_process_expression_serial(expressions=self.f_expressions)
         else:
             raise Exception(f"Processing case {self.processing} not supported.")
 
+        
     def _construct_protected_functions(self):
         """This function creates a dictionary of protected functions from the engine object attribute.
 
@@ -376,33 +379,39 @@ class SymbolicOperator(torch.nn.Module):
 
         """
         return self.function.forward(**input_data)
+    
+    def _factory_process_expression_serial(self, expressions:list=None):
+        def _process_expression_serial(feed_vars: dict = None) -> List[torch.Tensor]:
+            """Process the expression list serially using the given feed variables.
 
-    def _process_expression_serial(self, feed_vars: dict = None) -> List[torch.Tensor]:
-        """Process the expression list serially using the given feed variables.
+            Args:
+                feed_vars (dict, optional): The feed variables. (Default value = None)
 
-        Args:
-            feed_vars (dict, optional): The feed variables. (Default value = None)
+            Returns:
+                List[torch.Tensor]: A list of tensors after evaluating the expressions serially.
 
-        Returns:
-            List[torch.Tensor]: A list of tensors after evaluating the expressions serially.
+            """
+            return [f(**feed_vars).to(self.device) for f in expressions]
 
-        """
-        return [f(**feed_vars).to(self.device) for f in self.f_expressions]
+        return _process_expression_serial
 
-    def _process_expression_individual(
-        self, index: int = None, feed_vars: dict = None
-    ) -> torch.Tensor:
-        """Evaluates a single expression specified by index from the f_expressions list with given feed variables.
+    def _factory_process_expression_individual(self, expressions:list=None):
+        def _process_expression_individual(
+            index: int = None, feed_vars: dict = None
+        ) -> torch.Tensor:
+            """Evaluates a single expression specified by index from the f_expressions list with given feed variables.
 
-        Args:
-            index (int, optional): Index of the expression to be evaluated, by default None
-            feed_vars (dict, optional): Dictionary of feed variables, by default None
+            Args:
+                index (int, optional): Index of the expression to be evaluated, by default None
+                feed_vars (dict, optional): Dictionary of feed variables, by default None
 
-        Returns:
-            torch.Tensor: Result of evaluating the specified expression with given feed variables
+            Returns:
+                torch.Tensor: Result of evaluating the specified expression with given feed variables
 
-        """
-        return self.f_expressions[index](**feed_vars).to(self.device)
+            """
+            return self.expressions[index](**feed_vars).to(self.device)
+
+        return _process_expression_individual
 
     def __call__(
         self, inputs_data: Union[np.ndarray, dict] = None
