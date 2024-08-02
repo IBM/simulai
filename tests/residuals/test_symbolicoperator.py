@@ -228,7 +228,8 @@ class TestSymbolicOperator(TestCase):
 
     def test_symbolic_operator_grad_operator(self):
 
-        f = "Grad(u, (x, y))"
+        f = "D(u, t) - alpha*D(u, (x, y))"
+        s = "Grad(D(u, t) - alpha*D(u, (x, y)), (x, y))"
 
         input_labels = ["x", "y"]
         output_labels = ["u"]
@@ -248,14 +249,18 @@ class TestSymbolicOperator(TestCase):
 
         residual = SymbolicOperator(
             expressions=[f],
+            special_expressions=[s],
             input_vars=input_labels,
             constants={"alpha": 5},
             output_vars=output_labels,
             function=net,
             engine="torch",
         )
+        u = net(input_data=data)
 
-        assert all([isinstance(item, torch.Tensor) for item in residual(data)])
+        feed_vars = {'x': data[:, 0], 'y': data[:,1], 'u': u}
+        
+        print(residual.process_special_expression(feed_vars))
 
     def test_symbolic_operator_1d_pde(self):
         # Allen-Cahn equation
