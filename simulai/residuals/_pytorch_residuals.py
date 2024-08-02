@@ -52,6 +52,7 @@ class SymbolicOperator(torch.nn.Module):
         device: str = "cpu",
         engine: str = "torch",
         auxiliary_expressions: list = None,
+        special_expressions: list = None,
     ) -> None:
         if engine == "torch":
             super(SymbolicOperator, self).__init__()
@@ -72,8 +73,17 @@ class SymbolicOperator(torch.nn.Module):
         self.processing = processing
         self.periodic_bc_protected_key = "periodic"
 
-        self.protected_funcs = ["cos", "sin", "sqrt", "exp", "tanh", "cosh", "sech", "sinh"]
-        self.protected_operators = ["L", "Div", "Identity", "Kronecker"]
+        self.protected_funcs = [
+            "cos",
+            "sin",
+            "sqrt",
+            "exp",
+            "tanh",
+            "cosh",
+            "sech",
+            "sinh",
+        ]
+        self.protected_operators = ["L", "Div", "Grad", "Identity", "Kronecker"]
 
         self.protected_funcs_subs = self._construct_protected_functions()
         self.protected_operators_subs = self._construct_implict_operators()
@@ -103,6 +113,8 @@ class SymbolicOperator(torch.nn.Module):
         else:
             self.auxiliary_expressions = auxiliary_expressions
 
+        self.special_expressions = special_expressions
+
         self.input_vars = [self._parse_variable(var=var) for var in input_vars]
         self.output_vars = [self._parse_variable(var=var) for var in output_vars]
 
@@ -127,8 +139,9 @@ class SymbolicOperator(torch.nn.Module):
 
         self.output = None
 
-        self.f_expressions = list()
-        self.g_expressions = dict()
+        self.f_expressions = list() # Main expressions, as PDEs and ODEs
+        self.g_expressions = dict() # Auxiliary expressions, as boundary conditions
+        self.h_expressions = list() # Others auxiliary expressions, as those used to evaluate special loss functions
 
         self.feed_vars = None
 
@@ -152,9 +165,11 @@ class SymbolicOperator(torch.nn.Module):
         else:
             gradient_function = gradient
 
+        # Diff symbol is related to automatic differentiation
         subs = {self.diff_symbol.name: gradient_function}
         subs.update(self.external_functions)
         subs.update(self.protected_funcs_subs)
+        subs.update(self.protected_operators_subs)
 
         for expr in self.expressions:
             if not callable(expr):
@@ -164,6 +179,7 @@ class SymbolicOperator(torch.nn.Module):
 
             self.f_expressions.append(f_expr)
 
+        # auxiliary expressions (usually boundary conditions)
         if self.auxiliary_expressions is not None:
             for key, expr in self.auxiliary_expressions.items():
                 if not callable(expr):
@@ -173,11 +189,37 @@ class SymbolicOperator(torch.nn.Module):
 
                 self.g_expressions[key] = g_expr
 
+        # special expressions (usually employed for certain kinds of loss functions)
+        if special_expressions is not None:
+            for expr in self.special_expressions:
+                if not callable(expr):
+                    h_expr = sympy.lambdify(self.all_vars, expr, subs)
+                else:
+                    h_expr = expr
+
+                self.h_expressions.append(h_expr)
+
+            self.process_special_expression = self._factory_process_expression_serial(
+                expressions=self.h_expressions
+            )
+
         # Method for executing the expressions evaluation
         if self.processing == "serial":
-            self.process_expression = self._process_expression_serial
+            self.process_expression = self._factory_process_expression_serial(
+                expressions=self.f_expressions
+            )
         else:
             raise Exception(f"Processing case {self.processing} not supported.")
+
+    def _subs_expr(self, expr=None, constants=None):
+
+        if isinstance(expr, list):
+            for j, e in enumerate(expr):
+                expr[j] = e.subs(constants)
+        else:
+            expr = expr.subs(constants)
+
+        return expr 
 
     def _construct_protected_functions(self):
         """This function creates a dictionary of protected functions from the engine object attribute.
@@ -303,9 +345,10 @@ class SymbolicOperator(torch.nn.Module):
                 )
 
                 if self.constants is not None:
-                    expr_ = expr_.subs(self.constants)
+                    expr_ = self._subs_expr(expr=expr_, constants=self.constants)
                 if self.trainable_parameters is not None:
-                    expr_ = expr_.subs(self.trainable_parameters)
+                    expr_ = self._subs_expr(expr=expr_, constants=self.trainable_parameters)
+
             except ValueError:
                 if self.constants is not None:
                     _expr = expr
@@ -364,36 +407,40 @@ class SymbolicOperator(torch.nn.Module):
         """
         return self.function.forward(**input_data)
 
-    def _process_expression_serial(self, feed_vars: dict = None) -> List[torch.Tensor]:
-        """Process the expression list serially using the given feed variables.
+    def _factory_process_expression_serial(self, expressions: list = None):
+        def _process_expression_serial(feed_vars: dict = None) -> List[torch.Tensor]:
+            """Process the expression list serially using the given feed variables.
 
-        Args:
-            feed_vars (dict, optional): The feed variables. (Default value = None)
+            Args:
+                feed_vars (dict, optional): The feed variables. (Default value = None)
 
-        Returns:
-            List[torch.Tensor]: A list of tensors after evaluating the expressions serially.
+            Returns:
+                List[torch.Tensor]: A list of tensors after evaluating the expressions serially.
 
-        """
-        return [f(**feed_vars).to(self.device) for f in self.f_expressions]
+            """
+            return [f(**feed_vars).to(self.device) for f in expressions]
 
-    def _process_expression_individual(
-        self, index: int = None, feed_vars: dict = None
-    ) -> torch.Tensor:
-        """Evaluates a single expression specified by index from the f_expressions list with given feed variables.
+        return _process_expression_serial
 
-        Args:
-            index (int, optional): Index of the expression to be evaluated, by default None
-            feed_vars (dict, optional): Dictionary of feed variables, by default None
+    def _factory_process_expression_individual(self, expressions: list = None):
+        def _process_expression_individual(
+            index: int = None, feed_vars: dict = None
+        ) -> torch.Tensor:
+            """Evaluates a single expression specified by index from the f_expressions list with given feed variables.
 
-        Returns:
-            torch.Tensor: Result of evaluating the specified expression with given feed variables
+            Args:
+                index (int, optional): Index of the expression to be evaluated, by default None
+                feed_vars (dict, optional): Dictionary of feed variables, by default None
 
-        """
-        return self.f_expressions[index](**feed_vars).to(self.device)
+            Returns:
+                torch.Tensor: Result of evaluating the specified expression with given feed variables
 
-    def __call__(
-        self, inputs_data: Union[np.ndarray, dict] = None
-    ) -> List[torch.Tensor]:
+            """
+            return self.expressions[index](**feed_vars).to(self.device)
+
+        return _process_expression_individual
+
+    def _create_input_for_eval(self, inputs_data: Union[np.ndarray, dict]=None) -> List[torch.Tensor]:
         """Evaluate the symbolic expression.
 
         This function takes either a numpy array or a dictionary of numpy arrays as input.
@@ -410,6 +457,7 @@ class SymbolicOperator(torch.nn.Module):
             does: not match with the inputs_key attribute
 
         """
+
         constructor = MakeTensor(
             input_names=self.input_names, output_names=self.output_names
         )
@@ -442,6 +490,29 @@ class SymbolicOperator(torch.nn.Module):
                 f"Format {type(inputs_list)} not supported \
                             for inputs_list"
             )
+
+        return outputs, inputs
+
+    def __call__(
+        self, inputs_data: Union[np.ndarray, dict] = None
+    ) -> List[torch.Tensor]:
+        """Evaluate the symbolic expression.
+
+        This function takes either a numpy array or a dictionary of numpy arrays as input.
+
+        Args:
+            inputs_data (Union[np.ndarray, dict], optional): Union (Default value = None)
+
+        Returns:
+            List[torch.Tensor]: List[torch.Tensor]: A list of tensors containing the evaluated expressions.
+
+            Raises:
+
+        Raises:
+            does: not match with the inputs_key attribute
+
+        """
+        outputs, inputs = self._create_input_for_eval(inputs_data=inputs_data)
 
         feed_vars = {**outputs, **inputs}
 
@@ -631,20 +702,20 @@ class SymbolicOperator(torch.nn.Module):
 
         cosh = getattr(self.engine, "cosh")
 
-        return 1/cosh(x)
+        return 1 / cosh(x)
 
     def csch(self, x):
 
         sinh = getattr(self.engine, "sinh")
 
-        return 1/sinh(x)
+        return 1 / sinh(x)
 
     def coth(self, x):
 
         cosh = getattr(self.engine, "cosh")
         sinh = getattr(self.engine, "sinh")
 
-        return cosh(x)/sinh(x)
+        return cosh(x) / sinh(x)
 
 
 def diff(feature: torch.Tensor, param: torch.Tensor) -> torch.Tensor:
