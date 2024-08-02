@@ -139,9 +139,9 @@ class SymbolicOperator(torch.nn.Module):
 
         self.output = None
 
-        self.f_expressions = list()
-        self.g_expressions = dict()
-        self.h_expressions = list()
+        self.f_expressions = list() # Main expressions, as PDEs and ODEs
+        self.g_expressions = dict() # Auxiliary expressions, as boundary conditions
+        self.h_expressions = list() # Others auxiliary expressions, as those used to evaluate special loss functions
 
         self.feed_vars = None
 
@@ -165,9 +165,11 @@ class SymbolicOperator(torch.nn.Module):
         else:
             gradient_function = gradient
 
+        # Diff symbol is related to automatic differentiation
         subs = {self.diff_symbol.name: gradient_function}
         subs.update(self.external_functions)
         subs.update(self.protected_funcs_subs)
+        subs.update(self.protected_operators_subs)
 
         for expr in self.expressions:
             if not callable(expr):
@@ -438,9 +440,7 @@ class SymbolicOperator(torch.nn.Module):
 
         return _process_expression_individual
 
-    def __call__(
-        self, inputs_data: Union[np.ndarray, dict] = None
-    ) -> List[torch.Tensor]:
+    def _create_input_for_eval(self, inputs_data: Union[np.ndarray, dict]=None) -> List[torch.Tensor]:
         """Evaluate the symbolic expression.
 
         This function takes either a numpy array or a dictionary of numpy arrays as input.
@@ -457,6 +457,7 @@ class SymbolicOperator(torch.nn.Module):
             does: not match with the inputs_key attribute
 
         """
+
         constructor = MakeTensor(
             input_names=self.input_names, output_names=self.output_names
         )
@@ -489,6 +490,29 @@ class SymbolicOperator(torch.nn.Module):
                 f"Format {type(inputs_list)} not supported \
                             for inputs_list"
             )
+
+        return outputs, inputs
+
+    def __call__(
+        self, inputs_data: Union[np.ndarray, dict] = None
+    ) -> List[torch.Tensor]:
+        """Evaluate the symbolic expression.
+
+        This function takes either a numpy array or a dictionary of numpy arrays as input.
+
+        Args:
+            inputs_data (Union[np.ndarray, dict], optional): Union (Default value = None)
+
+        Returns:
+            List[torch.Tensor]: List[torch.Tensor]: A list of tensors containing the evaluated expressions.
+
+            Raises:
+
+        Raises:
+            does: not match with the inputs_key attribute
+
+        """
+        outputs, inputs = self._create_input_for_eval(inputs_data=inputs_data)
 
         feed_vars = {**outputs, **inputs}
 
