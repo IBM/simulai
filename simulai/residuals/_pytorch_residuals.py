@@ -113,6 +113,8 @@ class SymbolicOperator(torch.nn.Module):
         else:
             self.auxiliary_expressions = auxiliary_expressions
 
+        self.special_expressions = special_expressions
+
         self.input_vars = [self._parse_variable(var=var) for var in input_vars]
         self.output_vars = [self._parse_variable(var=var) for var in output_vars]
 
