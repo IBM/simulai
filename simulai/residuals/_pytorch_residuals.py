@@ -29,9 +29,8 @@ from simulai.tokens import D
 
 
 class SymbolicOperator(torch.nn.Module):
-    """The SymbolicOperatorClass is a class that constructs tensor operators using symbolic expressions written in PyTorch.
-
-
+    """The SymbolicOperatorClass is a class that constructs tensor operators
+    using symbolic expressions written in PyTorch.
     Returns:
         object: An instance of the SymbolicOperatorClass.
     """
@@ -59,8 +58,11 @@ class SymbolicOperator(torch.nn.Module):
         else:
             pass
 
+        # The engine used to build the expressions.
+        # Usually PyTorch.
         self.engine = importlib.import_module(engine)
 
+        # Basic attributes
         self.constants = constants
 
         if trainable_parameters is not None:
@@ -73,6 +75,7 @@ class SymbolicOperator(torch.nn.Module):
         self.processing = processing
         self.periodic_bc_protected_key = "periodic"
 
+        # Special funcions that must be replaced before the compilation
         self.protected_funcs = [
             "cos",
             "sin",
@@ -83,8 +86,12 @@ class SymbolicOperator(torch.nn.Module):
             "sech",
             "sinh",
         ]
+
+        # Special operators that must be replaced before the compilation
         self.protected_operators = ["L", "Div", "Grad", "Identity", "Kronecker"]
 
+        # Replacing special functions and operatorswith corresponding classes
+        # and objects
         self.protected_funcs_subs = self._construct_protected_functions()
         self.protected_operators_subs = self._construct_implict_operators()
 
@@ -139,9 +146,11 @@ class SymbolicOperator(torch.nn.Module):
 
         self.output = None
 
-        self.f_expressions = list() # Main expressions, as PDEs and ODEs
-        self.g_expressions = dict() # Auxiliary expressions, as boundary conditions
-        self.h_expressions = list() # Others auxiliary expressions, as those used to evaluate special loss functions
+        self.f_expressions = list()  # Main expressions, as PDEs and ODEs
+        self.g_expressions = dict()  # Auxiliary expressions, as boundary conditions
+        self.h_expressions = (
+            list()
+        )  # Others auxiliary expressions, as those used to evaluate special loss functions
 
         self.feed_vars = None
 
@@ -171,6 +180,7 @@ class SymbolicOperator(torch.nn.Module):
         subs.update(self.protected_funcs_subs)
         subs.update(self.protected_operators_subs)
 
+        # Compiling expressions to tensor operators
         for expr in self.expressions:
             if not callable(expr):
                 f_expr = sympy.lambdify(self.all_vars, expr, subs)
@@ -219,12 +229,10 @@ class SymbolicOperator(torch.nn.Module):
         else:
             expr = expr.subs(constants)
 
-        return expr 
+        return expr
 
     def _construct_protected_functions(self):
         """This function creates a dictionary of protected functions from the engine object attribute.
-
-
         Returns:
             dict: A dictionary of function names and their corresponding function objects.
         """
@@ -245,8 +253,6 @@ class SymbolicOperator(torch.nn.Module):
 
     def _construct_implict_operators(self):
         """This function creates a dictionary of protected operators from the operators engine module.
-
-
         Returns:
             dict: A dictionary of operator names and their corresponding function objects.
         """
@@ -326,18 +332,15 @@ class SymbolicOperator(torch.nn.Module):
 
     def _parse_expression(self, expr=Union[sympy.Expr, str]) -> sympy.Expr:
         """Parses the input expression and returns a SymPy expression.
-
         Args:
-            expr (Union[sympy.Expr, str], optional, optional): The expression to parse, by default None. It can either be a SymPy expression or a string.
-
+            expr (Union[sympy.Expr, str], optional, optional): The expression to parse, by default None.
+            It can either be a SymPy expression or a string.
         Returns:
             sympy.Expr: The parsed SymPy expression.
-
         Raises:
             Exception: If the `constants` attribute is not defined, and the input expression is a string.
-
-
         """
+
         if isinstance(expr, str):
             try:
                 expr_ = sympify(
@@ -347,7 +350,9 @@ class SymbolicOperator(torch.nn.Module):
                 if self.constants is not None:
                     expr_ = self._subs_expr(expr=expr_, constants=self.constants)
                 if self.trainable_parameters is not None:
-                    expr_ = self._subs_expr(expr=expr_, constants=self.trainable_parameters)
+                    expr_ = self._subs_expr(
+                        expr=expr_, constants=self.trainable_parameters
+                    )
 
             except ValueError:
                 if self.constants is not None:
@@ -370,14 +375,13 @@ class SymbolicOperator(torch.nn.Module):
 
     def _parse_variable(self, var=Union[sympy.Symbol, str]) -> sympy.Symbol:
         """Parse the input variable and return a SymPy Symbol.
-
         Args:
-            var (Union[sympy.Symbol, str], optional, optional): The input variable, either a SymPy Symbol or a string. (Default value = Union[sympy.Symbol, str])
-
+            var (Union[sympy.Symbol, str], optional, optional): The input variable, either a SymPy Symbol or a string.
+            (Default value = Union[sympy.Symbol, str])
         Returns:
             sympy.Symbol: A SymPy Symbol representing the input variable.
-
         """
+
         if isinstance(var, str):
             return sympy.Symbol(var)
         else:
@@ -385,39 +389,33 @@ class SymbolicOperator(torch.nn.Module):
 
     def _forward_tensor(self, input_data: torch.Tensor = None) -> torch.Tensor:
         """Forward the input tensor through the function.
-
         Args:
             input_data (torch.Tensor, optional): The input tensor. (Default value = None)
-
         Returns:
             torch.Tensor: The output tensor after forward pass.
-
         """
+
         return self.function.forward(input_data=input_data)
 
     def _forward_dict(self, input_data: dict = None) -> torch.Tensor:
         """Forward the input dictionary through the function.
-
         Args:
             input_data (dict, optional): The input dictionary. (Default value = None)
-
         Returns:
             torch.Tensor: The output tensor after forward pass.
-
         """
+
         return self.function.forward(**input_data)
 
     def _factory_process_expression_serial(self, expressions: list = None):
         def _process_expression_serial(feed_vars: dict = None) -> List[torch.Tensor]:
             """Process the expression list serially using the given feed variables.
-
             Args:
                 feed_vars (dict, optional): The feed variables. (Default value = None)
-
             Returns:
                 List[torch.Tensor]: A list of tensors after evaluating the expressions serially.
-
             """
+
             return [f(**feed_vars).to(self.device) for f in expressions]
 
         return _process_expression_serial
@@ -427,35 +425,28 @@ class SymbolicOperator(torch.nn.Module):
             index: int = None, feed_vars: dict = None
         ) -> torch.Tensor:
             """Evaluates a single expression specified by index from the f_expressions list with given feed variables.
-
             Args:
                 index (int, optional): Index of the expression to be evaluated, by default None
                 feed_vars (dict, optional): Dictionary of feed variables, by default None
-
             Returns:
                 torch.Tensor: Result of evaluating the specified expression with given feed variables
-
             """
+
             return self.expressions[index](**feed_vars).to(self.device)
 
         return _process_expression_individual
 
-    def _create_input_for_eval(self, inputs_data: Union[np.ndarray, dict]=None) -> List[torch.Tensor]:
+    def _create_input_for_eval(
+        self, inputs_data: Union[np.ndarray, dict] = None
+    ) -> List[torch.Tensor]:
         """Evaluate the symbolic expression.
-
         This function takes either a numpy array or a dictionary of numpy arrays as input.
-
         Args:
             inputs_data (Union[np.ndarray, dict], optional): Union (Default value = None)
-
         Returns:
             List[torch.Tensor]: List[torch.Tensor]: A list of tensors containing the evaluated expressions.
-
-            Raises:
-
         Raises:
             does: not match with the inputs_key attribute
-
         """
 
         constructor = MakeTensor(
@@ -497,21 +488,15 @@ class SymbolicOperator(torch.nn.Module):
         self, inputs_data: Union[np.ndarray, dict] = None
     ) -> List[torch.Tensor]:
         """Evaluate the symbolic expression.
-
         This function takes either a numpy array or a dictionary of numpy arrays as input.
-
         Args:
             inputs_data (Union[np.ndarray, dict], optional): Union (Default value = None)
-
         Returns:
             List[torch.Tensor]: List[torch.Tensor]: A list of tensors containing the evaluated expressions.
-
-            Raises:
-
         Raises:
             does: not match with the inputs_key attribute
-
         """
+
         outputs, inputs = self._create_input_for_eval(inputs_data=inputs_data)
 
         feed_vars = {**outputs, **inputs}
@@ -522,11 +507,9 @@ class SymbolicOperator(torch.nn.Module):
 
     def eval_expression(self, key, inputs_list):
         """This function evaluates an expression stored in the class attribute 'g_expressions' using the inputs in 'inputs_list'. If the expression has a periodic boundary condition, the function evaluates the expression at the lower and upper boundaries and returns the difference. If the inputs are provided as a list, they are split into individual tensors and stored in a dictionary with the keys as the input names. If the inputs are provided as an np.ndarray, they are converted to tensors and split along the second axis. If the inputs are provided as a dict, they are extracted using the 'inputs_key' attribute. The inputs, along with the outputs obtained from running the function, are then passed as arguments to the expression using the 'g(**feed_vars)' syntax.
-
         Args:
             key (str): the key used to retrieve the expression from the 'g_expressions' attribute
             inputs_list (list): either a list of arrays, an np.ndarray, or a dict containing the inputs to the function
-
         Returns:
             the result of evaluating the expression using the inputs.:
 
@@ -629,8 +612,8 @@ class SymbolicOperator(torch.nn.Module):
                 assert (
                     self.inputs_key is not None
                 ), "If inputs_list is dict, \
-                                                     it is necessary to provide\
-                                                     a key."
+                     it is necessary to provide\
+                     a key."
 
                 inputs = {
                     key: value
@@ -652,11 +635,9 @@ class SymbolicOperator(torch.nn.Module):
     @staticmethod
     def gradient(feature, param):
         """Calculates the gradient of the given feature with respect to the given parameter.
-
         Args:
             feature (torch.Tensor): Tensor with the input feature.
             param (torch.Tensor): Tensor with the parameter to calculate the gradient with respect to.
-
         Returns:
             torch.Tensor: Tensor with the gradient of the feature with respect to the given parameter.
         Example:
@@ -679,10 +660,8 @@ class SymbolicOperator(torch.nn.Module):
 
     def jac(self, inputs):
         """Calculates the Jacobian of the forward function of the model with respect to its inputs.
-
         Args:
             inputs (torch.Tensor): Tensor with the input data to the forward function.
-
         Returns:
             torch.Tensor: Tensor with the Jacobian of the forward function with respect to its inputs.
         Example:
