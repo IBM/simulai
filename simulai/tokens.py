@@ -93,6 +93,38 @@ def Div(u: sympy.Symbol, vars: tuple) -> callable:
 
     return l
 
+def Grad(u: sympy.Symbol, vars: tuple) -> callable:
+    """
+    Generate a callable object to compute the gradient operator.
+
+    The gradient operator is a first-order differential operator that measures the
+    magnitude and direction of a flow of a vector field from its source and
+    convergence to a point.
+
+    Parameters
+    ----------
+    u : sympy.Symbol
+        The vector field to compute the divergence of.
+    vars : tuple
+        A tuple of variables to compute the divergence with respect to.
+
+    Returns
+    -------
+    callable
+        A callable object that computes the divergence of a vector field with respect
+        to the given variables.
+
+    Examples
+    --------
+    >>> x, y, z = sympy.symbols('x y z')
+    >>> u = sympy.Matrix([x**2, y**2, z**2])
+    >>> Grad(u, (x, y, z))
+    2*x + 2*y + 2*z
+    """
+    g = [D(u, var) for var in vars]
+
+    return g
+
 
 def Gp(
     g0: Union[torch.tensor, float], r: Union[torch.tensor, float], n: int
