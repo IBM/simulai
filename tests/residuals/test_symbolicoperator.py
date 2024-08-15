@@ -226,6 +226,42 @@ class TestSymbolicOperator(TestCase):
 
             assert all([isinstance(item, torch.Tensor) for item in residual(data)])
 
+    def test_symbolic_operator_grad_operator(self):
+
+        f = "D(u, x) - D(u, y)"
+        s_1 = "D(D(u, x) - D(u, y), x)"
+        s_2 = "D(D(u, x) - D(u, y), y)"
+
+        input_labels = ["x", "y"]
+        output_labels = ["u"]
+
+        L_x = 1
+        L_y = 1
+        N_x = 100
+        N_y = 100
+        dx = L_x / N_x
+        dy = L_y / N_y
+
+        grid = np.mgrid[0:L_x:dx, 0:L_y:dy]
+
+        data = np.hstack([grid[1].flatten()[:, None], grid[0].flatten()[:, None]])
+
+        net = model(n_inputs=len(input_labels), n_outputs=len(output_labels))
+
+        residual = SymbolicOperator(
+            expressions=[f],
+            special_expressions=[s_1, s_2],
+            input_vars=input_labels,
+            output_vars=output_labels,
+            function=net,
+            engine="torch",
+        )
+        u = net(input_data=data)
+        outputs, inputs = residual._create_input_for_eval(inputs_data=data)
+        feed_vars = {**outputs, **inputs}        
+
+        all(isinstance(item, torch.Tensor) for item in residual.process_special_expression(feed_vars))
+
     def test_symbolic_operator_1d_pde(self):
         # Allen-Cahn equation
         f_0 = "D(u, t) - mu*D(D(u, x), x) + alpha*(u**3) + beta*u"
