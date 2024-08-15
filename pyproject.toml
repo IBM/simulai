@@ -24,11 +24,10 @@ classifiers = [
 ]
 dependencies = [
     "numpy<=2.0",
-    "torch<=2.3.0",
+    "torch<=2.4.0",
     "numba",
-    "scipy<1.11.1",
+    "scipy<=1.14.1",
     "sympy",
-    "torch<=2.0.1",
     "scikit-learn",
     "psutil",
     "h5py",

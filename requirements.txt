@@ -1,6 +1,6 @@
 numpy<=2.0
 numba
-scipy
+scipy<=1.14.0
 sympy
 torch<=2.4.0
 scikit-learn
