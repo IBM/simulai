@@ -260,7 +260,14 @@ class TestSymbolicOperator(TestCase):
         outputs, inputs = residual._create_input_for_eval(inputs_data=data)
         feed_vars = {**outputs, **inputs}        
 
-        all(isinstance(item, torch.Tensor) for item in residual.process_special_expression(feed_vars))
+        # Checking if all the results of the special expressions are torch.Tensor
+        assert all(isinstance(item, torch.Tensor) for item in residual.process_special_expression(feed_vars))
+
+        # Evaluating weighted sum using the special expressions
+        evaluated = residual.process_special_expression(feed_vars)
+        weights = np.random.random(2).tolist()
+        
+        assert isinstance(sum([w*e for w, e in zip(weights, evaluated)]), torch.Tensor)
 
     def test_symbolic_operator_1d_pde(self):
         # Allen-Cahn equation
