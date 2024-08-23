@@ -490,6 +490,7 @@ class PIRMSELoss(LossBasics):
             "pde": list(),
             "init": list(),
             "bound": list(),
+            "special": list(),
             "extra_data": list(),
         }
         self.loss_tags = list(self.loss_states.keys())
@@ -501,6 +502,7 @@ class PIRMSELoss(LossBasics):
             "bound": 2,
             "extra_data": 3,
             "causality_weights": 4,
+            "special": 5
         }
 
     def _convert(
@@ -711,6 +713,26 @@ class PIRMSELoss(LossBasics):
             for k in boundary_input.keys()
         ]
 
+    def _special_expression_evaluation(
+        self, data_input: torch.Tensor = None, residual: SymbolicOperator = None, 
+        weights: list = None
+    ) -> List[torch.Tensor]:
+        """It applies the boundary conditions
+
+        Args:
+            data_input (torch.Tensor): a tensor containing the
+                coordinates of the boundaries
+            residual (SymbolicOperator): a symbolic expression for the
+                boundary condition
+
+        Returns:
+            list: the evaluation of the special residual
+        """
+        special_residuals = self.residual.process_special_expression(data_input)
+        special_loss = self.weighted_loss_evaluator(special_residuals, weights)
+
+        return special_loss
+
     def _no_boundary_penalisation(
         self, boundary_input: dict = None, residual: object = None
     ) -> List[torch.Tensor]:
@@ -726,6 +748,14 @@ class PIRMSELoss(LossBasics):
         return torch.Tensor([0.0]).to(self.device)
 
     def _no_extra_data(
+        self,
+        input_data: torch.Tensor = None,
+        target_data: torch.Tensor = None,
+        weights: list = None,
+    ) -> torch.Tensor:
+        return torch.Tensor([0.0]).to(self.device)
+
+    def _no_special_expression(
         self,
         input_data: torch.Tensor = None,
         target_data: torch.Tensor = None,
@@ -756,6 +786,10 @@ class PIRMSELoss(LossBasics):
             indices.append(3)
         else:
             pass
+
+        if residual.special_expressions:
+            tags.append("special")
+            indices.append(5)
 
         return tags, indices
 
@@ -983,8 +1017,9 @@ class PIRMSELoss(LossBasics):
             pde = residual_loss
             init = initial_data_loss
             bound = boundary_loss
+            special = special_loss
 
-            loss_terms = self._aggregate_terms(*pde, *init, *bound, *extra_data)
+            loss_terms = self._aggregate_terms(*pde, *init, *bound, *extra_data, *special)
 
             # Updating the loss weights if necessary
             loss_weights = self.global_weights(
@@ -1007,14 +1042,16 @@ class PIRMSELoss(LossBasics):
             init_detach = float(sum(init).detach().data)
             bound_detach = float(sum(bound).detach().data)
             extra_data_detach = float(sum(extra_data).detach().data)
+            special_detach = float(sum(special).detach().data)
 
             self.loss_states["pde"].append(pde_detach)
             self.loss_states["init"].append(init_detach)
             self.loss_states["bound"].append(bound_detach)
             self.loss_states["extra_data"].append(extra_data_detach)
+            self.loss_states["special"].append(special_detach)
 
             losses_list = np.array(
-                [pde_detach, init_detach, bound_detach, extra_data_detach]
+                [pde_detach, init_detach, bound_detach, extra_data_detach, special_detach]
             )
 
             self.pprint(
